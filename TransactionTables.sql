@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS `mydb`.`ProductPrice` (  
+  `Id` MEDIUMINT NOT NULL AUTO_INCREMENT,
+  `InvoiceNo` MEDIUMINT NULL,
+  `ProductCode` VARCHAR(45) NULL,
+  `Price` DECIMAL NOT NULL, 
+  `SellingPrice` DECIMAL NOT NULL, 
+  `PurchasedQty` DECIMAL NULL, 
+  `BalanceQty` DECIMAL NULL, 
+  `AddedOn` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `UpdatedBy` MEDIUMINT NULL,
+   PRIMARY KEY (`Id`)
+  );
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Sales` (  
+  `BillId` MEDIUMINT,
+  `ProductId` mediumInt Not NULL,
+  `ProductPriceId` mediumint Not NULL, 
+  `SellingPrice` DECIMAL NULL, 
+  `Qty` DECIMAL NULL, 
+  `Discount` DECIMAL NULL,  
+  `AddedOn` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `UpdatedBy` MEDIUMINT NULL,
+   PRIMARY KEY (`Id`)
+  );
