@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RetailManagementSystem.Views
+namespace RetailManagementSystem.View
 {
     /// <summary>
     /// Interaction logic for SalesEntry.xaml

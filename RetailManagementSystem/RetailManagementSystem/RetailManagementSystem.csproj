@@ -73,7 +73,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\SalesEntry.xaml.cs">
+    <Compile Include="Command\RelayCommand.cs" />
+    <Compile Include="Converter\ActiveDocumentConverter.cs" />
+    <Compile Include="Converter\ZeroToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
+    <Compile Include="ViewModel\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModel\SalesEntryViewModel.cs" />
+    <Compile Include="ViewModel\PaneViewModel.cs" />
+    <Compile Include="ViewModel\Workspace.cs" />
+    <Compile Include="View\Pane\LayoutInitializer.cs" />
+    <Compile Include="View\Pane\PanesStyleSelector.cs" />
+    <Compile Include="View\Pane\PanesTemplateSelector.cs" />
+    <Compile Include="View\SalesEntry.xaml.cs">
       <DependentUpon>SalesEntry.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -88,7 +99,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\SalesEntry.xaml">
+    <Page Include="View\SalesEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -121,8 +132,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Users.jpg" />
