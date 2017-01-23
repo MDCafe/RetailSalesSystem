@@ -15,7 +15,7 @@ namespace RetailManagementSystem.View.Pane
       set;
     }
 
-    public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container)
+    public override Style SelectStyle(object item, System.Windows.DependencyObject container)
     {
       if (item is DocumentViewModel)
         return DocumentStyle;

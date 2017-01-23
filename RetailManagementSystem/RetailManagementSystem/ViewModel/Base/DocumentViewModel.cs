@@ -14,31 +14,44 @@ namespace RetailManagementSystem.ViewModel.Base
   /// </summary>
   internal abstract class DocumentViewModel : PaneViewModel
   {
-    #region Fields
-    private bool mIsFilePathReal = false;
-    #endregion Fields
+        #region Fields
+        private string _windowTitle;
+        #endregion Fields
 
-    #region properties
-    
+        #region properties
 
-    //abstract public string FilePath { get; protected set; }
 
-    abstract public bool IsDirty { get; set; }
+        public string WindowName
+        {
+            get
+            {
+                if (_windowTitle == null)
+                    return "New Window" + (IsDirty ? "*" : "");
+                return _windowTitle;            
+            }
+            set
+            {
+                _windowTitle = value;
+            }
+        }
 
-    #region CloseCommand
-    /// <summary>
-    /// This command cloases a single file. The binding for this is in the AvalonDock LayoutPanel Style.
-    /// </summary>
-    abstract public ICommand CloseCommand
-    {
-        get;
-    }
+        abstract public bool IsDirty { get; set; }
+
+        #region CloseCommand
+        /// <summary>
+        /// This command closes a single file. The binding for this is in the AvalonDock LayoutPanel Style.
+        /// </summary>
+        abstract public ICommand CloseCommand
+        {
+            get;
+        }
 
         abstract public ICommand SaveCommand
-    {
-      get;
-    }
-    #endregion
-    #endregion properties
+        {
+          get;
+        }
+        #endregion
+
+        #endregion properties
   }
 }

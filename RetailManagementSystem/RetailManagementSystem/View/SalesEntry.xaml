@@ -3,12 +3,114 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+             xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl"    
+             xmlns:Validator="clr-namespace:RetailManagementSystem.Validation"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             FocusManager.FocusedElement="{Binding ElementName=SalesDate}">
+             d:DesignHeight="300" d:DesignWidth="800"
+             FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
+             >
+    <UserControl.Resources>
+        <Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <TextBox x:Name="PART_TextBox"
+                             Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', 
+                             RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"  Grid.Row="0" Margin="5">
+            <Label Content="Date :" Width="113" />
+            <DatePicker Width="98" Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+                        SelectedDateFormat="Short" SelectedDate="{Binding SaleDate}" BorderThickness="0"/>
+            <Label Content="Customer Name :" Width="109"/>
+            <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  Width="200"
+                        HorizontalContentAlignment="Stretch" ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
+                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}">
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Grid Height="35" Width="Auto" ShowGridLines="False">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Margin="1" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                        <Label Margin="1" Grid.Column="1" Content="{Binding BalanceDue}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+                <ComboBox.SelectedItem>
+                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <Validator:ValidateComboRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.SelectedItem>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="6">
+            <Label Content="Mode Of Payment :"></Label>
+            <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="{Binding PaymentId}"
+                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" Width="91" Height="20" SelectedIndex="1">
+            </ComboBox>
+            <Label Content="Order No:" Width="109" Margin="7,0,0,0"></Label>
+            <TextBox Name="txtOrderNo" Width="200" Text="{Binding OrderNo}" Margin="0,5"/>
+        </StackPanel>
         
-        <TextBox Text="SalesDate"></TextBox><Calendar />
-            
+        <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding SaleDetailList}"  
+                                      AutoGenerateColumns="False" RowHeight="25" 
+                                      Grid.Row="2"
+                                      SelectionMode="Single"
+                                       >
+            <toolKit:DataGrid.Columns>
+                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="150" Header="Products"
+                                                                    ItemsSource="{Binding ProductsPriceList}"                                                                  
+                                                                    SelectedValuePath="ProductId"
+                                                                    DisplayMemberPath="ProductName"  
+                                                                    SelectedValueBinding="{Binding ProductId}" 
+                                                                    ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"
+                                >
+                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
+                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Pricet}" />
+                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
+                    <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                    
+                </BHCustCtrl:CustDataGridComboBoxColumn>
+
+                <toolKit:DataGridTextColumn Width="150"  Header="Quantity" Binding="{Binding Qty}" />
+                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
+                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}"/>
+                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}"/>
+            </toolKit:DataGrid.Columns>
+        </toolKit:DataGrid>
+        <!--<Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="258,10,-32,0" VerticalAlignment="Top" Width="74" Click="button_Click"/>-->
+
+
     </Grid>
 </UserControl>

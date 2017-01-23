@@ -91,6 +91,29 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        internal void Close(DocumentViewModel doc)
+        {
+            {
+                DocumentViewModel docToClose = doc as DocumentViewModel;
+
+                if (docToClose != null)
+                {
+                    if (docToClose.IsDirty)
+                    {
+                        var res = MessageBox.Show("Unsaved changes..!! Do you want to save?", "Product Info here--", MessageBoxButton.YesNoCancel);
+                        if (res == MessageBoxResult.Cancel)
+                            return;
+
+                        if (res == MessageBoxResult.Yes)
+                        {
+                            doc.SaveCommand.Execute(null);
+                        }
+                    }
+                    _documentViewModels.Remove(docToClose);
+                }
+            }
+        }
+
         /// <summary>
         /// Bind a window to some commands to be executed by the viewmodel.
         /// </summary>

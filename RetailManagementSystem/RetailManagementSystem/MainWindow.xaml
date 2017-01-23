@@ -4,7 +4,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:s="clr-namespace:System;assembly=mscorlib"        
-        Title="MainWindow"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Title="Retail Management System"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
         xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane"
         xmlns:view="clr-namespace:RetailManagementSystem.View"
@@ -87,8 +87,11 @@
                            BorderThickness="1"
                            DockPanel.Dock="Bottom"
                            DocumentsSource="{Binding DocumentViews}"
-                           ActiveContent="{Binding ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"
+                           ActiveContent="{Binding ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"                          
                          >
+                <xcad:DockingManager.Theme>
+                    <xcad:AeroTheme/>
+                </xcad:DockingManager.Theme>
                 <xcad:DockingManager.LayoutItemTemplateSelector>
                     <pane:PanesTemplateSelector>
                         <pane:PanesTemplateSelector.DocumentViewTemplate>
@@ -101,7 +104,19 @@
                 <xcad:DockingManager.LayoutUpdateStrategy>
                     <pane:LayoutInitializer/>
                 </xcad:DockingManager.LayoutUpdateStrategy>
-
+                <xcad:DockingManager.LayoutItemContainerStyleSelector>
+                    <pane:PanesStyleSelector>
+                        <pane:PanesStyleSelector.DocumentStyle>
+                            <Style TargetType="{x:Type xcad:LayoutItem}">
+                                <Setter Property="Title" Value="{Binding Model.Title}"/>
+                                <!--<Setter Property="ToolTip" Value="{Binding Model.FilePath}"/>-->
+                                <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}"/>
+                                <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
+                                <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                            </Style>
+                        </pane:PanesStyleSelector.DocumentStyle>
+                    </pane:PanesStyleSelector>
+                </xcad:DockingManager.LayoutItemContainerStyleSelector>
                 <xcad:LayoutRoot>
                     <xcad:LayoutPanel Orientation="Vertical">
                         <xcad:LayoutDocumentPane/>
