@@ -22,6 +22,7 @@ namespace RetailManagementSystem
         public int Id { get; set; }
         public int parentId { get; set; }
         public string name { get; set; }
+        public Nullable<int> RollingNo { get; set; }
     
         public virtual ICollection<Product> Products { get; set; }
     }

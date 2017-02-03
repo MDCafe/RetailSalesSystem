@@ -32,64 +32,73 @@
         </ControlTemplate>
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="113" />
+            <ColumnDefinition Width="106"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="213"/>
+            <ColumnDefinition Width="268*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="100*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal"  Grid.Row="0" Margin="5">
-            <Label Content="Date :" Width="113" />
-            <DatePicker Width="98" Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-                        SelectedDateFormat="Short" SelectedDate="{Binding SaleDate}" BorderThickness="0"/>
-            <Label Content="Customer Name :" Width="109"/>
-            <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  Width="200"
-                        HorizontalContentAlignment="Stretch" ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
-                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}">
-                <ComboBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ComboBoxItem}">
-                        <Setter Property="ContentTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <Grid Height="35" Width="Auto" ShowGridLines="False">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="50*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Margin="1" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                        <Label Margin="1" Grid.Column="1" Content="{Binding BalanceDue}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ComboBox.ItemContainerStyle>
-                <ComboBox.SelectedItem>
-                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
-                        <Binding.ValidationRules>
-                            <Validator:ValidateComboRule/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ComboBox.SelectedItem>
-            </ComboBox>
+        <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
+        <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+                        SelectedDateFormat="Short" SelectedDate="{Binding SaleDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
+        <Label Content="Customer Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
+        <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
+                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
+                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <Grid Height="35" Width="Auto" ShowGridLines="False">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Margin="1" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                    <Label Margin="1" Grid.Column="1" Content="{Binding BalanceDue}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+            <ComboBox.SelectedItem>
+                <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
+                    <Binding.ValidationRules>
+                        <Validator:ValidateComboRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </ComboBox.SelectedItem>
+        </ComboBox>
+        <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
+            <Label Content="Bill No" Width="100" Margin="15,5,0,0"></Label>
+            <TextBox x:Name="txtBillNo" Width="60" Margin="5" Text="{Binding RunningBillNo}"/>
+            <Button x:Name="btnBillNo"  Width="60" Content="Get Bill" Margin="5"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="6">
-            <Label Content="Mode Of Payment :"></Label>
-            <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="{Binding PaymentId}"
-                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" Width="91" Height="20" SelectedIndex="1">
-            </ComboBox>
-            <Label Content="Order No:" Width="109" Margin="7,0,0,0"></Label>
-            <TextBox Name="txtOrderNo" Width="200" Text="{Binding OrderNo}" Margin="0,5"/>
-        </StackPanel>
-        
+        <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
+        <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="{Binding PaymentId}"
+                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" Height="25" SelectedIndex="0"
+                      Grid.Row="1" Grid.Column="1" Margin="0,5,10,5" />
+        <Label Content="Order No:"  Margin="0,5,0,0" Grid.Row="1" Grid.Column="2"></Label>
+        <TextBox Name="txtOrderNo" Text="{Binding OrderNo}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="25" />
+
         <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding SaleDetailList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
-                                      SelectionMode="Single"
+                                      SelectionMode="Single" Grid.ColumnSpan="5"
                                        >
             <toolKit:DataGrid.Columns>
-                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="150" Header="Products"
+                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding ProductsPriceList}"                                                                  
                                                                     SelectedValuePath="ProductId"
                                                                     DisplayMemberPath="ProductName"  
@@ -97,20 +106,24 @@
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"
                                 >
                     <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
-                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Pricet}" />
-                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
                     <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
-                    
+                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
+                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" />                    
+
                 </BHCustCtrl:CustDataGridComboBoxColumn>
 
                 <toolKit:DataGridTextColumn Width="150"  Header="Quantity" Binding="{Binding Qty}" />
                 <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
-                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}"/>
-                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}"/>
+                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" />
+                <toolKit:DataGridTextColumn Header="Discount Amt" Binding="{Binding DiscountAmount}" />
+                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}" IsReadOnly="True"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Stock Availale" Binding="{Binding AvailableStock}" IsReadOnly="True"/>
+                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True"/>
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
-        <!--<Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="258,10,-32,0" VerticalAlignment="Top" Width="74" Click="button_Click"/>-->
-
-
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Right" Height="40">
+            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -6,23 +6,23 @@
   using System.Text;
   using System.Windows.Input;
 
-  internal class RelayCommand : ICommand
+  internal class RelayCommand<T> : ICommand
   {
     #region Fields
 
-    readonly Action<object> _execute;
-    readonly Predicate<object> _canExecute;
-
+    readonly Action<T> _execute;
+    readonly Predicate<T> _canExecute;
+         
     #endregion // Fields
 
     #region Constructors
 
-    public RelayCommand(Action<object> execute)
+    public RelayCommand(Action<T> execute)
       : this(execute, null)
     {
     }
 
-    public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+    public RelayCommand(Action<T> execute, Predicate<T> canExecute)
     {
       if (execute == null)
         throw new ArgumentNullException("execute");
@@ -36,7 +36,8 @@
 
     public bool CanExecute(object parameter)
     {
-      return _canExecute == null ? true : _canExecute(parameter);
+            var param = (T)parameter;
+            return _canExecute == null ? true : _canExecute(param);
     }
 
     public event EventHandler CanExecuteChanged
@@ -47,7 +48,8 @@
 
     public void Execute(object parameter)
     {
-      _execute(parameter);
+            var param = (T)parameter;
+            _execute(param);
     }
 
     #endregion // ICommand Members

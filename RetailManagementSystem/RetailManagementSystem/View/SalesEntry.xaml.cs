@@ -1,9 +1,9 @@
-﻿using RetailManagementSystem.ViewModel;
-using System.Collections.ObjectModel;
+﻿using RetailManagementSystem.Model;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace RetailManagementSystem.View
 {
@@ -14,11 +14,12 @@ namespace RetailManagementSystem.View
     {
 
         SalesEntryViewModel _salesViewModel;
+        //SaleDetailExtn _selRowSaleDetailExtn;
 
         public SalesEntry()
         {
             InitializeComponent();            
-            this.DataContextChanged += SalesEntry_DataContextChanged;
+            this.DataContextChanged += SalesEntry_DataContextChanged;                       
         }
 
         private void SalesEntry_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -35,20 +36,72 @@ namespace RetailManagementSystem.View
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
-
-            var selectedRowSaleDetail = _salesViewModel.SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            if (selectedRowSaleDetail != null)
+            if (productPrice == null) return;
+            var selRowSaleDetailExtn = _salesViewModel.SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
+            if (selRowSaleDetailExtn != null)
             {
                 //selectedRowSaleDetail.Qty = productPrice.Quantity;
-                selectedRowSaleDetail.SellingPrice = productPrice.SellingPrice;
-                selectedRowSaleDetail.CostPrice = productPrice.Price;
-                selectedRowSaleDetail.PriceId = productPrice.PriceId;
-                
-                
-                //selectedRowSaleDetail.Amount = productPrice.SellingPrice * selectedRowSaleDetail.Qty;                
-                
+                selRowSaleDetailExtn.SellingPrice = productPrice.SellingPrice;
+                selRowSaleDetailExtn.CostPrice = productPrice.Price;
+                selRowSaleDetailExtn.PriceId = productPrice.PriceId;
+                selRowSaleDetailExtn.AvailableStock = productPrice.Quantity;
+
+                selRowSaleDetailExtn.PropertyChanged += (sender, e) =>
+                {
+                    var prop = e.PropertyName;
+                    if (prop == Constants.AMOUNT) return;
+
+
+                    var amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
+                    var discountAmount = selRowSaleDetailExtn.DiscountPercentage != 0 ?
+                                         amount - (amount * (selRowSaleDetailExtn.DiscountPercentage / 100)) :
+                                         selRowSaleDetailExtn.DiscountAmount != 0 ?
+                                         amount - selRowSaleDetailExtn.DiscountAmount :
+                                         0;
+
+                    if (discountAmount != 0)
+                    {
+                        selRowSaleDetailExtn.Amount = discountAmount;
+                        selRowSaleDetailExtn.Discount = discountAmount;
+                        return;
+                    }
+
+                    selRowSaleDetailExtn.Amount = amount;
+                    selRowSaleDetailExtn.Discount = 0;
+                };
+                //_selRowSaleDetailExtn.PropertyChanged += (sender, e) =>
+                //{
+
+
+                //    //switch (prop)
+                //    //{
+                //    //    case Constants.QTY:
+                //    //        //selRowSaleDetailExtn.Amount = amo;
+                //    //        break;
+                //    //    case Constants.SELLING_PRICE:
+                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
+                //    //        break;
+                //    //    case Constants.DISCOUNT_PERCENT:
+                //    //        if(selRowSaleDetailExtn.DiscountPercentage != 0 )
+                //    //        {
+                //    //            var amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
+                //    //            selRowSaleDetailExtn.Amount = amount - (amount * (selRowSaleDetailExtn.DiscountPercentage / 100));
+                //    //            break;
+                //    //        }
+                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
+                //    //        break;
+                //    //    case Constants.DISCOUNT_AMT:
+                //    //        if (selRowSaleDetailExtn.DiscountAmount != 0)
+                //    //        {
+                //    //            selRowSaleDetailExtn.Amount = (selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty) - selRowSaleDetailExtn.DiscountAmount;
+                //    //            break;
+                //    //        }
+                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
+                //    //        break;
+                //    //}                    
+                //};                                                                  
             }
-        }
+        }       
     }
 
     //public class DataEntry

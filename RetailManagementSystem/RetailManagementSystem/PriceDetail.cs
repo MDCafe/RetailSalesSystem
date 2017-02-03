@@ -14,6 +14,11 @@ namespace RetailManagementSystem
     
     public partial class PriceDetail
     {
+        public PriceDetail()
+        {
+            this.SaleDetails = new HashSet<SaleDetail>();
+        }
+    
         public int PriceId { get; set; }
         public int BillId { get; set; }
         public int ProductId { get; set; }
@@ -24,5 +29,6 @@ namespace RetailManagementSystem
         public Nullable<int> UpdatedBy { get; set; }
     
         public virtual Product Product { get; set; }
+        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
     }
 }

@@ -42,14 +42,14 @@ namespace RetailManagementSystem.ViewModel
         }
               
         #region OpenSalesEntryCommand
-        RelayCommand _openSalesEntryCommand = null;
+        RelayCommand<object> _openSalesEntryCommand = null;
         public ICommand OpenSalesEntryCommand
         {
           get
           {
             if (_openSalesEntryCommand == null)
             {
-                _openSalesEntryCommand = new RelayCommand((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
+                _openSalesEntryCommand = new RelayCommand<object>((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
             }
 
             return _openSalesEntryCommand;

@@ -158,6 +158,7 @@
     <Compile Include="User.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />

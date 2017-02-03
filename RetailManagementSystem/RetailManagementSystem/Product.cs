@@ -17,10 +17,10 @@ namespace RetailManagementSystem
         public Product()
         {
             this.PriceDetails = new HashSet<PriceDetail>();
-            this.Stocks = new HashSet<Stock>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.ReturnDamagedStocks = new HashSet<ReturnDamagedStock>();
             this.SaleDetails = new HashSet<SaleDetail>();
+            this.Stocks = new HashSet<Stock>();
         }
     
         public int Id { get; set; }
@@ -35,14 +35,14 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual Category Category { get; set; }
         public virtual Company Company { get; set; }
         public virtual MeasuringUnit MeasuringUnit { get; set; }
         public virtual ICollection<PriceDetail> PriceDetails { get; set; }
-        public virtual ICollection<Stock> Stocks { get; set; }
         public virtual PurchaseFreeDetail PurchaseFreeDetail { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual ICollection<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
+        public virtual Category Category { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public virtual ICollection<Stock> Stocks { get; set; }
     }
 }

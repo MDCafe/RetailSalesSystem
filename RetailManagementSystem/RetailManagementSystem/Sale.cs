@@ -25,10 +25,11 @@ namespace RetailManagementSystem
         public Nullable<decimal> TransportCharges { get; set; }
         public Nullable<decimal> TotalAmount { get; set; }
         public Nullable<bool> IsCancelled { get; set; }
+        public string CustomerOrderNo { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
-        public string CustomerOrderNo { get; set; }
+        public int RunningBillNo { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
