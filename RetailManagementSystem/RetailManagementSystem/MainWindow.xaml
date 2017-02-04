@@ -17,7 +17,7 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Sales">
-                    <MenuItem Header="_Sale Entry"  Command="{Binding OpenSalesEntryCommand}"/>
+                    <MenuItem Header="_Sale Entry"  Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"/>
                 </MenuItem>
                 <MenuItem Header="_Purchases">
                     <MenuItem Header="Purchase Entry" />

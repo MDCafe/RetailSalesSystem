@@ -104,6 +104,7 @@
                                                                     DisplayMemberPath="ProductName"  
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"
+                                                        
                                 >
                     <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
                     <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />

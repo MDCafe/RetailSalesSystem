@@ -21,13 +21,14 @@ namespace RetailManagementSystem.ViewModel
         int _runningBillNo;
         bool _showAllCustomers;
         int _categoryId;
-        Category category = null;
+        int _othersCategoryId;
+        Category _category = null;
 
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
 
-        public SalesEntryViewModel()
+        public SalesEntryViewModel(bool showAllCustomers)
         {
             IsDirty = true;
             Title = "Sales Entry";
@@ -36,13 +37,17 @@ namespace RetailManagementSystem.ViewModel
             var cnt1 = _rmsEntities.Products.ToList();
             _saleDate = DateTime.Now;
 
+            var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
+            _othersCategoryId = othersCategory.Id;
+            _showAllCustomers = showAllCustomers;
 
             if (_showAllCustomers)
-                category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
+                _categoryId = _othersCategoryId;
             else
-                category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
-
-            if (category != null) _categoryId = category.Id;
+            {
+                _category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
+                _categoryId = _category.Id;
+            }
 
 
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
@@ -69,7 +74,7 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_showAllCustomers)
                     return _rmsEntities.Customers.Local;
-                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == _categoryId);
+                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != _othersCategoryId);
             }
         }
          
@@ -84,7 +89,8 @@ namespace RetailManagementSystem.ViewModel
             private set
             {
                 _productsPriceList = value;
-                NotifyPropertyChanged(() => this.ProductsPriceList);
+                //NotifyPropertyChanged(() => this.ProductsPriceList);
+                RaisePropertyChanged("ProductsPriceList");
             }
         }
 
@@ -106,7 +112,8 @@ namespace RetailManagementSystem.ViewModel
             set
             {                
                 _selectedCustomer = value;
-                NotifyPropertyChanged(() => this._selectedCustomer);
+                //NotifyPropertyChanged(() => this._selectedCustomer);
+                RaisePropertyChanged("SelectedCustomer");
             }
         }
 
@@ -172,14 +179,14 @@ namespace RetailManagementSystem.ViewModel
             #endregion
 
         #region SaveCommand
-         RelayCommand<object> _saveCommand = null;
+         RelayCommand _saveCommand = null;
          override public ICommand SaveCommand
         {
           get
           {
             if (_saveCommand == null)
             {
-              _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+              _saveCommand = new RelayCommand((p) => OnSave(p), (p) => CanSave(p));
             }
 
             return _saveCommand;
@@ -187,14 +194,14 @@ namespace RetailManagementSystem.ViewModel
         }
 
         #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
+        RelayCommand _closeCommand = null;
         override public ICommand CloseCommand
         {
             get
             {
                 if (_closeCommand == null)
                 {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
+                    _closeCommand = new RelayCommand((p) => OnClose(), (p) => CanClose());
                 }
 
                 return _closeCommand;
@@ -247,7 +254,7 @@ namespace RetailManagementSystem.ViewModel
 
             _billSales.TotalAmount = totalAmount;
             _rmsEntities.Sales.Add(_billSales);
-            category.RollingNo = _runningBillNo;
+            _category.RollingNo = _runningBillNo;
 
             _rmsEntities.SaveChanges();
             Clear();
@@ -257,14 +264,14 @@ namespace RetailManagementSystem.ViewModel
         #endregion
 
         #region GetBill Command
-        RelayCommand<object> _getBillCommand = null;
+        RelayCommand _getBillCommand = null;
         public ICommand GetBillCommand
         {
             get
             {
                 if (_getBillCommand == null)
                 {
-                    _getBillCommand = new RelayCommand<object>((p) => OnGetBill(p));
+                    _getBillCommand = new RelayCommand((p) => OnGetBill(p));
                 }
 
                 return _getBillCommand;
@@ -307,11 +314,10 @@ namespace RetailManagementSystem.ViewModel
         private void Clear()
         {
             GetProductPriceList();
-            _selectedCustomer.Id = -1;
-            _selectedPaymentMode.PaymentId = 0;
+            SelectedCustomer = null;
+            //SelectedPaymentMode.PaymentId = 0;
             OrderNo = "";
-            _billSales.SaleDetails.Clear();
-            _billSales = null;
+            SaleDetailList.Clear();
         }
 
         public override Uri IconSource

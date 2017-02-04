@@ -25,6 +25,21 @@ namespace RetailManagementSystem
         {
             InitializeComponent();
             this.DataContext = Workspace.This;
+            AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
+        }
+
+        private void HandleKeyDownEvent(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.S && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                Workspace.This.OpenSalesEntryCommand.Execute(true);
+            }
+
+            if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                MessageBox.Show("S + A");
+            }
+            
         }
     }
 }

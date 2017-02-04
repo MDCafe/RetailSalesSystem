@@ -11,6 +11,7 @@ using System.Windows.Markup;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
+using System.Windows.Input;
 
 namespace BHCustCtrl
 {
@@ -52,6 +53,7 @@ namespace BHCustCtrl
     {
         //Columns of DataGrid
         private ObservableCollection<DataGridTextColumn> columns;
+        public TextBox _cboTextBox;
         //Cust Combobox  cell edit
         public  CustComboBox comboBox;
 
@@ -67,20 +69,23 @@ namespace BHCustCtrl
 
         private void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            var textBox = (comboBox.Template.FindName("PART_EditableTextBox", comboBox) as TextBox);
-            if (textBox != null)
+            _cboTextBox = (comboBox.Template.FindName("PART_EditableTextBox", comboBox) as TextBox);
+            if (_cboTextBox != null)
             {
-                textBox.Focus();
-                textBox.SelectionStart = textBox.Text.Length;
+                _cboTextBox.Focus();
+                _cboTextBox.SelectionStart = _cboTextBox.Text.Length;
+                                
             }
+            comboBox.IsTextSearchEnabled = false;
         }
 
-        //private void ComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        //{
-        //    //var dropdownOpen = comboBox.IsDropDownOpen;
-        //    comboBox.IsDropDownOpen = true;
-        //}
-
+        private void ComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //var dropdownOpen = comboBox.IsDropDownOpen;
+            comboBox.IsDropDownOpen = true;
+            
+        }
+      
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             if (e.Property == CustDataGridComboBoxColumn.ItemsSourceProperty)

@@ -42,14 +42,14 @@ namespace RetailManagementSystem.ViewModel
         }
               
         #region OpenSalesEntryCommand
-        RelayCommand<object> _openSalesEntryCommand = null;
+        RelayCommand _openSalesEntryCommand = null;
         public ICommand OpenSalesEntryCommand
         {
           get
           {
             if (_openSalesEntryCommand == null)
             {
-                _openSalesEntryCommand = new RelayCommand<object>((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
+                _openSalesEntryCommand = new RelayCommand((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
             }
 
             return _openSalesEntryCommand;
@@ -61,9 +61,10 @@ namespace RetailManagementSystem.ViewModel
           return true;
         }
 
-        private void OnOpenSalesEntryCommand(object parameter)
+        private void OnOpenSalesEntryCommand(object showAll)
         {
-            _documentViewModels.Add(new SalesEntryViewModel());
+            var showAllBool = bool.Parse(showAll.ToString());
+            _documentViewModels.Add(new SalesEntryViewModel(showAllBool));
             ActiveDocument = _documentViewModels.Last();
         }
 
@@ -123,7 +124,7 @@ namespace RetailManagementSystem.ViewModel
             win.CommandBindings.Add(new CommandBinding(OpenSalesEntryCommand,
             (s, e) =>
             {
-                this.OnOpenSalesEntryCommand(null);
+                this.OnOpenSalesEntryCommand(false);
             }));
         }
 

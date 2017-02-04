@@ -1,6 +1,7 @@
 ﻿using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,8 +20,32 @@ namespace RetailManagementSystem.View
         public SalesEntry()
         {
             InitializeComponent();            
-            this.DataContextChanged += SalesEntry_DataContextChanged;                       
+            DataContextChanged += SalesEntry_DataContextChanged;
+            custComboBoxCol.comboBox.PreviewTextInput += ComboBox_PreviewTextInput;
+                                
         }
+
+        private void ComboBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {             
+            ComboBox cmb = (ComboBox)sender;
+
+            cmb.IsDropDownOpen = true;
+
+            if (!string.IsNullOrEmpty(cmb.Text))
+            {
+                string fullText = cmb.Text.Insert(custComboBoxCol._cboTextBox.CaretIndex, e.Text);
+                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(fullText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+            //else if (!string.IsNullOrEmpty(e.Text))
+            if (!string.IsNullOrEmpty(e.Text))
+            {
+                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(cmb.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+            else
+            {
+                cmb.ItemsSource = _salesViewModel.ProductsPriceList;
+            }        
+    }
 
         private void SalesEntry_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
