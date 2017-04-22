@@ -1,6 +1,7 @@
 ﻿using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Extensions;
 using System;
 using System.Linq;
 using System.Windows;
@@ -13,17 +14,31 @@ namespace RetailManagementSystem.View
     /// </summary>
     public partial class SalesEntry : UserControl
     {
-
-        SalesEntryViewModel _salesViewModel;
-        //SaleDetailExtn _selRowSaleDetailExtn;
+        SalesEntryViewModel _salesViewModel;        
 
         public SalesEntry()
         {
-            InitializeComponent();            
-            DataContextChanged += SalesEntry_DataContextChanged;
+            InitializeComponent();
+
+            DataContextChanged += (sender, eventArgs) =>
+            {
+                _salesViewModel = this.DataContext as SalesEntryViewModel;
+                this.custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
+            };
+
             custComboBoxCol.comboBox.PreviewTextInput += ComboBox_PreviewTextInput;
-                                
-        }
+            custComboBoxCol.OnComboLoadedEvent += (txt) =>
+            {
+                custComboBoxCol._cboTextBox.PreviewKeyUp += (s, e) =>
+                {
+                    if (e.Key == System.Windows.Input.Key.Back && string.IsNullOrWhiteSpace(custComboBoxCol.comboBox.Text))
+                    {
+                        custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
+                    }
+                };
+            };
+        }        
 
         private void ComboBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {             
@@ -45,13 +60,7 @@ namespace RetailManagementSystem.View
             {
                 cmb.ItemsSource = _salesViewModel.ProductsPriceList;
             }        
-    }
-
-        private void SalesEntry_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            _salesViewModel = this.DataContext  as SalesEntryViewModel;
-            this.custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
-        }
+    }       
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -74,7 +83,11 @@ namespace RetailManagementSystem.View
                 selRowSaleDetailExtn.PropertyChanged += (sender, e) =>
                 {
                     var prop = e.PropertyName;
-                    if (prop == Constants.AMOUNT) return;
+                    if (prop == Constants.AMOUNT)
+                    {
+                        _salesViewModel.TotalAmount = _salesViewModel.SaleDetailList.Sum(a => a.Amount);
+                        return;
+                    }
 
 
                     var amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;

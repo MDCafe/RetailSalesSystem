@@ -11,6 +11,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800"
              FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
+             xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"
              >
     <UserControl.Resources>
         <Style TargetType="{x:Type DatePickerTextBox}">
@@ -37,12 +38,14 @@
             <ColumnDefinition Width="106"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="213"/>
-            <ColumnDefinition Width="268*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="100*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
@@ -77,17 +80,21 @@
                     </Binding.ValidationRules>
                 </Binding>
             </ComboBox.SelectedItem>
+            <ComboBox.Text>
+                <Binding Path="SelectedCustomerText"/>
+            </ComboBox.Text>
         </ComboBox>
         <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
             <Label Content="Bill No" Width="100" Margin="15,5,0,0"></Label>
             <TextBox x:Name="txtBillNo" Width="60" Margin="5" Text="{Binding RunningBillNo}"/>
-            <Button x:Name="btnBillNo"  Width="60" Content="Get Bill" Margin="5"/>
+            <Button x:Name="btnBillNo"  Width="60" Content="Get Bill" Command="{Binding GetBillCommand}" Margin="5"/>
         </StackPanel>
 
         <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
-        <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="{Binding PaymentId}"
-                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" Height="25" SelectedIndex="0"
-                      Grid.Row="1" Grid.Column="1" Margin="0,5,10,5" />
+        <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="PaymentId"
+                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" SelectedValue="{Binding SelectedPaymentId}" 
+                      Height="25" Grid.Row="1" Grid.Column="1" Margin="0,5,10,5" />
+        
         <Label Content="Order No:"  Margin="0,5,0,0" Grid.Row="1" Grid.Column="2"></Label>
         <TextBox Name="txtOrderNo" Text="{Binding OrderNo}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="25" />
 
@@ -122,9 +129,24 @@
                 <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True"/>
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Right" Height="40">
+        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+            <Label Content="Discount Amt"  Margin="5"/>
+            <TextBox Name="txtDiscount" Width="40" Margin="5" Height="20" Text="{Binding TotalDiscountAmount}"/>
+            <Label Content="Discount %" Width="70" Margin="5"/>
+            <TextBox Name="txtDiscountPercent" Width="25" Margin="5" Height="20" Text="{Binding TotalDiscountPercent}"/>
+                <Label Content="Total Amount" Width="81" Margin="5"/>
+            <TextBlock x:Name="txtTotalAmount"  Width="100" Margin="5" Height="20" Text="{Binding TotalAmountText}"/>
+        </StackPanel>
+        
+        <!--Extensions-->
+        <UC:SalesExtension Grid.Row="4" Grid.ColumnSpan="5" HorizontalAlignment="Right" Margin="5,0,15,5" x:Name="SalesExtn" />
+        <!--Extensions-->
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
         </StackPanel>
+        
     </Grid>
 </UserControl>

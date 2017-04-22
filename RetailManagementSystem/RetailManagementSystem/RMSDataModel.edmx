@@ -208,6 +208,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
           <Property Name="RunningBillNo" Type="mediumint" Nullable="false" />
+          <Property Name="PaymentMode" Type="varchar" MaxLength="1" Nullable="false" />
         </EntityType>
         <EntityType Name="Stocks">
           <Key>
@@ -998,8 +999,9 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
+          <Property Name="PaymentMode" Type="String" Nullable="false" />
           <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
-          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />          
         </EntityType>
         <Association Name="FK_Sales_Cust">
           <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
@@ -1293,6 +1295,7 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <EntitySetMapping Name="Sales">
             <EntityTypeMapping TypeName="RMSModel.Sale">
               <MappingFragment StoreEntitySet="Sales">
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
                 <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />

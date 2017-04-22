@@ -30,6 +30,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
         public int RunningBillNo { get; set; }
+        public string PaymentMode { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }

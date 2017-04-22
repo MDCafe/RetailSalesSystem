@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Extensions;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -22,7 +23,14 @@ namespace RetailManagementSystem.ViewModel
         bool _showAllCustomers;
         int _categoryId;
         int _othersCategoryId;
+        decimal? _totalAmount = 0;        
+        decimal? _totalDiscountPercent;
+        decimal? _totalDiscountAmount;
+        string _totalAmountText = "0.0";
+        char _selectedPaymentId;
         Category _category = null;
+        string _selectedCustomerText;
+        IExtensions _extensions;
 
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
@@ -49,15 +57,12 @@ namespace RetailManagementSystem.ViewModel
                 _categoryId = _category.Id;
             }
 
-
-            string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
-
-            _runningBillNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+            SetRunningBillNo();
 
             _paymentModes = new List<PaymentMode>(2)
             {
-                new PaymentMode {PaymentId = 0,PaymentName="Cash" },
-                new PaymentMode {PaymentId = 1,PaymentName="Credit" }
+                new PaymentMode {PaymentId = '0',PaymentName="Cash" },
+                new PaymentMode {PaymentId = '1',PaymentName="Credit" }
             };
 
             _billSales = _rmsEntities.Sales.Create();
@@ -65,9 +70,17 @@ namespace RetailManagementSystem.ViewModel
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
 
             GetProductPriceList();
+            SelectedPaymentId = '0';
 
         }
-       
+
+        private void SetRunningBillNo()
+        {
+            string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
+
+            RunningBillNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+        }
+
         public IEnumerable<Customer> CustomersList
         {
             get
@@ -81,6 +94,10 @@ namespace RetailManagementSystem.ViewModel
         public ObservableCollection<SaleDetailExtn> SaleDetailList
         {
             get { return _salesDetailsList; }
+            private set
+            {
+                _salesDetailsList = value;
+            }
         }        
 
         public IEnumerable<ProductPrice> ProductsPriceList
@@ -100,11 +117,19 @@ namespace RetailManagementSystem.ViewModel
             private set
             {
                 _paymentModes = value;
-                NotifyPropertyChanged(() => this._paymentModes);
+                RaisePropertyChanged("PaymentModes");
             }
         }
 
-        public DateTime SaleDate { get { return _saleDate; } set { _saleDate = value; NotifyPropertyChanged(() => this._selectedCustomer); } }
+        public DateTime SaleDate
+        {
+            get { return _saleDate; }
+            set
+            {
+                _saleDate = value;
+                RaisePropertyChanged("SaleDate");
+            }
+        }
 
         public Customer SelectedCustomer
         {
@@ -117,16 +142,37 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
+        public string SelectedCustomerText
+        {
+            get { return _selectedCustomerText; }
+            set
+            {
+                _selectedCustomerText = value;
+                //NotifyPropertyChanged(() => this._selectedCustomer);
+                RaisePropertyChanged("SelectedCustomerText");
+            }
+        }
+
         public PaymentMode SelectedPaymentMode
         {
             get { return _selectedPaymentMode; }
             set
             {
                 _selectedPaymentMode = value;
-                NotifyPropertyChanged(() => this._selectedPaymentMode);
+                RaisePropertyChanged("SelectedPaymentMode");
             }
         }
-        
+
+        public char SelectedPaymentId
+        {
+            get { return _selectedPaymentId ; }
+            set
+            {
+                _selectedPaymentId = value;
+                RaisePropertyChanged("SelectedPaymentId");
+            }
+        }
+
         public string OrderNo { get; set; }
 
         public int RunningBillNo
@@ -135,8 +181,86 @@ namespace RetailManagementSystem.ViewModel
             set
             {
                 _runningBillNo = value;
-                NotifyPropertyChanged(() => this._runningBillNo);
+                RaisePropertyChanged("RunningBillNo");
             }
+        }
+
+        public decimal? TotalAmount
+        {
+            get { return _totalAmount; }
+            set
+            {
+                //if discout is available apply it
+                CalculateTotalAmount();                
+            }
+        }
+
+        private void CalculateTotalAmount()
+        {
+            decimal? tempTotal = _salesDetailsList.Sum(a => a.Amount); ;
+            if (_totalDiscountAmount.HasValue)
+            {
+                tempTotal -= _totalDiscountAmount;
+            }
+
+            if (_totalDiscountPercent.HasValue)
+            {
+                var discountValue = tempTotal * (_totalDiscountPercent / 100);
+                tempTotal -= discountValue;
+            }
+
+            _totalAmount = tempTotal;
+            TotalAmountText = _totalAmount.ToString();
+            RaisePropertyChanged("TotalAmount");
+        }
+
+        public string TotalAmountText
+        {
+            get { return _totalAmountText; }
+            set
+            {
+                _totalAmountText = value;
+                RaisePropertyChanged("TotalAmountText");
+            }
+
+        }
+
+        public decimal? TotalDiscountAmount
+        {
+            get { return _totalDiscountAmount; }
+            set
+            {
+                _totalDiscountAmount = value;
+                CalculateTotalAmount();
+                RaisePropertyChanged("TotalDiscountAmount");
+            }
+        }
+
+        public decimal? TotalDiscountPercent
+        {
+            get { return _totalDiscountPercent; }
+            set
+            {
+                _totalDiscountPercent = value;
+                CalculateTotalAmount();
+                RaisePropertyChanged("TotalDiscountPercent");
+            }
+        }
+
+        public IExtensions Extensions
+        {
+            set
+            {
+                _extensions = value;
+                _extensions.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == "TransportCharges")
+                    {
+                        TotalAmountText = _extensions.Calculate(_totalAmount.Value).ToString();
+                    }
+                };
+            }
+            get { return _extensions; }
         }
 
 
@@ -221,16 +345,17 @@ namespace RetailManagementSystem.ViewModel
 
         public bool CanSave(object parameter)
         {
-          return IsDirty;
+            return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
+                    _salesDetailsList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
+            //return IsDirty;
         }
 
         private void OnSave(object parameter)
         {            
-            _billSales.CustomerId = SelectedCustomer.Id;
+            _billSales.CustomerId = _selectedCustomer.Id;
             _billSales.CustomerOrderNo = OrderNo;            
             _billSales.RunningBillNo = _runningBillNo;
-            
-            decimal? totalAmount = 0;
+            _billSales.PaymentMode = SelectedPaymentId.ToString();                    
                            
             foreach (var saleDetailItem in _salesDetailsList)
             {
@@ -249,10 +374,13 @@ namespace RetailManagementSystem.ViewModel
                 {
                     stock.Quantity -= saleDetailItem.Qty.Value;
                 }
-                totalAmount += totalAmount + saleDetailItem.Amount;
+                //totalAmount += totalAmount + saleDetailItem.Amount;
             }
 
-            _billSales.TotalAmount = totalAmount;
+            _totalAmount = _extensions.Calculate(_totalAmount.Value);
+
+            _billSales.TotalAmount = _totalAmount;
+            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
             _rmsEntities.Sales.Add(_billSales);
             _category.RollingNo = _runningBillNo;
 
@@ -264,23 +392,53 @@ namespace RetailManagementSystem.ViewModel
         #endregion
 
         #region GetBill Command
-        RelayCommand _getBillCommand = null;
+        RelayCommand _getBillCommand = null;        
+
         public ICommand GetBillCommand
         {
             get
             {
                 if (_getBillCommand == null)
                 {
-                    _getBillCommand = new RelayCommand((p) => OnGetBill(p));
+                    _getBillCommand = new RelayCommand((p) => OnGetBill(_runningBillNo));
                 }
 
                 return _getBillCommand;
             }
         }
 
-        private void OnGetBill(object p)
+        private void OnGetBill(object billNo)
         {
-            throw new NotImplementedException();
+            Clear();
+            if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
+            var runningBillNo = Convert.ToInt32(billNo.ToString());
+
+            _billSales = _rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo).FirstOrDefault();
+            SelectedCustomer = _billSales.Customer;
+            SaleDate = _billSales.AddedOn.Value;
+            //SelectedPaymentMode.PaymentId = Char.Parse(_billSales.PaymentMode);
+            SelectedPaymentId = Char.Parse(_billSales.PaymentMode);
+            OrderNo = _billSales.CustomerOrderNo;
+            var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
+            foreach (var saleDetailItem in saleDetailsForBill)
+            {
+                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
+                SaleDetailList.Add(
+                    new SaleDetailExtn()
+                    {
+                        Discount = saleDetailItem.Discount,
+                        PriceId = saleDetailItem.PriceId,
+                        ProductId = saleDetailItem.ProductId,
+                        Qty = saleDetailItem.Qty,
+                        SellingPrice = saleDetailItem.SellingPrice,
+                        BillId = saleDetailItem.BillId,
+                        CostPrice = productPrice.Price,
+                        AvailableStock = productPrice.Quantity,
+                        Amount = productPrice.SellingPrice * saleDetailItem.Qty
+                    });
+            }
+            _extensions.SetValues(_billSales.TransportCharges.Value);
+            TotalAmount =  _extensions.Calculate(_billSales.TransportCharges.Value);
         }
         #endregion
 
@@ -311,14 +469,37 @@ namespace RetailManagementSystem.ViewModel
             _productsPriceList = _rmsEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();
         }
 
+        #region Clear Command
+        RelayCommand _clearCommand = null;
+
+        public ICommand ClearCommand
+        {
+            get
+            {
+                if (_clearCommand == null)
+                {
+                    _clearCommand = new RelayCommand((p) => Clear());
+                }
+
+                return _clearCommand;
+            }
+        }       
+
         private void Clear()
         {
             GetProductPriceList();
             SelectedCustomer = null;
-            //SelectedPaymentMode.PaymentId = 0;
+            SelectedPaymentId = '0';
             OrderNo = "";
             SaleDetailList.Clear();
+            _billSales.CustomerId = 0;
+            _totalAmount = 0;
+            TotalAmountText = "";
+            _extensions.Clear();
+            SetRunningBillNo();            
         }
+
+        #endregion
 
         public override Uri IconSource
         {
@@ -330,9 +511,9 @@ namespace RetailManagementSystem.ViewModel
         }       
     }
 
-    public struct PaymentMode
+    public class PaymentMode
     {
-        public int PaymentId { get; set; }
+        public char PaymentId { get; set; }
         public string PaymentName { get; set; }
     }
 

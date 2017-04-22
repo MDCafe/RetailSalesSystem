@@ -28,7 +28,7 @@
         <AssociationConnector Association="RMSModel.FK_ProductId_RD" ManuallyRouted="false" />
         <AssociationConnector Association="RMSModel.FK_PurchaseBillId" ManuallyRouted="false" />
         <AssociationConnector Association="RMSModel.FK_purchaseId" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="8.25" PointY="7.375" />
+        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
         <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
         <EntityTypeShape EntityType="RMSModel.Category" Width="1.5" PointX="0.75" PointY="3.875" />
         <AssociationConnector Association="RMSModel.FK_Category" />

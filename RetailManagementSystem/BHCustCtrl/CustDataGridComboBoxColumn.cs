@@ -17,6 +17,7 @@ namespace BHCustCtrl
 {
 
     public delegate void OnComboItemSelected(object selectedItem);
+    public delegate void OnComboLoaded(TextBox txtBox);
 
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
@@ -58,6 +59,7 @@ namespace BHCustCtrl
         public  CustComboBox comboBox;
 
         public event OnComboItemSelected ComboBoxSelectedEvent;
+        public event OnComboLoaded OnComboLoadedEvent;
 
         public CustDataGridComboBoxColumn()
         {
@@ -77,6 +79,7 @@ namespace BHCustCtrl
                                 
             }
             comboBox.IsTextSearchEnabled = false;
+            OnComboLoadedEvent?.Invoke(_cboTextBox);
         }
 
         private void ComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
