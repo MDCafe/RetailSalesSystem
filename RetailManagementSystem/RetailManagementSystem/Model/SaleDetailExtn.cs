@@ -15,7 +15,8 @@ namespace RetailManagementSystem.Model
         private DateTime? _addedOn;
         private DateTime? _modifiedOn;
         private int? _updatedBy;
-        //private decimal? _availableStock;
+        //used while edit
+        private decimal? _originalQty;
 
         public int BillId
         {
@@ -108,6 +109,25 @@ namespace RetailManagementSystem.Model
                 }
                 _qty = value;
                 OnPropertyChanged("Qty");
+            }
+        }
+
+        public decimal? OriginalQty
+        {
+
+            get
+            {
+                return _originalQty;
+            }
+
+            set
+            {
+                if (Nullable.Equals<decimal>(_originalQty, value))
+                {
+                    return;
+                }
+                _originalQty = value;
+                OnPropertyChanged("OriginalQty");
             }
         }
 

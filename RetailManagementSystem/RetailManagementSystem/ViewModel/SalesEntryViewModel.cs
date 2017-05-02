@@ -13,6 +13,7 @@ namespace RetailManagementSystem.ViewModel
 {
     class SalesEntryViewModel : DocumentViewModel
     {
+        #region Private Variables
         RMSEntities _rmsEntities;
         IEnumerable<PaymentMode> _paymentModes;       
         DateTime _saleDate;
@@ -31,11 +32,14 @@ namespace RetailManagementSystem.ViewModel
         Category _category = null;
         string _selectedCustomerText;
         IExtensions _extensions;
-
+        bool _isEditMode;
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
+        List<SaleDetailExtn> _deletedItems;
+        #endregion
 
+        #region Constructor
         public SalesEntryViewModel(bool showAllCustomers)
         {
             IsDirty = true;
@@ -69,17 +73,16 @@ namespace RetailManagementSystem.ViewModel
 
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
 
+            _salesDetailsList.CollectionChanged += _salesDetailsList_CollectionChanged;
+
             GetProductPriceList();
             SelectedPaymentId = '0';
 
         }
+       
+        #endregion
 
-        private void SetRunningBillNo()
-        {
-            string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
-
-            RunningBillNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
-        }
+        #region Getters and Setters
 
         public IEnumerable<Customer> CustomersList
         {
@@ -263,6 +266,14 @@ namespace RetailManagementSystem.ViewModel
             get { return _extensions; }
         }
 
+        private void SetRunningBillNo()
+        {
+            string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
+
+            RunningBillNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+        }
+
+        #endregion
 
         #region TextContent
 
@@ -300,22 +311,7 @@ namespace RetailManagementSystem.ViewModel
           }
         }
 
-            #endregion
-
-        #region SaveCommand
-         RelayCommand _saveCommand = null;
-         override public ICommand SaveCommand
-        {
-          get
-          {
-            if (_saveCommand == null)
-            {
-              _saveCommand = new RelayCommand((p) => OnSave(p), (p) => CanSave(p));
-            }
-
-            return _saveCommand;
-          }
-        }
+        #endregion
 
         #region CloseCommand
         RelayCommand _closeCommand = null;
@@ -343,6 +339,21 @@ namespace RetailManagementSystem.ViewModel
         }
         #endregion
 
+        #region SaveCommand
+        RelayCommand _saveCommand = null;
+         override public ICommand SaveCommand
+        {
+          get
+          {
+            if (_saveCommand == null)
+            {
+              _saveCommand = new RelayCommand((p) => OnSave(p), (p) => CanSave(p));
+            }
+
+            return _saveCommand;
+          }
+        }
+       
         public bool CanSave(object parameter)
         {
             return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
@@ -355,8 +366,14 @@ namespace RetailManagementSystem.ViewModel
             _billSales.CustomerId = _selectedCustomer.Id;
             _billSales.CustomerOrderNo = OrderNo;            
             _billSales.RunningBillNo = _runningBillNo;
-            _billSales.PaymentMode = SelectedPaymentId.ToString();                    
-                           
+            _billSales.PaymentMode = SelectedPaymentId.ToString();
+
+            if (_isEditMode)
+            {
+                SaveOnEdit();
+                return;
+            }
+
             foreach (var saleDetailItem in _salesDetailsList)
             {
                 var saleDetail = _rmsEntities.SaleDetails.Create();
@@ -365,14 +382,15 @@ namespace RetailManagementSystem.ViewModel
                 saleDetail.ProductId = saleDetailItem.ProductId;
                 saleDetail.Qty = saleDetailItem.Qty;
                 saleDetail.SellingPrice = saleDetailItem.SellingPrice;
-                saleDetail.BillId = _billSales.BillId;
-                
+                saleDetail.BillId = _billSales.BillId;                
                 _billSales.SaleDetails.Add(saleDetail);
+
                 var stockToReduceColln = _rmsEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
                 var stock = stockToReduceColln.FirstOrDefault();
+                             
                 if(stock != null)
-                {
-                    stock.Quantity -= saleDetailItem.Qty.Value;
+                {                    
+                        stock.Quantity -= saleDetailItem.Qty.Value;
                 }
                 //totalAmount += totalAmount + saleDetailItem.Amount;
             }
@@ -381,12 +399,99 @@ namespace RetailManagementSystem.ViewModel
 
             _billSales.TotalAmount = _totalAmount;
             _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
+
+           
             _rmsEntities.Sales.Add(_billSales);
             _category.RollingNo = _runningBillNo;
+            //}
+            //else
+            //{
+            //    var saleToEdit = _rmsEntities.Sales.Where(s => s.RunningBillNo == _billSales.RunningBillNo).FirstOrDefault();
+            //    saleToEdit = _billSales;
+            //}
 
             _rmsEntities.SaveChanges();
             Clear();
+        }
 
+        private void SaveOnEdit()
+        {
+            //Check if there are any deletions
+
+            RemoveDeletedItems();
+
+            foreach (var saleDetailItemExtn in _salesDetailsList)
+            {
+                var saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
+                                                                        && b.ProductId == saleDetailItemExtn.ProductId);
+
+                if (saleDetail == null)
+                {
+                    saleDetail = _rmsEntities.SaleDetails.Create();
+                    saleDetailItemExtn.OriginalQty = saleDetailItemExtn.Qty;
+                    _rmsEntities.SaleDetails.Add(saleDetail);
+
+                    SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+
+                    var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+                    if (stockNewItem != null)
+                    {
+                        stockNewItem.Quantity -= saleDetail.Qty.Value;
+                    }
+                    continue;
+                }
+
+                SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+
+                if (stock != null)
+                {
+                    stock.Quantity = (stock.Quantity + saleDetailItemExtn.OriginalQty.Value) - saleDetail.Qty.Value;
+                }
+            }
+
+            _totalAmount = _extensions.Calculate(_totalAmount.Value);
+
+            _billSales.TotalAmount = _totalAmount;
+            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
+
+            _rmsEntities.SaveChanges();
+            Clear();
+        }
+
+        private void RemoveDeletedItems()
+        {
+            foreach (var saleDetailExtn in _deletedItems)
+            {
+                var saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(s => s.BillId == saleDetailExtn.BillId && s.ProductId == saleDetailExtn.ProductId);
+
+                var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+                if (stockNewItem != null)
+                {
+                    stockNewItem.Quantity += saleDetail.Qty.Value;
+                }
+                _rmsEntities.SaleDetails.Remove(saleDetail);
+            }
+        }
+
+        private void _salesDetailsList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove && _isEditMode)
+            {
+                var SaleDetailExtn = e.OldItems[0] as SaleDetailExtn;
+                _deletedItems.Add(SaleDetailExtn);
+                TotalAmount -= SaleDetailExtn.Amount;
+            }
+        }
+
+        private void SetSaleDetailItem(SaleDetailExtn saleDetailItemExtn, SaleDetail saleDetail)
+        {
+            saleDetail.Discount = saleDetailItemExtn.Discount;
+            saleDetail.PriceId = saleDetailItemExtn.PriceId;
+            saleDetail.ProductId = saleDetailItemExtn.ProductId;
+            saleDetail.Qty = saleDetailItemExtn.Qty;
+            saleDetail.SellingPrice = saleDetailItemExtn.SellingPrice;
+            saleDetail.BillId = _billSales.BillId;
         }
 
         #endregion
@@ -415,37 +520,138 @@ namespace RetailManagementSystem.ViewModel
 
             _billSales = _rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo).FirstOrDefault();
             SelectedCustomer = _billSales.Customer;
-            SaleDate = _billSales.AddedOn.Value;
-            //SelectedPaymentMode.PaymentId = Char.Parse(_billSales.PaymentMode);
+            SaleDate = _billSales.AddedOn.Value;            
             SelectedPaymentId = Char.Parse(_billSales.PaymentMode);
             OrderNo = _billSales.CustomerOrderNo;
-            var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
+            var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);            
+
+            var tempTotalAmount = 0.0M;
             foreach (var saleDetailItem in saleDetailsForBill)
             {
-                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
-                SaleDetailList.Add(
-                    new SaleDetailExtn()
-                    {
-                        Discount = saleDetailItem.Discount,
-                        PriceId = saleDetailItem.PriceId,
-                        ProductId = saleDetailItem.ProductId,
-                        Qty = saleDetailItem.Qty,
-                        SellingPrice = saleDetailItem.SellingPrice,
-                        BillId = saleDetailItem.BillId,
-                        CostPrice = productPrice.Price,
-                        AvailableStock = productPrice.Quantity,
-                        Amount = productPrice.SellingPrice * saleDetailItem.Qty
-                    });
+                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();                
+                var saleDetailExtn = new SaleDetailExtn()
+                {
+                    Discount = saleDetailItem.Discount,
+                    PriceId = saleDetailItem.PriceId,
+                    ProductId = saleDetailItem.ProductId,
+                    Qty = saleDetailItem.Qty,
+                    OriginalQty = saleDetailItem.Qty,
+                    SellingPrice = saleDetailItem.SellingPrice,
+                    BillId = saleDetailItem.BillId,
+                    CostPrice = productPrice.Price,
+                    AvailableStock = productPrice.Quantity,
+                    Amount = productPrice.SellingPrice * saleDetailItem.Qty
+                };
+
+                SaleDetailList.Add(saleDetailExtn);
+                SetSaleDetailExtn(productPrice, saleDetailExtn);
+
+                tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Qty.Value;
             }
             _extensions.SetValues(_billSales.TransportCharges.Value);
-            TotalAmount =  _extensions.Calculate(_billSales.TransportCharges.Value);
+            TotalAmount = _extensions.Calculate(tempTotalAmount);
+            RunningBillNo = runningBillNo;
+            _isEditMode = true;
+            if (_deletedItems == null)
+                _deletedItems = new List<SaleDetailExtn>();
+            else
+                _deletedItems.Clear();
         }
         #endregion
 
+        #region Clear Command
+        RelayCommand _clearCommand = null;
+
+        public ICommand ClearCommand
+        {
+            get
+            {
+                if (_clearCommand == null)
+                {
+                    _clearCommand = new RelayCommand((p) => Clear());
+                }
+
+                return _clearCommand;
+            }
+        }
+
+        private void Clear()
+        {
+            GetProductPriceList();
+            SelectedCustomer = null;
+            SelectedPaymentId = '0';
+            OrderNo = "";
+            SaleDetailList.Clear();
+            _billSales.CustomerId = 0;
+            _totalAmount = 0;
+            TotalAmountText = "";
+            _extensions.Clear();
+            SetRunningBillNo();
+            _isEditMode = false;
+        }
+
+        #endregion
+
+        #region Public Methods
+        public void SetProductDetails(ProductPrice productPrice)
+        {
+            if (productPrice == null) return;
+            var selRowSaleDetailExtn = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
+            SetSaleDetailExtn(productPrice, selRowSaleDetailExtn);
+        }
+
+        public override Uri IconSource
+        {
+            get
+            {
+                // This icon is visible in AvalonDock's Document Navigator window
+                return new Uri("pack://application:,,,/Edi;component/Images/document.png", UriKind.RelativeOrAbsolute);
+            }
+        } 
+        #endregion
+
+        #region Private Methods
+        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn)
+        {
+            if (SaleDetailExtn != null)
+            {
+                //selectedRowSaleDetail.Qty = productPrice.Quantity;
+                SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
+                SaleDetailExtn.CostPrice = productPrice.Price;
+                SaleDetailExtn.PriceId = productPrice.PriceId;
+                SaleDetailExtn.AvailableStock = productPrice.Quantity;
+
+                SaleDetailExtn.PropertyChanged += (sender, e) =>
+                {
+                    var prop = e.PropertyName;
+                    if (prop == Constants.AMOUNT)
+                    {
+                        TotalAmount = SaleDetailList.Sum(a => a.Amount);
+                        return;
+                    }
+                    var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
+                    var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
+                                         amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
+                                         SaleDetailExtn.DiscountAmount != 0 ?
+                                         amount - SaleDetailExtn.DiscountAmount :
+                                         0;
+
+                    if (discountAmount != 0)
+                    {
+                        SaleDetailExtn.Amount = discountAmount;
+                        SaleDetailExtn.Discount = discountAmount;
+                        return;
+                    }
+
+                    SaleDetailExtn.Amount = amount;
+                    SaleDetailExtn.Discount = 0;
+                };
+            }
+        }
 
         private bool CanSaveAs(object parameter)
         {
-          return IsDirty;
+            return IsDirty;
         }
 
         private void GetProductPriceList()
@@ -468,54 +674,18 @@ namespace RetailManagementSystem.ViewModel
 
             _productsPriceList = _rmsEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();
         }
-
-        #region Clear Command
-        RelayCommand _clearCommand = null;
-
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand((p) => Clear());
-                }
-
-                return _clearCommand;
-            }
-        }       
-
-        private void Clear()
-        {
-            GetProductPriceList();
-            SelectedCustomer = null;
-            SelectedPaymentId = '0';
-            OrderNo = "";
-            SaleDetailList.Clear();
-            _billSales.CustomerId = 0;
-            _totalAmount = 0;
-            TotalAmountText = "";
-            _extensions.Clear();
-            SetRunningBillNo();            
-        }
-
         #endregion
-
-        public override Uri IconSource
-        {
-          get
-          {
-            // This icon is visible in AvalonDock's Document Navigator window
-            return new Uri("pack://application:,,,/Edi;component/Images/document.png", UriKind.RelativeOrAbsolute);
-          }
-        }       
     }
 
+    #region PaymentMode Class
     public class PaymentMode
     {
         public char PaymentId { get; set; }
         public string PaymentName { get; set; }
     }
+    #endregion
+
+    #region ProductPrice Class
 
     public class ProductPrice
     {
@@ -526,4 +696,6 @@ namespace RetailManagementSystem.ViewModel
         public decimal Quantity { get; set; }
         public int PriceId { get; set; }
     }
+    #endregion
+
 }

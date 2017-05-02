@@ -1,10 +1,8 @@
-﻿using RetailManagementSystem.Model;
-using RetailManagementSystem.Utilities;
+﻿using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel;
 using RetailManagementSystem.ViewModel.Extensions;
 using System;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace RetailManagementSystem.View
@@ -60,85 +58,12 @@ namespace RetailManagementSystem.View
             {
                 cmb.ItemsSource = _salesViewModel.ProductsPriceList;
             }        
-    }       
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            //var test = this.Cbo.ItemsSource;
-        }
+        }               
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
-            if (productPrice == null) return;
-            var selRowSaleDetailExtn = _salesViewModel.SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            if (selRowSaleDetailExtn != null)
-            {
-                //selectedRowSaleDetail.Qty = productPrice.Quantity;
-                selRowSaleDetailExtn.SellingPrice = productPrice.SellingPrice;
-                selRowSaleDetailExtn.CostPrice = productPrice.Price;
-                selRowSaleDetailExtn.PriceId = productPrice.PriceId;
-                selRowSaleDetailExtn.AvailableStock = productPrice.Quantity;
-
-                selRowSaleDetailExtn.PropertyChanged += (sender, e) =>
-                {
-                    var prop = e.PropertyName;
-                    if (prop == Constants.AMOUNT)
-                    {
-                        _salesViewModel.TotalAmount = _salesViewModel.SaleDetailList.Sum(a => a.Amount);
-                        return;
-                    }
-
-
-                    var amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
-                    var discountAmount = selRowSaleDetailExtn.DiscountPercentage != 0 ?
-                                         amount - (amount * (selRowSaleDetailExtn.DiscountPercentage / 100)) :
-                                         selRowSaleDetailExtn.DiscountAmount != 0 ?
-                                         amount - selRowSaleDetailExtn.DiscountAmount :
-                                         0;
-
-                    if (discountAmount != 0)
-                    {
-                        selRowSaleDetailExtn.Amount = discountAmount;
-                        selRowSaleDetailExtn.Discount = discountAmount;
-                        return;
-                    }
-
-                    selRowSaleDetailExtn.Amount = amount;
-                    selRowSaleDetailExtn.Discount = 0;
-                };
-                //_selRowSaleDetailExtn.PropertyChanged += (sender, e) =>
-                //{
-
-
-                //    //switch (prop)
-                //    //{
-                //    //    case Constants.QTY:
-                //    //        //selRowSaleDetailExtn.Amount = amo;
-                //    //        break;
-                //    //    case Constants.SELLING_PRICE:
-                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
-                //    //        break;
-                //    //    case Constants.DISCOUNT_PERCENT:
-                //    //        if(selRowSaleDetailExtn.DiscountPercentage != 0 )
-                //    //        {
-                //    //            var amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
-                //    //            selRowSaleDetailExtn.Amount = amount - (amount * (selRowSaleDetailExtn.DiscountPercentage / 100));
-                //    //            break;
-                //    //        }
-                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
-                //    //        break;
-                //    //    case Constants.DISCOUNT_AMT:
-                //    //        if (selRowSaleDetailExtn.DiscountAmount != 0)
-                //    //        {
-                //    //            selRowSaleDetailExtn.Amount = (selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty) - selRowSaleDetailExtn.DiscountAmount;
-                //    //            break;
-                //    //        }
-                //    //        selRowSaleDetailExtn.Amount = selRowSaleDetailExtn.SellingPrice * selRowSaleDetailExtn.Qty;
-                //    //        break;
-                //    //}                    
-                //};                                                                  
-            }
+            _salesViewModel.SetProductDetails(productPrice);                                                                                     
         }       
     }
 
