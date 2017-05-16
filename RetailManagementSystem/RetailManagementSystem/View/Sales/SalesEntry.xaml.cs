@@ -1,9 +1,8 @@
-﻿using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel;
-using RetailManagementSystem.ViewModel.Extensions;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Controls;
+using RetailManagementSystem.ViewModel.Extensions;
+using RetailManagementSystem.ViewModel.Sales;
 
 namespace RetailManagementSystem.View.Sales
 {

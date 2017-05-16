@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Input;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 
-namespace RetailManagementSystem.ViewModel
+namespace RetailManagementSystem.ViewModel.Sales
 {
     class SalesEntryViewModel : DocumentViewModel
     {
@@ -604,6 +604,7 @@ namespace RetailManagementSystem.ViewModel
             _billSales.CustomerId = 0;
             _totalAmount = 0;
             TotalAmountDisplay =0.0M;
+            AmountPaid = 0.0M;            
             _extensions.Clear();
             SetRunningBillNo();
             _isEditMode = false;

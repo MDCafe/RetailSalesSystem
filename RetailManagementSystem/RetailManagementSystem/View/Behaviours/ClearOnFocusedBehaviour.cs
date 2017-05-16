@@ -1,29 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interactivity;
 
 namespace RetailManagementSystem.View.Behaviours
 {
     class ClearOnFocusedBehavior : Behavior<System.Windows.Controls.TextBox>
     {
-        private readonly RoutedEventHandler _onGotFocusHandler = (o, e) =>
+        private readonly RoutedEventHandler OnFocusHandler = (o, e) =>
         {
-            ((System.Windows.Controls.TextBox)o).Text =
-                string.Empty;
+            var txtBox = o as TextBox;
+            if (txtBox.Text == "0.0")
+                ((TextBox)o).Text = string.Empty;
+            //else if (string.IsNullOrWhiteSpace(txtBox.Text))
+            //    txtBox.Text = "0.00";
         };
 
         protected override void OnAttached()
         {
-            AssociatedObject.GotFocus += _onGotFocusHandler;
+            AssociatedObject.GotFocus += OnFocusHandler;
+            AssociatedObject.LostFocus += OnLostFocusHandler;
         }
+
+        private readonly RoutedEventHandler OnLostFocusHandler = (sender,e) =>
+        {
+            var txtBox = sender as TextBox;
+            if (string.IsNullOrWhiteSpace(txtBox.Text))
+                txtBox.Text = "0.00";
+        };
 
         protected override void OnDetaching()
         {
-            AssociatedObject.GotFocus -= _onGotFocusHandler;
+            AssociatedObject.GotFocus -= OnFocusHandler;
+            AssociatedObject.LostFocus -= OnLostFocusHandler;
         }
     }
 }

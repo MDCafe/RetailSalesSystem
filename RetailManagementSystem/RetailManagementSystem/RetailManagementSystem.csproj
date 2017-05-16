@@ -176,7 +176,8 @@
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
-    <Compile Include="ViewModel\SalesEntryViewModel.cs" />
+    <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
+    <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\Extensions\SalesExtensionViewModel.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
@@ -186,6 +187,9 @@
     <Compile Include="View\Pane\PanesTemplateSelector.cs" />
     <Compile Include="View\Reports.xaml.cs">
       <DependentUpon>Reports.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Sales\AmendSales.xaml.cs">
+      <DependentUpon>AmendSales.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Sales\SalesEntry.xaml.cs">
       <DependentUpon>SalesEntry.xaml</DependentUpon>
@@ -209,6 +213,10 @@
     <Page Include="View\Reports.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Sales\AmendSales.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Sales\SalesEntry.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -10,6 +10,8 @@ using System.Windows.Input;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using Microsoft.Win32;
+using RetailManagementSystem.ViewModel.Sales;
+using RetailManagementSystem.View.Sales;
 //using SimpleControls.MRU.ViewModel;
 
 namespace RetailManagementSystem.ViewModel
@@ -66,6 +68,36 @@ namespace RetailManagementSystem.ViewModel
             var showAllBool = bool.Parse(showAll.ToString());
             _documentViewModels.Add(new SalesEntryViewModel(showAllBool));
             ActiveDocument = _documentViewModels.Last();
+        }
+
+        #endregion
+
+        #region OpenAmendSalesCommand
+        RelayCommand _openAmendSalesCommand = null;
+        public ICommand OpenAmendSalesCommand
+        {
+            get
+            {
+                if (_openAmendSalesCommand == null)
+                {
+                    _openAmendSalesCommand = new RelayCommand((p) => OnOpenAmendSalesCommand(p), (p) => CanAmendNew(p));
+                }
+
+                return _openAmendSalesCommand;
+            }
+        }
+
+        private bool CanAmendNew(object parameter)
+        {
+            return true;
+        }
+
+        private void OnOpenAmendSalesCommand(object showAll)
+        {
+            //_documentViewModels.Add(new SalesEntryViewModel(showAllBool));
+            //ActiveDocument = _documentViewModels.Last();
+            AmendSales amendSales = new AmendSales();
+            amendSales.ShowDialog();
         }
 
         #endregion

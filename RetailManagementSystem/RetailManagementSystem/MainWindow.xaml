@@ -52,7 +52,7 @@
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
                                       ToolTipDescription="Sales Entry" KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
-                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
+                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
                         <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>
                     </RibbonGroup>
 
