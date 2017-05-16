@@ -7,7 +7,7 @@
         Title="Retail Management System"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
         xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane"
-        xmlns:view="clr-namespace:RetailManagementSystem.View"
+        xmlns:view="clr-namespace:RetailManagementSystem.View.Sales"
         >
     <Window.Resources>
         <conv:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
@@ -15,7 +15,73 @@
     </Window.Resources>
     <Grid>
         <DockPanel>
-            <Menu DockPanel.Dock="Top">
+            <Ribbon  SelectedIndex="0" Grid.Column="0" Grid.ColumnSpan="5" DockPanel.Dock="Top">
+
+                <!-- Help Pane, located at the right-hand side -->
+                <Ribbon.HelpPaneContent>
+                    <RibbonButton SmallImageSource="Images\Users.jpg" />
+                </Ribbon.HelpPaneContent>
+
+                <!-- Quick Access Toolbar - located at the upper-left corner -->
+                <!--<Ribbon.QuickAccessToolBar>
+                    <RibbonQuickAccessToolBar>
+                        <RibbonButton x:Name ="Save" SmallImageSource="Images\Users.jpg" />
+                        <RibbonSplitButton x:Name ="Undo" SmallImageSource="Images\Users.jpg" >
+                            <RibbonSplitMenuItem Header="Undo 1" />
+                            <RibbonSplitMenuItem Header="Undo 2" />
+                        </RibbonSplitButton>
+                        <RibbonSplitButton x:Name="Redo" SmallImageSource="Images\Users.jpg" >
+                            <RibbonSplitMenuItem Header="Redo 1" />
+                            <RibbonSplitMenuItem Header="Redo 2" />
+                        </RibbonSplitButton>
+                        <RibbonCheckBox Label="Sound" KeyTip="X" />
+                    </RibbonQuickAccessToolBar>
+                </Ribbon.QuickAccessToolBar>-->
+                <!-- Application Menu, located at the left-hand side (down arrow) -->
+                <!--<Ribbon.ApplicationMenu>
+                    <RibbonApplicationMenu KeyTip="F">
+                        <RibbonApplicationMenuItem Header="Options1" ImageSource="Images\Users.jpg" />
+                        <RibbonApplicationMenuItem Header="Exit2" ImageSource="Images\Users.jpg" />
+                    </RibbonApplicationMenu>
+                </Ribbon.ApplicationMenu>-->
+
+                <!-- Ribbon Tab #1: Home -->
+                <RibbonTab Header="Sales" KeyTip="S">
+                    <!-- Home  group-->
+                    <RibbonGroup x:Name="Sales" Header="Sales">
+                        <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
+                                      ToolTipDescription="Sales Entry" KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
+                        <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
+                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
+                        <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>
+                    </RibbonGroup>
+
+                    <!-- Employee And Payroll group-->
+                    <RibbonGroup x:Name="Employee" Header="Reports">
+                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales Summary" KeyTip="V">
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Keep Text Only" KeyTip="T"/>
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Paste Special..." KeyTip="S"/>
+                        </RibbonMenuButton>
+                        <RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />
+
+                    </RibbonGroup>
+
+
+                </RibbonTab>
+
+                <!-- Ribbon Tab #2: Launch -->
+                <RibbonTab Header="Settings" KeyTip="I">
+                    <!-- Launch/Applications group-->
+                    <RibbonGroup Header="Settings">
+                        <RibbonButton SmallImageSource="Images\Users.jpg" Label="Record" KeyTip="C" />
+                    </RibbonGroup>
+
+                </RibbonTab>
+                <RibbonTab Header="PageLayout" KeyTip="L">
+                    <!-- Launch/Applications group-->
+                </RibbonTab>
+            </Ribbon>
+            <!--<Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Sales">
                     <MenuItem Header="_Sale Entry"  Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"/>
                 </MenuItem>
@@ -28,37 +94,37 @@
                 </MenuItem>
                 <MenuItem Header="_Admin">
                     <MenuItem Header="_Products">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                     <MenuItem Header="C_ompanies">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                     <MenuItem Header="_Customers">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                     <MenuItem Header="_Users">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/RetailManagementSystem;Component/Images/user_male.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                     <MenuItem Header="_Measuring Units">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                     <MenuItem Header="Ca_tegory">
-                        <!--<MenuItem.Icon>
+                        --><!--<MenuItem.Icon>
                             <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>-->
+                        </MenuItem.Icon>--><!--
                     </MenuItem>
                 </MenuItem>
-            </Menu>
+            </Menu>-->
                              
                     <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <TextBlock Text="Theme:" Margin="0,0,10,0" VerticalAlignment="Center"/>

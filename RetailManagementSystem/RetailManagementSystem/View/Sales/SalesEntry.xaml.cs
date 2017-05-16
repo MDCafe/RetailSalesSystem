@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Windows.Controls;
 
-namespace RetailManagementSystem.View
+namespace RetailManagementSystem.View.Sales
 {
     /// <summary>
     /// Interaction logic for SalesEntry.xaml

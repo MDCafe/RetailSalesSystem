@@ -27,7 +27,8 @@ namespace RetailManagementSystem.ViewModel
         decimal? _totalAmount = 0;        
         decimal? _totalDiscountPercent;
         decimal? _totalDiscountAmount;
-        string _totalAmountText = "0.0";
+        decimal _totalAmountDisplay = 0.0M;
+        decimal _amountPaid = 0.0M;
         char _selectedPaymentId;
         Category _category = null;
         string _selectedCustomerText;
@@ -213,17 +214,18 @@ namespace RetailManagementSystem.ViewModel
             }
 
             _totalAmount = tempTotal;
-            TotalAmountText = _totalAmount.ToString();
+            TotalAmountDisplay = _totalAmount.Value;
             RaisePropertyChanged("TotalAmount");
+            RaisePropertyChanged("BalanceAmount");
         }
 
-        public string TotalAmountText
+        public decimal TotalAmountDisplay
         {
-            get { return _totalAmountText; }
+            get { return _totalAmountDisplay; }
             set
             {
-                _totalAmountText = value;
-                RaisePropertyChanged("TotalAmountText");
+                _totalAmountDisplay = value;
+                RaisePropertyChanged("TotalAmountDisplay");
             }
 
         }
@@ -259,7 +261,7 @@ namespace RetailManagementSystem.ViewModel
                 {
                     if (e.PropertyName == "TransportCharges")
                     {
-                        TotalAmountText = _extensions.Calculate(_totalAmount.Value).ToString();
+                        TotalAmountDisplay = _extensions.Calculate(_totalAmount.Value);
                     }
                 };
             }
@@ -272,6 +274,23 @@ namespace RetailManagementSystem.ViewModel
 
             RunningBillNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
         }
+
+        public decimal AmountPaid
+        {
+            get { return _amountPaid; }
+            set
+            {
+                _amountPaid = value;
+                RaisePropertyChanged("AmountPaid");
+                RaisePropertyChanged("BalanceAmount");
+            }
+        }
+
+        public decimal BalanceAmount
+        {
+            get { return Math.Abs(_amountPaid != 0 ? _totalAmount.Value - _amountPaid : 0.00M); }            
+        }
+
 
         #endregion
 
@@ -584,7 +603,7 @@ namespace RetailManagementSystem.ViewModel
             SaleDetailList.Clear();
             _billSales.CustomerId = 0;
             _totalAmount = 0;
-            TotalAmountText = "";
+            TotalAmountDisplay =0.0M;
             _extensions.Clear();
             SetRunningBillNo();
             _isEditMode = false;
