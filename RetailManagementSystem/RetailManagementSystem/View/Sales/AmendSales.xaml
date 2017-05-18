@@ -10,7 +10,7 @@
         xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl" 
         mc:Ignorable="d"
         Name="SalesAmendParamWindow"
-        Title="Amend/ Print Sales Bill" Height="300" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Title="Amend/ Print Sales Bill" Height="400" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>
@@ -21,8 +21,8 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="22*"/>
-            <RowDefinition Height="25*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="70*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
@@ -57,45 +57,25 @@
                 </Style>
             </ComboBox.ItemContainerStyle>
             <ComboBox.SelectedItem>
-                <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
-                    <!--<Binding.ValidationRules>
-                        <Validator:ValidateComboRule/>
-                    </Binding.ValidationRules>-->
-                </Binding>
+                <Binding Path="SelectedCustomer" NotifyOnValidationError="True"/>
             </ComboBox.SelectedItem>
             <ComboBox.Text>
                 <Binding Path="SelectedCustomerText"/>
             </ComboBox.Text>
         </ComboBox>
-        <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Content="Get Bills" Width="60" Height="30" Margin="5,5,65,5"></Button>
+        <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Content="Get Customer Bills" Width="110" Height="30" Margin="5,5,25,5" Command="{Binding GetCustomerBillsCommand}" ></Button>
 
         <!--DataGrid-->
-        <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
+        <toolKit:DataGrid Name="BillsDataGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding BillList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="2"
-                          Margin="5"
-                                       >
-            <toolKit:DataGrid.Resources>
-                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                    <Setter Property="Padding" Value="-2"/>
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="Background" Value="Red"/>
-                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-                <!--<Converter:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
-                <Style x:Key="CellStyle" TargetType="DataGridCell">
-                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
-                </Style>-->
-            </toolKit:DataGrid.Resources>
+                                      IsReadOnly="True" Margin="5">
             <toolKit:DataGrid.Columns>
-                <toolKit:DataGridTextColumn Header="Bill No" Binding="{Binding BillNo}" />
-                <toolKit:DataGridTextColumn Header="Billing Date" Binding="{Binding BillingDate}" />
-                <toolKit:DataGridTextColumn Header="Billing Amount" Binding="{Binding BillingAmount}" />
+                <toolKit:DataGridTextColumn Header="Bill No" Binding="{Binding RunningBillNo}" Width="120" />
+                <toolKit:DataGridTextColumn Header="Billing Date" Binding="{Binding ModifiedOn}" Width="200" />
+                <toolKit:DataGridTextColumn Header="Billing Amount" Binding="{Binding TotalAmount}" />
             </toolKit:DataGrid.Columns>
 
         </toolKit:DataGrid>

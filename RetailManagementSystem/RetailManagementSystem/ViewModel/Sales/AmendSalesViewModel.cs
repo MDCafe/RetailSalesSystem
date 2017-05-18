@@ -1,14 +1,10 @@
-﻿using RetailManagementSystem.Command;
-using RetailManagementSystem.Exceptions;
-using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel.Base;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -21,6 +17,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         RMSEntities _rmsEntities;
         Category _category = null;
         string _selectedCustomerText;
+        IEnumerable<Sale> _billList;
         
         public int? BillNo { get; set; }
         public string BillNoText { get; set; }
@@ -56,15 +53,27 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendSalesViewModel(bool showAllCustomers)
+        public IEnumerable<Sale> BillList
         {
+            get { return _billList; }
+            set
+            {
+                _billList = value;
+                //NotifyPropertyChanged(() => this._selectedCustomer);
+                RaisePropertyChanged("BillList");
+            }
+        }
+
+        public AmendSalesViewModel()
+        {
+            //show all the customers since it is pwd protected 
+            _showAllCustomers = true;
             _rmsEntities = new RMSEntities();
-            var cnt = _rmsEntities.Customers.ToList();
+            _rmsEntities.Customers.ToList();           
 
             var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
             _othersCategoryId = othersCategory.Id;
-            _showAllCustomers = showAllCustomers;
-
+            
             if (_showAllCustomers)
                 _categoryId = _othersCategoryId;
             else
@@ -94,7 +103,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             BillNo = null;
             SelectedCustomer = null;
-            //billList = null;
+            BillList = null;
         }
         #endregion
 
@@ -150,11 +159,13 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool CanExecuteMethod(object parameter)
         {
-            return BillNo != null || SelectedCustomer != null;
+            return BillNo != null;
         }
         #endregion
 
+        #region CloseWindow Command
         public RelayCommand<Window> _closeWindowCommand { get; private set; }
+
         public ICommand CloseWindowCommand
         {
             get
@@ -168,8 +179,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        //CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
-
         private void CloseWindow(Window window)
         {
             if (window != null)
@@ -177,5 +186,31 @@ namespace RetailManagementSystem.ViewModel.Sales
                 window.Close();
             }
         }
+        #endregion
+
+        #region GetCustomerBillsCommand Command
+        public RelayCommand<Window> _getCustomerBillsCommand { get; private set; }
+
+        public ICommand GetCustomerBillsCommand
+        {
+            get
+            {
+                if (_getCustomerBillsCommand == null)
+                {
+                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills());
+                }
+
+                return _getCustomerBillsCommand;
+            }
+        }
+
+        private void GetCustomerBills()
+        {
+            if(BillList == null)
+                _rmsEntities.Sales.ToList();
+
+            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
+        }
+        #endregion
     }
 }

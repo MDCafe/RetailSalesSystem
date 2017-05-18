@@ -39,7 +39,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         IEnumerable<ProductPrice> _productsPriceList;
         List<SaleDetailExtn> _deletedItems;
         #endregion
-
+ 
         #region Constructor
         public SalesEntryViewModel(SalesParams salesParams)
         {            
