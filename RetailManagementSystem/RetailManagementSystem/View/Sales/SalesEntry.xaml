@@ -63,13 +63,15 @@
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
-                                <Grid Height="35" Width="Auto" ShowGridLines="False">
+                                <Grid Height="30" Width="Auto">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50*"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <!--<ColumnDefinition Width="10*"/>-->
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Margin="1" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                    <Label Margin="1" Grid.Column="1" Content="{Binding BalanceDue}"/>
+                                    <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                    <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
+                                    <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
                                 </Grid>
                             </DataTemplate>
                         </Setter.Value>

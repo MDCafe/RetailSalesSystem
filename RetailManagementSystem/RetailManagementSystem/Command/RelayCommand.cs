@@ -1,28 +1,25 @@
 ﻿namespace RetailManagementSystem.Command
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Windows.Input;
+    using System;
+    using System.Windows.Input;
 
-    internal class RelayCommand : ICommand
+    internal class RelayCommand<T> : ICommand
     {
         #region Fields
 
-        readonly Action<object> _execute;
-        readonly Predicate<object> _canExecute;
+        readonly Action<T> _execute;
+        readonly Predicate<T> _canExecute;
 
         #endregion // Fields
 
         #region Constructors
 
-        public RelayCommand(Action<object> execute)
+        public RelayCommand(Action<T> execute)
             : this(execute, null)
         {
         }
 
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
@@ -36,7 +33,8 @@
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute(parameter);
+            var tParam = (T)parameter;
+            return _canExecute == null ? true : _canExecute(tParam);
         }
 
         public event EventHandler CanExecuteChanged
@@ -47,7 +45,8 @@
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            var tParam = (T)parameter;
+            _execute(tParam);
         }
 
         #endregion // ICommand Members

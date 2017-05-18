@@ -1,4 +1,5 @@
 ﻿using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Sales;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,8 @@ namespace RetailManagementSystem
         {
             if (e.Key == Key.S && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))
             {
-                Workspace.This.OpenSalesEntryCommand.Execute(true);
+                var saleParams = new SalesParams() { ShowAllCustomers = true};
+                Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             }
 
             if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)

@@ -28,6 +28,7 @@ namespace RetailManagementSystem.View.Sales
 
         private void btCancel_Click(object sender, RoutedEventArgs e)
         {
+            //var result = Utilities.ErrorValidator.IsValid(this);
             this.Close();
         }
     }

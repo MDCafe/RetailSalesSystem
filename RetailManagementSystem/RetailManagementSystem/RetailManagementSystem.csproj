@@ -115,6 +115,7 @@
     <Compile Include="Customer.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\RMSException.cs" />
     <Compile Include="MeasuringUnit.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -171,6 +172,7 @@
       <DependentUpon>SalesExtension.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Utilities\ErrorValidator.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
@@ -180,6 +182,7 @@
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\Extensions\SalesExtensionViewModel.cs" />
+    <Compile Include="ViewModel\Sales\SalesParams.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Pane\LayoutInitializer.cs" />

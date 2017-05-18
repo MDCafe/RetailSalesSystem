@@ -41,10 +41,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Constructor
-        public SalesEntryViewModel(bool showAllCustomers)
-        {
-            IsDirty = true;
-            Title = "Sales Entry";
+        public SalesEntryViewModel(SalesParams salesParams)
+        {            
+            //IsDirty = true;
+            
             _rmsEntities = new RMSEntities();
             var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
@@ -52,7 +52,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
             _othersCategoryId = othersCategory.Id;
-            _showAllCustomers = showAllCustomers;
+            
 
             if (_showAllCustomers)
                 _categoryId = _othersCategoryId;
@@ -61,9 +61,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
                 _categoryId = _category.Id;
             }
-
-            SetRunningBillNo();
-
+           
             _paymentModes = new List<PaymentMode>(2)
             {
                 new PaymentMode {PaymentId = '0',PaymentName="Cash" },
@@ -78,6 +76,18 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             GetProductPriceList();
             SelectedPaymentId = '0';
+
+            if (salesParams !=null &&  salesParams.Billno.HasValue)
+            {
+                _showAllCustomers = salesParams.ShowAllCustomers;
+                OnEditBill(salesParams.Billno.Value);                
+                Title = "Sale Bill Amend :" + _runningBillNo;
+            }
+            else
+            {
+                Title = "Sales Entry";
+                SetRunningBillNo();
+            }
 
         }
        
@@ -140,8 +150,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _selectedCustomer; }
             set
             {                
-                _selectedCustomer = value;
-                //NotifyPropertyChanged(() => this._selectedCustomer);
+                _selectedCustomer = value;                
                 RaisePropertyChanged("SelectedCustomer");
             }
         }
@@ -257,6 +266,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             set
             {
                 _extensions = value;
+                if(_isEditMode)
+                {
+                    _extensions.SetValues(_billSales.TransportCharges.Value);
+                    TotalAmount = _extensions.Calculate(_totalAmount.Value);
+                }
+
                 _extensions.PropertyChanged += (s, e) =>
                 {
                     if (e.PropertyName == "TransportCharges")
@@ -333,14 +348,14 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region CloseCommand
-        RelayCommand _closeCommand = null;
+        RelayCommand<object> _closeCommand = null;
         override public ICommand CloseCommand
         {
             get
             {
                 if (_closeCommand == null)
                 {
-                    _closeCommand = new RelayCommand((p) => OnClose(), (p) => CanClose());
+                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
                 }
 
                 return _closeCommand;
@@ -359,14 +374,14 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region SaveCommand
-        RelayCommand _saveCommand = null;
+        RelayCommand<object> _saveCommand = null;
          override public ICommand SaveCommand
         {
           get
           {
             if (_saveCommand == null)
             {
-              _saveCommand = new RelayCommand((p) => OnSave(p), (p) => CanSave(p));
+              _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
             }
 
             return _saveCommand;
@@ -515,30 +530,17 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #endregion
 
-        #region GetBill Command
-        RelayCommand _getBillCommand = null;        
+        #region GetBill Command       
 
-        public ICommand GetBillCommand
+        private void OnEditBill(object billNo)
         {
-            get
-            {
-                if (_getBillCommand == null)
-                {
-                    _getBillCommand = new RelayCommand((p) => OnGetBill(_runningBillNo));
-                }
-
-                return _getBillCommand;
-            }
-        }
-
-        private void OnGetBill(object billNo)
-        {
-            Clear();
+            //Clear();
             if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
             var runningBillNo = Convert.ToInt32(billNo.ToString());
 
-            _billSales = _rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo).FirstOrDefault();
+            _billSales = _rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo).FirstOrDefault();            
             SelectedCustomer = _billSales.Customer;
+            SelectedCustomerText = SelectedCustomer.Name;
             SaleDate = _billSales.AddedOn.Value;            
             SelectedPaymentId = Char.Parse(_billSales.PaymentMode);
             OrderNo = _billSales.CustomerOrderNo;
@@ -567,8 +569,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Qty.Value;
             }
-            _extensions.SetValues(_billSales.TransportCharges.Value);
-            TotalAmount = _extensions.Calculate(tempTotalAmount);
+            TotalAmount = tempTotalAmount;
+
             RunningBillNo = runningBillNo;
             _isEditMode = true;
             if (_deletedItems == null)
@@ -579,7 +581,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Clear Command
-        RelayCommand _clearCommand = null;
+        RelayCommand<object> _clearCommand = null;
 
         public ICommand ClearCommand
         {
@@ -587,7 +589,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_clearCommand == null)
                 {
-                    _clearCommand = new RelayCommand((p) => Clear());
+                    _clearCommand = new RelayCommand<object>((p) => Clear());
                 }
 
                 return _clearCommand;

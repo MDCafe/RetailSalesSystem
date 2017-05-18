@@ -1,4 +1,5 @@
 ﻿using RetailManagementSystem.Command;
+using RetailManagementSystem.Exceptions;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
@@ -20,7 +22,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         Category _category = null;
         string _selectedCustomerText;
         
-        public int BillNo { get; set; }
+        public int? BillNo { get; set; }
+        public string BillNoText { get; set; }
 
         public IEnumerable<Customer> CustomersList
         {
@@ -69,18 +72,18 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
                 _categoryId = _category.Id;
             }
+            
         }
 
-        #region GetBill Command
-        RelayCommand _clearCommand = null;
-
+        #region Clear Command
+        RelayCommand<object> _clearCommand = null;
         public ICommand ClearCommand
         {
             get
             {
                 if (_clearCommand == null)
                 {
-                    _clearCommand = new RelayCommand((p) => OnClear());
+                    _clearCommand = new RelayCommand<object>((p) => OnClear());
                 }
 
                 return _clearCommand;
@@ -89,11 +92,90 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnClear()
         {
-            BillNo = 0;
+            BillNo = null;
             SelectedCustomer = null;
             //billList = null;
-
         }
         #endregion
+
+        #region Print Command
+        RelayCommand<object> _printCommand = null;
+        public ICommand PrintCommand
+        {
+            get
+            {
+                if (_printCommand == null)
+                {
+                    _printCommand = new RelayCommand<object>((p) => OnPrint(), (p) => CanExecuteMethod(p));
+                }
+
+                return _printCommand;
+            }
+        }
+
+        private void OnPrint()
+        {
+            
+        }
+        #endregion
+
+        #region Amend Command
+        RelayCommand<Window> _amendCommand = null;
+        public ICommand AmendCommand
+        {
+            get
+            {
+                if (_amendCommand == null)
+                {
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w),(p) => CanExecuteMethod(p));
+                }
+
+                return _amendCommand;
+            }
+        }
+
+        private void OnAmend(Window window)
+        {
+            var billExisits = _rmsEntities.Sales.Any(b => b.RunningBillNo == BillNo);
+            if (!billExisits)
+            {
+                MessageBox.Show("Bill Number doesn't exist");
+                return;
+            }
+
+            var saleParams = new SalesParams() { Billno = BillNo };
+            Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
+            _closeWindowCommand.Execute(window);
+        }       
+
+        private bool CanExecuteMethod(object parameter)
+        {
+            return BillNo != null || SelectedCustomer != null;
+        }
+        #endregion
+
+        public RelayCommand<Window> _closeWindowCommand { get; private set; }
+        public ICommand CloseWindowCommand
+        {
+            get
+            {
+                if (_closeWindowCommand == null)
+                {
+                    _closeWindowCommand = new RelayCommand<Window>((w) => CloseWindow(w));
+                }
+
+                return _closeWindowCommand;
+            }
+        }
+
+        //CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
+
+        private void CloseWindow(Window window)
+        {
+            if (window != null)
+            {
+                window.Close();
+            }
+        }
     }
 }

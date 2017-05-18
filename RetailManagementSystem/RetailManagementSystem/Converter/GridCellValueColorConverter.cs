@@ -21,7 +21,7 @@ namespace RetailManagementSystem.Converter
                 System.Data.DataRowView rowView = (System.Data.DataRowView)dgc.DataContext;
                 input = (int)rowView.Row.ItemArray[dgc.Column.DisplayIndex];
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 return DependencyProperty.UnsetValue;
             }

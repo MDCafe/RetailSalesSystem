@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:RetailManagementSystem.View.Sales"
         xmlns:Validator="clr-namespace:RetailManagementSystem.Validation" 
         xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
         xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl" 
         mc:Ignorable="d"
-        Title="Amend/ Print Sales Bill" Height="300" Width="500" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Name="SalesAmendParamWindow"
+        Title="Amend/ Print Sales Bill" Height="300" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>
@@ -29,23 +31,25 @@
             <ColumnDefinition Width="207*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Bill No" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding BillNo}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
+        <TextBox Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
 
-        <Label Content="Customer" Grid.Column="0" Grid.Row="1" Margin="5" Grid.RowSpan="3"/>
+        <Label Content="Customer" Grid.Column="0" Grid.Row="1" Margin="5"/>
         <ComboBox x:Name="CboCustomers"  Grid.Column="1" Grid.Row="1" SelectedValuePath="Id" DisplayMemberPath="Name"  ItemsSource="{Binding CustomersList}"  
-                  IsEditable="True" Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Height="25" Margin="5,5,5,0" VerticalAlignment="Top">
+                  IsEditable="True" Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Height="25" Margin="5,5,5,5" Width="200" HorizontalAlignment="Left">
             <ComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
-                                <Grid Height="35" Width="Auto" ShowGridLines="False">
+                                <Grid Height="30" Width="Auto">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50*"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <!--<ColumnDefinition Width="10*"/>-->
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Margin="1" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                    <Label Margin="1" Grid.Column="1" Content="{Binding BalanceDue}"/>
+                                    <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                    <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
+                                    <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
                                 </Grid>
                             </DataTemplate>
                         </Setter.Value>
@@ -54,15 +58,16 @@
             </ComboBox.ItemContainerStyle>
             <ComboBox.SelectedItem>
                 <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
-                    <Binding.ValidationRules>
+                    <!--<Binding.ValidationRules>
                         <Validator:ValidateComboRule/>
-                    </Binding.ValidationRules>
+                    </Binding.ValidationRules>-->
                 </Binding>
             </ComboBox.SelectedItem>
             <ComboBox.Text>
                 <Binding Path="SelectedCustomerText"/>
             </ComboBox.Text>
         </ComboBox>
+        <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Content="Get Bills" Width="60" Height="30" Margin="5,5,65,5"></Button>
 
         <!--DataGrid-->
         <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
@@ -70,6 +75,7 @@
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="2"
+                          Margin="5"
                                        >
             <toolKit:DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -96,10 +102,11 @@
         <!--DataGrid-->
 
         <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.Column="2">
-            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button x:Name="btnEdit" Content="Edit"  Width="60" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>
+            <Button x:Name="btnAmend" Content="Amend"  Width="60" Command="{Binding AmendCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="60" Click="btCancel_Click"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=SalesAmendParamWindow}" Margin="5"/>
         </StackPanel>
 
     </Grid>

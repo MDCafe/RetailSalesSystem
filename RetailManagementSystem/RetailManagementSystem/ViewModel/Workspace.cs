@@ -42,16 +42,16 @@ namespace RetailManagementSystem.ViewModel
         {
           get { return _this; }
         }
-              
+
         #region OpenSalesEntryCommand
-        RelayCommand _openSalesEntryCommand = null;
+        RelayCommand<object> _openSalesEntryCommand = null;
         public ICommand OpenSalesEntryCommand
         {
           get
           {
             if (_openSalesEntryCommand == null)
             {
-                _openSalesEntryCommand = new RelayCommand((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
+                _openSalesEntryCommand = new RelayCommand<object>((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
             }
 
             return _openSalesEntryCommand;
@@ -63,24 +63,23 @@ namespace RetailManagementSystem.ViewModel
           return true;
         }
 
-        private void OnOpenSalesEntryCommand(object showAll)
-        {
-            var showAllBool = bool.Parse(showAll.ToString());
-            _documentViewModels.Add(new SalesEntryViewModel(showAllBool));
+        private void OnOpenSalesEntryCommand(object salesParams)
+        {                        
+            _documentViewModels.Add(new SalesEntryViewModel(salesParams as SalesParams));
             ActiveDocument = _documentViewModels.Last();
         }
 
         #endregion
 
         #region OpenAmendSalesCommand
-        RelayCommand _openAmendSalesCommand = null;
+        RelayCommand<object> _openAmendSalesCommand = null;
         public ICommand OpenAmendSalesCommand
         {
             get
             {
                 if (_openAmendSalesCommand == null)
                 {
-                    _openAmendSalesCommand = new RelayCommand((p) => OnOpenAmendSalesCommand(p), (p) => CanAmendNew(p));
+                    _openAmendSalesCommand = new RelayCommand<object>((p) => OnOpenAmendSalesCommand(p), (p) => CanAmendNew(p));
                 }
 
                 return _openAmendSalesCommand;
@@ -96,8 +95,20 @@ namespace RetailManagementSystem.ViewModel
         {
             //_documentViewModels.Add(new SalesEntryViewModel(showAllBool));
             //ActiveDocument = _documentViewModels.Last();
-            AmendSales amendSales = new AmendSales();
-            amendSales.ShowDialog();
+            try
+            {
+                AmendSales amendSales = new AmendSales();
+                amendSales.ShowDialog();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                MessageBox.Show(ex.Message);                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                //log here
+            }
         }
 
         #endregion
