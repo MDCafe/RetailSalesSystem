@@ -156,6 +156,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="RMSEntitiesHelper.cs" />
     <Compile Include="Sale.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -177,6 +178,7 @@
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
@@ -185,6 +187,9 @@
     <Compile Include="ViewModel\Sales\SalesParams.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
+    <Compile Include="View\Entitlements\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pane\LayoutInitializer.cs" />
     <Compile Include="View\Pane\PanesStyleSelector.cs" />
     <Compile Include="View\Pane\PanesTemplateSelector.cs" />
@@ -210,6 +215,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\SalesExtension.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Entitlements\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
