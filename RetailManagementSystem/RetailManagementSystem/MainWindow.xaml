@@ -70,10 +70,13 @@
                 </RibbonTab>
 
                 <!-- Ribbon Tab #2: Launch -->
-                <RibbonTab Header="Settings" KeyTip="I">
-                    <!-- Launch/Applications group-->
-                    <RibbonGroup Header="Settings">
-                        <RibbonButton SmallImageSource="Images\Users.jpg" Label="Record" KeyTip="C" />
+                <RibbonTab Header="Maintenance" KeyTip="M">
+                    <RibbonGroup x:Name="Maintenance" Header="Maintenance">
+                        <RibbonButton Label="Customers" LargeImageSource="Images\Users.jpg" ToolTipTitle="Add/Edit Customers" 
+                                       KeyTip="C" Command="{Binding OpenCustomerCommand}" CommandParameter="false"></RibbonButton>
+                        <!--<RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
+                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
+                        <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>-->
                     </RibbonGroup>
 
                 </RibbonTab>

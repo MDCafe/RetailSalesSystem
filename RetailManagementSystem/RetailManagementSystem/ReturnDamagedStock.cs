@@ -19,6 +19,8 @@ namespace RetailManagementSystem
         public int PriceId { get; set; }
         public string comments { get; set; }
         public bool isReturn { get; set; }
+        public Nullable<System.DateTime> CreatedOn { get; set; }
+        public Nullable<System.DateTime> ModifiedOn { get; set; }
     
         public virtual Product Product { get; set; }
     }

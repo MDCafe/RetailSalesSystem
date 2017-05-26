@@ -99,9 +99,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AdvanceDetail.cs">
-      <DependentUpon>RMSDataModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -120,6 +117,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\SaleDetailExtn.cs" />
+    <Compile Include="PaymentDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="PriceDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -177,12 +177,14 @@
     </Compile>
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\ErrorValidator.cs" />
+    <Compile Include="Utilities\Utility.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
+    <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
@@ -192,6 +194,9 @@
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Masters\Customer.xaml.cs">
+      <DependentUpon>Customer.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Pane\LayoutInitializer.cs" />
     <Compile Include="View\Pane\PanesStyleSelector.cs" />
@@ -222,6 +227,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Entitlements\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Masters\Customer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

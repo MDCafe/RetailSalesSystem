@@ -12,16 +12,18 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class AdvanceDetail
+    public partial class PaymentDetail
     {
-        public string BillId { get; set; }
-        public Nullable<int> CustomerId { get; set; }
-        public string CustomerName { get; set; }
+        public int Id { get; set; }
+        public int BillId { get; set; }
+        public int CustomerId { get; set; }
         public decimal AmountPaid { get; set; }
+        public string PaymentMode { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
         public virtual Customer Customer { get; set; }
+        public virtual Sale Sale { get; set; }
     }
 }

@@ -443,6 +443,29 @@ namespace RetailManagementSystem.ViewModel.Sales
             //    saleToEdit = _billSales;
             //}
 
+
+            //check if complete amount is paid, else mark it in advancedetails table against the customer
+            var outstandingBalance = _totalAmount.Value - AmountPaid;
+            if (outstandingBalance > 0)
+            {
+                var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
+                var result = Utility.ShowMessageBoxWithOptions(msg);
+                if(result == System.Windows.MessageBoxResult.Yes)
+                {
+                    _rmsEntities.PaymentDetails.Add
+                        (
+                            new PaymentDetail
+                            {
+                                BillId = _billSales.BillId,
+                                AmountPaid = AmountPaid,
+                                CustomerId = _selectedCustomer.Id                                
+                            }
+                        );
+                }
+                var customer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                customer.BalanceDue += outstandingBalance;
+            }
+            
             _rmsEntities.SaveChanges();
             Clear();
         }

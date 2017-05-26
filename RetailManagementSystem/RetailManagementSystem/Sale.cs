@@ -17,6 +17,7 @@ namespace RetailManagementSystem
         public Sale()
         {
             this.SaleDetails = new HashSet<SaleDetail>();
+            this.PaymentDetails = new HashSet<PaymentDetail>();
         }
     
         public int BillId { get; set; }
@@ -34,5 +35,6 @@ namespace RetailManagementSystem
     
         public virtual Customer Customer { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
     }
 }

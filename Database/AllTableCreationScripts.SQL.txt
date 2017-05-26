@@ -1,0 +1,239 @@
+CREATE TABLE `Category` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `parentId` mediumint(9) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `RollingNo` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Companies` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  `Address` varchar(50) NOT NULL,
+  `MobileNo` int(11) DEFAULT NULL,
+  `LanNo` int(11) DEFAULT NULL,
+  `Email` varchar(45) DEFAULT NULL,
+  `VATNo` varchar(15) DEFAULT NULL,
+  `IsSupplier` tinyint(1) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Customers` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  `Address` varchar(500) DEFAULT NULL,
+  `MobileNo` int(11) DEFAULT NULL,
+  `LanNo` int(11) DEFAULT NULL,
+  `Email` varchar(45) DEFAULT NULL,
+  `CustomerTypeId` mediumint(9) DEFAULT NULL,
+  `BalanceDue` decimal(10,0) DEFAULT NULL,
+  `CreditLimit` decimal(10,0) DEFAULT NULL,
+  `CreditDays` int(11) NOT NULL DEFAULT '30',
+  `IsExistingCustomer` tinyint(1) NOT NULL DEFAULT '0',
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `MeasuringUnits` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `unit` varchar(10) NOT NULL,
+  `MeasureQty` decimal(10,0) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `PaymentDetails` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `BillId` mediumint(9) NOT NULL,
+  `CustomerId` mediumint(9) NOT NULL,
+  `AmountPaid` decimal(10,0) NOT NULL,
+  `PaymentMode` varchar(6) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`,`BillId`,`CustomerId`),
+  KEY `FK_customerId_idx` (`CustomerId`),
+  KEY `FK_pay_bill_idx` (`BillId`),
+  CONSTRAINT `FK_customerId` FOREIGN KEY (`CustomerId`) REFERENCES `Customers` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_pay_bill` FOREIGN KEY (`BillId`) REFERENCES `Sales` (`BillId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `PriceDetails` (
+  `PriceId` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `BillId` mediumint(9) NOT NULL,
+  `ProductId` mediumint(9) NOT NULL,
+  `Price` decimal(10,0) NOT NULL,
+  `SellingPrice` decimal(10,0) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`PriceId`),
+  KEY `FK_Product_idx` (`ProductId`),
+  CONSTRAINT `FK_Product` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1906 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Products` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Code` varchar(45) DEFAULT NULL,
+  `Name` varchar(45) DEFAULT NULL,
+  `Description` varchar(100) DEFAULT NULL,
+  `UnitOfMeasure` mediumint(9) DEFAULT NULL,
+  `CategoryId` mediumint(9) DEFAULT NULL,
+  `CompanyId` mediumint(9) NOT NULL,
+  `ReorderPoint` decimal(10,0) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_MOU_idx` (`UnitOfMeasure`),
+  KEY `FK_Company_idx` (`CompanyId`),
+  KEY `FK_Category_idx` (`CategoryId`),
+  CONSTRAINT `FK_Category` FOREIGN KEY (`CategoryId`) REFERENCES `Category` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Company` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_MOU` FOREIGN KEY (`UnitOfMeasure`) REFERENCES `MeasuringUnits` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1902 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `PurchaseDetails` (
+  `BillId` mediumint(9) NOT NULL,
+  `ProductId` mediumint(9) DEFAULT NULL,
+  `PurchasedQty` decimal(10,0) DEFAULT NULL,
+  `ActualPrice` decimal(10,0) NOT NULL,
+  `Discount` decimal(10,0) DEFAULT NULL,
+  `Tax` decimal(10,0) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  KEY `FK_PurchaseBillId_idx` (`BillId`),
+  KEY `FK_ProductId_idx` (`ProductId`),
+  CONSTRAINT `FK_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_PurchaseBillId` FOREIGN KEY (`BillId`) REFERENCES `Purchases` (`BillId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `PurchaseFreeDetails` (
+  `ProductId` mediumint(9) NOT NULL,
+  `FreeQty` decimal(10,0) DEFAULT NULL,
+  `FreeAmount` decimal(10,0) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  KEY `FK_Product_idx` (`ProductId`),
+  KEY `FK_ProductFree_idx` (`ProductId`),
+  CONSTRAINT `FK_ProductFree` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `PurchasePaymentDetails` (
+  `PurchaseBillId` mediumint(9) NOT NULL,
+  `CompanyId` mediumint(9) NOT NULL,
+  `AmountPaid` decimal(10,0) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  KEY `FK_compId_idx` (`CompanyId`),
+  KEY `FK_purchaseId_idx` (`PurchaseBillId`),
+  KEY `FK_purchaseIdDetails_idx` (`PurchaseBillId`),
+  KEY `FK_purchaseIdDetail1s_idx` (`PurchaseBillId`),
+  CONSTRAINT `FK_compId` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_purchaseId` FOREIGN KEY (`PurchaseBillId`) REFERENCES `Purchases` (`BillId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Purchases` (
+  `BillId` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `CompanyId` mediumint(9) NOT NULL,
+  `InvoiceNo` varchar(45) DEFAULT NULL,
+  `Discount` decimal(10,0) DEFAULT NULL,
+  `TransportCharges` decimal(10,0) DEFAULT NULL,
+  `TotalBillAmount` decimal(10,0) DEFAULT NULL,
+  `Tax` decimal(10,0) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`BillId`),
+  KEY `FK_CompanyId_idx` (`CompanyId`),
+  CONSTRAINT `FK_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `ReturnDamagedStocks` (
+  `ProductId` mediumint(9) NOT NULL,
+  `Quantity` decimal(10,0) NOT NULL,
+  `PriceId` mediumint(9) NOT NULL,
+  `comments` varchar(200) DEFAULT NULL,
+  `isReturn` tinyint(1) NOT NULL,
+  `CreatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `FK_ProductId_idx` (`ProductId`),
+  KEY `FK_ProductIdRD_idx` (`ProductId`),
+  CONSTRAINT `FK_ProductId_RD` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Roles` (
+  `Id` int(11) NOT NULL,
+  `RoleName` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `SaleDetails` (
+  `BillId` mediumint(9) NOT NULL,
+  `ProductId` mediumint(9) NOT NULL,
+  `PriceId` mediumint(9) NOT NULL,
+  `SellingPrice` decimal(10,0) DEFAULT NULL,
+  `Qty` decimal(10,0) DEFAULT NULL,
+  `Discount` decimal(10,0) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`BillId`,`ProductId`,`PriceId`),
+  KEY `Fk_sale_bill_idx` (`BillId`),
+  KEY `FK_ProdId_idx` (`ProductId`),
+  KEY `FK_price_id_idx` (`PriceId`),
+  CONSTRAINT `FK_ProdId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_price_id` FOREIGN KEY (`PriceId`) REFERENCES `PriceDetails` (`PriceId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Fk_sale_bill` FOREIGN KEY (`BillId`) REFERENCES `Sales` (`BillId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Sales` (
+  `BillId` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `CustomerId` mediumint(9) NOT NULL,
+  `Discount` decimal(10,0) DEFAULT NULL,
+  `TransportCharges` decimal(10,0) DEFAULT NULL,
+  `TotalAmount` decimal(10,0) DEFAULT NULL,
+  `IsCancelled` tinyint(1) DEFAULT NULL,
+  `CustomerOrderNo` varchar(30) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  `RunningBillNo` mediumint(9) NOT NULL,
+  `PaymentMode` char(1) NOT NULL,
+  PRIMARY KEY (`BillId`),
+  KEY `FK_Sales_Cust_idx` (`CustomerId`),
+  CONSTRAINT `FK_Sales_Cust` FOREIGN KEY (`CustomerId`) REFERENCES `Customers` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Stocks` (
+  `ProductId` mediumint(9) NOT NULL,
+  `Quantity` decimal(10,0) NOT NULL,
+  `PriceId` mediumint(9) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`ProductId`,`PriceId`),
+  KEY `FK_PrdId_idx` (`ProductId`),
+  CONSTRAINT `FK_PrdId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `Users` (
+  `Id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `UpdatedBy` varchar(20) DEFAULT NULL,
+  `RoleId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `fk_role_idx` (`RoleId`),
+  CONSTRAINT `fk_role` FOREIGN KEY (`RoleId`) REFERENCES `Roles` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

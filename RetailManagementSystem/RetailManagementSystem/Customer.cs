@@ -16,8 +16,8 @@ namespace RetailManagementSystem
     {
         public Customer()
         {
-            this.AdvanceDetails = new HashSet<AdvanceDetail>();
             this.Sales = new HashSet<Sale>();
+            this.PaymentDetails = new HashSet<PaymentDetail>();
         }
     
         public int Id { get; set; }
@@ -36,7 +36,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual ICollection<AdvanceDetail> AdvanceDetails { get; set; }
         public virtual ICollection<Sale> Sales { get; set; }
+        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
     }
 }

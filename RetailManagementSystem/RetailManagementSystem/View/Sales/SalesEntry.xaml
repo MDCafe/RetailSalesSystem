@@ -92,6 +92,8 @@
         <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
             <Label Content="Bill No" Width="45" Margin="15,5,0,0"></Label>
             <Label x:Name="txtBillNo" Width="60" Margin="5" Content="{Binding RunningBillNo}"/>
+            <Button x:Name="btnAddCustomer" Content="Customer Quick Add" 
+                    Width="80" Command="{Binding AddCustomerCommand}" Margin="5"/>
         </StackPanel>
 
         <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>

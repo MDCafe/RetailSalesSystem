@@ -133,15 +133,17 @@ CREATE TABLE `PurchasePaymentDetails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `AdvanceDetails`;
-CREATE TABLE `AdvanceDetails` (
-  `BillId` varchar(45) NOT NULL,
-  `CustomerId` mediumint(9) DEFAULT NULL,
-  `CustomerName` varchar(100) DEFAULT NULL,
+DROP TABLE IF EXISTS `PaymentDetails`;
+CREATE TABLE `PaymentDetails` (
+  `Id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+  `BillId` MEDIUMINT(9) NOT NULL,
+  `CustomerId` MEDIUMINT(9) NOT NULL ,  
   `AmountPaid` decimal(10,0) NOT NULL,
+  `PaymentMode` VARCHAR(6) NULL DEFAULT NULL ,
   `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
-  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `UpdatedBy` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
   KEY `FK_customerId_idx` (`CustomerId`),
   CONSTRAINT `FK_customerId` FOREIGN KEY (`CustomerId`) REFERENCES `Customers` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

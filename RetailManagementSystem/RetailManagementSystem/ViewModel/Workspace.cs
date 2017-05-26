@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Masters;
 //using SimpleControls.MRU.ViewModel;
 
 namespace RetailManagementSystem.ViewModel
@@ -121,6 +122,42 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenCustomerCommand
+        RelayCommand<object> _openCustomerCommand = null;
+        public ICommand OpenCustomerCommand
+        {
+            get
+            {
+                if (_openCustomerCommand == null)
+                {
+                    _openCustomerCommand = new RelayCommand<object>((p) => OnOpenCustomerCommand());
+                }
+
+                return _openCustomerCommand;
+            }
+        }        
+
+        private void OnOpenCustomerCommand()
+        {            
+            try
+            {
+                _documentViewModels.Add(new CustomerViewModel());
+                ActiveDocument = _documentViewModels.Last();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
         #region ActiveDocument
 
         private DocumentViewModel _activeDocument = null;
@@ -176,6 +213,12 @@ namespace RetailManagementSystem.ViewModel
             (s, e) =>
             {
                 this.OnOpenSalesEntryCommand(false);
+            }));
+
+            win.CommandBindings.Add(new CommandBinding(OpenCustomerCommand,
+            (s, e) =>
+            {
+                this.OnOpenCustomerCommand();
             }));
         }
 
