@@ -43,8 +43,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         #region Constructor
         public SalesEntryViewModel(SalesParams salesParams)
         {            
-            //IsDirty = true;
-            
+            //IsDirty = true;            
             _rmsEntities = new RMSEntities();
             var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
@@ -52,7 +51,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
             _othersCategoryId = othersCategory.Id;
-            
+
+            _showAllCustomers = salesParams.ShowAllCustomers;
 
             if (_showAllCustomers)
                 _categoryId = _othersCategoryId;
@@ -78,8 +78,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             SelectedPaymentId = '0';
 
             if (salesParams !=null &&  salesParams.Billno.HasValue)
-            {
-                _showAllCustomers = salesParams.ShowAllCustomers;
+            {                
                 OnEditBill(salesParams.Billno.Value);                
                 Title = "Sale Bill Amend :" + _runningBillNo;
             }
@@ -491,6 +490,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _rmsEntities.SaveChanges();
             Clear();
+            _closeCommand.Execute(null);
         }
 
         private void RemoveDeletedItems()

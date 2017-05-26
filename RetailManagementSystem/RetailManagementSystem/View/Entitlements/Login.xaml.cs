@@ -10,9 +10,19 @@ namespace RetailManagementSystem.View.Entitlements
 
         public Login()
         {
+            Initalize(false);
+        }
+
+        private void Initalize(bool validateAsAdmin)
+        {
             InitializeComponent();
-            loginViewModel = new LoginViewModel();
+            loginViewModel = new LoginViewModel(validateAsAdmin);
             DataContext = loginViewModel;
+        }
+
+        public Login(bool validateAsAdmin)
+        {
+            Initalize(validateAsAdmin);
         }
     }
 }

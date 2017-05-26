@@ -157,6 +157,9 @@
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="RMSEntitiesHelper.cs" />
+    <Compile Include="Role.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Sale.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>

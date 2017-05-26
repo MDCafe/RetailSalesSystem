@@ -41,5 +41,6 @@ namespace RetailManagementSystem
         public DbSet<Category> Categories { get; set; }
         public DbSet<SaleDetail> SaleDetails { get; set; }
         public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Role> Roles { get; set; }
     }
 }

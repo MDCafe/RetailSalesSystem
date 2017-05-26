@@ -12,6 +12,7 @@ using RetailManagementSystem.ViewModel.Base;
 using Microsoft.Win32;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.View.Sales;
+using RetailManagementSystem.Utilities;
 //using SimpleControls.MRU.ViewModel;
 
 namespace RetailManagementSystem.ViewModel
@@ -63,9 +64,16 @@ namespace RetailManagementSystem.ViewModel
           return true;
         }
 
-        private void OnOpenSalesEntryCommand(object salesParams)
-        {                        
-            _documentViewModels.Add(new SalesEntryViewModel(salesParams as SalesParams));
+        private void OnOpenSalesEntryCommand(object paramValue)
+        {
+            if(typeof(SalesParams) != paramValue.GetType())
+            {
+                var salesParam = new SalesParams() { ShowAllCustomers = bool.Parse(paramValue.ToString()) };
+                _documentViewModels.Add(new SalesEntryViewModel(salesParam));                
+            }
+            else
+                _documentViewModels.Add(new SalesEntryViewModel(paramValue as SalesParams));
+
             ActiveDocument = _documentViewModels.Last();
         }
 
@@ -102,11 +110,11 @@ namespace RetailManagementSystem.ViewModel
             }
             catch (Exceptions.RMSException ex)
             {
-                MessageBox.Show(ex.Message);                
+                Utility.ShowErrorBox(ex.Message);                
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Utility.ShowErrorBox(ex.Message);
                 //log here
             }
         }

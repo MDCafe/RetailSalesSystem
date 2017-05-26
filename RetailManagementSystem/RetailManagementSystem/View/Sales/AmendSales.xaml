@@ -10,6 +10,7 @@
         xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl" 
         mc:Ignorable="d"
         Name="SalesAmendParamWindow"
+        FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
         Title="Amend/ Print Sales Bill" Height="400" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
@@ -31,7 +32,7 @@
             <ColumnDefinition Width="207*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Bill No" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
+        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
 
         <Label Content="Customer" Grid.Column="0" Grid.Row="1" Margin="5"/>
         <ComboBox x:Name="CboCustomers"  Grid.Column="1" Grid.Row="1" SelectedValuePath="Id" DisplayMemberPath="Name"  ItemsSource="{Binding CustomersList}"  
@@ -86,7 +87,7 @@
             <Button x:Name="btnAmend" Content="Amend"  Width="60" Command="{Binding AmendCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
-                CommandParameter="{Binding ElementName=SalesAmendParamWindow}" Margin="5"/>
+                CommandParameter="{Binding ElementName=SalesAmendParamWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
 
     </Grid>

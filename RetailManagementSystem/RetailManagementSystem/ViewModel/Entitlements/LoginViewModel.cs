@@ -4,12 +4,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
+using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Entitlements
 {
     class LoginViewModel : ViewModelBase
     {
+        bool _validateAsAdmin;
+
         public string UserId { get; set; }
+
+        public LoginViewModel(bool validateAsAdmin)
+        {
+            _validateAsAdmin = validateAsAdmin;
+        }
 
         #region OK Command
         public RelayCommand<PasswordBox> _okCommand { get; private set; }
@@ -34,15 +42,27 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         }
 
         void Login(PasswordBox passwordBox)
-        {
-            //var passwordBox = parameter as PasswordBox;
+        {            
             var password = passwordBox.Password;
+            var count = RMSEntitiesHelper.RMSEntities.Users.Local.ToList().Count;           
 
-            if(RMSEntitiesHelper.RMSEntities.Users.Local.Any(u => u.username == UserId && u.password == password))
+            //RMSEntitiesHelper.RMSEntities.Configuration.LazyLoadingEnabled = false;
+
+            //Check if the user is admin
+            if (_validateAsAdmin)
             {
-                return true;
-            }
-            
+                var pwdGrid = passwordBox.Parent as Grid;
+                var window = pwdGrid.Parent as Window;
+                if (RMSEntitiesHelper.RMSEntities.Users.Any(u => u.username == UserId && u.password == password && u.RoleId == 1))
+                {                    
+                    window.DialogResult = true;
+                    window.Close();
+                    return;
+                }
+
+                Utility.ShowMessageBox(window, "Invalid UserId or Password");
+                //window.DialogResult = false;                
+            }            
         }
 
         #endregion

@@ -177,6 +177,13 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="comments" Type="varchar" MaxLength="200" />
           <Property Name="isReturn" Type="bool" Nullable="false" />
         </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="RoleName" Type="varchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="SaleDetails">
           <Key>
             <PropertyRef Name="BillId" />
@@ -208,7 +215,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
           <Property Name="RunningBillNo" Type="mediumint" Nullable="false" />
-          <Property Name="PaymentMode" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="PaymentMode" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
         <EntityType Name="Stocks">
           <Key>
@@ -232,6 +239,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="varchar" MaxLength="20" />
+          <Property Name="RoleId" Type="int" />
         </EntityType>
         <Association Name="FK_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
@@ -342,7 +350,9 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Product">
-          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="PriceDetails" Type="Self.PriceDetails" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Products">
@@ -413,6 +423,18 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_role">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Fk_sale_bill">
           <End Role="Sales" Type="Self.Sales" Multiplicity="1" />
           <End Role="SaleDetails" Type="Self.SaleDetails" Multiplicity="*" />
@@ -445,6 +467,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Sales" EntityType="Self.Sales" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
@@ -561,6 +584,10 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <AssociationSet Name="FK_purchaseId" Association="Self.FK_purchaseId">
             <End Role="Purchases" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="fk_role" Association="Self.fk_role">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           <AssociationSet Name="Fk_sale_bill" Association="Self.Fk_sale_bill">
             <End Role="Sales" EntitySet="Sales" />
@@ -693,6 +720,8 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RoleId" Type="Int32" />
+          <NavigationProperty Name="Role" Relationship="RMSModel.fk_role" FromRole="User" ToRole="Role" />
         </EntityType>
         <EntityType Name="AdvanceDetail">
           <Key>
@@ -983,6 +1012,11 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Product" EntitySet="Products" />
             <End Role="Stock" EntitySet="Stocks" />
           </AssociationSet>
+          <EntitySet Name="Roles" EntityType="RMSModel.Role" />
+          <AssociationSet Name="fk_role" Association="RMSModel.fk_role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sale">
           <Key>
@@ -1117,6 +1151,26 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RoleName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="RMSModel.fk_role" FromRole="Role" ToRole="User" />
+        </EntityType>
+        <Association Name="fk_role">
+          <End Type="RMSModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="RMSModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1220,6 +1274,7 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="RMSModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="username" ColumnName="username" />
                 <ScalarProperty Name="password" ColumnName="password" />
@@ -1344,6 +1399,14 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="PriceId" ColumnName="PriceId" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="RMSModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

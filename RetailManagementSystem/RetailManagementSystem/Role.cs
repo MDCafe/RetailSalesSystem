@@ -12,16 +12,16 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Role
     {
-        public int Id { get; set; }
-        public string username { get; set; }
-        public string password { get; set; }
-        public Nullable<System.DateTime> AddedOn { get; set; }
-        public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<int> RoleId { get; set; }
+        public Role()
+        {
+            this.Users = new HashSet<User>();
+        }
     
-        public virtual Role Role { get; set; }
+        public int Id { get; set; }
+        public string RoleName { get; set; }
+    
+        public virtual ICollection<User> Users { get; set; }
     }
 }

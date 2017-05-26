@@ -5,6 +5,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System.Collections.Generic;
+using System;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -148,13 +149,24 @@ namespace RetailManagementSystem.ViewModel.Sales
             var billExisits = _rmsEntities.Sales.Any(b => b.RunningBillNo == BillNo);
             if (!billExisits)
             {
-                MessageBox.Show("Bill Number doesn't exist");
+                Utility.ShowErrorBox(window,"Bill Number doesn't exist");
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo };
+            View.Entitlements.Login login = new View.Entitlements.Login(true);
+            var result = login.ShowDialog();
+            if (!result.Value)
+            {
+                //Utility.ShowErrorBox(window, "Invalid UserId or Password");
+                return;
+            }
+
+            var saleParams = new SalesParams() { Billno = BillNo };            
+
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);
+
+            //window.DialogResult = true;
         }       
 
         private bool CanExecuteMethod(object parameter)
@@ -188,7 +200,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
         #endregion
 
-        #region GetCustomerBillsCommand Command
+        #region GetCustomerBills Command
         public RelayCommand<Window> _getCustomerBillsCommand { get; private set; }
 
         public ICommand GetCustomerBillsCommand
@@ -197,11 +209,16 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_getCustomerBillsCommand == null)
                 {
-                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills());
+                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills(),(p) => CanGetCustomerBills());
                 }
 
                 return _getCustomerBillsCommand;
             }
+        }
+
+        private bool CanGetCustomerBills()
+        {
+            return SelectedCustomer != null;
         }
 
         private void GetCustomerBills()
@@ -211,6 +228,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
         }
+
+
         #endregion
     }
 }

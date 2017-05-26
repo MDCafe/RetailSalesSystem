@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RetailManagementSystem.View.Entitlements"
         mc:Ignorable="d"
+        FocusManager.FocusedElement="{Binding ElementName=txtUserId}"
         Title="Login" Height="190" Width="300" Name="LoginWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="ToolWindow">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,8 +26,8 @@
         <PasswordBox x:Name="txtPassword" Grid.Column="1" Height="20" Margin="5" Grid.Row="2" PasswordChar="*"/>
 
         <StackPanel Grid.Column="1"  Grid.Row="3" Orientation="Horizontal">
-            <Button x:Name="btnOk" Content="OK"  Margin="5"  Width="75" Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=txtPassword}"/>
-            <Button x:Name="btnCancel" Content="Cancel" Margin="5" Width="75" Command="{Binding Path=CloseCommand}" CommandParameter="{Binding ElementName=LoginWindow}"/>
+            <Button x:Name="btnOk" Content="OK"  Margin="5" IsDefault="True" Width="75" Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=txtPassword}"/>
+            <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Margin="5" Width="75" Command="{Binding Path=CloseCommand}" CommandParameter="{Binding ElementName=LoginWindow}"/>
         </StackPanel>
 
     </Grid>

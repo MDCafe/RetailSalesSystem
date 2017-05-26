@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="83">
+      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="85">
         <EntityTypeShape EntityType="RMSModel.Company" Width="1.5" PointX="0.75" PointY="12.375" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="6" PointY="3" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.MeasuringUnit" Width="1.5" PointX="0.75" PointY="17.625" IsExpanded="true" />
@@ -38,6 +38,8 @@
         <AssociationConnector Association="RMSModel.Fk_sale_bill" />
         <EntityTypeShape EntityType="RMSModel.Stock" Width="1.5" PointX="5.25" PointY="12" />
         <AssociationConnector Association="RMSModel.FK_PrdId" />
+        <EntityTypeShape EntityType="RMSModel.Role" Width="1.5" PointX="0.75" PointY="7.25" />
+        <AssociationConnector Association="RMSModel.fk_role" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
