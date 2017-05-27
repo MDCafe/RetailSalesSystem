@@ -1,11 +1,8 @@
-﻿using RetailManagementSystem.Command;
+﻿using System.Windows.Input;
+using System.Linq;
+using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -13,25 +10,13 @@ namespace RetailManagementSystem.ViewModel.Masters
     {
         public CustomerViewModel()
         {
-
+            var names = RMSEntitiesHelper.RMSEntities.Customers.SelectMany(c => c.Name);
         }
 
-        #region IsDirty
 
-        private bool _isDirty = false;
-        override public bool IsDirty
-        {
-            get { return _isDirty; }
-            set
-            {
-                if (_isDirty != value)
-                {
-                    _isDirty = value;
-                    RaisePropertyChanged("IsDirty");
-                    RaisePropertyChanged("FileName");
-                }
-            }
-        }
+        #region Public Variables
+
+        //public  CustomerNames { get; set; }
 
         #endregion
 
@@ -73,6 +58,19 @@ namespace RetailManagementSystem.ViewModel.Masters
                 }
 
                 return _saveCommand;
+            }
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
             }
         }
 

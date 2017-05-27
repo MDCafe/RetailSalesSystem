@@ -298,6 +298,7 @@
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
     <Resource Include="Images\SalesBasket.png" />
+    <Resource Include="Images\SalesBasket -T.png" />
     <Content Include="RMSDataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>RMSDataModel.edmx</DependentUpon>

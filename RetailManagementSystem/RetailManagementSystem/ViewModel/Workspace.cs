@@ -141,9 +141,10 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                _documentViewModels.Add(new CustomerViewModel());
-                ActiveDocument = _documentViewModels.Last();
-
+                //_documentViewModels.Add(new CustomerViewModel());
+                //ActiveDocument = _documentViewModels.Last();
+                View.Masters.Customer customer = new View.Masters.Customer();
+                customer.ShowDialog();
             }
             catch (Exceptions.RMSException ex)
             {

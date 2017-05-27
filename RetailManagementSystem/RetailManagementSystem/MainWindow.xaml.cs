@@ -1,4 +1,5 @@
 ﻿using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Sales;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace RetailManagementSystem
             InitializeComponent();
             this.DataContext = Workspace.This;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
+            
         }
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
@@ -42,6 +44,6 @@ namespace RetailManagementSystem
                 MessageBox.Show("S + A");
             }
             
-        }
+        }        
     }
 }

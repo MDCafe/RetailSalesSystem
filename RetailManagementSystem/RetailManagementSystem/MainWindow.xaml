@@ -6,12 +6,17 @@
         xmlns:s="clr-namespace:System;assembly=mscorlib"        
         Title="Retail Management System"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
-        xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane"
-        xmlns:view="clr-namespace:RetailManagementSystem.View.Sales"
+        xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane"        
+        xmlns:View="clr-namespace:RetailManagementSystem.View.Sales"
+        xmlns:MastersView="clr-namespace:RetailManagementSystem.View.Masters"
+        
         >
     <Window.Resources>
         <conv:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
         <!--<avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/-->
+        <!--<DataTemplate x:Name="SalesDataTemplate" DataType="{x:Type  SalesViewModel:SalesEntryViewModel}">
+            <SalesView:SalesEntry/>
+        </DataTemplate>-->
     </Window.Resources>
     <Grid>
         <DockPanel>
@@ -51,8 +56,11 @@
                     <RibbonGroup x:Name="Sales" Header="Sales">
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
                                       ToolTipDescription="Sales Entry" KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
-                        <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
-                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
+                        <RibbonButton Label="Temp Entry" LargeImageSource="Images\SalesBasket -T.png" ToolTipTitle="Temprrary Sales Entry for many items" 
+                                       KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
+                        
+                        <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
+                                       KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
                         <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>
                     </RibbonGroup>
 
@@ -156,7 +164,8 @@
                            BorderThickness="1"
                            DockPanel.Dock="Bottom"
                            DocumentsSource="{Binding DocumentViews}"
-                           ActiveContent="{Binding ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"                          
+                           ActiveContent="{Binding ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"  
+                Name="DockingManager"
                          >
                 <xcad:DockingManager.Theme>
                     <xcad:AeroTheme/>
@@ -165,9 +174,16 @@
                     <pane:PanesTemplateSelector>
                         <pane:PanesTemplateSelector.DocumentViewTemplate>
                             <DataTemplate>
-                                <view:SalesEntry />
+                                <View:SalesEntry/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.DocumentViewTemplate>
+
+                        <pane:PanesTemplateSelector.CustomerDataTemplate>
+                            <DataTemplate>
+                                <MastersView:Customer/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.CustomerDataTemplate>
+
                     </pane:PanesTemplateSelector>
                 </xcad:DockingManager.LayoutItemTemplateSelector>
                 <xcad:DockingManager.LayoutUpdateStrategy>

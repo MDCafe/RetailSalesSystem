@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetailManagementSystem.ViewModel.Masters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,11 @@ namespace RetailManagementSystem.View.Masters
     /// </summary>
     public partial class Customer : Window
     {
+        
         public Customer()
         {
             InitializeComponent();
+            this.DataContext = new CustomerViewModel();
         }
     }
 }
