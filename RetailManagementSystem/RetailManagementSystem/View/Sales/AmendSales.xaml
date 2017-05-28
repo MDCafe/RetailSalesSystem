@@ -64,7 +64,7 @@
                 <Binding Path="SelectedCustomerText"/>
             </ComboBox.Text>
         </ComboBox>
-        <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Content="Get Customer Bills" Width="110" Height="30" Margin="5,5,25,5" Command="{Binding GetCustomerBillsCommand}" ></Button>
+        <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Content="Get Customer Bills" Width="110" Height="25" Margin="5,5,25,5" Command="{Binding GetCustomerBillsCommand}" ></Button>
 
         <!--DataGrid-->
         <toolKit:DataGrid Name="BillsDataGrid" IsSynchronizedWithCurrentItem="True" 

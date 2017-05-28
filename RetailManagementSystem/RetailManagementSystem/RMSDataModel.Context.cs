@@ -26,7 +26,6 @@ namespace RetailManagementSystem
         }
     
         public DbSet<Company> Companies { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<MeasuringUnit> MeasuringUnits { get; set; }
         public DbSet<PriceDetail> PriceDetails { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -42,5 +41,6 @@ namespace RetailManagementSystem
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public DbSet<Customer> Customers { get; set; }
     }
 }

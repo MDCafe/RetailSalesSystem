@@ -4,12 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RetailManagementSystem.View.Masters"
+        xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
         mc:Ignorable="d"
-        Title="Customer" Height="550" Width="548.78">
+        Name="CustomerWindow"
+        Title="Customer" Height="635" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="61*"/>
-            <ColumnDefinition Width="209*"/>
+            <ColumnDefinition Width="88*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="72*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -18,30 +22,69 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Label x:Name="label" Content="Customer" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" FontSize="36" FontWeight="Bold" FontStyle="Italic" />
-        <Label x:Name="label1" Content="Name"  Margin="5" Grid.Row="1" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" Grid.Column="1" Height="20" Margin="5" Grid.Row="1"  TextWrapping="Wrap" Text="{Binding Name}" Width="300" HorizontalAlignment="Left"/>
-        
-        <Label x:Name="label2" Content="Address"  Margin="5" Grid.Row="2" VerticalAlignment="Top"/>
-        <Label x:Name="label3" Content="Mobile No"  Margin="5" Grid.Row="3" VerticalAlignment="Top"/>
-        <Label x:Name="label4" Content="Lan Line No"  Margin="5" Grid.Row="4" VerticalAlignment="Top"/>
-        <Label x:Name="label5" Content="Email"  Margin="5" Grid.Row="5" VerticalAlignment="Top"/>
-        <Label x:Name="label6" Content="Customer Type"  Margin="5" Grid.Row="6" VerticalAlignment="Top"/>
-        <Label x:Name="label7" Content="Balance Due"  Margin="5" Grid.Row="7" VerticalAlignment="Top"/>
-        <Label x:Name="label8" Content="Credit Limit"  Margin="5" Grid.Row="8"  VerticalAlignment="Top"/>
-        <Label x:Name="label9" Content="Credit Days"  Margin="5" Grid.Row="9" VerticalAlignment="Top"/>
+        <Label x:Name="label" Content="Customer" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="64,5,42,0" VerticalAlignment="Top" FontSize="36" FontWeight="Bold" FontStyle="Italic" Grid.Column="1" Height="55" Width="170" />
+        <Label x:Name="label1" Content="Name"  Margin="5,5,5,0" Grid.Row="1" VerticalAlignment="Top" Height="26"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="10"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+        <Label x:Name="label2" Content="Address"  Margin="5,5,5,0" Grid.Row="2" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label3" Content="Mobile No"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label4" Content="Lan Line No"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <Label x:Name="label5" Content="Email"  Margin="5,5,5,0" Grid.Row="4" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label6" Content="Customer Type"  Margin="5,5,5,0" Grid.Row="4" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <Label x:Name="label7" Content="Balance Due"  Margin="5,5,5,0" Grid.Row="5" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label8" Content="Credit Limit"  Margin="5,5,5,0" Grid.Row="5"  VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <Label x:Name="label9" Content="Credit Days"  Margin="5,5,5,0" Grid.Row="6" VerticalAlignment="Top" Height="26"/>
+        <Label  Content="Mobile No"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Height="26"/>
+        <Label  Content="City"  Margin="5,5,5,0" Grid.Row="2" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+
+        <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding CustomersList}"  
+                                      AutoGenerateColumns="False" RowHeight="25" 
+                                      Grid.Row="7"
+                                      SelectionMode="Single" Grid.ColumnSpan="4"
+                                      IsReadOnly="True"
+                                      Margin="5"
+                                      SelectedItem="{Binding DblClickSelectedCustomer}"
+                                       >
+            <toolKit:DataGrid.InputBindings>
+                <MouseBinding   MouseAction="LeftDoubleClick"
+                                Command="{Binding DoubleClickCommand}"
+                                CommandParameter="{Binding CollectionView/}"/>
+            </toolKit:DataGrid.InputBindings>
+            <toolKit:DataGrid.Columns>
+                <toolKit:DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                <toolKit:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <toolKit:DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="200" />
+                <toolKit:DataGridTextColumn Header="City" Binding="{Binding City}" />
+                <toolKit:DataGridTextColumn Header="Mobile No" Binding="{Binding MobileNo}" />
+                <toolKit:DataGridTextColumn Header="Balance Due" Binding="{Binding BalanceDue}" />
+                <toolKit:DataGridTextColumn Header="Credit Limit" Binding="{Binding CreditLimit}" />
+                <toolKit:DataGridTextColumn Header="Credit Days" Binding="{Binding CreditDays}" />
+            </toolKit:DataGrid.Columns>
+        </toolKit:DataGrid>
+        <TextBox Grid.Column="1" Margin="5" Grid.Row="1" Height="23" TextWrapping="Wrap" Text="{Binding SelectedCustomer.Name}" Width="217" HorizontalAlignment="Left"/>
+        <TextBox Grid.Column="1" Margin="5,5,0,5" Grid.Row="2"  TextWrapping="Wrap" Text="{Binding SelectedCustomer.Address}" Width="217" HorizontalAlignment="Left"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedCustomer.City}" VerticalAlignment="Top" Width="170"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="3" TextWrapping="Wrap" Text="{Binding SelectedCustomer.MobileNo}" VerticalAlignment="Top" Width="217"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="3" TextWrapping="Wrap" Text="{Binding SelectedCustomer.LanNo}" VerticalAlignment="Top" Width="175"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedCustomer.Email}" VerticalAlignment="Top" Width="217"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CustomerType}" VerticalAlignment="Top" Width="175"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.BalanceDue}" VerticalAlignment="Top" Width="217"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditLimit}" VerticalAlignment="Top" Width="175"/>
+        <TextBox  Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditDays}" VerticalAlignment="Top" Width="217"/>
+        <TextBox Name="txtSearch" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="81.446,8,0,0" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SearchText}" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="8"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
-        
+        <Button x:Name="button" Content="Button" Grid.Column="3" HorizontalAlignment="Left" Margin="100,12,0,0" Grid.Row="6" VerticalAlignment="Top" Width="75" Command="{Binding SearchCommand}"/>
+
     </Grid>
 </Window>

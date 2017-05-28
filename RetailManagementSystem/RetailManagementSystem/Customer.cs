@@ -16,14 +16,15 @@ namespace RetailManagementSystem
     {
         public Customer()
         {
-            this.Sales = new HashSet<Sale>();
             this.PaymentDetails = new HashSet<PaymentDetail>();
+            this.Sales = new HashSet<Sale>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
+        public string City { get; set; }
         public Nullable<int> MobileNo { get; set; }
         public Nullable<int> LanNo { get; set; }
         public string Email { get; set; }
@@ -36,7 +37,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual ICollection<Sale> Sales { get; set; }
         public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
+        public virtual ICollection<Sale> Sales { get; set; }
     }
 }

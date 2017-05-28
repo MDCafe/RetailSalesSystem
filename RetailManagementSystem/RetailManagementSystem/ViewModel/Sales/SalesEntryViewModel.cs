@@ -42,9 +42,9 @@ namespace RetailManagementSystem.ViewModel.Sales
  
         #region Constructor
         public SalesEntryViewModel(SalesParams salesParams)
-        {            
+        {
             //IsDirty = true;            
-            _rmsEntities = new RMSEntities();
+            _rmsEntities = RMSEntitiesHelper.RMSEntities;
             var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
             _saleDate = DateTime.Now;

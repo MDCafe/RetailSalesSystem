@@ -38,6 +38,7 @@
           <Property Name="Name" Type="varchar" MaxLength="45" />
           <Property Name="Description" Type="varchar" MaxLength="45" />
           <Property Name="Address" Type="varchar" MaxLength="500" />
+          <Property Name="City" Type="varchar" MaxLength="45" />
           <Property Name="MobileNo" Type="int" />
           <Property Name="LanNo" Type="int" />
           <Property Name="Email" Type="varchar" MaxLength="45" />
@@ -631,28 +632,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <NavigationProperty Name="Purchases" Relationship="Self.FK_CompanyId" FromRole="Companies" ToRole="Purchases" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_compId" FromRole="Companies" ToRole="PurchasePaymentDetails" />
         </EntityType>
-        <EntityType Name="Customer">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="MobileNo" Type="Int32" />
-          <Property Name="LanNo" Type="Int32" />
-          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="CustomerTypeId" Type="Int32" />
-          <Property Name="BalanceDue" Type="Decimal" />
-          <Property Name="CreditLimit" Type="Decimal" />
-          <Property Name="CreditDays" Type="Int32" Nullable="false" />
-          <Property Name="IsExistingCustomer" Type="Boolean" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Sales" Relationship="RMSModel.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_customerId" FromRole="Customer" ToRole="PaymentDetail" />
-        </EntityType>
         <EntityType Name="MeasuringUnit">
           <Key>
             <PropertyRef Name="Id" />
@@ -915,7 +894,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
         </Association>
         <EntityContainer Name="RMSEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Companies" EntityType="Self.Company" />
-          <EntitySet Name="Customers" EntityType="Self.Customer" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnit" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetail" />
           <EntitySet Name="Products" EntityType="Self.Product" />
@@ -966,10 +944,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
           <EntitySet Name="Sales" EntityType="RMSModel.Sale" />
-          <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Sale" EntitySet="Sales" />
-          </AssociationSet>
           <EntitySet Name="Categories" EntityType="RMSModel.Category" />
           <AssociationSet Name="FK_Category" Association="RMSModel.FK_Category">
             <End Role="Category" EntitySet="Categories" />
@@ -999,13 +973,18 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="PaymentDetails" EntityType="RMSModel.PaymentDetail" />
+          <AssociationSet Name="FK_pay_bill" Association="RMSModel.FK_pay_bill">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <EntitySet Name="Customers" EntityType="RMSModel.Customer" />
           <AssociationSet Name="FK_customerId" Association="RMSModel.FK_customerId">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_pay_bill" Association="RMSModel.FK_pay_bill">
+          <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
+            <End Role="Customer" EntitySet="Customers" />
             <End Role="Sale" EntitySet="Sales" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sale">
@@ -1024,22 +1003,10 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
           <Property Name="PaymentMode" Type="String" Nullable="false" />
-          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_pay_bill" FromRole="Sale" ToRole="PaymentDetail" />          
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_pay_bill" FromRole="Sale" ToRole="PaymentDetail" />
+          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />          
         </EntityType>
-        <Association Name="FK_Sales_Cust">
-          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Sale">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="Id" />
@@ -1176,8 +1143,43 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_customerId" FromRole="PaymentDetail" ToRole="Customer" />
           <NavigationProperty Name="Sale" Relationship="RMSModel.FK_pay_bill" FromRole="PaymentDetail" ToRole="Sale" />
+          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_customerId" FromRole="PaymentDetail" ToRole="Customer" />
+        </EntityType>
+        <Association Name="FK_pay_bill">
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="Int32" />
+          <Property Name="LanNo" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerTypeId" Type="Int32" />
+          <Property Name="BalanceDue" Type="Decimal" />
+          <Property Name="CreditLimit" Type="Decimal" />
+          <Property Name="CreditDays" Type="Int32" Nullable="false" />
+          <Property Name="IsExistingCustomer" Type="Boolean" Nullable="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_customerId" FromRole="Customer" ToRole="PaymentDetail" />
+          <NavigationProperty Name="Sales" Relationship="RMSModel.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
         </EntityType>
         <Association Name="FK_customerId">
           <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
@@ -1191,15 +1193,15 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_pay_bill">
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
-          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+        <Association Name="FK_Sales_Cust">
+          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Sale">
-              <PropertyRef Name="BillId" />
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="PaymentDetail">
-              <PropertyRef Name="BillId" />
+            <Dependent Role="Sale">
+              <PropertyRef Name="CustomerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1220,27 +1222,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="VATNo" ColumnName="VATNo" />
                 <ScalarProperty Name="IsSupplier" ColumnName="IsSupplier" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Customers">
-            <EntityTypeMapping TypeName="RMSModel.Customer">
-              <MappingFragment StoreEntitySet="Customers">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
-                <ScalarProperty Name="BalanceDue" ColumnName="BalanceDue" />
-                <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
-                <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
-                <ScalarProperty Name="IsExistingCustomer" ColumnName="IsExistingCustomer" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -1441,6 +1422,28 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="RMSModel.Customer">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="IsExistingCustomer" ColumnName="IsExistingCustomer" />
+                <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
+                <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
+                <ScalarProperty Name="BalanceDue" ColumnName="BalanceDue" />
+                <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
