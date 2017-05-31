@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
+using System.Collections.Generic;
+using System.Windows.Data;
 
 namespace RetailManagementSystem.View.Sales
 {
@@ -44,21 +46,54 @@ namespace RetailManagementSystem.View.Sales
 
             cmb.IsDropDownOpen = true;
 
+            var str1 = "this is new ";
+            var cmp1 = str1.StartsWith("this i");
+            var i1 = str1.IndexOf("new");
+
+            
+
             if (!string.IsNullOrEmpty(cmb.Text))
             {
-                string fullText = cmb.Text +  e.Text;
-                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(fullText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                //string fullText = cmb.Text.Insert(custComboBoxCol._cboTextBox.CaretIndex, e.Text);
+                string fullText = cmb.Text + e.Text;
+
+                //CollectionView cv = new CollectionView(_salesViewModel.ProductsPriceList);
+                var cvs = CollectionViewSource.GetDefaultView(_salesViewModel.ProductsPriceList);
+                cmb.ItemsSource = cvs;
+                cvs.Filter = CustomerFilter;
+                FilterString = "21 C";
+                cvs.Refresh();
+                                
+                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where
+                                  (s => s.ProductName.StartsWith(fullText,StringComparison.CurrentCultureIgnoreCase));
                 return;
             }
             //else if (!string.IsNullOrEmpty(e.Text))
             if (!string.IsNullOrEmpty(e.Text))
             {
-                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(cmb.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             else
             {
                 cmb.ItemsSource = _salesViewModel.ProductsPriceList;
             }        
+        }
+
+        private bool CustomerFilter(object item)
+        {
+            ProductPrice productPrice = item as ProductPrice;
+            return productPrice.ProductName.Contains(_filterString);
+        }
+
+        public string FilterString
+        {
+            get { return _filterString; }
+            set
+            {
+                _filterString = value;
+                //NotifyPropertyChanged("FilterString");
+                //_customerView.Refresh();
+            }
         }
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
@@ -118,5 +153,19 @@ namespace RetailManagementSystem.View.Sales
     //        public string CustomerDescription { get; set; }
     //    }
     //}
+
+    class StringComparer : EqualityComparer<string>
+    {
+        public override bool Equals(string x, string y)
+        {
+            return x.Equals(y, StringComparison.OrdinalIgnoreCase);
+
+        }
+
+        public override int GetHashCode(string obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
 
 }

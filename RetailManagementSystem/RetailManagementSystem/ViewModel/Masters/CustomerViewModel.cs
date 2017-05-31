@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System.Windows;
+using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -12,6 +13,7 @@ namespace RetailManagementSystem.ViewModel.Masters
     {
         Customer _customer;
         bool _isEditMode;
+        IEnumerable<Customer> _customersList;
 
         public CustomerViewModel()
         {
@@ -25,7 +27,16 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             get
             {
-                return RMSEntitiesHelper.RMSEntities.Customers.ToList();
+                if(_customersList == null)
+                    _customersList = RMSEntitiesHelper.RMSEntities.Customers.ToList();
+
+                return _customersList;
+            }
+
+            private set
+            {
+                _customersList = value;
+                RaisePropertyChanged("CustomersList");
             }
         }
 
@@ -101,6 +112,8 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                             _isEditMode = false;
                             DblClickSelectedCustomer = null;
+                            CustomersList = RMSEntitiesHelper.RMSEntities.Customers.ToList();
+                            SearchText = "";
                         }
                         );
                 }
@@ -175,13 +188,19 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         private void OnDelete()
         {
-            var msgResult = Utilities.Utility.ShowMessageBoxWithOptions("Do you want to delete the customer : " + _customer.Name);
+            var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to delete the customer : " + _customer.Name);
             if(msgResult != MessageBoxResult.Yes)
             {
                 return;
             }
 
             var cust = RMSEntitiesHelper.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+            if(cust == null)
+            {
+                Utility.ShowMessageBoxWithOptions("Customer : " + _customer.Name + " doesn't exist");
+                return;
+            }
+
             RMSEntitiesHelper.RMSEntities.Customers.Remove(cust);
             RMSEntitiesHelper.RMSEntities.SaveChanges();
             ClearCommand.Execute(null);
@@ -227,8 +246,9 @@ namespace RetailManagementSystem.ViewModel.Masters
                         (
                             p =>
                             {
-                                CustomersList.Where(c => c.Name == SearchText);
-                                RaisePropertyChanged("CustomersList");
+                                if (string.IsNullOrWhiteSpace(SearchText)) return;
+                                CustomersList = CustomersList.Where(c => c.Name.StartsWith(SearchText,StringComparison.InvariantCultureIgnoreCase));
+                                
                             }
                         );
                 }

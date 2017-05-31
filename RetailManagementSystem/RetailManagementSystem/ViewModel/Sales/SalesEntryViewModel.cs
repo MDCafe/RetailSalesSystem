@@ -34,6 +34,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         string _selectedCustomerText;
         IExtensions _extensions;
         bool _isEditMode;
+        System.Timers.Timer _timer;
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
@@ -43,11 +44,31 @@ namespace RetailManagementSystem.ViewModel.Sales
         #region Constructor
         public SalesEntryViewModel(SalesParams salesParams)
         {
-            //IsDirty = true;            
             _rmsEntities = RMSEntitiesHelper.RMSEntities;
             var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
             _saleDate = DateTime.Now;
+                
+            _timer = new System.Timers.Timer();
+            _timer.Interval = 10000;
+            _timer.Elapsed += (s, e) =>
+            {
+                //Save to temp table
+                foreach (var item in _salesDetailsList)
+                {
+                    _rmsEntities.SaleTemps.Add
+                    (
+                        new SaleTemp()
+                        {
+                            SaleDate = _saleDate,
+                            CustomerId = _selectedCustomer.Id,
+
+                        }
+                    );
+                }
+            };
+
+            
 
             var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
             _othersCategoryId = othersCategory.Id;
@@ -88,8 +109,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SetRunningBillNo();
             }
 
-        }
-       
+        }        
+
         #endregion
 
         #region Getters and Setters
@@ -633,6 +654,30 @@ namespace RetailManagementSystem.ViewModel.Sales
             _extensions.Clear();
             SetRunningBillNo();
             _isEditMode = false;
+        }
+
+        #endregion
+
+        #region Add Customer Command
+        RelayCommand<object> _addCustomerCommand = null;
+
+        public ICommand AddCustomerCommand
+        {
+            get
+            {
+                if (_addCustomerCommand == null)
+                {
+                    _addCustomerCommand = new RelayCommand<object>((p) => AddCustomer());
+                }
+
+                return _addCustomerCommand;
+            }
+        }
+
+        private void AddCustomer()
+        {
+            Workspace.This.OpenCustomerCommand.Execute(null);
+            RaisePropertyChanged("CustomersList");
         }
 
         #endregion

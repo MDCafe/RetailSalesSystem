@@ -41,6 +41,7 @@
         <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="3" PointY="6.25" />
         <AssociationConnector Association="RMSModel.FK_customerId" />
         <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
+        <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

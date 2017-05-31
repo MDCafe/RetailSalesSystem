@@ -7,7 +7,7 @@
         xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
         mc:Ignorable="d"
         Name="CustomerWindow"
-        Title="Customer" Height="635" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+        Title="Customer" Height="675" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="61*"/>
@@ -23,6 +23,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="200"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
@@ -43,7 +44,7 @@
         <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding CustomersList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
-                                      Grid.Row="7"
+                                      Grid.Row="8"
                                       SelectionMode="Single" Grid.ColumnSpan="4"
                                       IsReadOnly="True"
                                       Margin="5"
@@ -75,16 +76,30 @@
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.BalanceDue}" VerticalAlignment="Top" Width="217"/>
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditLimit}" VerticalAlignment="Top" Width="175"/>
         <TextBox  Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditDays}" VerticalAlignment="Top" Width="217"/>
-        <TextBox Name="txtSearch" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="81.446,8,0,0" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SearchText}" VerticalAlignment="Top" Width="217" Grid.ColumnSpan="2"/>
+        <Label Content="Search on Customer Name" Grid.Row="7" Grid.Column="0" ></Label>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="8"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
+        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3">
+            <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                      Width="217">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}"></KeyBinding>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Image Source="/RetailManagementSystem;component/Images/search_blue.png" >
+                <Image.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding SearchCommand, Mode=OneTime}" />
+                </Image.InputBindings>
+            </Image>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="9"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
                 CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
-        <Button x:Name="button" Content="Button" Grid.Column="3" HorizontalAlignment="Left" Margin="100,12,0,0" Grid.Row="6" VerticalAlignment="Top" Width="75" Command="{Binding SearchCommand}"/>
+        
 
     </Grid>
 </Window>
