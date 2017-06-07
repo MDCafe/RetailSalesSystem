@@ -28,7 +28,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             get
             {
                 if(_customersList == null)
-                    _customersList = RMSEntitiesHelper.RMSEntities.Customers.ToList();
+                    _customersList = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
 
                 return _customersList;
             }
@@ -112,7 +112,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                             _isEditMode = false;
                             DblClickSelectedCustomer = null;
-                            CustomersList = RMSEntitiesHelper.RMSEntities.Customers.ToList();
+                            CustomersList = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
                             SearchText = "";
                         }
                         );
@@ -149,13 +149,13 @@ namespace RetailManagementSystem.ViewModel.Masters
             {
                 if (_isEditMode)
                 {
-                    var cust = RMSEntitiesHelper.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+                    var cust = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
                     cust = _customer;
                 }
                 else
-                    RMSEntitiesHelper.RMSEntities.Customers.Add(_customer);
+                    RMSEntitiesHelper.Instance.RMSEntities.Customers.Add(_customer);
 
-                RMSEntitiesHelper.RMSEntities.SaveChanges();
+                RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
                 ClearCommand.Execute(null);
                 RaisePropertyChanged("CustomersList");
             }
@@ -194,15 +194,15 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return;
             }
 
-            var cust = RMSEntitiesHelper.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+            var cust = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
             if(cust == null)
             {
                 Utility.ShowMessageBoxWithOptions("Customer : " + _customer.Name + " doesn't exist");
                 return;
             }
 
-            RMSEntitiesHelper.RMSEntities.Customers.Remove(cust);
-            RMSEntitiesHelper.RMSEntities.SaveChanges();
+            RMSEntitiesHelper.Instance.RMSEntities.Customers.Remove(cust);
+            RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
             ClearCommand.Execute(null);
             RaisePropertyChanged("CustomersList");         
         }

@@ -16,8 +16,8 @@ namespace RetailManagementSystem
     {
         public Sale()
         {
-            this.SaleDetails = new HashSet<SaleDetail>();
             this.PaymentDetails = new HashSet<PaymentDetail>();
+            this.SaleDetails = new HashSet<SaleDetail>();
         }
     
         public int BillId { get; set; }
@@ -33,8 +33,8 @@ namespace RetailManagementSystem
         public int RunningBillNo { get; set; }
         public string PaymentMode { get; set; }
     
-        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
-        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
+        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
     }
 }

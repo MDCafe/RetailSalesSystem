@@ -14,8 +14,10 @@ namespace RetailManagementSystem
     
     public partial class SaleTemp
     {
-        public System.DateTime SaleDate { get; set; }
-        public string CustomerId { get; set; }
+        public int Id { get; set; }
+        public string Guid { get; set; }
+        public Nullable<System.DateTime> SaleDate { get; set; }
+        public Nullable<int> CustomerId { get; set; }
         public string PaymentMode { get; set; }
         public string OrderNo { get; set; }
         public Nullable<int> ProductId { get; set; }

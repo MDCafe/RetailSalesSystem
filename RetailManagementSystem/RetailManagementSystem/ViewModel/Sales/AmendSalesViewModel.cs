@@ -5,7 +5,6 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System.Collections.Generic;
-using System;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {

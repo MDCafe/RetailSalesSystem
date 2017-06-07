@@ -181,7 +181,7 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        internal void Close(DocumentViewModel doc)
+        internal bool Close(DocumentViewModel doc)
         {
             {
                 DocumentViewModel docToClose = doc as DocumentViewModel;
@@ -192,15 +192,16 @@ namespace RetailManagementSystem.ViewModel
                     {
                         var res = MessageBox.Show("Unsaved changes..!! Do you want to save?", "Product Info here--", MessageBoxButton.YesNoCancel);
                         if (res == MessageBoxResult.Cancel)
-                            return;
+                            return false;
 
                         if (res == MessageBoxResult.Yes)
                         {
                             doc.SaveCommand.Execute(null);
                         }
                     }
-                    _documentViewModels.Remove(docToClose);
+                    _documentViewModels.Remove(docToClose);                    
                 }
+                return true;
             }
         }
 

@@ -25,23 +25,23 @@
         <AssociationConnector Association="RMSModel.FK_ProductId_RD" ManuallyRouted="false" />
         <AssociationConnector Association="RMSModel.FK_PurchaseBillId" ManuallyRouted="false" />
         <AssociationConnector Association="RMSModel.FK_purchaseId" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="8.25" PointY="7.375" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.Category" Width="1.5" PointX="0.75" PointY="3.875" />
         <AssociationConnector Association="RMSModel.FK_Category" />
         <EntityTypeShape EntityType="RMSModel.SaleDetail" Width="1.5" PointX="10.5" PointY="10.375" />
         <AssociationConnector Association="RMSModel.FK_price_id" />
         <AssociationConnector Association="RMSModel.FK_ProdId" />
-        <AssociationConnector Association="RMSModel.Fk_sale_bill" />
         <EntityTypeShape EntityType="RMSModel.Stock" Width="1.5" PointX="5.25" PointY="12" />
         <AssociationConnector Association="RMSModel.FK_PrdId" />
         <EntityTypeShape EntityType="RMSModel.Role" Width="1.5" PointX="0.75" PointY="7.25" />
         <AssociationConnector Association="RMSModel.fk_role" />
         <EntityTypeShape EntityType="RMSModel.PaymentDetail" Width="1.5" PointX="10.5" PointY="5.625" />
-        <AssociationConnector Association="RMSModel.FK_pay_bill" />
         <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="3" PointY="6.25" />
         <AssociationConnector Association="RMSModel.FK_customerId" />
-        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
         <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
+        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
+        <AssociationConnector Association="RMSModel.FK_pay_bill" />
+        <AssociationConnector Association="RMSModel.Fk_sale_bill" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -222,9 +222,12 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
         </EntityType>
         <EntityType Name="SaleTemp">
           <Key>
-            <PropertyRef Name="SaleDate" />
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guid" />
           </Key>
-          <Property Name="SaleDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Guid" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="SaleDate" Type="datetime" Precision="0" />
           <Property Name="CustomerId" Type="int" />
           <Property Name="PaymentMode" Type="varchar" MaxLength="6" />
           <Property Name="OrderNo" Type="varchar" MaxLength="45" />
@@ -961,7 +964,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Purchases" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
-          <EntitySet Name="Sales" EntityType="RMSModel.Sale" />
           <EntitySet Name="Categories" EntityType="RMSModel.Category" />
           <AssociationSet Name="FK_Category" Association="RMSModel.FK_Category">
             <End Role="Category" EntitySet="Categories" />
@@ -976,10 +978,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Product" EntitySet="Products" />
             <End Role="SaleDetail" EntitySet="SaleDetails" />
           </AssociationSet>
-          <AssociationSet Name="Fk_sale_bill" Association="RMSModel.Fk_sale_bill">
-            <End Role="Sale" EntitySet="Sales" />
-            <End Role="SaleDetail" EntitySet="SaleDetails" />
-          </AssociationSet>
           <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
           <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
             <End Role="Product" EntitySet="Products" />
@@ -991,41 +989,26 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="PaymentDetails" EntityType="RMSModel.PaymentDetail" />
-          <AssociationSet Name="FK_pay_bill" Association="RMSModel.FK_pay_bill">
-            <End Role="Sale" EntitySet="Sales" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
           <EntitySet Name="Customers" EntityType="RMSModel.Customer" />
           <AssociationSet Name="FK_customerId" Association="RMSModel.FK_customerId">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
+          <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
+          <EntitySet Name="Sales" EntityType="RMSModel.Sale" />
           <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Sale" EntitySet="Sales" />
           </AssociationSet>
-          <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
+          <AssociationSet Name="FK_pay_bill" Association="RMSModel.FK_pay_bill">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_sale_bill" Association="RMSModel.Fk_sale_bill">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
           </EntityContainer>
-        <EntityType Name="Sale">
-          <Key>
-            <PropertyRef Name="BillId" />
-          </Key>
-          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CustomerId" Type="Int32" Nullable="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="TransportCharges" Type="Decimal" />
-          <Property Name="TotalAmount" Type="Decimal" />
-          <Property Name="IsCancelled" Type="Boolean" />
-          <Property Name="CustomerOrderNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
-          <Property Name="PaymentMode" Type="String" Nullable="false" />
-          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_pay_bill" FromRole="Sale" ToRole="PaymentDetail" />
-          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />          
-        </EntityType>
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="Id" />
@@ -1091,18 +1074,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Fk_sale_bill">
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
-          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sale">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="SaleDetail">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Stock">
           <Key>
             <PropertyRef Name="ProductId" />
@@ -1162,21 +1133,9 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Sale" Relationship="RMSModel.FK_pay_bill" FromRole="PaymentDetail" ToRole="Sale" />
           <NavigationProperty Name="Customer" Relationship="RMSModel.FK_customerId" FromRole="PaymentDetail" ToRole="Customer" />
+          <NavigationProperty Name="Sale" Relationship="RMSModel.FK_pay_bill" FromRole="PaymentDetail" ToRole="Sale" />
         </EntityType>
-        <Association Name="FK_pay_bill">
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
-          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sale">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PaymentDetail">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
@@ -1212,23 +1171,14 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Sales_Cust">
-          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Sale">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="SaleTemp">
           <Key>
-            <PropertyRef Name="SaleDate" />
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guid" />
           </Key>
-          <Property Name="SaleDate" Type="DateTime" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Guid" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SaleDate" Type="DateTime" />
           <Property Name="CustomerId" Type="Int32" />
           <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="OrderNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
@@ -1241,6 +1191,62 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="BillId" />
+          </Key>
+          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="TransportCharges" Type="Decimal" />
+          <Property Name="TotalAmount" Type="Decimal" />
+          <Property Name="IsCancelled" Type="Boolean" />
+          <Property Name="CustomerOrderNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
+          <Property Name="PaymentMode" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_pay_bill" FromRole="Sale" ToRole="PaymentDetail" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
+        </EntityType>
+        <Association Name="FK_Sales_Cust">
+          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pay_bill">
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_sale_bill">
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1385,24 +1391,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Sales">
-            <EntityTypeMapping TypeName="RMSModel.Sale">
-              <MappingFragment StoreEntitySet="Sales">
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="CustomerOrderNo" ColumnName="CustomerOrderNo" />
-                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
-                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
-                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="RMSModel.Category">
               <MappingFragment StoreEntitySet="Category">
@@ -1499,6 +1487,26 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sales">
+            <EntityTypeMapping TypeName="RMSModel.Sale">
+              <MappingFragment StoreEntitySet="Sales">
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="CustomerOrderNo" ColumnName="CustomerOrderNo" />
+                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

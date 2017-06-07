@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
+using System.Windows;
 
 namespace RetailManagementSystem.View.Sales
 {
@@ -12,7 +13,7 @@ namespace RetailManagementSystem.View.Sales
     public partial class SalesEntry : UserControl
     {
         SalesEntryViewModel _salesViewModel;
-        private string _filterString;
+       
 
         public SalesEntry()
         {
@@ -21,7 +22,7 @@ namespace RetailManagementSystem.View.Sales
             DataContextChanged += (sender, eventArgs) =>
             {
                 _salesViewModel = this.DataContext as SalesEntryViewModel;
-                this.custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
                 _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
             };
 

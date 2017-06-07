@@ -35,7 +35,6 @@ namespace RetailManagementSystem
         public DbSet<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
         public DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public DbSet<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
-        public DbSet<Sale> Sales { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SaleDetail> SaleDetails { get; set; }
         public DbSet<Stock> Stocks { get; set; }
@@ -43,5 +42,6 @@ namespace RetailManagementSystem
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<SaleTemp> SaleTemps { get; set; }
+        public DbSet<Sale> Sales { get; set; }
     }
 }

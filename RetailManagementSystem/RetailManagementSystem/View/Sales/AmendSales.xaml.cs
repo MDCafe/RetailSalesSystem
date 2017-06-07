@@ -17,8 +17,9 @@ namespace RetailManagementSystem.View.Sales
         }
 
         private void BillsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {            
-            amVM.BillNo = ((Sale)(((ItemsControl)sender).Items[0])).RunningBillNo;            
+        {
+            var dataGrid = sender as Microsoft.Windows.Controls.DataGrid;
+            amVM.BillNo = ((Sale)(((ItemsControl)sender).Items[dataGrid.SelectedIndex])).RunningBillNo;            
         }
     }
 }
