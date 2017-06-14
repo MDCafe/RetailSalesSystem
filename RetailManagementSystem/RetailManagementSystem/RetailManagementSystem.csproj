@@ -121,6 +121,7 @@
     <Compile Include="MeasuringUnit.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\PurchaseDetailExtn.cs" />
     <Compile Include="Model\SaleDetailExtn.cs" />
     <Compile Include="PaymentDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
@@ -193,6 +194,7 @@
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
+    <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
@@ -209,6 +211,9 @@
     <Compile Include="View\Pane\LayoutInitializer.cs" />
     <Compile Include="View\Pane\PanesStyleSelector.cs" />
     <Compile Include="View\Pane\PanesTemplateSelector.cs" />
+    <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
+      <DependentUpon>PurchaseEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Reports.xaml.cs">
       <DependentUpon>Reports.xaml</DependentUpon>
     </Compile>
@@ -241,6 +246,10 @@
     <Page Include="View\Masters\Customer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Purchases\PurchaseEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Reports.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -31,8 +31,8 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual Company Company { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

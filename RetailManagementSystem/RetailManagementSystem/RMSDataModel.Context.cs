@@ -25,7 +25,6 @@ namespace RetailManagementSystem
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<Company> Companies { get; set; }
         public DbSet<MeasuringUnit> MeasuringUnits { get; set; }
         public DbSet<PriceDetail> PriceDetails { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -43,5 +42,6 @@ namespace RetailManagementSystem
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleTemp> SaleTemps { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

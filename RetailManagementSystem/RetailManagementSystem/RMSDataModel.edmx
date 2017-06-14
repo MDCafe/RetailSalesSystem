@@ -26,6 +26,7 @@
           <Property Name="Email" Type="varchar" MaxLength="45" />
           <Property Name="VATNo" Type="varchar" MaxLength="15" />
           <Property Name="IsSupplier" Type="bool" Nullable="false" />
+          <Property Name="CategoryTypeId" Type="int" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -635,25 +636,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Company">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="MobileNo" Type="Int32" />
-          <Property Name="LanNo" Type="Int32" />
-          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="VATNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="IsSupplier" Type="Boolean" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Company" FromRole="Companies" ToRole="Products" />
-          <NavigationProperty Name="Purchases" Relationship="Self.FK_CompanyId" FromRole="Companies" ToRole="Purchases" />
-          <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_compId" FromRole="Companies" ToRole="PurchasePaymentDetails" />
-        </EntityType>
         <EntityType Name="MeasuringUnit">
           <Key>
             <PropertyRef Name="Id" />
@@ -693,7 +675,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_Company" FromRole="Products" ToRole="Companies" />
           <NavigationProperty Name="MeasuringUnit" Relationship="Self.FK_MOU" FromRole="Products" ToRole="MeasuringUnits" />
           <NavigationProperty Name="PriceDetails" Relationship="Self.FK_Product" FromRole="Products" ToRole="PriceDetails" />
           <NavigationProperty Name="PurchaseFreeDetail" Relationship="Self.FK_ProductFree" FromRole="Products" ToRole="PurchaseFreeDetails" />
@@ -702,6 +683,7 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <NavigationProperty Name="Category" Relationship="RMSModel.FK_Category" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
           <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
+          <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
         </EntityType>
         <EntityType Name="Purchase">
           <Key>
@@ -717,9 +699,9 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_CompanyId" FromRole="Purchases" ToRole="Companies" />
           <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_PurchaseBillId" FromRole="Purchases" ToRole="PurchaseDetails" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_purchaseId" FromRole="Purchases" ToRole="PurchasePaymentDetails" />
+          <NavigationProperty Name="Company" Relationship="RMSModel.FK_CompanyId" FromRole="Purchase" ToRole="Company" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -775,8 +757,8 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_compId" FromRole="PurchasePaymentDetails" ToRole="Companies" />
           <NavigationProperty Name="Purchase" Relationship="Self.FK_purchaseId" FromRole="PurchasePaymentDetails" ToRole="Purchases" />
+          <NavigationProperty Name="Company" Relationship="RMSModel.FK_compId" FromRole="PurchasePaymentDetail" ToRole="Company" />
         </EntityType>
         <EntityType Name="ReturnDamagedStock">
           <Key>
@@ -794,42 +776,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
-        <Association Name="FK_Company">
-          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
-          <End Role="Products" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CompanyId">
-          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Purchases">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_compId">
-          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
-          <End Role="PurchasePaymentDetails" Type="Self.PurchasePaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchasePaymentDetails">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_MOU">
           <End Role="MeasuringUnits" Type="Self.MeasuringUnit" Multiplicity="0..1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
@@ -915,7 +861,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="RMSEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Companies" EntityType="Self.Company" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnit" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetail" />
           <EntitySet Name="Products" EntityType="Self.Product" />
@@ -925,18 +870,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetail" />
           <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetail" />
           <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStock" />
-          <AssociationSet Name="FK_Company" Association="Self.FK_Company">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Products" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CompanyId" Association="Self.FK_CompanyId">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Purchases" EntitySet="Purchases" />
-          </AssociationSet>
-          <AssociationSet Name="FK_compId" Association="Self.FK_compId">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_MOU" Association="Self.FK_MOU">
             <End Role="MeasuringUnits" EntitySet="MeasuringUnits" />
             <End Role="Products" EntitySet="Products" />
@@ -1009,6 +942,19 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="SaleDetail" EntitySet="SaleDetails" />
           </AssociationSet>
           <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
+          <EntitySet Name="Companies" EntityType="RMSModel.Company" />
+          <AssociationSet Name="FK_Company" Association="RMSModel.FK_Company">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyId" Association="RMSModel.FK_CompanyId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Purchase" EntitySet="Purchases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_compId" Association="RMSModel.FK_compId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -1249,29 +1195,68 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="Int32" />
+          <Property Name="LanNo" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="VATNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="IsSupplier" Type="Boolean" Nullable="false" />
+          <Property Name="CategoryTypeId" Type="Int32" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="Products" Relationship="RMSModel.FK_Company" FromRole="Company" ToRole="Product" />
+          <NavigationProperty Name="Purchases" Relationship="RMSModel.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
+          <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSModel.FK_compId" FromRole="Company" ToRole="PurchasePaymentDetail" />
+        </EntityType>
+        <Association Name="FK_Company">
+          <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyId">
+          <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSModel.Purchase" Role="Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Purchase">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_compId">
+          <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSModel.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchasePaymentDetail">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="RMSModelStoreContainer" CdmEntityContainer="RMSEntities">
-          <EntitySetMapping Name="Companies">
-            <EntityTypeMapping TypeName="RMSModel.Company">
-              <MappingFragment StoreEntitySet="Companies">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="VATNo" ColumnName="VATNo" />
-                <ScalarProperty Name="IsSupplier" ColumnName="IsSupplier" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MeasuringUnits">
             <EntityTypeMapping TypeName="RMSModel.MeasuringUnit">
               <MappingFragment StoreEntitySet="MeasuringUnits">
@@ -1509,6 +1494,24 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
                 <ScalarProperty Name="Guid" ColumnName="Guid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Companies">
+            <EntityTypeMapping TypeName="RMSModel.Company">
+              <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="CategoryTypeId" ColumnName="CategoryTypeId" />
+                <ScalarProperty Name="IsSupplier" ColumnName="IsSupplier" />
+                <ScalarProperty Name="VATNo" ColumnName="VATNo" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

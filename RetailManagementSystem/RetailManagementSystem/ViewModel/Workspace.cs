@@ -14,6 +14,7 @@ using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Masters;
+using RetailManagementSystem.ViewModel.Purchases;
 //using SimpleControls.MRU.ViewModel;
 
 namespace RetailManagementSystem.ViewModel
@@ -143,6 +144,41 @@ namespace RetailManagementSystem.ViewModel
             catch (Exceptions.RMSException ex)
             {
                 Utility.ShowErrorBox(ex.Message);                
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #region OpenPurchaseEntryCommand
+        RelayCommand<object> _openPurchaseEntryCommand = null;
+        public ICommand OpenPurchaseEntryCommand
+        {
+            get
+            {
+                if (_openPurchaseEntryCommand == null)
+                {
+                    _openPurchaseEntryCommand = new RelayCommand<object>((p) => OnOpenPurchaseEntryCommand(p));
+                }
+
+                return _openPurchaseEntryCommand;
+            }
+        }        
+
+        private void OnOpenPurchaseEntryCommand(object param)
+        {            
+            try
+            {
+                _documentViewModels.Add(new PurchaseEntryViewModel());
+                ActiveDocument = _documentViewModels.Last();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
             }
             catch (Exception ex)
             {

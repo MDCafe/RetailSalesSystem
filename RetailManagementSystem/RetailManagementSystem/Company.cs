@@ -29,6 +29,7 @@ namespace RetailManagementSystem
         public string Email { get; set; }
         public string VATNo { get; set; }
         public bool IsSupplier { get; set; }
+        public Nullable<int> CategoryTypeId { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }

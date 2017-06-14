@@ -35,7 +35,6 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual Company Company { get; set; }
         public virtual MeasuringUnit MeasuringUnit { get; set; }
         public virtual ICollection<PriceDetail> PriceDetails { get; set; }
         public virtual PurchaseFreeDetail PurchaseFreeDetail { get; set; }
@@ -44,5 +43,6 @@ namespace RetailManagementSystem
         public virtual Category Category { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
         public virtual ICollection<Stock> Stocks { get; set; }
+        public virtual Company Company { get; set; }
     }
 }
