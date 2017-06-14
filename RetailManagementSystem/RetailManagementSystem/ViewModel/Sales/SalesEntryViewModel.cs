@@ -27,21 +27,20 @@ namespace RetailManagementSystem.ViewModel.Sales
         Sale _billSales;
         int _runningBillNo;
         bool _showAllCustomers;
-        int _categoryId;
-        int _othersCategoryId;
+        int _categoryId;        
         decimal? _totalAmount = 0;        
         decimal? _totalDiscountPercent;
         decimal? _totalDiscountAmount;
         decimal _totalAmountDisplay = 0.0M;
         decimal _amountPaid = 0.0M;
-        char _selectedPaymentId;
-        Category _category = null;
+        char _selectedPaymentId;        
         string _selectedCustomerText;
         IExtensions _extensions;
         bool _isEditMode;
         System.Timers.Timer _timer;
-        static object rootLock;
-        string _guid;        
+        static object rootLock = new object();
+        string _guid;
+        SalesParams _salesParams;        
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
@@ -51,27 +50,24 @@ namespace RetailManagementSystem.ViewModel.Sales
         #region Constructor
         public SalesEntryViewModel(SalesParams salesParams)
         {
+            _salesParams = salesParams;
             _rmsEntities = RMSEntitiesHelper.Instance.RMSEntities;
             var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
             _saleDate = DateTime.Now;
-
             
-
-
-            var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
-            _othersCategoryId = othersCategory.Id;
+            //var hotelRetailCategory = _rmsEntities.Categories.FirstOrDefault(c => c.Id != 4);
+            //_hotelCategoryId = hotelRetailCategory.Id;
 
             _showAllCustomers = salesParams.ShowAllCustomers;
 
             if (_showAllCustomers)
-                _categoryId = _othersCategoryId;
+                _categoryId = Constants.CUSTOMERS_OTHERS;
             else
             {
-                _category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
-                _categoryId = _category.Id;
+                _categoryId = Constants.CUSTOMERS_HOTEL;
             }
-           
+
             _paymentModes = new List<PaymentMode>(2)
             {
                 new PaymentMode {PaymentId = '0',PaymentName="Cash" },
@@ -87,18 +83,73 @@ namespace RetailManagementSystem.ViewModel.Sales
             GetProductPriceList();
             SelectedPaymentId = '0';
 
-            if (salesParams !=null &&  salesParams.Billno.HasValue)
-            {                
-                OnEditBill(salesParams.Billno.Value);                
-                Title = "Sale Bill Amend :" + _runningBillNo;                               
-            }
-            else
+            if (salesParams != null)
             {
-                Title = "Sales Entry";
-                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-                RMSEntitiesHelper.Instance.AddNotifier(this);
-                SaveDataTemp();
+                if (salesParams.Billno.HasValue)
+                {
+                    //Amend Bill             
+                    OnEditBill(salesParams.Billno.Value);
+                    Title = "Sale Bill Amend :" + _runningBillNo;
+                    return;
+                }
+                else if (salesParams.GetTemproaryData)
+                {
+                    GetTempDataFromDB();
+                    return;
+                }
+                //return;
             }
+            
+            Title = "Sales Entry";
+            RMSEntitiesHelper.Instance.AddNotifier(this);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            SaveDataTemp();            
+        }
+
+        private void GetTempDataFromDB()
+        {
+            var tempData = _rmsEntities.SaleTemps.ToList();            
+            var tempDataFirst = _rmsEntities.SaleTemps.ToList().FirstOrDefault();
+
+            SelectedCustomer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == tempDataFirst.CustomerId.Value);
+            _categoryId = _rmsEntities.Categories.FirstOrDefault(c => c.Id == SelectedCustomer.CustomerTypeId).Id;
+            SelectedCustomerText = SelectedCustomer.Name;
+            _selectedPaymentMode = new PaymentMode();
+            SelectedPaymentId = char.Parse(tempDataFirst.PaymentMode);
+            RaisePropertyChanged("SelectedCustomer");
+            //RaisePropertyChanged("SelectedPaymentMode");
+            OrderNo = tempDataFirst.OrderNo;
+            SaleDate = tempDataFirst.SaleDate.Value;
+            _guid = tempDataFirst.Guid;
+
+            var tempTotalAmount = 0.0M;
+            foreach (var saleDetailItem in tempData)
+            {
+                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
+                var saleDetailExtn = new SaleDetailExtn()
+                {
+                    Discount = saleDetailItem.DiscountAmount,
+                    DiscountPercentage = saleDetailItem.DiscountPercentage.Value,
+                    PriceId = saleDetailItem.PriceId.Value,
+                    ProductId = saleDetailItem.ProductId.Value,
+                    Qty = saleDetailItem.Quantity,
+                    OriginalQty = saleDetailItem.Quantity,
+                    SellingPrice = saleDetailItem.SellingPrice,                    
+                    CostPrice = productPrice.Price,
+                    AvailableStock = productPrice.Quantity,
+                    Amount = productPrice.SellingPrice * saleDetailItem.Quantity.Value                    
+                };
+
+                SaleDetailList.Add(saleDetailExtn);
+                SetSaleDetailExtn(productPrice, saleDetailExtn);
+
+                tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Quantity.Value;
+            }
+            TotalAmount = tempTotalAmount;
+
+            Title = "Unsaved  data ";
+            RMSEntitiesHelper.Instance.AddNotifier(this);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
         }
 
 
@@ -110,9 +161,12 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get
             {
-                if (_showAllCustomers)
-                    return _rmsEntities.Customers.Local;
-                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != _othersCategoryId);
+                if (_salesParams.GetTemproaryData)
+                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId ==  _categoryId);
+                if(_salesParams.ShowAllCustomers)
+                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+
+                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
             }
         }
          
@@ -455,14 +509,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
            
             _rmsEntities.Sales.Add(_billSales);
-            _category.RollingNo = _runningBillNo;
-            //}
-            //else
-            //{
-            //    var saleToEdit = _rmsEntities.Sales.Where(s => s.RunningBillNo == _billSales.RunningBillNo).FirstOrDefault();
-            //    saleToEdit = _billSales;
-            //}
 
+            var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+            _category.RollingNo = _runningBillNo;
+            
 
             //check if complete amount is paid, else mark it in advancedetails table against the customer
             var outstandingBalance = _totalAmount.Value - AmountPaid;
@@ -494,6 +544,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             _rmsEntities.SaveChanges();
             Monitor.Exit(rootLock);
             log.DebugFormat("Exit save :{0}", _guid);
+            if (_salesParams.GetTemproaryData)
+                _closeCommand.Execute(null);
             Clear();
         }
 
@@ -779,10 +831,9 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void SaveDataTemp()
         {
-            _guid = Guid.NewGuid().ToString();
-            rootLock = new object();
+            _guid = Guid.NewGuid().ToString();          
             _timer = new System.Timers.Timer();
-            _timer.Interval = 30000;
+            _timer.Interval = 60000;
             _timer.Start();
             //var rmsEntityTemp = RMSEntitiesHelper.GetNewInstance();
             //_rmsEntities.SaleTemps.ToList();
@@ -824,6 +875,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             tempItem.DiscountPercentage = item.DiscountPercentage;
                             tempItem.DiscountAmount = item.DiscountAmount;
                             tempItem.Amount = item.Amount;
+                            tempItem.PriceId = item.PriceId;
                             continue;
                         }
 
@@ -840,7 +892,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                             SellingPrice = item.SellingPrice,
                             DiscountPercentage = item.DiscountPercentage,
                             DiscountAmount = item.DiscountAmount,
-                            Amount = item.Amount
+                            Amount = item.Amount,
+                            PriceId = item.PriceId
                         };
 
                         //    _rmsEntities.Entry(newSaletemp).State = System.Data.EntityState.Added;

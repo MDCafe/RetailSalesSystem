@@ -80,6 +80,37 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenSalesEntryTempCommand
+        RelayCommand<object> _openSalesEntryTempCommand = null;
+        public ICommand OpenSalesEntryTempCommand
+        {
+            get
+            {
+                if (_openSalesEntryTempCommand == null)
+                {
+                    _openSalesEntryTempCommand = new RelayCommand<object>((p) => OnOpenSalesEntryTempCommand(p));
+                }
+
+                return _openSalesEntryTempCommand;
+            }
+        }      
+
+        private void OnOpenSalesEntryTempCommand(object paramValue)
+        {
+            //check if temp data exists 
+            if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
+            {
+                Utility.ShowErrorBox("No temporary data is available");
+                return;
+            }
+
+            var salesParams = new SalesParams() { GetTemproaryData = true };
+            _documentViewModels.Add(new SalesEntryViewModel(salesParams));
+            ActiveDocument = _documentViewModels.Last();
+        }
+
+        #endregion
+
         #region OpenAmendSalesCommand
         RelayCommand<object> _openAmendSalesCommand = null;
         public ICommand OpenAmendSalesCommand

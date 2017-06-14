@@ -237,6 +237,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="DiscountPercentage" Type="decimal" Precision="10" Scale="0" />
           <Property Name="DiscountAmount" Type="decimal" Precision="10" Scale="0" />
           <Property Name="Amount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="PriceId" Type="int" />
           <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -994,7 +995,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Customer" EntitySet="Customers" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
-          <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
           <EntitySet Name="Sales" EntityType="RMSModel.Sale" />
           <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
             <End Role="Customer" EntitySet="Customers" />
@@ -1008,6 +1008,7 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Sale" EntitySet="Sales" />
             <End Role="SaleDetail" EntitySet="SaleDetails" />
           </AssociationSet>
+          <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -1171,26 +1172,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="SaleTemp">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Guid" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Guid" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="SaleDate" Type="DateTime" />
-          <Property Name="CustomerId" Type="Int32" />
-          <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="OrderNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="Quantity" Type="Decimal" />
-          <Property Name="SellingPrice" Type="Decimal" />
-          <Property Name="DiscountPercentage" Type="Decimal" />
-          <Property Name="DiscountAmount" Type="Decimal" />
-          <Property Name="Amount" Type="Decimal" />
-          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
         <EntityType Name="Sale">
           <Key>
             <PropertyRef Name="BillId" />
@@ -1247,6 +1228,27 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SaleTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Guid" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SaleDate" Type="DateTime" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="OrderNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="DiscountPercentage" Type="Decimal" />
+          <Property Name="DiscountAmount" Type="Decimal" />
+          <Property Name="Amount" Type="Decimal" />
+          <Property Name="PriceId" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1472,26 +1474,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SaleTemps">
-            <EntityTypeMapping TypeName="RMSModel.SaleTemp">
-              <MappingFragment StoreEntitySet="SaleTemp">
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
-                <ScalarProperty Name="DiscountPercentage" ColumnName="DiscountPercentage" />
-                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
-                <ScalarProperty Name="Guid" ColumnName="Guid" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Sales">
             <EntityTypeMapping TypeName="RMSModel.Sale">
               <MappingFragment StoreEntitySet="Sales">
@@ -1507,6 +1489,27 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleTemps">
+            <EntityTypeMapping TypeName="RMSModel.SaleTemp">
+              <MappingFragment StoreEntitySet="SaleTemp">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+                <ScalarProperty Name="DiscountPercentage" ColumnName="DiscountPercentage" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

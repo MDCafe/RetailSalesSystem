@@ -57,7 +57,7 @@
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
                                       ToolTipDescription="Sales Entry" KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
                         <RibbonButton Label="Temp Entry" LargeImageSource="Images\SalesBasket -T.png" ToolTipTitle="Temprrary Sales Entry for many items" 
-                                       KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"></RibbonButton>
+                                       KeyTip="T" Command="{Binding OpenSalesEntryTempCommand}" CommandParameter="true"></RibbonButton>
                         
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>

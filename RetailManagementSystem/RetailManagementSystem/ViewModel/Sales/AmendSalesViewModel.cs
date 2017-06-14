@@ -71,15 +71,14 @@ namespace RetailManagementSystem.ViewModel.Sales
             _rmsEntities = new RMSEntities();
             _rmsEntities.Customers.ToList();           
 
-            var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
-            _othersCategoryId = othersCategory.Id;
+            //var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
+            //_othersCategoryId = othersCategory.Id;
             
             if (_showAllCustomers)
-                _categoryId = _othersCategoryId;
+                _categoryId = Constants.CUSTOMERS_OTHERS;
             else
             {
-                _category = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_HOTEL);
-                _categoryId = _category.Id;
+                _categoryId = Constants.CUSTOMERS_HOTEL;
             }
             
         }

@@ -26,6 +26,7 @@ namespace RetailManagementSystem
         public Nullable<decimal> DiscountPercentage { get; set; }
         public Nullable<decimal> DiscountAmount { get; set; }
         public Nullable<decimal> Amount { get; set; }
+        public Nullable<int> PriceId { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     }
