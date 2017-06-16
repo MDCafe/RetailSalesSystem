@@ -33,15 +33,15 @@
         <EntityTypeShape EntityType="RMSModel.PaymentDetail" Width="1.5" PointX="10.5" PointY="5.625" />
         <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="3" PointY="6.25" />
         <AssociationConnector Association="RMSModel.FK_customerId" />
-        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
-        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
-        <AssociationConnector Association="RMSModel.FK_pay_bill" />
-        <AssociationConnector Association="RMSModel.Fk_sale_bill" />
         <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="RMSModel.Company" Width="1.5" PointX="0.75" PointY="20.25" />
         <AssociationConnector Association="RMSModel.FK_Company" />
         <AssociationConnector Association="RMSModel.FK_CompanyId" />
         <AssociationConnector Association="RMSModel.FK_compId" />
+        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
+        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
+        <AssociationConnector Association="RMSModel.FK_pay_bill" />
+        <AssociationConnector Association="RMSModel.Fk_sale_bill" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

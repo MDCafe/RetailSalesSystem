@@ -62,7 +62,6 @@
 
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
-                        <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>
                     </RibbonGroup>
 
                     <!-- Purchase Group-->

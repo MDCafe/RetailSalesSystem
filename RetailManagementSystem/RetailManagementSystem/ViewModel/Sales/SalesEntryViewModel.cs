@@ -36,10 +36,11 @@ namespace RetailManagementSystem.ViewModel.Sales
         string _selectedCustomerText;
         IExtensions _extensions;
         bool _isEditMode;
-        System.Timers.Timer _timer;
+        System.Timers.Timer _timer,_autoTimer;
         static object rootLock = new object();
         string _guid;
-        SalesParams _salesParams;        
+        SalesParams _salesParams;
+        bool _isAutoSave;    
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
@@ -47,6 +48,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
  
         #region Constructor
+
         public SalesEntryViewModel(SalesParams salesParams)
         {
             _salesParams = salesParams;            
@@ -76,13 +78,22 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
 
-            _salesDetailsList.CollectionChanged += _salesDetailsList_CollectionChanged;
+            _salesDetailsList.CollectionChanged += OnSalesDetailsListCollectionChanged;
 
             _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
             SelectedPaymentId = '0';
 
             if (salesParams != null)
             {
+                _isAutoSave = salesParams.IsTempDataWindow;
+                if(_isAutoSave)
+                {
+                    AutoSaveData();
+                    RMSEntitiesHelper.Instance.AddNotifier(this);
+                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                    return;
+                }
+
                 if (salesParams.Billno.HasValue)
                 {
                     //Amend Bill             
@@ -104,51 +115,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             SaveDataTemp();            
         }
 
-        private void GetTempDataFromDB()
-        {
-            var tempData = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList();            
-            var tempDataFirst = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList().FirstOrDefault();
-
-            SelectedCustomer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == tempDataFirst.CustomerId.Value);
-            _categoryId = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == SelectedCustomer.CustomerTypeId).Id;
-            SelectedCustomerText = SelectedCustomer.Name;
-            _selectedPaymentMode = new PaymentMode();
-            SelectedPaymentId = char.Parse(tempDataFirst.PaymentMode);
-            RaisePropertyChanged("SelectedCustomer");
-            //RaisePropertyChanged("SelectedPaymentMode");
-            OrderNo = tempDataFirst.OrderNo;
-            SaleDate = tempDataFirst.SaleDate.Value;
-            _guid = tempDataFirst.Guid;
-
-            var tempTotalAmount = 0.0M;
-            foreach (var saleDetailItem in tempData)
-            {
-                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
-                var saleDetailExtn = new SaleDetailExtn()
-                {
-                    Discount = saleDetailItem.DiscountAmount,
-                    DiscountPercentage = saleDetailItem.DiscountPercentage.Value,
-                    PriceId = saleDetailItem.PriceId.Value,
-                    ProductId = saleDetailItem.ProductId.Value,
-                    Qty = saleDetailItem.Quantity,
-                    OriginalQty = saleDetailItem.Quantity,
-                    SellingPrice = saleDetailItem.SellingPrice,                    
-                    CostPrice = productPrice.Price,
-                    AvailableStock = productPrice.Quantity,
-                    Amount = productPrice.SellingPrice * saleDetailItem.Quantity.Value                    
-                };
-
-                SaleDetailList.Add(saleDetailExtn);
-                SetSaleDetailExtn(productPrice, saleDetailExtn);
-
-                tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Quantity.Value;
-            }
-            TotalAmount = tempTotalAmount;
-
-            Title = "Unsaved  data ";
-            RMSEntitiesHelper.Instance.AddNotifier(this);
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-        }
+        
 
 
         #endregion
@@ -436,9 +403,53 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (!returnValue) return;
 
             RMSEntitiesHelper.Instance.RemoveNotifier(this);
-            if (_timer == null) return;
-            _timer.Stop();
-            _timer.Close();
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Close();
+                _timer.Dispose();
+            }
+
+            if (_autoTimer != null)
+            {
+                _autoTimer.Stop();
+                _autoTimer.Close();
+                _autoTimer.Dispose();
+            }
+        }
+        #endregion
+
+
+
+        #region CancelBillCommand
+        RelayCommand<object> _cancelBillCommand = null;
+        public ICommand CancelBillCommand
+        {
+            get
+            {
+                if (_cancelBillCommand == null)
+                {
+                    _cancelBillCommand = new RelayCommand<object>((p) => OnBillCancel(), (p) => CanBillCancel());
+                }
+
+                return _cancelBillCommand;
+            }
+        }
+
+        private bool CanBillCancel()
+        {
+            return _salesParams.Billno != null;
+        }
+
+        private void OnBillCancel()
+        {
+            var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the bill?");
+            if (msgResult == System.Windows.MessageBoxResult.No) return;
+
+            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == _salesParams.Billno);
+            cancelBill.IsCancelled = true;
+            RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+            OnClose();
         }
         #endregion
 
@@ -481,6 +492,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             foreach (var saleDetailItem in _salesDetailsList)
             {
+                if (saleDetailItem.ProductId == 0) continue;
                 var saleDetail = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Create();
                 saleDetail.Discount = saleDetailItem.Discount;
                 saleDetail.PriceId = saleDetailItem.PriceId;
@@ -608,7 +620,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void _salesDetailsList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnSalesDetailsListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
@@ -616,7 +628,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if(_isEditMode)
                     _deletedItems.Add(SaleDetailExtn);
                 TotalAmount -= SaleDetailExtn.Amount;
-            }
+            }            
         }
 
         private void SetSaleDetailItem(SaleDetailExtn saleDetailItemExtn, SaleDetail saleDetail)
@@ -666,7 +678,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 };
 
                 SaleDetailList.Add(saleDetailExtn);
-                SetSaleDetailExtn(productPrice, saleDetailExtn);
+                SetSaleDetailExtn(productPrice, saleDetailExtn,0);
 
                 tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Qty.Value;
             }
@@ -740,11 +752,18 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Public Methods
-        public void SetProductDetails(ProductPrice productPrice)
+        public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
         {
             if (productPrice == null) return;
-            var selRowSaleDetailExtn = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            SetSaleDetailExtn(productPrice, selRowSaleDetailExtn);
+            var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
+            var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
+            if (saleItem !=null)
+            {
+                Utility.ShowWarningBox("Item is already added");
+                selRowSaleDetailExtn.ProductId = 0;
+                return;
+            }            
+            SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
         }
 
         public override Uri IconSource
@@ -758,7 +777,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Private Methods
-        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn)
+        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn,int selectedIndex)
         {
             if (SaleDetailExtn != null)
             {
@@ -767,6 +786,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.CostPrice = productPrice.Price;
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
+                SaleDetailExtn.SerialNo = selectedIndex;
 
                 SaleDetailExtn.PropertyChanged += (sender, e) =>
                 {
@@ -894,6 +914,67 @@ namespace RetailManagementSystem.ViewModel.Sales
                 RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Remove(delItem);
             }
         }
+
+        private void GetTempDataFromDB()
+        {
+            var tempData = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList();
+            var tempDataFirst = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList().FirstOrDefault();
+
+            SelectedCustomer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == tempDataFirst.CustomerId.Value);
+            _categoryId = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == SelectedCustomer.CustomerTypeId).Id;
+            SelectedCustomerText = SelectedCustomer.Name;
+            _selectedPaymentMode = new PaymentMode();
+            SelectedPaymentId = char.Parse(tempDataFirst.PaymentMode);
+            RaisePropertyChanged("SelectedCustomer");
+            //RaisePropertyChanged("SelectedPaymentMode");
+            OrderNo = tempDataFirst.OrderNo;
+            SaleDate = tempDataFirst.SaleDate.Value;
+            _guid = tempDataFirst.Guid;
+
+            var tempTotalAmount = 0.0M;
+            foreach (var saleDetailItem in tempData)
+            {
+                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
+                var saleDetailExtn = new SaleDetailExtn()
+                {
+                    Discount = saleDetailItem.DiscountAmount,
+                    DiscountPercentage = saleDetailItem.DiscountPercentage.Value,
+                    PriceId = saleDetailItem.PriceId.Value,
+                    ProductId = saleDetailItem.ProductId.Value,
+                    Qty = saleDetailItem.Quantity,
+                    OriginalQty = saleDetailItem.Quantity,
+                    SellingPrice = saleDetailItem.SellingPrice,
+                    CostPrice = productPrice.Price,
+                    AvailableStock = productPrice.Quantity,
+                    Amount = productPrice.SellingPrice * saleDetailItem.Quantity.Value
+                };
+
+                SaleDetailList.Add(saleDetailExtn);
+                SetSaleDetailExtn(productPrice, saleDetailExtn,0);
+
+                tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Quantity.Value;
+            }
+            TotalAmount = tempTotalAmount;
+
+            Title = "Unsaved  data ";
+            RMSEntitiesHelper.Instance.AddNotifier(this);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+        }
+
+        private void AutoSaveData()
+        {
+            _autoTimer = new System.Timers.Timer();
+            _autoTimer.Interval = 30000;
+            _autoTimer.Start();
+            _autoTimer.Elapsed += (o, s) =>
+            {
+                if (_salesDetailsList.Count() >= 10)
+                {
+                    OnSave(null);
+                }
+            };
+        }
+
         #endregion
     }
 

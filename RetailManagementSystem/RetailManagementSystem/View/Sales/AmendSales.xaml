@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Name="SalesAmendParamWindow"
         FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
-        Title="Amend/ Print Sales Bill" Height="400" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Title="Amend/Print Sales Bill" Height="400" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>

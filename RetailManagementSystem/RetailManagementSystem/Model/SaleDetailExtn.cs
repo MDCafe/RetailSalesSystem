@@ -17,6 +17,25 @@ namespace RetailManagementSystem.Model
         private int? _updatedBy;
         //used while edit
         private decimal? _originalQty;
+        private int _serialNo;
+
+        public int SerialNo
+        {
+            get
+            {
+                return _serialNo;
+            }
+
+            set
+            {
+                if (_serialNo == value)
+                {
+                    return;
+                }
+                _serialNo = value;
+                OnPropertyChanged("SerialNo");
+            }
+        }
 
         public int BillId
         {

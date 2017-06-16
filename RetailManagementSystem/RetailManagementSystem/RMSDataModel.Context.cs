@@ -40,8 +40,8 @@ namespace RetailManagementSystem
         public DbSet<Role> Roles { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleTemp> SaleTemps { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Sale> Sales { get; set; }
     }
 }

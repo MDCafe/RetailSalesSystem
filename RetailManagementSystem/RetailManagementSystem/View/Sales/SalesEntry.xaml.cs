@@ -3,18 +3,13 @@ using System.Linq;
 using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
-using System.Windows;
 
 namespace RetailManagementSystem.View.Sales
 {
-    /// <summary>
-    /// Interaction logic for SalesEntry.xaml
-    /// </summary>
     public partial class SalesEntry : UserControl
     {
         SalesEntryViewModel _salesViewModel;
        
-
         public SalesEntry()
         {
             InitializeComponent();
@@ -65,8 +60,13 @@ namespace RetailManagementSystem.View.Sales
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
-            _salesViewModel.SetProductDetails(productPrice);                                                                                     
-        }       
+            _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);                                                                                                 
+        }
+
+        private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        }
     }
 
     //public class DataEntry

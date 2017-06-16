@@ -33,6 +33,13 @@
                 <AdornedElementPlaceholder/>
             </DockPanel>
         </ControlTemplate>
+
+        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style.Setters>
+        </Style>
+        
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -110,7 +117,14 @@
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="5"
+                                      LoadingRow="DataGrid_LoadingRow"
+                                      RowHeaderWidth="25"
                                        >
+            <toolKit:DataGrid.RowHeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding SerialNo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type toolKit:DataGridRowHeader}}}"/>
+                </DataTemplate>
+            </toolKit:DataGrid.RowHeaderTemplate>
             <toolKit:DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>
@@ -125,7 +139,7 @@
                 <Style x:Key="CellStyle" TargetType="DataGridCell">
                     <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
                 </Style>-->
-            </toolKit:DataGrid.Resources> 
+            </toolKit:DataGrid.Resources>
             <toolKit:DataGrid.Columns>
                 <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding ProductsPriceList}"                                                                  
@@ -134,14 +148,14 @@
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
                                 >
-                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
-                    <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
-                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
-                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" />
-
+                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" >
+                    </toolKit:DataGridTextColumn>
+                    <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 </BHCustCtrl:CustDataGridComboBoxColumn>
 
-                <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}">
+                <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
                     <toolKit:DataGridTextColumn.Binding>
                         <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -150,14 +164,19 @@
                         </Binding>
                     </toolKit:DataGridTextColumn.Binding>
                 </toolKit:DataGridTextColumn>
-                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
-                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" />
-                <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" />
-                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}" IsReadOnly="True"/>
-                <toolKit:DataGridTextColumn Width="150" Header="Stock Availale" Binding="{Binding AvailableStock}" IsReadOnly="True"/>
-                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True"/>
+                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
             </toolKit:DataGrid.Columns>
-            
+            <toolKit:DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
+                    <Setter Property="FontWeight"  Value="Bold" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </toolKit:DataGrid.ColumnHeaderStyle>
 
             <!--<toolKit:DataGrid.RowValidationRules>
                 <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
@@ -200,9 +219,11 @@
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" Grid.Row="6"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+            <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/> 
         </StackPanel>
 
     </Grid>

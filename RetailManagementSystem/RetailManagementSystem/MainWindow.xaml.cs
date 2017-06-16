@@ -22,7 +22,7 @@ namespace RetailManagementSystem
         {
             if (e.Key == Key.S && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))
             {
-                var saleParams = new SalesParams() { ShowAllCustomers = true};
+                var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true};
                 Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             }
 
