@@ -209,5 +209,10 @@ namespace BHCustCtrl
             }
         }
 
+        public void ClearSelection()
+        {
+            comboBox.ClearSelection();
+        }
+
     }
 }

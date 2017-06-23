@@ -13,9 +13,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         bool _showAllCustomers;
         int _othersCategoryId;
         int _categoryId;
-        Customer _selectedCustomer;
-        RMSEntities _rmsEntities;
-        Category _category = null;
+        Customer _selectedCustomer;               
         string _selectedCustomerText;
         IEnumerable<Sale> _billList;
         
@@ -27,8 +25,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             get
             {
                 if (_showAllCustomers)
-                    return _rmsEntities.Customers.Local;
-                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != _othersCategoryId);
+                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local;
+                return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != _othersCategoryId);
             }
         }
 
@@ -67,11 +65,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         public AmendSalesViewModel()
         {
             //show all the customers since it is pwd protected 
-            _showAllCustomers = true;
-            _rmsEntities = new RMSEntities();
-            _rmsEntities.Customers.ToList();           
+            _showAllCustomers = true;            
+            RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();           
 
-            //var othersCategory = _rmsEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
+            //var othersCategory = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
             //_othersCategoryId = othersCategory.Id;
             
             if (_showAllCustomers)
@@ -144,10 +141,18 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var billExisits = _rmsEntities.Sales.Any(b => b.RunningBillNo == BillNo);
+            var billExisits = RMSEntitiesHelper.Instance.RMSEntities.Sales.Any(b => b.RunningBillNo == BillNo);
             if (!billExisits)
             {
                 Utility.ShowErrorBox(window,"Bill Number doesn't exist");
+                return;
+            }
+
+            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo);
+
+            if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
+            {
+                Utility.ShowWarningBox("Bill has been cancelled already");
                 return;
             }
 
@@ -222,9 +227,9 @@ namespace RetailManagementSystem.ViewModel.Sales
         private void GetCustomerBills()
         {
             if(BillList == null)
-                _rmsEntities.Sales.ToList();
+                RMSEntitiesHelper.Instance.RMSEntities.Sales.ToList();
 
-            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
+            BillList = RMSEntitiesHelper.Instance.RMSEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
         }
 
 

@@ -58,7 +58,7 @@
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="unit" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="MeasureQty" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="MeasureQty" Type="decimal" Precision="10" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="PaymentDetails">
           <Key>
@@ -69,7 +69,7 @@
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BillId" Type="mediumint" Nullable="false" />
           <Property Name="CustomerId" Type="mediumint" Nullable="false" />
-          <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="PaymentMode" Type="varchar" MaxLength="6" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -82,8 +82,8 @@
           <Property Name="PriceId" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BillId" Type="mediumint" Nullable="false" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
-          <Property Name="Price" Type="decimal" Precision="10" Scale="0" Nullable="false" />
-          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -99,7 +99,7 @@
           <Property Name="UnitOfMeasure" Type="mediumint" />
           <Property Name="CategoryId" Type="mediumint" />
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
-          <Property Name="ReorderPoint" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="ReorderPoint" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -113,10 +113,10 @@ warning 6002: The table/view 'def.rms.PurchaseDetails' does not have a primary k
           </Key>
           <Property Name="BillId" Type="mediumint" Nullable="false" />
           <Property Name="ProductId" Type="mediumint" />
-          <Property Name="PurchasedQty" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="ActualPrice" Type="decimal" Precision="10" Scale="0" Nullable="false" />
-          <Property Name="Discount" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="Tax" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="PurchasedQty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="ActualPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -128,8 +128,8 @@ warning 6002: The table/view 'def.rms.PurchaseFreeDetails' does not have a prima
             <PropertyRef Name="ProductId" />
           </Key>
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
-          <Property Name="FreeQty" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="FreeAmount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="FreeQty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FreeAmount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -144,7 +144,7 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
           </Key>
           <Property Name="PurchaseBillId" Type="mediumint" Nullable="false" />
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
-          <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -156,10 +156,10 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
           <Property Name="BillId" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
           <Property Name="InvoiceNo" Type="varchar" MaxLength="45" />
-          <Property Name="Discount" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="TotalBillAmount" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="Tax" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="TotalBillAmount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -174,7 +174,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
             <PropertyRef Name="isReturn" />
           </Key>
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
-          <Property Name="Quantity" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="comments" Type="varchar" MaxLength="200" />
           <Property Name="isReturn" Type="bool" Nullable="false" />
@@ -190,16 +190,15 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
         </EntityType>
         <EntityType Name="SaleDetails">
           <Key>
-            <PropertyRef Name="BillId" />
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="PriceId" />
+            <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BillId" Type="mediumint" Nullable="false" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
-          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="Qty" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="Discount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Qty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -210,9 +209,9 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           </Key>
           <Property Name="BillId" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerId" Type="mediumint" Nullable="false" />
-          <Property Name="Discount" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="TotalAmount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="TotalAmount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IsCancelled" Type="bit" />
           <Property Name="CustomerOrderNo" Type="varchar" MaxLength="30" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -233,11 +232,11 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <Property Name="PaymentMode" Type="varchar" MaxLength="6" />
           <Property Name="OrderNo" Type="varchar" MaxLength="45" />
           <Property Name="ProductId" Type="int" />
-          <Property Name="Quantity" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="DiscountPercentage" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="DiscountAmount" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="Amount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="DiscountPercentage" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="DiscountAmount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Amount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="PriceId" Type="int" />
           <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -248,7 +247,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
             <PropertyRef Name="PriceId" />
           </Key>
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
-          <Property Name="Quantity" Type="decimal" Precision="10" Scale="0" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -681,9 +680,9 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_ProductId" FromRole="Products" ToRole="PurchaseDetails" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_ProductId_RD" FromRole="Products" ToRole="ReturnDamagedStocks" />
           <NavigationProperty Name="Category" Relationship="RMSModel.FK_Category" FromRole="Product" ToRole="Category" />
-          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
           <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
         </EntityType>
         <EntityType Name="Purchase">
           <Key>
@@ -903,15 +902,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Category" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <EntitySet Name="SaleDetails" EntityType="RMSModel.SaleDetail" />
-          <AssociationSet Name="FK_price_id" Association="RMSModel.FK_price_id">
-            <End Role="PriceDetail" EntitySet="PriceDetails" />
-            <End Role="SaleDetail" EntitySet="SaleDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProdId" Association="RMSModel.FK_ProdId">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="SaleDetail" EntitySet="SaleDetails" />
-          </AssociationSet>
           <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
           <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
             <End Role="Product" EntitySet="Products" />
@@ -951,6 +941,15 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             <End Role="Sale" EntitySet="Sales" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
+          <EntitySet Name="SaleDetails" EntityType="RMSModel.SaleDetail" />
+          <AssociationSet Name="FK_price_id" Association="RMSModel.FK_price_id">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProdId" Association="RMSModel.FK_ProdId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
           <AssociationSet Name="Fk_sale_bill" Association="RMSModel.Fk_sale_bill">
             <End Role="Sale" EntitySet="Sales" />
             <End Role="SaleDetail" EntitySet="SaleDetails" />
@@ -975,49 +974,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="SaleDetail">
-          <Key>
-            <PropertyRef Name="BillId" />
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="PriceId" />
-          </Key>
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="SellingPrice" Type="Decimal" />
-          <Property Name="Qty" Type="Decimal" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PriceDetail" Relationship="RMSModel.FK_price_id" FromRole="SaleDetail" ToRole="PriceDetail" />
-          <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProdId" FromRole="SaleDetail" ToRole="Product" />
-          <NavigationProperty Name="Sale" Relationship="RMSModel.Fk_sale_bill" FromRole="SaleDetail" ToRole="Sale" />
-        </EntityType>
-        <Association Name="FK_price_id">
-          <End Type="RMSModel.PriceDetail" Role="PriceDetail" Multiplicity="1" />
-          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriceDetail">
-              <PropertyRef Name="PriceId" />
-            </Principal>
-            <Dependent Role="SaleDetail">
-              <PropertyRef Name="PriceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProdId">
-          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SaleDetail">
-              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1239,6 +1195,48 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SaleDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="Qty" Type="Decimal" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSModel.FK_price_id" FromRole="SaleDetail" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProdId" FromRole="SaleDetail" ToRole="Product" />
+          <NavigationProperty Name="Sale" Relationship="RMSModel.Fk_sale_bill" FromRole="SaleDetail" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_price_id">
+          <End Type="RMSModel.PriceDetail" Role="PriceDetail" Multiplicity="1" />
+          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceDetail">
+              <PropertyRef Name="PriceId" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProdId">
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Fk_sale_bill">
           <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
           <End Type="RMSModel.SaleDetail" Role="SaleDetail" Multiplicity="*" />
@@ -1388,21 +1386,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SaleDetails">
-            <EntityTypeMapping TypeName="RMSModel.SaleDetail">
-              <MappingFragment StoreEntitySet="SaleDetails">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="Qty" ColumnName="Qty" />
-                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Stocks">
             <EntityTypeMapping TypeName="RMSModel.Stock">
               <MappingFragment StoreEntitySet="Stocks">
@@ -1513,6 +1496,22 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleDetails">
+            <EntityTypeMapping TypeName="RMSModel.SaleDetail">
+              <MappingFragment StoreEntitySet="SaleDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

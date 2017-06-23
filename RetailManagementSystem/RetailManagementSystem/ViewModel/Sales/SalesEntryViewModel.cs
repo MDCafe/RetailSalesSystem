@@ -35,13 +35,13 @@ namespace RetailManagementSystem.ViewModel.Sales
         char _selectedPaymentId;        
         string _selectedCustomerText;
         IExtensions _extensions;
-        bool _isEditMode;
+        bool _isEditMode;        
         System.Timers.Timer _timer,_autoTimer;
         static object rootLock = new object();
         string _guid;
         SalesParams _salesParams;
-        bool _isAutoSave;    
-
+        AutoResetEvent _autoResetEvent;
+        
         ObservableCollection<SaleDetailExtn> _salesDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
         List<SaleDetailExtn> _deletedItems;
@@ -85,10 +85,11 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             if (salesParams != null)
             {
-                _isAutoSave = salesParams.IsTempDataWindow;
-                if(_isAutoSave)
+                //Temp window to save 10 items                
+                if(salesParams.IsTempDataWindow)
                 {
                     AutoSaveData();
+                    Title = "Sales Entry";
                     RMSEntitiesHelper.Instance.AddNotifier(this);
                     RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
                     return;
@@ -103,6 +104,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
                 else if (salesParams.GetTemproaryData)
                 {
+                    //Get Temproary window from DB
                     GetTempDataFromDB();
                     return;
                 }
@@ -114,10 +116,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             SaveDataTemp();            
         }
-
-        
-
-
+       
         #endregion
 
         #region Getters and Setters
@@ -298,7 +297,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _extensions = value;
                 if(_isEditMode)
                 {
-                    _extensions.SetValues(_billSales.TransportCharges.Value);
+                    var transportCharges = _billSales.TransportCharges == null ? 0 : _billSales.TransportCharges.Value;
+                    _extensions.SetValues(transportCharges);
                     TotalAmount = _extensions.Calculate(_totalAmount.Value);
                 }
 
@@ -334,6 +334,11 @@ namespace RetailManagementSystem.ViewModel.Sales
         public decimal BalanceAmount
         {
             get { return Math.Abs(_amountPaid != 0 ? _totalAmount.Value - _amountPaid : 0.00M); }            
+        }
+
+        public bool IsEditMode
+        {
+            get { return !_isEditMode; }
         }
 
 
@@ -415,11 +420,14 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _autoTimer.Stop();
                 _autoTimer.Close();
                 _autoTimer.Dispose();
+                if (_autoResetEvent != null)
+                {
+                    _autoResetEvent.Close();
+                    _autoResetEvent.Dispose();
+                }
             }
         }
         #endregion
-
-
 
         #region CancelBillCommand
         RelayCommand<object> _cancelBillCommand = null;
@@ -443,10 +451,18 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnBillCancel()
         {
+            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == _salesParams.Billno);            
+
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the bill?");
             if (msgResult == System.Windows.MessageBoxResult.No) return;
+            
+            var cancelBillItems = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Where(s => s.BillId == cancelBill.BillId);            
+            foreach (var item in cancelBillItems.ToList())
+            {                
+                var stockItem = RMSEntitiesHelper.Instance.RMSEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
+                stockItem.Quantity += item.Qty.Value;
+            }
 
-            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == _salesParams.Billno);
             cancelBill.IsCancelled = true;
             RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
             OnClose();
@@ -508,8 +524,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if(stock != null)
                 {                    
                         stock.Quantity -= saleDetailItem.Qty.Value;
-                }
-                //totalAmount += totalAmount + saleDetailItem.Amount;
+                }                
             }
 
             _totalAmount = _extensions.Calculate(_totalAmount.Value);
@@ -524,7 +539,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _category.RollingNo = _runningBillNo;
             
 
-            //check if complete amount is paid, else mark it in advancedetails table against the customer
+            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
             var outstandingBalance = _totalAmount.Value - AmountPaid;
             if (outstandingBalance > 0)
             {
@@ -559,10 +574,101 @@ namespace RetailManagementSystem.ViewModel.Sales
             Clear();
         }
 
+
+        private void SaveInterim()
+        {                                   
+            if (SelectedCustomer == null)
+            {
+                Utility.ShowErrorBox("Select a customer to save the items else items will not be saved");
+                return;
+            }
+
+            var itemsToSave = _salesDetailsList.Take(3).ToList();
+            if (itemsToSave.Count() < 3)
+            {
+                _autoResetEvent.Set();
+                return;
+            }
+
+            Monitor.Enter(rootLock);
+            log.Debug("Enter save :SaveInterim");
+
+            var totalAmount = 0M;
+
+            foreach (var saleDetailItem in itemsToSave)
+            {
+                if (saleDetailItem.ProductId == 0 || saleDetailItem.Qty == null ) continue;
+                var saleDetail = new SaleDetail();
+                saleDetail.Discount = saleDetailItem.Discount;
+                saleDetail.PriceId = saleDetailItem.PriceId;
+                saleDetail.ProductId = saleDetailItem.ProductId;
+                saleDetail.Qty = saleDetailItem.Qty;
+                saleDetail.SellingPrice = saleDetailItem.SellingPrice;
+                saleDetail.BillId = _billSales.BillId;
+                _billSales.SaleDetails.Add(saleDetail);
+
+                var stockToReduceColln = RMSEntitiesHelper.Instance.RMSEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId 
+                                                                                            && s.PriceId == saleDetailItem.PriceId);
+                var stock = stockToReduceColln.FirstOrDefault();
+                if (stock != null)
+                {
+                    stock.Quantity -= saleDetailItem.Qty.Value;
+                }
+                totalAmount += saleDetail.Qty.Value * saleDetail.SellingPrice.Value;
+            }
+
+            //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+
+            _billSales.TotalAmount = _billSales.TotalAmount == null ? totalAmount : _billSales.TotalAmount + totalAmount;
+            //_billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
+
+            if (_billSales.BillId == 0)
+            {
+                _billSales.CustomerId = _selectedCustomer.Id;
+                _billSales.CustomerOrderNo = OrderNo;
+                _billSales.RunningBillNo = _runningBillNo;
+                _billSales.PaymentMode = SelectedPaymentId.ToString();
+
+                RMSEntitiesHelper.Instance.RMSEntities.Sales.Add(_billSales);
+                var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+                _category.RollingNo = _runningBillNo;
+                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                _billSales.RunningBillNo = _runningBillNo;
+            }
+
+            RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+
+            itemsToSave.ForEach
+                (
+                    (s) =>
+                    {
+                        App.Current.Dispatcher.Invoke(delegate 
+                        {
+                            //var stateBefore = RMSEntitiesHelper.Instance.RMSEntities.Entry<SaleDetail>(s.).State;
+                            _salesDetailsList.Remove(s);
+                            //var stateAfter = RMSEntitiesHelper.Instance.RMSEntities.Entry<SaleDetail>(s).State;
+                        });
+                       
+                    }
+                );
+
+            if (_salesDetailsList.Count() == 0)
+            {
+                App.Current.Dispatcher.Invoke(delegate
+                {
+                    _salesDetailsList.Add(new SaleDetailExtn());
+                });
+            }
+
+            Monitor.Exit(rootLock);
+            log.Debug("Exit SaveIternim");
+            _autoResetEvent.Set();                        
+        }
+
+
         private void SaveOnEdit()
         {
             //Check if there are any deletions
-
             RemoveDeletedItems();
 
             foreach (var saleDetailItemExtn in _salesDetailsList)
@@ -967,11 +1073,18 @@ namespace RetailManagementSystem.ViewModel.Sales
             _autoTimer.Interval = 30000;
             _autoTimer.Start();
             _autoTimer.Elapsed += (o, s) =>
-            {
-                if (_salesDetailsList.Count() >= 10)
-                {
-                    OnSave(null);
-                }
+                {                
+                    if (_salesDetailsList.Count() >= 3 && _salesDetailsList[2].Amount !=null)
+                    {
+                        if (_autoResetEvent == null)
+                        {
+                            _autoResetEvent = new AutoResetEvent(false);
+                        }
+                        else
+                            _autoResetEvent.WaitOne();
+
+                        SaveInterim();                    
+                    }
             };
         }
 

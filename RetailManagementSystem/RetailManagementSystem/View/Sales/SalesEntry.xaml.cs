@@ -60,7 +60,11 @@ namespace RetailManagementSystem.View.Sales
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
-            _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);                                                                                                 
+            _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);
+            custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
+            custComboBoxCol.comboBox.SelectedIndex = -1;
+            custComboBoxCol.ClearSelection();
+            
         }
 
         private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)

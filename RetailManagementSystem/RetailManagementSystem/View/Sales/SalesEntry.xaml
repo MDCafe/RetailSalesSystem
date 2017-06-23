@@ -64,7 +64,9 @@
         <Label Content="Customer Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
         <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
                       ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
-                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25">
+                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
+                        IsEnabled="{Binding IsEditMode}"
+                  >
             <ComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
                     <Setter Property="ContentTemplate">
@@ -120,11 +122,6 @@
                                       LoadingRow="DataGrid_LoadingRow"
                                       RowHeaderWidth="25"
                                        >
-            <toolKit:DataGrid.RowHeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding SerialNo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type toolKit:DataGridRowHeader}}}"/>
-                </DataTemplate>
-            </toolKit:DataGrid.RowHeaderTemplate>
             <toolKit:DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>
@@ -222,7 +219,7 @@
             <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5"/>
-            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding IsEditMode}"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/> 
         </StackPanel>
 

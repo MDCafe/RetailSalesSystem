@@ -166,6 +166,39 @@ namespace BHCustCtrl
             if (popupDataGrid.SelectedItem != null)
                 popupDataGrid.ScrollIntoView(popupDataGrid.SelectedItem);
         }
-         
+
+        public void ClearSelection()
+        {
+            //popupDataGrid.SelectedIndex = -1;
+            popupDataGrid.UnselectAll();
+            //popupDataGrid.ScrollIntoView(popupDataGrid.SelectedIndex);
+            //ScrollViewer scrollViewer = GetScrollViewer(popupDataGrid) as ScrollViewer;
+            //scrollViewer.ScrollToHome();
+        }
+
+
+     
+        public static DependencyObject GetScrollViewer(DependencyObject o)
+        {
+            if (o is ScrollViewer)
+            { return o; }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+            {
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                var result = GetScrollViewer(child);
+                if (result == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
     }
 }
