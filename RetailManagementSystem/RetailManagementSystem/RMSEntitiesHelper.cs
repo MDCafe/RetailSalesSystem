@@ -10,9 +10,7 @@
     {
         RMSEntities _rmsEntities;
         static RMSEntitiesHelper _rMSEntitiesHelper;
-        static object _syncRoot = new object();
-         
-
+        static object _syncRoot = new object();        
         List<INotifier> _notifierList = new List<INotifier>();   
         
         private RMSEntitiesHelper()
@@ -43,6 +41,10 @@
             }
         }
 
+        public RMSEntities GetNewInstanceOfRMSEntities()
+        {
+            return new RMSEntities();
+        }
         public void AddNotifier(INotifier notifier)
         {
             Monitor.Enter(_notifierList);

@@ -1,5 +1,8 @@
-﻿using RetailManagementSystem.ViewModel;
+﻿using RetailManagementSystem.Utilities;
+using RetailManagementSystem.View.Sales;
+using RetailManagementSystem.ViewModel;
 using RetailManagementSystem.ViewModel.Sales;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -20,15 +23,31 @@ namespace RetailManagementSystem
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
+            //Sales Entry
             if (e.Key == Key.S && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true};
                 Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
+                return;
             }
 
-            if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            //Sales Amend
+            if (e.Key == Key.A && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                MessageBox.Show("S + A");
+                try
+                {
+                    AmendSales amendSales = new AmendSales(true);
+                    amendSales.ShowDialog();
+                }
+                catch (Exceptions.RMSException ex)
+                {
+                    Utility.ShowErrorBox(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Utility.ShowErrorBox(ex.Message);                    
+                }
+                return;
             }
             
         }        

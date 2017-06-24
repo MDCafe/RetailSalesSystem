@@ -8,10 +8,10 @@ namespace RetailManagementSystem.View.Sales
     {
         AmendSalesViewModel amVM;
 
-        public AmendSales()
+        public AmendSales(bool showRestrictedCustomers)
         {
             InitializeComponent();
-            amVM = new AmendSalesViewModel();
+            amVM = new AmendSalesViewModel(showRestrictedCustomers);
             DataContext = amVM;
             BillsDataGrid.MouseDoubleClick += BillsDataGrid_MouseDoubleClick;
         }

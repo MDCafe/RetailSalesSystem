@@ -7,5 +7,7 @@
         public bool GetTemproaryData { get; set; }
         public bool IsTempDataWindow { get; set; }
         public bool CancelBill { get; set; }
+        public int  CustomerId { get; set; }
+        public string Guid { get; set; }
     }
 }

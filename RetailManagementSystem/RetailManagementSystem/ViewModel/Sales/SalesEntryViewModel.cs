@@ -105,7 +105,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 else if (salesParams.GetTemproaryData)
                 {
                     //Get Temproary window from DB
-                    GetTempDataFromDB();
+                    GetTempDataFromDB(salesParams.Guid);
                     return;
                 }
                 //return;
@@ -403,7 +403,16 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         private void OnClose()
-        {            
+        {
+            //Clear all the data if cancel is pressed
+            if (_salesParams.GetTemproaryData)
+            {
+                var msgResult = Utility.ShowMessageBoxWithOptions("All data will not be saved. Do you want to cancel?");
+                if (msgResult == System.Windows.MessageBoxResult.No) return;
+                RemoveTempSalesItemForGUID(_guid);
+                RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+            }
+
             var returnValue = Workspace.This.Close(this);
             if (!returnValue) return;
 
@@ -674,7 +683,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             foreach (var saleDetailItemExtn in _salesDetailsList)
             {
                 var saleDetail = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
-                                                                        && b.ProductId == saleDetailItemExtn.ProductId);
+                                                                                                    && b.ProductId == saleDetailItemExtn.ProductId
+                                                                                                    );
 
                 if (saleDetail == null)
                 {
@@ -757,7 +767,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
             var runningBillNo = Convert.ToInt32(billNo.ToString());
 
-            _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(b => b.RunningBillNo == runningBillNo).FirstOrDefault();            
+            _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(b => b.RunningBillNo == runningBillNo && b.CustomerId == _salesParams.CustomerId).FirstOrDefault();            
             SelectedCustomer = _billSales.Customer;
             SelectedCustomerText = SelectedCustomer.Name;
             SaleDate = _billSales.AddedOn.Value;            
@@ -937,15 +947,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             _guid = Guid.NewGuid().ToString();          
             _timer = new System.Timers.Timer();
             _timer.Interval = 60000;
-            _timer.Start();
-            //var rmsEntityTemp = RMSEntitiesHelper.GetNewInstance();
-            //RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList();
+            _timer.Start();            
             _timer.Elapsed += (s, e) =>
             {
                 Monitor.Enter(rootLock);
                 {
                     log.DebugFormat("Entering timer loop :{0}", _guid);
-                    if (_salesDetailsList.Count() < 0)
+                    if (_salesDetailsList.Count() < 0 || SelectedCustomer == null)
                     {
                         Monitor.Exit(rootLock);
                         return;
@@ -973,7 +981,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             tempItem.PaymentMode = SelectedPaymentId.ToString();
                             tempItem.OrderNo = OrderNo;
                             tempItem.ProductId = item.ProductId;
-                            tempItem.Quantity = item.Qty;
+                            tempItem.Quantity = item.Qty.HasValue == false? 0 : item.Qty;
                             tempItem.SellingPrice = item.SellingPrice;
                             tempItem.DiscountPercentage = item.DiscountPercentage;
                             tempItem.DiscountAmount = item.DiscountAmount;
@@ -1021,10 +1029,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void GetTempDataFromDB()
-        {
-            var tempData = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList();
-            var tempDataFirst = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.ToList().FirstOrDefault();
+        private void GetTempDataFromDB(string guid)
+        {            
+            var tempData = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Where(st => st.Guid == guid);
+            var tempDataFirst = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Where(st => st.Guid == guid).FirstOrDefault();
+            //var tempDataFirst 
 
             SelectedCustomer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == tempDataFirst.CustomerId.Value);
             _categoryId = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == SelectedCustomer.CustomerTypeId).Id;
@@ -1035,7 +1044,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //RaisePropertyChanged("SelectedPaymentMode");
             OrderNo = tempDataFirst.OrderNo;
             SaleDate = tempDataFirst.SaleDate.Value;
-            _guid = tempDataFirst.Guid;
+            _guid = guid;
 
             var tempTotalAmount = 0.0M;
             foreach (var saleDetailItem in tempData)

@@ -121,6 +121,7 @@
                                       SelectionMode="Single" Grid.ColumnSpan="5"
                                       LoadingRow="DataGrid_LoadingRow"
                                       RowHeaderWidth="25"
+                                      VirtualizingStackPanel.IsVirtualizing="False"
                                        >
             <toolKit:DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -164,7 +165,7 @@
                 <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
             </toolKit:DataGrid.Columns>

@@ -105,9 +105,15 @@ namespace RetailManagementSystem.ViewModel
                 return;
             }
 
-            var salesParams = new SalesParams() { GetTemproaryData = true };
-            _documentViewModels.Add(new SalesEntryViewModel(salesParams));
-            ActiveDocument = _documentViewModels.Last();
+            var tempRecords = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities().SaleTemps.GroupBy(g => g.Guid);
+
+            foreach (var item in tempRecords)
+            {
+                var salesParams = new SalesParams() { GetTemproaryData = true,Guid = item.Key};
+                _documentViewModels.Add(new SalesEntryViewModel(salesParams));
+                ActiveDocument = _documentViewModels.Last();
+            }
+            
         }
 
         #endregion
@@ -138,7 +144,7 @@ namespace RetailManagementSystem.ViewModel
             //ActiveDocument = _documentViewModels.Last();
             try
             {
-                AmendSales amendSales = new AmendSales();
+                AmendSales amendSales = new AmendSales(false);
                 amendSales.ShowDialog();
             }
             catch (Exceptions.RMSException ex)

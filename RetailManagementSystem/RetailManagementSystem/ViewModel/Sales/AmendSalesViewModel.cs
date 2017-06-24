@@ -10,7 +10,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 {
     class AmendSalesViewModel : ViewModelBase
     {
-        bool _showAllCustomers;
+        bool _showRestrictedCustomers;
         int _othersCategoryId;
         int _categoryId;
         Customer _selectedCustomer;               
@@ -24,9 +24,16 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get
             {
-                if (_showAllCustomers)
-                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local;
-                return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != _othersCategoryId);
+                if (_showRestrictedCustomers)
+                    _categoryId = Constants.CUSTOMERS_OTHERS;
+                else
+                    _categoryId = Constants.CUSTOMERS_HOTEL;
+
+
+                if (_showRestrictedCustomers)
+                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+
+                return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
             }
         }
 
@@ -62,21 +69,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendSalesViewModel()
-        {
-            //show all the customers since it is pwd protected 
-            _showAllCustomers = true;            
+        public AmendSalesViewModel(bool showRestrictedCustomers)
+        {            
+            _showRestrictedCustomers = showRestrictedCustomers;            
             RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();           
 
             //var othersCategory = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
-            //_othersCategoryId = othersCategory.Id;
-            
-            if (_showAllCustomers)
-                _categoryId = Constants.CUSTOMERS_OTHERS;
-            else
-            {
-                _categoryId = Constants.CUSTOMERS_HOTEL;
-            }
+            //_othersCategoryId = othersCategory.Id;           
             
         }
 
@@ -141,14 +140,25 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var billExisits = RMSEntitiesHelper.Instance.RMSEntities.Sales.Any(b => b.RunningBillNo == BillNo);
-            if (!billExisits)
+            var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales
+                              join c in RMSEntitiesHelper.Instance.RMSEntities.Customers
+                              on s.CustomerId equals c.Id
+                              where s.RunningBillNo == BillNo && c.CustomerTypeId.Value == _categoryId
+                              select new
+                              {
+                                  CustomerId = s.CustomerId,
+                              };
+
+
+            //var billExisits = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(b => b.RunningBillNo == BillNo).Where
+            var customerBill = checkBill.FirstOrDefault();
+            if (checkBill.FirstOrDefault() == null)
             {
                 Utility.ShowErrorBox(window,"Bill Number doesn't exist");
                 return;
             }
 
-            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo);
+            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
 
             if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
             {
@@ -164,7 +174,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo };            
+            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId };            
 
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);
