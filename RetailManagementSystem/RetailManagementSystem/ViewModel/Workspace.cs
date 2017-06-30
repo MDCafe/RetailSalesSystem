@@ -160,6 +160,43 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenReturnSalesCommand
+        RelayCommand<object> _openReturnSalesCommand = null;
+        public ICommand OpenReturnSalesCommand
+        {
+            get
+            {
+                if (_openReturnSalesCommand == null)
+                {
+                    _openReturnSalesCommand = new RelayCommand<object>((p) => OnOpenReturnSalesCommand(p));
+                }
+
+                return _openReturnSalesCommand;
+            }
+        }        
+
+        private void OnOpenReturnSalesCommand(object showAll)
+        {            
+            try
+            {
+                _documentViewModels.Add(new ReturnSalesViewModel());
+                ActiveDocument = _documentViewModels.Last();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        
+
         #region OpenPurchaseEntryCommand
         RelayCommand<object> _openPurchaseEntryCommand = null;
         public ICommand OpenPurchaseEntryCommand

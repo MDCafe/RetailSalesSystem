@@ -8,17 +8,14 @@ using RetailManagementSystem.ViewModel.Purchases;
 namespace RetailManagementSystem.View.Pane
 {
     class PanesTemplateSelector : DataTemplateSelector
-    {
-        DataTemplate _salesDataTemplate;
-        DataTemplate _customerDataTemplate;
-
-        public PanesTemplateSelector()
+    {        
+        public DataTemplate SalesViewTemplate
         {
-            _salesDataTemplate = new DataTemplate(typeof(Sales.SalesEntry));
-            _customerDataTemplate = new DataTemplate(typeof(Masters.Customer));
+            get;
+            set;
         }
 
-        public DataTemplate SalesViewTemplate
+        public DataTemplate ReturnSalesViewTemplate
         {
             get;
             set;
@@ -61,18 +58,13 @@ namespace RetailManagementSystem.View.Pane
             //var content = item as ContentPresenter;
             //content.ContentTemplate = CustomerDataTemplate;            
 
-            if (item is SalesEntryViewModel)
-            {
-                return SalesViewTemplate;
-            }
+            if (item is SalesEntryViewModel) return SalesViewTemplate;            
+            
+            if (item is ReturnSalesViewModel) return ReturnSalesViewTemplate;
 
-            if (item is CustomerViewModel)
-            {
-                return CustomerDataTemplate;
-            }
-
-            if (item is PurchaseEntryViewModel)
-              return PurchaseViewTemplate;
+            if (item is CustomerViewModel)  return CustomerDataTemplate;
+            
+            if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
 
             //if (item is FileStatsViewModel)
             //    return FileStatsViewTemplate;

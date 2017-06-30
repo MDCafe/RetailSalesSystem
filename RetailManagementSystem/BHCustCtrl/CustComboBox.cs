@@ -5,23 +5,14 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
 using Microsoft.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Microsoft.Windows.Controls.Primitives;
 
 namespace BHCustCtrl
@@ -101,10 +92,10 @@ namespace BHCustCtrl
                 DataGrid dg = sender as DataGrid;
                 if (dg != null)
                 {
-                    this.SelectedItem = dg.SelectedItem;
-                    this.SelectedValue = dg.SelectedValue;
-                    this.SelectedIndex = dg.SelectedIndex;
-                    this.SelectedValuePath = dg.SelectedValuePath;
+                    SelectedItem = dg.SelectedItem;
+                    SelectedValue = dg.SelectedValue;
+                    SelectedIndex = dg.SelectedIndex;
+                    SelectedValuePath = dg.SelectedValuePath;
 
                 }
             }
@@ -175,11 +166,9 @@ namespace BHCustCtrl
             //ScrollViewer scrollViewer = GetScrollViewer(popupDataGrid) as ScrollViewer;
             //scrollViewer.ScrollToHome();
         }
-
-
      
         public static DependencyObject GetScrollViewer(DependencyObject o)
-        {
+        {            
             if (o is ScrollViewer)
             { return o; }
 

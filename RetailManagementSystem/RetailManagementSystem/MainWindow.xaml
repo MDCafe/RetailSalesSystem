@@ -62,6 +62,9 @@
 
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
+
+                        <RibbonButton Label="Return Sales" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Return Sales"
+                                       KeyTip="R" Command="{Binding OpenReturnSalesCommand}"/>
                     </RibbonGroup>
 
                     <!-- Purchase Group-->
@@ -183,6 +186,12 @@
                                 <SalesView:SalesEntry/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.SalesViewTemplate>
+
+                        <pane:PanesTemplateSelector.ReturnSalesViewTemplate>
+                            <DataTemplate>
+                                <SalesView:ReturnSales/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.ReturnSalesViewTemplate>
 
                         <pane:PanesTemplateSelector.PurchaseViewTemplate>
                             <DataTemplate>

@@ -148,8 +148,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _productsPriceList; }
             private set
             {
-                _productsPriceList = value;
-                //NotifyPropertyChanged(() => this.ProductsPriceList);
+                _productsPriceList = value;                
                 RaisePropertyChanged("ProductsPriceList");
             }
         }
@@ -375,7 +374,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
               _isDirty = value;
               RaisePropertyChanged("IsDirty");
-              RaisePropertyChanged("FileName");
             }
           }
         }

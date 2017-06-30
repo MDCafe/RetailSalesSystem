@@ -196,6 +196,7 @@
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
+    <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\Extensions\SalesExtensionViewModel.cs" />
@@ -219,6 +220,9 @@
     </Compile>
     <Compile Include="View\Sales\AmendSales.xaml.cs">
       <DependentUpon>AmendSales.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Sales\ReturnSales.xaml.cs">
+      <DependentUpon>ReturnSales.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Sales\SalesEntry.xaml.cs">
       <DependentUpon>SalesEntry.xaml</DependentUpon>
@@ -258,6 +262,10 @@
     <Page Include="View\Sales\AmendSales.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Sales\ReturnSales.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Sales\SalesEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -318,6 +326,7 @@
     <Resource Include="Images\SalesBasket -T.png" />
     <Resource Include="Images\search-icon.png" />
     <Resource Include="Images\search_blue.png" />
+    <Resource Include="Images\ReturnSales.jpeg" />
     <Content Include="RMSDataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>RMSDataModel.edmx</DependentUpon>

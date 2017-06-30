@@ -10,8 +10,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 {
     class AmendSalesViewModel : ViewModelBase
     {
-        bool _showRestrictedCustomers;
-        int _othersCategoryId;
+        bool _showRestrictedCustomers;        
         int _categoryId;
         Customer _selectedCustomer;               
         string _selectedCustomerText;
