@@ -25,8 +25,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         PaymentMode _selectedPaymentMode;
         Sale _billSales;
         int _runningBillNo;
-        bool _showAllCustomers;
-        int _categoryId;        
+        bool _showAllCustomers;        
         decimal? _totalAmount = 0;        
         decimal? _totalDiscountPercent;
         decimal? _totalDiscountAmount;
@@ -49,7 +48,7 @@ namespace RetailManagementSystem.ViewModel.Sales
  
         #region Constructor
 
-        public SalesEntryViewModel(SalesParams salesParams)
+        public SalesEntryViewModel(SalesParams salesParams) : base(salesParams !=null ? salesParams.ShowAllCustomers : false)
         {
             _salesParams = salesParams;            
             var cnt = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
@@ -478,7 +477,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
-         override public ICommand SaveCommand
+         public ICommand SaveCommand
         {
           get
           {

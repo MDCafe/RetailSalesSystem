@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Windows;
+    using Utilities;
     using ViewModel.Sales;
 
     internal class RMSEntitiesHelper
@@ -90,5 +92,33 @@
 
             return RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();
         }
+
+        public static CustomerBill CheckIfBillExists(int billNo, int categoryId)
+        {
+            var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales
+                            join c in RMSEntitiesHelper.Instance.RMSEntities.Customers
+                            on s.CustomerId equals c.Id
+                            where s.RunningBillNo == billNo && c.CustomerTypeId.Value == categoryId
+                            select new CustomerBill
+                            {
+                                CustomerId = s.CustomerId,
+                            };
+
+            var customerBill = checkBill.FirstOrDefault();
+
+            if (checkBill.FirstOrDefault() == null)
+            {
+                Utility.ShowErrorBox("Bill Number doesn't exist");
+                return null;
+            }
+            
+            return customerBill;
+        }
     }
+
+    public class  CustomerBill
+    {
+        public int CustomerId { get; set; }
+    }
+
 }

@@ -144,6 +144,7 @@
                                                                     SelectedValuePath="ProductId"
                                                                     DisplayMemberPath="ProductName"  
                                                                     CustComboBoxSelectedPath ="ProductId"
+                                                                    CustComboBoxSelectedValue ="ProductId"
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
                                 >

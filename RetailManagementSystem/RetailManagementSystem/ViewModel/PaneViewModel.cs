@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
+﻿using RetailManagementSystem.ViewModel.Base;
+using System;
 
 namespace RetailManagementSystem.ViewModel
 {
-  internal class PaneViewModel : Base.ViewModelBase
-  {
-    public PaneViewModel()
+    internal class PaneViewModel : WindowViewModelbase
+    {
+    public PaneViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
     { }
 
 

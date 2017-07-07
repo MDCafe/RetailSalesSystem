@@ -179,7 +179,7 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                _documentViewModels.Add(new ReturnSalesViewModel());
+                _documentViewModels.Add(new ReturnSalesViewModel(false));
                 ActiveDocument = _documentViewModels.Last();
             }
             catch (Exceptions.RMSException ex)
@@ -216,8 +216,8 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                _documentViewModels.Add(new PurchaseEntryViewModel());
-                ActiveDocument = _documentViewModels.Last();
+                //_documentViewModels.Add(new PurchaseEntryViewModel());
+                //ActiveDocument = _documentViewModels.Last();
             }
             catch (Exceptions.RMSException ex)
             {
@@ -306,7 +306,7 @@ namespace RetailManagementSystem.ViewModel
 
                         if (res == MessageBoxResult.Yes)
                         {
-                            doc.SaveCommand.Execute(null);
+                            //doc.GetBillCommand.Execute(null);
                         }
                     }
                     _documentViewModels.Remove(docToClose);                    

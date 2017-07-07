@@ -8,10 +8,9 @@ using System.Collections.Generic;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class AmendSalesViewModel : ViewModelBase
+    class AmendSalesViewModel : WindowViewModelbase
     {
-        bool _showRestrictedCustomers;        
-        int _categoryId;
+        bool _showRestrictedCustomers;                
         Customer _selectedCustomer;               
         string _selectedCustomerText;
         IEnumerable<Sale> _billList;
@@ -22,13 +21,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         public IEnumerable<Customer> CustomersList
         {
             get
-            {
-                if (_showRestrictedCustomers)
-                    _categoryId = Constants.CUSTOMERS_OTHERS;
-                else
-                    _categoryId = Constants.CUSTOMERS_HOTEL;
-
-
+            {               
                 if (_showRestrictedCustomers)
                     return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
 
@@ -68,7 +61,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendSalesViewModel(bool showRestrictedCustomers)
+        public AmendSalesViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
         {            
             _showRestrictedCustomers = showRestrictedCustomers;            
             RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();           
@@ -139,23 +132,9 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales
-                              join c in RMSEntitiesHelper.Instance.RMSEntities.Customers
-                              on s.CustomerId equals c.Id
-                              where s.RunningBillNo == BillNo && c.CustomerTypeId.Value == _categoryId
-                              select new
-                              {
-                                  CustomerId = s.CustomerId,
-                              };
-
-
-            //var billExisits = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(b => b.RunningBillNo == BillNo).Where
-            var customerBill = checkBill.FirstOrDefault();
-            if (checkBill.FirstOrDefault() == null)
-            {
-                Utility.ShowErrorBox(window,"Bill Number doesn't exist");
+            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId);
+            if (customerBill == null)
                 return;
-            }
 
             var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
 
@@ -173,7 +152,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId };            
+            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId };
 
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);

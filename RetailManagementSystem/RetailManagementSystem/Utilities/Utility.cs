@@ -43,5 +43,6 @@ namespace RetailManagementSystem.Utilities
         {
             return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNo, MessageBoxImage.Question);
         }
+      
     }
 }

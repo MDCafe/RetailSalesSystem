@@ -21,7 +21,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;
         IEnumerable<ProductPrice> _productsPriceList;
 
-        public PurchaseEntryViewModel()
+        public PurchaseEntryViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
         {
             Title = "Purchase Entry ";
             var count = RMSEntitiesHelper.Instance.RMSEntities.Companies.ToList();
@@ -127,7 +127,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;        
 
-        override public ICommand SaveCommand
+        public ICommand GetBillCommand
         {
             get
             {

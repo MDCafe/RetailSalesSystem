@@ -246,4 +246,11 @@ namespace RetailManagementSystem.Model
         public decimal DiscountAmount { get; set; }
         public decimal AvailableStock { get; set; }
     }
+
+    public  class ReturnSaleDetailExtn : SaleDetailExtn
+    {
+        public decimal ReturnQty { get; set; }
+        public decimal ReturnPrice { get; set; }
+        public bool Selected { get; set; }
+    }
 }

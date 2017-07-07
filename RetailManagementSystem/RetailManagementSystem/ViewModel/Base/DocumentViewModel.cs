@@ -46,12 +46,17 @@ namespace RetailManagementSystem.ViewModel.Base
             get;
         }
 
-        abstract public ICommand SaveCommand
-        {
-          get;
-        }
+        //abstract public ICommand GetBillCommand
+        //{
+        //  get;
+        //}
         #endregion
 
         #endregion properties
+
+        public DocumentViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
+        {
+
+        }
   }
 }

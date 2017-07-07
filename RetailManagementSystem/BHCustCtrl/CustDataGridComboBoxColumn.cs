@@ -124,7 +124,9 @@ namespace BHCustCtrl
         {
             if (e.Property == CustDataGridComboBoxColumn.ItemsSourceProperty)
             {
-                comboBox.ItemsSource = ItemsSource;                
+                var cboSelectedItem = comboBox.SelectedItem;
+                comboBox.ItemsSource = ItemsSource;
+                comboBox.SelectedItem = cboSelectedItem;
             }
             //else if (e.Property == CustDataGridComboBoxColumn.SelectedValuePathProperty)
             //{                
