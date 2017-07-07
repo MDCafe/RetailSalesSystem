@@ -26,6 +26,12 @@ namespace RetailManagementSystem.ViewModel.Sales
         bool _isBillBasedReturn;
 
         public int? BillNo { get; private set; }
+
+        public object SelectedProductItem { get; set; }
+
+        public int SelectedPriceListItem { get; set; }
+        public int SelectedPriceId { get; set; }
+
         public Customer SelectedCustomer
         {
             get { return _selectedCustomer; }

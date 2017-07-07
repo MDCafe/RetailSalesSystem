@@ -16,16 +16,18 @@ namespace RetailManagementSystem.View.Sales
         ReturnSalesViewModel _returnSalesViewModel;
        
         public ReturnSales()
-        {
+        {            
             InitializeComponent();
+           // this.DataContext = new ReturnSalesViewModel(false);
 
             DataContextChanged += (sender, eventArgs) =>
             {
                 _returnSalesViewModel = this.DataContext as ReturnSalesViewModel;
                 custComboBoxCol.ItemsSource = _returnSalesViewModel.ProductsList;
                 custComboBoxCol.FilterPropertyName = "Name";
-                custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.ReturnPriceList;
 
+                //custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.ReturnPriceList;
+                
                 _returnSalesViewModel.MakeReadonlyEvent += (s) =>
                 {
                     ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Products").IsReadOnly = s;
@@ -56,7 +58,7 @@ namespace RetailManagementSystem.View.Sales
                 {
                     var model = focusedElement.DataContext as ReturnSaleDetailExtn;
                     if (model == null) return;
-                    custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.GetProductPriceDetails(model.ProductId);
+                    //custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.GetProductPriceDetails(model.ProductId);
                     args.Handled = false;
                 }
                 //if (model.MyIsReadOnly)
@@ -70,7 +72,7 @@ namespace RetailManagementSystem.View.Sales
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var product = selectedItem as Product;           
-            custComboBoxCol.comboBox.ItemsSource = _returnSalesViewModel.ProductsList;
+            //custComboBoxCol.comboBox.ItemsSource = _returnSalesViewModel.ProductsList;
             custComboBoxCol.comboBox.SelectedIndex = -1;
             custComboBoxCol.ClearSelection();
             //custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.GetProductPriceDetails(product.Id);

@@ -13,6 +13,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800"
+             xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
              FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
              xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"             
              >
@@ -40,7 +41,10 @@
                 <Setter Property="HorizontalAlignment" Value="Right" />
             </Style.Setters>
         </Style>
-        
+
+        <conv:ComboBoxConverter x:Key="cmbConverter"/>
+       
+
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -156,7 +160,7 @@
                     </toolKit:DataGridTextColumn.CellStyle>
                 </toolKit:DataGridTextColumn> 
 
-                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxColReturnPrice" Width="250" Header="Return Price"
+                <!--<BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxColReturnPrice" Width="250" Header="Return Price"
                                                                     ItemsSource="{Binding ReturnPriceList}"                                                                  
                                                                     SelectedValuePath="Price"
                                                                     CustComboBoxSelectedValue ="ReturnPrice"
@@ -169,7 +173,53 @@
                     <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Date" Binding="{Binding ModifiedOn,StringFormat=\{0:dd\/MM\/yyyy HH:mm\}}" />
 
-                </BHCustCtrl:CustDataGridComboBoxColumn>
+                </BHCustCtrl:CustDataGridComboBoxColumn>-->
+                <toolKit:DataGridTemplateColumn  Header="Return Price" Width="Auto" >
+                    <toolKit:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+                                    <TextBlock Text="{Binding ProductId}"/>
+                                </Border>
+                                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                                    <TextBlock  Text="{Binding PriceId}"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </toolKit:DataGridTemplateColumn.CellTemplate>
+                    <toolKit:DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <Grid x:Name="Grid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="cmbProduct" Grid.Column="0" 
+                                          ItemsSource="{Binding DataContext.ProductsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
+                                           SelectedItem="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                          SelectedValuePath="Id" DisplayMemberPath="Name"/>
+                                <ComboBox x:Name="cmbPrice" Grid.Column="1"
+                                          SelectedItem="{Binding PriceId,                                                        
+                                                         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                          SelectedValuePath="PriceId" DisplayMemberPath="Price" >
+                                    <ComboBox.ItemsSource>
+                                        <MultiBinding Converter="{StaticResource cmbConverter}">
+                                            <!--<Binding Path="DataContext.ProductsList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />-->
+                                            <Binding Path="SelectedItem" ElementName="cmbProduct"/>
+                                            <!--<Binding Path="DataContext.SelectedPriceListItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}"/>-->
+                                        </MultiBinding>
+                                    </ComboBox.ItemsSource>
+                                </ComboBox>
+
+                            </Grid>
+                        </DataTemplate>
+                    </toolKit:DataGridTemplateColumn.CellEditingTemplate>
+
+                </toolKit:DataGridTemplateColumn>
 
                 <!--<toolKit:DataGridTextColumn Width="150"  Header="Return Price" Binding="{Binding ReturnPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}">
                     <toolKit:DataGridTextColumn.CellStyle>

@@ -111,6 +111,7 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Converter\ActiveDocumentConverter.cs" />
+    <Compile Include="Converter\ComboBoxConverter.cs" />
     <Compile Include="Converter\GridCellValueColorConverter.cs" />
     <Compile Include="Converter\ZeroToVisibilityConverter.cs" />
     <Compile Include="Customer.cs">

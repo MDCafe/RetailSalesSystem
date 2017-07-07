@@ -123,10 +123,8 @@ namespace BHCustCtrl
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             if (e.Property == CustDataGridComboBoxColumn.ItemsSourceProperty)
-            {
-                var cboSelectedItem = comboBox.SelectedItem;
-                comboBox.ItemsSource = ItemsSource;
-                comboBox.SelectedItem = cboSelectedItem;
+            {                
+                comboBox.ItemsSource = ItemsSource;                
             }
             //else if (e.Property == CustDataGridComboBoxColumn.SelectedValuePathProperty)
             //{                
