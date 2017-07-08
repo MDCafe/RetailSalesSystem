@@ -3,6 +3,7 @@
     static class Constants
     {
         public const string AMOUNT = "Amount";
+        public const string RETURN_QTY = "ReturnQty";
         public const int CUSTOMERS_OTHERS = 4;
         public const int COMPANIES_OTHERS = 5;
         public const int CUSTOMERS_HOTEL = 2;

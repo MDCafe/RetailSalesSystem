@@ -43,7 +43,9 @@
         </Style>
 
         <conv:ComboBoxConverter x:Key="cmbConverter"/>
-       
+        <conv:ProductValueConverter x:Key="ProductValueConverter"/>
+        <conv:PriceValueConverter x:Key="PriceValueConverter"/>
+
 
     </UserControl.Resources>
     <Grid>
@@ -51,69 +53,24 @@
             <ColumnDefinition Width="113" />
             <ColumnDefinition Width="106"/>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="213"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="117"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="34"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="100*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
-        <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-                        SelectedDateFormat="Short" SelectedDate="{Binding SaleDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
-        <Label Content="Customer Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
-        <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
-                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
-                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
-                        IsEnabled="{Binding IsEditMode}"
-                  >
-            <ComboBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ComboBoxItem}">
-                    <Setter Property="ContentTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <Grid Height="30" Width="Auto">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200"/>
-                                        <!--<ColumnDefinition Width="10*"/>-->
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                    <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
-                                    <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </DataTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ComboBox.ItemContainerStyle>
-            <ComboBox.SelectedItem>
-                <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
-                    <Binding.ValidationRules>
-                        <Validator:ValidateComboRule/>
-                    </Binding.ValidationRules>
-                </Binding>
-            </ComboBox.SelectedItem>
-            <ComboBox.Text>
-                <Binding Path="SelectedCustomerText"/>
-            </ComboBox.Text>
-        </ComboBox>
+        <Label Content="Bill No :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
+        <Label Content="Customer Name :" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0"/>
 
-        <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
-        <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="PaymentId"
-                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" SelectedValue="{Binding SelectedPaymentId}" 
-                      Height="25" Grid.Row="1" Grid.Column="1" Margin="0,5,10,5" />
-
-        <Label Content="Bill No:"  Margin="0,5,0,0" Grid.Row="1" Grid.Column="2"></Label>
-        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="20" Width="100" HorizontalAlignment="Left"/>
-        <Button Width="80" Content="Get Bill" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" Height="30"
-                Command="{Binding GetBillCommand}" Margin="0,10,0,0"/>
-
+        <Label Content="Sale Date" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
+        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,10,0,4" 
+                 Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+        <Button Width="80" Content="Get Bill" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left"
+                Command="{Binding GetBillCommand}" Margin="5,5,0,4"/>
 
         <!--DataGrid-->
         <toolKit:DataGrid Name="ReturnSalesDataGrid" IsSynchronizedWithCurrentItem="True" 
@@ -136,105 +93,61 @@
                 </Style>
             </toolKit:DataGrid.Resources>
             <toolKit:DataGrid.Columns>
-                <toolKit:DataGridCheckBoxColumn Header="Select" Width="50" CanUserResize="False" IsReadOnly="True" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}"/>
-                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
-                                                                    ItemsSource="{Binding ProductsList}"                                                                  
-                                                                    SelectedValuePath="Id"
-                                                                    CustComboBoxSelectedValue ="ProductId"
-                                                                    CustComboBoxSelectedPath ="Id"
-                                                                    DisplayMemberPath="Name"  
-                                                                    SelectedValueBinding="{Binding ProductId}" 
-                                                                    ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                                          
-                                >
-                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding Id}" />
-                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding Name}" />
-                    
-                </BHCustCtrl:CustDataGridComboBoxColumn>
-                <toolKit:DataGridTextColumn Width="150"  Header="Purchased Quantity" Binding="{Binding Qty}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="Purchased Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Width="150"  Header="Return Quantity" Binding="{Binding ReturnQty}" ElementStyle="{StaticResource DataGridCellRightAlign}">
-                    <toolKit:DataGridTextColumn.CellStyle>
-                        <Style TargetType="toolKit:DataGridCell">
-                            <Setter Property="Background" Value="Beige" />
-                        </Style>
-                    </toolKit:DataGridTextColumn.CellStyle>
-                </toolKit:DataGridTextColumn> 
-
-                <!--<BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxColReturnPrice" Width="250" Header="Return Price"
-                                                                    ItemsSource="{Binding ReturnPriceList}"                                                                  
-                                                                    SelectedValuePath="Price"
-                                                                    CustComboBoxSelectedValue ="ReturnPrice"
-                                                                    CustComboBoxSelectedPath ="Price"
-                                                                    DisplayMemberPath="Price"
-                                                                    SelectedValueBinding="{Binding ReturnPrice}"                                                                    
-                                >
-                    <toolKit:DataGridTextColumn Header="Price Id" Binding="{Binding PriceId}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Date" Binding="{Binding ModifiedOn,StringFormat=\{0:dd\/MM\/yyyy HH:mm\}}" />
-
-                </BHCustCtrl:CustDataGridComboBoxColumn>-->
-                <toolKit:DataGridTemplateColumn  Header="Return Price" Width="Auto" >
+                <toolKit:DataGridCheckBoxColumn Header="Select" Width="50" CanUserResize="False" Visibility="Hidden" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}"/>
+                <toolKit:DataGridTemplateColumn  Header="Return Product Price" Width="250" >
                     <toolKit:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid >
+                            <Grid ShowGridLines="False">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="170"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-                                    <TextBlock Text="{Binding ProductId}"/>
-                                </Border>
-                                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                                    <TextBlock  Text="{Binding PriceId}"/>
-                                </Border>
+                                <TextBlock Grid.Column="0" Text="{Binding ProductId}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding PriceId}"/>
                             </Grid>
                         </DataTemplate>
                     </toolKit:DataGridTemplateColumn.CellTemplate>
                     <toolKit:DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <Grid x:Name="Grid">
+                            <Grid x:Name="Grid1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="170"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <ComboBox x:Name="cmbProduct" Grid.Column="0" 
                                           ItemsSource="{Binding DataContext.ProductsList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
-                                           SelectedItem="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                          SelectedValuePath="Id" DisplayMemberPath="Name"/>
+                                          SelectedItem="{Binding ProductId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ProductValueConverter} }" 
+                                          SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ProductId}"
+                                          SelectionChanged="cmbProduct_SelectionChanged"
+                                          />
                                 <ComboBox x:Name="cmbPrice" Grid.Column="1"
                                           SelectedItem="{Binding PriceId,                                                        
-                                                         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                          SelectedValuePath="PriceId" DisplayMemberPath="Price" >
+                                                         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PriceValueConverter}}" 
+                                          SelectedValuePath="PriceId" DisplayMemberPath="Price" 
+                                          SelectionChanged="cmbPrice_SelectionChanged">
                                     <ComboBox.ItemsSource>
                                         <MultiBinding Converter="{StaticResource cmbConverter}">
-                                            <!--<Binding Path="DataContext.ProductsList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />-->
+                                            <!--<Binding Path="DataContext.ProductsList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" , Converter={StaticResource ComboBoxValueConverter}/>-->
                                             <Binding Path="SelectedItem" ElementName="cmbProduct"/>
                                             <!--<Binding Path="DataContext.SelectedPriceListItem" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}"/>-->
                                         </MultiBinding>
                                     </ComboBox.ItemsSource>
                                 </ComboBox>
-
                             </Grid>
                         </DataTemplate>
                     </toolKit:DataGridTemplateColumn.CellEditingTemplate>
-
                 </toolKit:DataGridTemplateColumn>
+                <toolKit:DataGridTextColumn Width="250" x:Name="ProductName" Header="Product Name" IsReadOnly="True" Binding="{Binding ProductName}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Purchased Quantity" Binding="{Binding Qty}" Visibility="Hidden" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Purchased Price" Binding="{Binding CostPrice}" Visibility="Hidden" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="100"  Header="Return Price" Binding="{Binding ReturnPrice}" IsReadOnly="True"  ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150"  Header="Return Quantity" Binding="{Binding ReturnQty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" IsReadOnly="True"  Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}"  IsReadOnly="True" Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}"  IsReadOnly="True" Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}"  IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <!--<toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" Visibility="Hidden" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>-->
 
-                <!--<toolKit:DataGridTextColumn Width="150"  Header="Return Price" Binding="{Binding ReturnPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}">
-                    <toolKit:DataGridTextColumn.CellStyle>
-                        <Style TargetType="toolKit:DataGridCell">
-                            <Setter Property="Background" Value="Green" />
-                            
-                        </Style>
-                    </toolKit:DataGridTextColumn.CellStyle>
-                </toolKit:DataGridTextColumn>-->
-                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                
             </toolKit:DataGrid.Columns>
             <toolKit:DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
@@ -258,38 +171,29 @@
             </toolKit:DataGrid.RowValidationErrorTemplate>-->
         </toolKit:DataGrid>
         <!--DataGrid-->
-        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
-            <Label Content="Discount Amt"  Margin="5,5,5,5"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.ColumnSpan="3" Grid.Column="3" >
+            <!--<Label Content="Discount Amt"  Margin="5,5,5,5"/>
             <TextBox Name="txtDiscount" Width="40" Margin="5,5,10,5" Height="20" Text="{Binding TotalDiscountAmount}"/>
             <Label Content="Discount %" Width="70" Margin="5"/>
-            <TextBox Name="txtDiscountPercent" Width="30" Margin="5" Height="20" Text="{Binding TotalDiscountPercent}"/>
-            <UC:SalesExtension  Margin="5" x:Name="SalesExtn"  Width="120" Height="25"/>
+            <TextBox Name="txtDiscountPercent" Width="30" Margin="5" Height="20" Text="{Binding TotalDiscountPercent}"/>-->
 
             <Label Content="Total" Margin="5" FontWeight="ExtraBold"/>
-            <TextBlock x:Name="txtTotalAmount"  Width="100" Margin="5,5,5,5" Text="{Binding TotalAmountDisplay, StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center"/>
+            <TextBlock x:Name="txtTotalAmount"  Width="100" Margin="5,5,5,5" Text="{Binding TotalAmount, StringFormat=N2, TargetNullValue={x:Static sys:String.Empty}}" FontWeight="ExtraBold" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="35" Grid.ColumnSpan="5">
-            <Label Content="Amount Paid" Margin="5" FontWeight="ExtraBold"/>
-            <TextBox x:Name="txtAmtPaid"  Width="100" Margin="5" Height="20" 
-                     Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}" FontWeight="ExtraBold">
-                <i:Interaction.Behaviors>
-                    <behaviours:ClearOnFocusedBehavior/>
-                </i:Interaction.Behaviors>
-            </TextBox>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Height="35" Grid.ColumnSpan="5" >
-            <Label Content="Balance" Margin="5" FontWeight="ExtraBold"/>
-            <TextBlock x:Name="txtBalance"  Width="100" Margin="5,5,5,5" Text="{Binding BalanceAmount, StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center"/>
-        </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="6"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+        <StackPanel Orientation="Horizontal" Grid.Row="6"  HorizontalAlignment="Right" Grid.ColumnSpan="2" Grid.Column="3" Width="380">
             <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5"/>
-            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding IsEditMode}"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/> 
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
         </StackPanel>
+        <TextBox x:Name="txtCustomer" Text="{Binding CustomerName, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,10,0,4" 
+            Grid.Row="0" Grid.Column="4" Width="150" HorizontalAlignment="Left" IsReadOnly="True"/>
+        <TextBox x:Name="txtSaleDate" Text="{Binding SaleDate, TargetNullValue={x:Static sys:String.Empty},StringFormat='dd/MM/yyyy'}" Margin="0,12,0,8" 
+            Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Left" IsReadOnly="True"/>
+        <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="3" Margin="0,5,0,0" />
+        <TextBox x:Name="txtPaymentMode" Text="{Binding ModeOfPayment, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,12,0,8" 
+            Grid.Row="1" Grid.Column="4" Width="100" HorizontalAlignment="Left" IsReadOnly="True"/>
 
     </Grid>
 </UserControl>

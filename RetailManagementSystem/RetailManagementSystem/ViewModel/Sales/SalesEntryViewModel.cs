@@ -67,11 +67,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _categoryId = Constants.CUSTOMERS_HOTEL;
             }
 
-            _paymentModes = new List<PaymentMode>(2)
-            {
-                new PaymentMode {PaymentId = '0',PaymentName="Cash" },
-                new PaymentMode {PaymentId = '1',PaymentName="Credit" }
-            };
+            PaymentMode pm = new PaymentMode();
+            _paymentModes = pm.PaymentModes;
 
             _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Create();
 
@@ -1096,15 +1093,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #endregion
     }
-
-    #region PaymentMode Class
-    public class PaymentMode
-    {
-        public char PaymentId { get; set; }
-        public string PaymentName { get; set; }
-    }
-    #endregion
-
+   
     #region ProductPrice Class
 
     public class ProductPrice

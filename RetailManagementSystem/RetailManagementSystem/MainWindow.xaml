@@ -63,7 +63,7 @@
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
 
-                        <RibbonButton Label="Return Sales" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Return Sales"
+                        <RibbonButton Label="Sale Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Sale Returns"
                                        KeyTip="R" Command="{Binding OpenReturnSalesCommand}"/>
                     </RibbonGroup>
 

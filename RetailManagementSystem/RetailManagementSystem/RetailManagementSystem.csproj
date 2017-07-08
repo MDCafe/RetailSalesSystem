@@ -122,6 +122,7 @@
     <Compile Include="MeasuringUnit.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\PaymentMode.cs" />
     <Compile Include="Model\PurchaseDetailExtn.cs" />
     <Compile Include="Model\SaleDetailExtn.cs" />
     <Compile Include="PaymentDetail.cs">

@@ -164,15 +164,12 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ReturnDamagedStocks">
           <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="PriceId" />
-            <PropertyRef Name="isReturn" />
+            <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="int" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
@@ -504,6 +501,7 @@ warning 6002: The table/view 'def.rms.ReturnDamagedStocks' does not have a prima
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Sales" EntityType="Self.Sales" Schema="rms" store:Type="Tables" />
@@ -542,17 +540,6 @@ FROM `PurchaseFreeDetails` AS `PurchaseFreeDetails`</DefiningQuery>
 `PurchasePaymentDetails`.`ModifiedOn`, 
 `PurchasePaymentDetails`.`UpdatedBy`
 FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStocks" store:Type="Tables" store:Schema="rms">
-            <DefiningQuery>SELECT
-`ReturnDamagedStocks`.`ProductId`, 
-`ReturnDamagedStocks`.`Quantity`, 
-`ReturnDamagedStocks`.`PriceId`, 
-`ReturnDamagedStocks`.`comments`, 
-`ReturnDamagedStocks`.`isReturn`, 
-`ReturnDamagedStocks`.`CreatedOn`, 
-`ReturnDamagedStocks`.`ModifiedOn`
-FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
@@ -678,11 +665,11 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <NavigationProperty Name="PriceDetails" Relationship="Self.FK_Product" FromRole="Products" ToRole="PriceDetails" />
           <NavigationProperty Name="PurchaseFreeDetail" Relationship="Self.FK_ProductFree" FromRole="Products" ToRole="PurchaseFreeDetails" />
           <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_ProductId" FromRole="Products" ToRole="PurchaseDetails" />
-          <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_ProductId_RD" FromRole="Products" ToRole="ReturnDamagedStocks" />
           <NavigationProperty Name="Category" Relationship="RMSModel.FK_Category" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
+          <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSModel.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
         </EntityType>
         <EntityType Name="Purchase">
           <Key>
@@ -759,22 +746,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <NavigationProperty Name="Purchase" Relationship="Self.FK_purchaseId" FromRole="PurchasePaymentDetails" ToRole="Purchases" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_compId" FromRole="PurchasePaymentDetail" ToRole="Company" />
         </EntityType>
-        <EntityType Name="ReturnDamagedStock">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="PriceId" />
-            <PropertyRef Name="isReturn" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="isReturn" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProductId_RD" FromRole="ReturnDamagedStocks" ToRole="Products" />
-          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
         <Association Name="FK_MOU">
           <End Role="MeasuringUnits" Type="Self.MeasuringUnit" Multiplicity="0..1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
@@ -823,18 +794,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductId_RD">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="ReturnDamagedStocks" Type="Self.ReturnDamagedStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ReturnDamagedStocks">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PurchaseBillId">
           <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
           <End Role="PurchaseDetails" Type="Self.PurchaseDetail" Multiplicity="*" />
@@ -868,7 +827,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetail" />
           <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetail" />
           <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetail" />
-          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStock" />
           <AssociationSet Name="FK_MOU" Association="Self.FK_MOU">
             <End Role="MeasuringUnits" EntitySet="MeasuringUnits" />
             <End Role="Products" EntitySet="Products" />
@@ -884,10 +842,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <AssociationSet Name="FK_ProductId" Association="Self.FK_ProductId">
             <End Role="Products" EntitySet="Products" />
             <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductId_RD" Association="Self.FK_ProductId_RD">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
           </AssociationSet>
           <AssociationSet Name="FK_PurchaseBillId" Association="Self.FK_PurchaseBillId">
             <End Role="Purchases" EntitySet="Purchases" />
@@ -953,6 +907,11 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
           <AssociationSet Name="Fk_sale_bill" Association="RMSModel.Fk_sale_bill">
             <End Role="Sale" EntitySet="Sales" />
             <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
+          <EntitySet Name="ReturnDamagedStocks" EntityType="RMSModel.ReturnDamagedStock" />
+          <AssociationSet Name="FK_ProductId_RD" Association="RMSModel.FK_ProductId_RD">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
@@ -1249,6 +1208,33 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ReturnDamagedStock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="isReturn" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProductId_RD" FromRole="ReturnDamagedStock" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_ProductId_RD">
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSModel.ReturnDamagedStock" Role="ReturnDamagedStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReturnDamagedStock">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1360,19 +1346,6 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ReturnDamagedStocks">
-            <EntityTypeMapping TypeName="RMSModel.ReturnDamagedStock">
-              <MappingFragment StoreEntitySet="ReturnDamagedStocks">
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="comments" ColumnName="comments" />
-                <ScalarProperty Name="isReturn" ColumnName="isReturn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1511,6 +1484,21 @@ FROM `ReturnDamagedStocks` AS `ReturnDamagedStocks`</DefiningQuery>
                 <ScalarProperty Name="PriceId" ColumnName="PriceId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReturnDamagedStocks">
+            <EntityTypeMapping TypeName="RMSModel.ReturnDamagedStock">
+              <MappingFragment StoreEntitySet="ReturnDamagedStocks">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="isReturn" ColumnName="isReturn" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

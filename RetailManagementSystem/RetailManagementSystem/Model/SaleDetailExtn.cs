@@ -252,5 +252,6 @@ namespace RetailManagementSystem.Model
         public decimal ReturnQty { get; set; }
         public decimal ReturnPrice { get; set; }
         public bool Selected { get; set; }
+        public string ProductName { get; set; }        
     }
 }

@@ -14,6 +14,8 @@ namespace RetailManagementSystem
     
     public partial class ReturnDamagedStock
     {
+        public int Id { get; set; }
+        public Nullable<int> CustomerId { get; set; }
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
         public int PriceId { get; set; }

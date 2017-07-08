@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
-using System.Windows;
 using System;
+using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -17,41 +17,46 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         RMSEntities _rmsEntities;
         ObservableCollection<ReturnSaleDetailExtn> _returnSalesDetailsList;
-        IEnumerable<PriceDetail> _returnPriceList;
-        Customer _selectedCustomer;
-        string _selectedCustomerText;
+        IEnumerable<PriceDetail> _returnPriceList;        
         Sale _billSales;
-        DateTime _saleDate;
-        char _selectedPaymentId;
+        DateTime? _saleDate;        
         bool _isBillBasedReturn;
+        decimal? _totalAmount;
+        string _customerName;
+        string _modeOfPayment;
 
-        public int? BillNo { get; private set; }
+        public int? BillNo { get; private set; }        
 
-        public object SelectedProductItem { get; set; }
-
-        public int SelectedPriceListItem { get; set; }
-        public int SelectedPriceId { get; set; }
-
-        public Customer SelectedCustomer
+        public decimal? TotalAmount
         {
-            get { return _selectedCustomer; }
-            set
+            get { return _totalAmount; }
+            private set
             {
-                _selectedCustomer = value;
-                RaisePropertyChanged("SelectedCustomer");
+                _totalAmount = value;
+                RaisePropertyChanged("TotalAmount");
             }
         }
-        public string SelectedCustomerText
+        public string  CustomerName
         {
-            get { return _selectedCustomerText; }
+            get { return _customerName; }
             set
             {
-                _selectedCustomerText = value;
+                _customerName = value;
+                RaisePropertyChanged("CustomerName");
+            }
+        }
+        public string ModeOfPayment
+        {
+            get { return _modeOfPayment; }
+            set
+            {
+                _modeOfPayment = value;
                 //NotifyPropertyChanged(() => this._selectedCustomer);
-                RaisePropertyChanged("SelectedCustomerText");
+                RaisePropertyChanged("ModeOfPayment");
             }
         }
-        public DateTime SaleDate
+
+        public DateTime? SaleDate
         {
             get { return _saleDate; }
             set
@@ -59,16 +64,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _saleDate = value;
                 RaisePropertyChanged("SaleDate");
             }
-        }
-        public char SelectedPaymentId
-        {
-            get { return _selectedPaymentId; }
-            set
-            {
-                _selectedPaymentId = value;
-                RaisePropertyChanged("SelectedPaymentId");
-            }
-        }
+        }        
 
         public bool IsBillBasedReturn
         {
@@ -83,12 +79,20 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         public ReturnSalesViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
         {            
-            _returnSalesDetailsList = new ObservableCollection<ReturnSaleDetailExtn>();            
+            _returnSalesDetailsList = new ObservableCollection<ReturnSaleDetailExtn>();
+            _returnSalesDetailsList.CollectionChanged += (s, e) =>
+             {
+                 if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                 {
+                     TotalAmount = _returnSalesDetailsList.Sum(r => r.Amount);
+                 }
+             };
+
             _rmsEntities = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities();
             //_returnPriceList = _rmsEntities.PriceDetails.ToList();
             var cnt = _rmsEntities.Products.ToList();
-            //var cnt1= _returnPriceList.Count();
-            SaleDate = DateTime.Now;
+            //var cnt1= _returnPriceList.Count();            
+            this.Title = "Return Sales Entry";
         }
 
         public ObservableCollection<ReturnSaleDetailExtn> ReturnSaleDetailList
@@ -118,10 +122,30 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get { return _rmsEntities.Products.Local; }
         }
-
-        public IEnumerable<PriceDetail> GetProductPriceDetails(int productId)
+      
+        public void SetProductPriceDetails(int productId, int selectedIndex)
         {
-            return _rmsEntities.PriceDetails.Where(pr => pr.ProductId == productId).OrderByDescending(s => s.ModifiedOn).Take(3).ToList();
+            var product = _rmsEntities.Products.Where(p => p.Id == productId).FirstOrDefault();
+            _returnSalesDetailsList[selectedIndex].ProductName = product.Name;
+            //var selectedProduct = _returnSalesDetailsList.Where(s => s.ProductId == product.Id).FirstOrDefault();
+            //selectedProduct.ProductName = product.Name;
+        }
+
+        public void SetPriceDetails(int priceId,int selectedIndex)
+        {
+            var returnPrice = _rmsEntities.PriceDetails.Where(pr => pr.PriceId == priceId).FirstOrDefault();
+            var returnItem = _returnSalesDetailsList[selectedIndex];
+            returnItem.ReturnPrice = returnPrice.Price;
+            returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
+            TotalAmount = _returnSalesDetailsList.Sum(p => p.Amount);
+            returnItem.PropertyChanged += (s, e) =>
+            {
+                if(e.PropertyName == Constants.RETURN_QTY)
+                {
+                    returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
+                    TotalAmount = _returnSalesDetailsList.Sum(p => p.Amount);
+                }
+            };
         }
 
         private void SetReturnSalePrice(Product productPrice)
@@ -228,23 +252,52 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSave(object parameter)
         {
+            decimal amount = 0.0M;
+            if (IsBillBasedReturn)
+            {
+                foreach (var item in _returnSalesDetailsList)
+                {
+                    if (item.Selected)
+                    {
+                        amount += item.Amount.Value;
+                        SaveReturnItems(item);
+                    }
+                }
+                var customer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _billSales.CustomerId);
+                if (customer != null)
+                    customer.BalanceDue -= amount;
+
+                _rmsEntities.SaveChanges();
+                Clear();
+                return;
+            }
+            
             foreach (var item in _returnSalesDetailsList)
             {
-                if(item.Selected)
-                {
-                    _rmsEntities.ReturnDamagedStocks.Add(new ReturnDamagedStock()
-                    {
-                        isReturn = true,
-                        PriceId = item.PriceId,
-                        ProductId = item.ProductId,
-                        Quantity = item.ReturnQty                        
-                    });
-
-                    var stock = _rmsEntities.Stocks.Where(s => s.PriceId == item.PriceId && s.ProductId == item.ProductId).FirstOrDefault();
-                    stock.Quantity += item.Qty.HasValue ? item.Qty.Value : 0;
-                }
-
+                SaveReturnItems(item);
             }
+            _rmsEntities.SaveChanges();
+            Clear();
+        }
+
+        private void SaveReturnItems(ReturnSaleDetailExtn item)
+        {
+            int? custId = null;
+                if(_billSales.CustomerId != 0)
+                    custId = _billSales.CustomerId ;
+
+            _rmsEntities.ReturnDamagedStocks.Add(new ReturnDamagedStock()
+            {
+                isReturn = true,
+                PriceId = item.PriceId,
+                ProductId = item.ProductId,
+                Quantity = item.ReturnQty,
+                CustomerId = custId
+
+            });
+
+            var stock = _rmsEntities.Stocks.Where(s => s.PriceId == item.PriceId && s.ProductId == item.ProductId).FirstOrDefault();
+            stock.Quantity += item.ReturnQty;
         }
 
         #endregion
@@ -278,11 +331,13 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _billSales = _rmsEntities.Sales.Where(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId).FirstOrDefault();
 
-            //SelectedCustomer = _billSales.Customer;
-            //SelectedCustomerText = SelectedCustomer.Name;
+            IsBillBasedReturn = true;
+            CustomerName = _billSales.Customer.Name;            
             SaleDate = _billSales.AddedOn.Value;
-            SelectedPaymentId = Char.Parse(_billSales.PaymentMode);            
+            PaymentMode pm = new PaymentMode();
+            ModeOfPayment = pm.GetPaymentString(_billSales.PaymentMode);
             var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
+
 
             var tempTotalAmount = 0.0M;
             foreach (var saleDetailItem in saleDetailsForBill.ToList())
@@ -298,6 +353,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     SellingPrice = saleDetailItem.SellingPrice,
                     BillId = saleDetailItem.BillId,
                     CostPrice = productPrice.Price,
+                    ProductName = _rmsEntities.Products.FirstOrDefault(p => p.Id == saleDetailItem.ProductId).Name,
                     //AvailableStock = productPrice.Quantity,
                     Amount = productPrice.SellingPrice * saleDetailItem.Qty
                 };
@@ -306,7 +362,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Qty.Value;
             }
-            //TotalAmount = tempTotalAmount;
+            TotalAmount = tempTotalAmount;
+            RaisePropertyChanged("ReturnSaleDetailList");
 
             //RunningBillNo = runningBillNo;
             //_isEditMode = true;
@@ -315,13 +372,14 @@ namespace RetailManagementSystem.ViewModel.Sales
             //else
             //    _deletedItems.Clear();
 
-            IsBillBasedReturn = true;
+
         }
 
         #endregion
 
         #region Clear Command
         RelayCommand<object> _clearCommand = null;
+        
 
         public ICommand ClearCommand
         {
@@ -340,6 +398,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             _returnSalesDetailsList = new ObservableCollection<ReturnSaleDetailExtn>();
             BillNo = null;
+            IsBillBasedReturn = false;
+            TotalAmount = null;
         }
 
         #endregion

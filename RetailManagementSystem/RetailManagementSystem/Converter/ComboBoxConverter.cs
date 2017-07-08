@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace RetailManagementSystem.Converter
@@ -12,12 +9,22 @@ namespace RetailManagementSystem.Converter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            //var products = values[0] as IList<Product>;
-            var selectedItem = values[0] as Product;
-            if (selectedItem == null) return null;
-
+            var val = values[0];
+            int result,productId;
+            if (values[0] == null) return null;
+            if (int.TryParse(val.ToString(), out result))
+            {
+                productId = result;
+            }
+            else
+            {
+                var selectedItem = values[0] as Product;// as IList<Product>;
+                productId = selectedItem.Id;
+                //if (selectedItem == null) return null;
+            }
+            
             //var selectedGlobalResourceView = values[2] as ResourceViewOption;
-            return RMSEntitiesHelper.Instance.RMSEntities.PriceDetails.Where(pr => pr.ProductId == selectedItem.Id).OrderByDescending(s => s.ModifiedOn).Take(3).ToList();
+            return RMSEntitiesHelper.Instance.RMSEntities.PriceDetails.Where(pr => pr.ProductId == productId).OrderByDescending(s => s.ModifiedOn).Take(3).ToList();
             //if (personnelType == null)
             //    return allResources;
             //if (selectedGlobalResourceView.ResourceViewTitle == "Regional")
@@ -32,6 +39,36 @@ namespace RetailManagementSystem.Converter
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class ProductValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;            
+        }
+
+        public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
+        {
+            var selectedItem = value as Product;
+            if (selectedItem == null) return null;            
+            return selectedItem.Id;
+        }
+    }
+
+    public class PriceValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
+        {
+            var selectedItem = value as PriceDetail;
+            if (selectedItem == null) return null;            
+            return selectedItem.PriceId;
         }
     }
 }
