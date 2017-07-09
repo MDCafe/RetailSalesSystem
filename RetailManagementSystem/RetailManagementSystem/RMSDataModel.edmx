@@ -169,7 +169,7 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CustomerId" Type="int" />
+          <Property Name="BillId" Type="int" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
@@ -1213,7 +1213,7 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="BillId" Type="Int32" />
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Decimal" Nullable="false" />
           <Property Name="PriceId" Type="Int32" Nullable="false" />
@@ -1498,7 +1498,7 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
                 <ScalarProperty Name="PriceId" ColumnName="PriceId" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

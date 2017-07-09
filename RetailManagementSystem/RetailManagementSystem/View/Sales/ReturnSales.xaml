@@ -142,6 +142,7 @@
                 <toolKit:DataGridTextColumn Header="Purchased Price" Binding="{Binding CostPrice}" Visibility="Hidden" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="100"  Header="Return Price" Binding="{Binding ReturnPrice}" IsReadOnly="True"  ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150"  Header="Return Quantity" Binding="{Binding ReturnQty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Return Amount" Binding="{Binding ReturnAmount, StringFormat=N2}"  IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" IsReadOnly="True"  Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}"  IsReadOnly="True" Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}"  IsReadOnly="True" Visibility="Hidden" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
