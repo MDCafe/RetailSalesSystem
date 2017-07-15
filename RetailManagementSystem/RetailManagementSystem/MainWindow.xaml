@@ -21,7 +21,7 @@
     </Window.Resources>
     <Grid>
         <DockPanel>
-            <Ribbon  SelectedIndex="0" Grid.Column="0" Grid.ColumnSpan="5" DockPanel.Dock="Top">
+            <Ribbon  SelectedIndex="0" DockPanel.Dock="Top">
 
                 <!-- Help Pane, located at the right-hand side -->
                 <Ribbon.HelpPaneContent>
@@ -166,7 +166,7 @@
                                 </ComboBoxItem.Tag>
                             </ComboBoxItem>
                         </ComboBox>
-                    </StackPanel>-->            
+                    </StackPanel>-->
             <xcad:DockingManager 
                            AllowMixedOrientation="True"
                            BorderBrush="Black"
@@ -231,7 +231,6 @@
                     </xcad:LayoutPanel>
                 </xcad:LayoutRoot>
             </xcad:DockingManager>
-                
         </DockPanel>
     </Grid>
 </Window>

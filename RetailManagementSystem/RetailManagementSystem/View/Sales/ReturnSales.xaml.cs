@@ -25,34 +25,36 @@ namespace RetailManagementSystem.View.Sales
                 {
                     var visibility = System.Windows.Visibility.Hidden;
 
-                    if (s)
+                    this.Dispatcher.Invoke( () =>
                     {
-                        visibility = System.Windows.Visibility.Visible;                        
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Hidden;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Hidden;
-                    }
-                    else
-                    {
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Visible;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Visible;
-                    }
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Select").Visibility = visibility;
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Quantity").Visibility = visibility;
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Selling Price").Visibility = visibility; 
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount (%)").Visibility = visibility;
-                    ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount Amount").Visibility = visibility;
-                    
+                        if (s)
+                        {
+                            visibility = System.Windows.Visibility.Visible;
+                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Hidden;
+                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Hidden;
+                            ReturnSalesDataGrid.CanUserAddRows = false;
+                        }
+                        else
+                        {
+                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Visible;
+                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Visible;
+                            ReturnSalesDataGrid.CanUserAddRows = true;
+                        }
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Select").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Quantity").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Selling Price").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount (%)").Visibility = visibility;
+                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount Amount").Visibility = visibility;
 
-
-
-                    if (!s)
-                    {
-                        ReturnSalesDataGrid.LoadingRow += DataGridLoadingRow;
-                    }
-                    else
-                        ReturnSalesDataGrid.LoadingRow -= DataGridLoadingRow;
+                        if (!s)
+                        {
+                            ReturnSalesDataGrid.LoadingRow += DataGridLoadingRow;
+                        }
+                        else
+                            ReturnSalesDataGrid.LoadingRow -= DataGridLoadingRow;
+                    });
                 };
             };
 

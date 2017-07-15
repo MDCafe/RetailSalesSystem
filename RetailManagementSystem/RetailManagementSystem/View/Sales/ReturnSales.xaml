@@ -7,10 +7,8 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
              xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
-             xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl"    
-             xmlns:Validator="clr-namespace:RetailManagementSystem.Validation" 
-             xmlns:behaviours="clr-namespace:RetailManagementSystem.View.Behaviours"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl"             
+             xmlns:ctr ="clr-namespace:RetailManagementSystem.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800"
              xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
@@ -18,23 +16,12 @@
              xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"             
              >
     <UserControl.Resources>
-        <Style TargetType="{x:Type DatePickerTextBox}">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <TextBox x:Name="PART_TextBox"
-                             Text="{Binding Path=SelectedDate, StringFormat='dd/MM/yyyy', 
-                             RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <ControlTemplate x:Key="ValidationTemplate">
+        <!--<ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>
                 <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
                 <AdornedElementPlaceholder/>
             </DockPanel>
-        </ControlTemplate>
+        </ControlTemplate>-->
 
         <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
             <Style.Setters>
@@ -45,10 +32,9 @@
         <conv:ComboBoxConverter x:Key="cmbConverter"/>
         <conv:ProductValueConverter x:Key="ProductValueConverter"/>
         <conv:PriceValueConverter x:Key="PriceValueConverter"/>
-
-
     </UserControl.Resources>
-    <Grid>
+    <xctk:BusyIndicator IsBusy="{Binding DataContext.PanelLoading, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="113" />
             <ColumnDefinition Width="106"/>
@@ -67,10 +53,49 @@
         <Label Content="Customer Name :" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0"/>
 
         <Label Content="Sale Date" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
-        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,10,0,4" 
-                 Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left"/>
+            <TextBox Name="txtBillNo" Text="{Binding BillNo,UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Static sys:String.Empty} }" Margin="0,10,0,4" 
+                 Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" TabIndex="0"/>
         <Button Width="80" Content="Get Bill" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left"
-                Command="{Binding GetBillCommand}" Margin="5,5,0,4"/>
+                Command="{Binding GetBillCommand}" Margin="5,5,0,4" TabIndex="1" IsDefault="{Binding ElementName=txtBillNo,
+                                               Path=IsKeyboardFocused}"/>
+
+        <!-- Spinner -->
+        <!--<ctr:LoadingPanel x:Name="loadingPanel" Height="40" VerticalAlignment="Bottom"
+                    IsLoading="{Binding DataContext.PanelLoading, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                    Message="{Binding DataContext.PanelMainMessage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                    SubMessage="{Binding DataContext.PanelSubMessage, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
+                    ClosePanelCommand="{Binding PanelCloseCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />-->
+
+        <!--<xctk:BusyIndicator.BusyContentTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="4">
+                        <TextBlock Text="Downloading Email" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="4">
+                            <TextBlock Text="Downloading message 4/10..."/>
+                            <ProgressBar Value="40" Height="15"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="Pause" HorizontalAlignment="Right" Margin="0 0 2 0"/>
+                            <Button Grid.Column="1" Content="Cancel" HorizontalAlignment="Left" Margin="2 0 0 0"/>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </xctk:BusyIndicator.BusyContentTemplate>
+            <xctk:BusyIndicator.OverlayStyle>
+                <Style TargetType="Rectangle">
+                    <Setter Property="Fill" Value="#ffffeeee"/>
+                </Style>
+            </xctk:BusyIndicator.OverlayStyle>
+            <xctk:BusyIndicator.ProgressBarStyle>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </xctk:BusyIndicator.ProgressBarStyle>-->
+        <!--<ContentControl Style="{StaticResource SampleContent}"/>-->
 
         <!--DataGrid-->
         <toolKit:DataGrid Name="ReturnSalesDataGrid" IsSynchronizedWithCurrentItem="True" 
@@ -156,20 +181,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </toolKit:DataGrid.ColumnHeaderStyle>
-
-            <!--<toolKit:DataGrid.RowValidationRules>
-                <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
-            </toolKit:DataGrid.RowValidationRules>
-
-            <toolKit:DataGrid.RowValidationErrorTemplate>
-                <ControlTemplate>
-                    <Grid Margin="0,-2,0,-2"  ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}},
-                                                        Path=(Validation.Errors)[0].ErrorContent}">
-                        <Ellipse StrokeThickness="0" Fill="Red" Width="{TemplateBinding FontSize}"  Height="{TemplateBinding FontSize}" />
-                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"  />
-                    </Grid>
-                </ControlTemplate>
-            </toolKit:DataGrid.RowValidationErrorTemplate>-->
         </toolKit:DataGrid>
         <!--DataGrid-->
         <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.ColumnSpan="3" Grid.Column="3" >
@@ -196,7 +207,8 @@
         <TextBox x:Name="txtPaymentMode" Text="{Binding ModeOfPayment, TargetNullValue={x:Static sys:String.Empty}}" Margin="0,12,0,8" 
             Grid.Row="1" Grid.Column="4" Width="100" HorizontalAlignment="Left" IsReadOnly="True"/>
 
-    </Grid>
+        </Grid>
+    </xctk:BusyIndicator>
 </UserControl>
 
 
