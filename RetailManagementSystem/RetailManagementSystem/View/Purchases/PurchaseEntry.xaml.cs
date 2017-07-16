@@ -5,6 +5,7 @@ using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
 using System.Windows;
 using RetailManagementSystem.ViewModel.Purchases;
+using RetailManagementSystem.Model;
 
 namespace RetailManagementSystem.View.Purchases
 {
@@ -20,43 +21,19 @@ namespace RetailManagementSystem.View.Purchases
         {
             InitializeComponent();
 
-            //DataContextChanged += (sender, eventArgs) =>
-            ////{
-            ////    _salesViewModel = this.DataContext as SalesEntryViewModel;
-            ////    custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
-            ////    _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
-            //};
-
-
-        }
-
-        private void ComboBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            //ComboBox cmb = (ComboBox)sender;
-
-            //cmb.IsDropDownOpen = true;
-
-            //if (!string.IsNullOrEmpty(cmb.Text))
-            //{
-            //    string fullText = cmb.Text + e.Text;
-            //    cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(fullText, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            //    return;
-            //}
-            ////else if (!string.IsNullOrEmpty(e.Text))
-            //if (!string.IsNullOrEmpty(e.Text))
-            //{
-            //    cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(cmb.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            //}
-            //else
-            //{
-            //    cmb.ItemsSource = _salesViewModel.ProductsPriceList;
-            //}
-        }
+            DataContextChanged += (sender, eventArgs) =>
+            {
+                _purchaseEntryViewModel = DataContext as PurchaseEntryViewModel;
+                custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
+                custComboBoxCol.FilterPropertyName = "ProductName";
+                //_salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
+            };
+        }      
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
-            //var productPrice = selectedItem as ProductPrice;
-            //_salesViewModel.SetProductDetails(productPrice);
+            var productPrice = selectedItem as ProductPrice;
+            _purchaseEntryViewModel.SetProductDetails(productPrice,PurchaseDataGrid.SelectedIndex);
         }
     }   
 }

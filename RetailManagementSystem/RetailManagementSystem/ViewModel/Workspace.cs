@@ -179,7 +179,10 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                _documentViewModels.Add(new ReturnSalesViewModel(false));
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers= bool.Parse(showAll.ToString());
+                _documentViewModels.Add(new ReturnSalesViewModel(showRestrictedCustomers));
                 ActiveDocument = _documentViewModels.Last();
             }
             catch (Exceptions.RMSException ex)
@@ -216,8 +219,8 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                //_documentViewModels.Add(new PurchaseEntryViewModel());
-                //ActiveDocument = _documentViewModels.Last();
+                _documentViewModels.Add(new PurchaseEntryViewModel(false));
+                ActiveDocument = _documentViewModels.Last();
             }
             catch (Exceptions.RMSException ex)
             {

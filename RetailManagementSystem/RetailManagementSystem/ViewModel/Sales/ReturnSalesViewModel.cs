@@ -23,7 +23,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         bool _isBillBasedReturn, _panelLoading;
         decimal? _totalAmount;
         string _customerName;
-        string _modeOfPayment, _panelMainMessage, _panelSubMessage;
+        string _modeOfPayment;
 
         public int? BillNo { get; private set; }        
 
@@ -71,7 +71,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _isBillBasedReturn = value;                
                 MakeReadonlyEvent?.Invoke(_isBillBasedReturn);
-
             }
         }
 

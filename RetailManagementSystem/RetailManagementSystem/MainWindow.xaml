@@ -63,7 +63,7 @@
                         <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
 
-                        <RibbonButton Label="Sale Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Sale Returns"
+                        <RibbonButton Label="Sale Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Returns"
                                        KeyTip="R" Command="{Binding OpenReturnSalesCommand}"/>
                     </RibbonGroup>
 
@@ -74,14 +74,14 @@
                     </RibbonGroup>
                     
                     <!-- Reports Group-->
-                    <RibbonGroup x:Name="Employee" Header="Reports">
+                    <!--<RibbonGroup x:Name="Employee" Header="Reports">
                         <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales Summary" KeyTip="V">
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Keep Text Only" KeyTip="T"/>
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Paste Special..." KeyTip="S"/>
                         </RibbonMenuButton>
                         <RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />
 
-                    </RibbonGroup>
+                    </RibbonGroup>-->
 
 
                 </RibbonTab>

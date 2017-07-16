@@ -10,12 +10,9 @@
         public PaymentMode[] PaymentModes
         {
             get
-            {
-                if (_paymentModes.Length == 0)
-                {
-                    _paymentModes[0] = new PaymentMode { PaymentId = '0', PaymentName = "Cash" };
-                    _paymentModes[1] = new PaymentMode { PaymentId = '1', PaymentName = "Credit" };
-                }
+            {                
+                _paymentModes[0] = new PaymentMode { PaymentId = '0', PaymentName = "Cash" };
+                _paymentModes[1] = new PaymentMode { PaymentId = '1', PaymentName = "Credit" };             
                 return _paymentModes;
             }
 

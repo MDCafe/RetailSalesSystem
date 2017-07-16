@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
+using RetailManagementSystem.Model;
 
 namespace RetailManagementSystem.View.Sales
 {

@@ -14,29 +14,22 @@ using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
-    class PurchaseEntryViewModel : DocumentViewModel, INotifier
+    class PurchaseEntryViewModel : CommonBusinessViewModel
     {
         private Company _selectedCompany;
-
-        ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;
-        IEnumerable<ProductPrice> _productsPriceList;
+        ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;        
 
         public PurchaseEntryViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
         {
             Title = "Purchase Entry ";
             var count = RMSEntitiesHelper.Instance.RMSEntities.Companies.ToList();
-            _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
-
-            _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
-
+            _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();            
         }
 
         public void Notify(int runningNo)
         {
             throw new NotImplementedException();
         }
-
-
 
         public ObservableCollection<PurchaseDetailExtn> PurchaseDetailList
         {
@@ -53,18 +46,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {                
                 return RMSEntitiesHelper.Instance.RMSEntities.Companies.Local.Where(c => c.CategoryTypeId == Constants.COMPANIES_OTHERS);
             }
-        }
-        public IEnumerable<ProductPrice> ProductsPriceList
-        {
-            get { return _productsPriceList; }
-            private set
-            {
-                _productsPriceList = value;
-                //NotifyPropertyChanged(() => this.ProductsPriceList);
-                RaisePropertyChanged("ProductsPriceList");
-            }
-        }
-
+        }     
 
         public Company SelectedCompany
         {
@@ -76,58 +58,103 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
         }
 
-        #region IsDirty
-
-        private bool _isDirty = false;
-        override public bool IsDirty
+        public decimal? TotalAmount
         {
-            get { return _isDirty; }
+            get { return _totalAmount; }
             set
             {
-                if (_isDirty != value)
-                {
-                    _isDirty = value;
-                    RaisePropertyChanged("IsDirty");
-                    RaisePropertyChanged("FileName");
-                }
+                //if discout is available apply it
+                CalculateTotalAmount();
             }
         }
 
-        #endregion
-
-        #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
+        private void CalculateTotalAmount()
         {
-            get
+            decimal? tempTotal = _purchaseDetailsList.Sum(a => a.Amount); ;
+            if (_totalDiscountAmount.HasValue)
             {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
+                tempTotal -= _totalDiscountAmount;
+            }
 
-                return _closeCommand;
+            if (_totalDiscountPercent.HasValue)
+            {
+                var discountValue = tempTotal * (_totalDiscountPercent / 100);
+                tempTotal -= discountValue;
+            }
+
+            _totalAmount = tempTotal;
+            //TotalAmountDisplay = _totalAmount.Value;
+            RaisePropertyChanged("TotalAmount");
+            RaisePropertyChanged("BalanceAmount");
+        }
+
+
+        public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
+        {
+            if (productPrice == null) return;
+            var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
+            var selRowSaleDetailExtn = _purchaseDetailsList[selectedIndex];
+            if (saleItem != null)
+            {
+                Utility.ShowWarningBox("Item is already added");
+                selRowSaleDetailExtn.ProductId = 0;
+                return;
+            }
+            SetPurchaseDetailExtn(productPrice, selRowSaleDetailExtn);
+        }
+
+        private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn)
+        {
+            if (purchaseDetailExtn != null)
+            {
+                //selectedRowSaleDetail.Qty = productPrice.Quantity;
+                purchaseDetailExtn.PurchasePrice = productPrice.Price;
+                purchaseDetailExtn.CostPrice = productPrice.Price;
+                purchaseDetailExtn.PriceId = productPrice.PriceId;
+                purchaseDetailExtn.AvailableStock = productPrice.Quantity;                
+
+                purchaseDetailExtn.PropertyChanged += (sender, e) =>
+                {
+                    var prop = e.PropertyName;
+
+                    if(prop == Constants.FREE_ISSUE)
+                    {
+                        if (purchaseDetailExtn.Qty.HasValue && purchaseDetailExtn.FreeIssue.HasValue)
+                        {
+                            purchaseDetailExtn.CostPrice = TotalAmount.Value / (purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value);
+                        }
+                    }
+
+                    if (prop == Constants.AMOUNT)
+                    {
+                        TotalAmount = _purchaseDetailsList.Sum(a => a.Amount);
+                        return;
+                    }
+                    var amount = purchaseDetailExtn.PurchasePrice * purchaseDetailExtn.Qty;
+                    var discountAmount = purchaseDetailExtn.DiscountPercentage != 0 ?
+                                         amount - (amount * (purchaseDetailExtn.DiscountPercentage / 100)) :
+                                         purchaseDetailExtn.DiscountAmount != 0 ?
+                                         amount - purchaseDetailExtn.DiscountAmount :
+                                         0;
+
+                    if (discountAmount != 0)
+                    {
+                        purchaseDetailExtn.Amount = discountAmount;
+                        purchaseDetailExtn.Discount = discountAmount;
+                        return;
+                    }
+
+                    purchaseDetailExtn.Amount = amount;
+                    purchaseDetailExtn.Discount = 0;
+                };
             }
         }
 
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        private void OnClose()
-        {
-            var returnValue = Workspace.This.Close(this);
-            if (!returnValue) return;
-
-            RMSEntitiesHelper.Instance.RemoveNotifier(this);            
-        }
-        #endregion
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;        
 
-        public ICommand GetBillCommand
+        public ICommand SaveCommand
         {
             get
             {
@@ -155,9 +182,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         private void Clear()
         {
-            throw new NotImplementedException();
+            _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
         }
-
 
         #endregion
     }

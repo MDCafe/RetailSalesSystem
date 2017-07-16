@@ -23,33 +23,45 @@ namespace RetailManagementSystem
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
-            //Sales Entry
-            if (e.Key == Key.S && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-                var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true};
-                Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
-                return;
-            }
+            if (!((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))) return;
 
-            //Sales Amend
-            if (e.Key == Key.A && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            switch (e.Key)
             {
-                try
+                //Sales Entry
+                case Key.S:
                 {
-                    AmendSales amendSales = new AmendSales(true);
-                    amendSales.ShowDialog();
+                    var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true };
+                    Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
+                    return;
                 }
-                catch (Exceptions.RMSException ex)
+
+                //Sales Amend
+                case Key.A:
                 {
-                    Utility.ShowErrorBox(ex.Message);
+
+                    try
+                    {
+                        AmendSales amendSales = new AmendSales(true);
+                        amendSales.ShowDialog();
+                    }
+                    catch (Exceptions.RMSException ex)
+                    {
+                        Utility.ShowErrorBox(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Utility.ShowErrorBox(ex.Message);
+                    }
+                    return;
                 }
-                catch (Exception ex)
-                {
-                    Utility.ShowErrorBox(ex.Message);                    
-                }
-                return;
-            }
-            
+                //Sales Return
+                case Key.R:
+                    {
+                        Workspace.This.OpenReturnSalesCommand.Execute(true);
+                        return;
+                    }
+
+            }                                 
         }        
     }
 }

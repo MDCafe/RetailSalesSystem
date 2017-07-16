@@ -1,12 +1,11 @@
 ﻿namespace RetailManagementSystem
 {
     using Interfaces;
+    using Model;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using System.Windows;
     using Utilities;
-    using ViewModel.Sales;
 
     internal class RMSEntitiesHelper
     {

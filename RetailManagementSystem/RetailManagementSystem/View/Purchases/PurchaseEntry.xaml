@@ -12,7 +12,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="800"
-             FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
+             FocusManager.FocusedElement="{Binding ElementName=CboCompanies}"
              xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"
              >
     <UserControl.Resources>
@@ -53,7 +53,7 @@
         </Grid.RowDefinitions>
         <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
         <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-                        SelectedDateFormat="Short" SelectedDate="{Binding SaleDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
+                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
         <Label Content="Supplier Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
         <ComboBox x:Name="CboCompanies" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
                       ItemsSource="{Binding CompaniesList}"  IsEditable="True"                                        
@@ -91,8 +91,8 @@
         <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
             <Label Content="Bill No" Width="45" Margin="15,5,0,0"></Label>
             <Label x:Name="txtBillNo" Width="60" Margin="5" Content="{Binding RunningBillNo}"/>
-            <Button x:Name="btnAddCustomer" Content="Customer Quick Add" 
-                    Width="130" Command="{Binding AddCustomerCommand}" Margin="5"/>
+            <Button x:Name="btnAddCustomer" Content="Supplier Quick Add" 
+                    Width="130" Command="{Binding}" Margin="5"/>
         </StackPanel>
 
         <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
@@ -104,8 +104,9 @@
         <TextBox Name="txtOrderNo" Text="{Binding OrderNo}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="20" />
 
         <!--DataGrid-->
-        <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
-                                      ItemsSource="{Binding PurchaseDetailList}"  
+        <toolKit:DataGrid Name="PurchaseDataGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding DataContext.PurchaseDetailList, 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="5"
@@ -120,16 +121,14 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                <!--<Converter:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
-                <Style x:Key="CellStyle" TargetType="DataGridCell">
-                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
-                </Style>-->
             </toolKit:DataGrid.Resources> 
             <toolKit:DataGrid.Columns>
                 <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
-                                                                    ItemsSource="{Binding ProductsPriceList}"                                                                  
+                                                                    ItemsSource="{Binding DataContext.ProductsPriceList}"                                                                        
                                                                     SelectedValuePath="ProductId"
                                                                     DisplayMemberPath="ProductName"  
+                                                                    CustComboBoxSelectedPath ="ProductId"
+                                                                    CustComboBoxSelectedValue ="ProductId"
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
                                 >
@@ -140,22 +139,14 @@
 
                 </BHCustCtrl:CustDataGridComboBoxColumn>
 
-                <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}">
-                    <toolKit:DataGridTextColumn.Binding>
-                        <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </toolKit:DataGridTextColumn.Binding>
-                </toolKit:DataGridTextColumn>
+                <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Qty}"/>
                 <toolKit:DataGridTextColumn Header="Purchase Price" Binding="{Binding PurchasePrice}" />
                 <toolKit:DataGridTextColumn Header="Free Issue" Binding="{Binding FreeIssue}" />
                 <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" />
                 <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" />
                 <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount}" IsReadOnly="True"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Stock Availale" Binding="{Binding AvailableStock}" IsReadOnly="True"/>
-                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True"/>
+                <toolKit:DataGridTextColumn Header="Cost Price" Binding="{Binding CostPrice, StringFormat=N2}" IsReadOnly="True"/>
             </toolKit:DataGrid.Columns>
             
 

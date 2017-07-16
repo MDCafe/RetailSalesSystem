@@ -126,6 +126,7 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\PaymentMode.cs" />
+    <Compile Include="Model\ProductPrice.cs" />
     <Compile Include="Model\PurchaseDetailExtn.cs" />
     <Compile Include="Model\SaleDetailExtn.cs" />
     <Compile Include="PaymentDetail.cs">
@@ -200,6 +201,7 @@
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
+    <Compile Include="ViewModel\Base\CommonBusinessViewModel.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\Base\WindowViewModelbase.cs" />
