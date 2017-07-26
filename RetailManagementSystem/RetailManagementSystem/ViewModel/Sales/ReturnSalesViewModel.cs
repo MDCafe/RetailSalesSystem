@@ -10,7 +10,7 @@ using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class ReturnSalesViewModel : DocumentViewModel
+    class ReturnSalesViewModel : SalesViewModelbase
     {
         public delegate void MakeReadOnly(bool isReadOnly);
         public event MakeReadOnly MakeReadonlyEvent;
@@ -21,7 +21,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         Sale _billSales;
         DateTime? _saleDate;        
         bool _isBillBasedReturn, _panelLoading;
-        decimal? _totalAmount;
+        new decimal? _totalAmount;
         string _customerName;
         string _modeOfPayment;
 

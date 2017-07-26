@@ -1,19 +1,20 @@
 ﻿namespace RetailManagementSystem
 {
-    using Interfaces;
-    using Model;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using Utilities;
+    using Interfaces;
+    using Model;
 
     internal class RMSEntitiesHelper
     {
         RMSEntities _rmsEntities;
         static RMSEntitiesHelper _rMSEntitiesHelper;
         static object _syncRoot = new object();        
-        List<INotifier> _notifierList = new List<INotifier>();   
-        
+        List<INotifier> _salesNotifierList = new List<INotifier>();
+        List<INotifier> _purchaseNotifierList = new List<INotifier>();
+
         private RMSEntitiesHelper()
         {
             _rmsEntities = new RMSEntities();
@@ -46,26 +47,55 @@
         {
             return new RMSEntities();
         }
+
         public void AddNotifier(INotifier notifier)
         {
-            Monitor.Enter(_notifierList);
-            _notifierList.Add(notifier);
-            Monitor.Exit(_notifierList);
+            Monitor.Enter(_salesNotifierList);
+            _salesNotifierList.Add(notifier);
+            Monitor.Exit(_salesNotifierList);
         }
 
         public void RemoveNotifier(INotifier notifier)
         {
-            Monitor.Enter(_notifierList);
-            _notifierList.Remove(notifier);
-            Monitor.Exit(_notifierList);
+            Monitor.Enter(_salesNotifierList);
+            _salesNotifierList.Remove(notifier);
+            Monitor.Exit(_salesNotifierList);
         }
 
-        public void SelectRunningBillNo(int categoryId)
+
+        public void AddPurchaseNotifier(INotifier notifier)
+        {
+            Monitor.Enter(_salesNotifierList);
+            _purchaseNotifierList.Add(notifier);
+            Monitor.Exit(_salesNotifierList);
+        }
+
+        public void RemovePurchaseNotifier(INotifier notifier)
+        {
+            Monitor.Enter(_salesNotifierList);
+            _purchaseNotifierList.Remove(notifier);
+            Monitor.Exit(_salesNotifierList);
+        }
+
+        public void SelectRunningBillNo(int categoryId,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
             var salesNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
 
-            foreach (var notifyList in _notifierList)
+            if(sourceFilePath.Contains("PurchaseEntryViewModel"))
+            {
+                foreach (var purchaseNotifyList in _purchaseNotifierList)
+                {
+                    purchaseNotifyList.Notify(salesNo);
+                }
+
+                return;
+            }
+
+            foreach (var notifyList in _salesNotifierList)
             {
                 notifyList.Notify(salesNo);
             }

@@ -154,9 +154,11 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
             <PropertyRef Name="BillId" />
           </Key>
           <Property Name="BillId" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RunningBillNo" Type="int" />
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
           <Property Name="InvoiceNo" Type="varchar" MaxLength="45" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="SpecialDiscount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TotalBillAmount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Tax" Type="decimal" Precision="10" Scale="2" />
@@ -241,10 +243,12 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
         <EntityType Name="Stocks">
           <Key>
             <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ExpiryDate" />
             <PropertyRef Name="PriceId" />
           </Key>
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="ExpiryDate" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -666,28 +670,10 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <NavigationProperty Name="PurchaseFreeDetail" Relationship="Self.FK_ProductFree" FromRole="Products" ToRole="PurchaseFreeDetails" />
           <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_ProductId" FromRole="Products" ToRole="PurchaseDetails" />
           <NavigationProperty Name="Category" Relationship="RMSModel.FK_Category" FromRole="Product" ToRole="Category" />
-          <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSModel.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
-        </EntityType>
-        <EntityType Name="Purchase">
-          <Key>
-            <PropertyRef Name="BillId" />
-          </Key>
-          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CompanyId" Type="Int32" Nullable="false" />
-          <Property Name="InvoiceNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="TransportCharges" Type="Decimal" />
-          <Property Name="TotalBillAmount" Type="Decimal" />
-          <Property Name="Tax" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_PurchaseBillId" FromRole="Purchases" ToRole="PurchaseDetails" />
-          <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_purchaseId" FromRole="Purchases" ToRole="PurchasePaymentDetails" />
-          <NavigationProperty Name="Company" Relationship="RMSModel.FK_CompanyId" FromRole="Purchase" ToRole="Company" />
+          <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -717,7 +703,7 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Product" Relationship="Self.FK_ProductId" FromRole="PurchaseDetails" ToRole="Products" />
-          <NavigationProperty Name="Purchase" Relationship="Self.FK_PurchaseBillId" FromRole="PurchaseDetails" ToRole="Purchases" />
+          <NavigationProperty Name="Purchase" Relationship="RMSModel.FK_PurchaseBillId" FromRole="PurchaseDetail" ToRole="Purchase" />
         </EntityType>
         <EntityType Name="PurchaseFreeDetail">
           <Key>
@@ -743,8 +729,8 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Purchase" Relationship="Self.FK_purchaseId" FromRole="PurchasePaymentDetails" ToRole="Purchases" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_compId" FromRole="PurchasePaymentDetail" ToRole="Company" />
+          <NavigationProperty Name="Purchase" Relationship="RMSModel.FK_purchaseId" FromRole="PurchasePaymentDetail" ToRole="Purchase" />
         </EntityType>
         <Association Name="FK_MOU">
           <End Role="MeasuringUnits" Type="Self.MeasuringUnit" Multiplicity="0..1" />
@@ -794,35 +780,10 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PurchaseBillId">
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
-          <End Role="PurchaseDetails" Type="Self.PurchaseDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Purchases">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PurchaseDetails">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_purchaseId">
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
-          <End Role="PurchasePaymentDetails" Type="Self.PurchasePaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Purchases">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PurchasePaymentDetails">
-              <PropertyRef Name="PurchaseBillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="RMSEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnit" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetail" />
           <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="Purchases" EntityType="Self.Purchase" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetail" />
           <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetail" />
@@ -843,23 +804,10 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             <End Role="Products" EntitySet="Products" />
             <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_PurchaseBillId" Association="Self.FK_PurchaseBillId">
-            <End Role="Purchases" EntitySet="Purchases" />
-            <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_purchaseId" Association="Self.FK_purchaseId">
-            <End Role="Purchases" EntitySet="Purchases" />
-            <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
-          </AssociationSet>
           <EntitySet Name="Categories" EntityType="RMSModel.Category" />
           <AssociationSet Name="FK_Category" Association="RMSModel.FK_Category">
             <End Role="Category" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
-          <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="Stock" EntitySet="Stocks" />
           </AssociationSet>
           <EntitySet Name="Roles" EntityType="RMSModel.Role" />
           <AssociationSet Name="fk_role" Association="RMSModel.fk_role">
@@ -877,10 +825,6 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <AssociationSet Name="FK_Company" Association="RMSModel.FK_Company">
             <End Role="Company" EntitySet="Companies" />
             <End Role="Product" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CompanyId" Association="RMSModel.FK_CompanyId">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="Purchase" EntitySet="Purchases" />
           </AssociationSet>
           <AssociationSet Name="FK_compId" Association="RMSModel.FK_compId">
             <End Role="Company" EntitySet="Companies" />
@@ -913,6 +857,24 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             <End Role="Product" EntitySet="Products" />
             <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
           </AssociationSet>
+          <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
+          <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Stock" EntitySet="Stocks" />
+          </AssociationSet>
+          <EntitySet Name="Purchases" EntityType="RMSModel.Purchase" />
+          <AssociationSet Name="FK_CompanyId" Association="RMSModel.FK_CompanyId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Purchase" EntitySet="Purchases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseBillId" Association="RMSModel.FK_PurchaseBillId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_purchaseId" Association="RMSModel.FK_purchaseId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -933,31 +895,6 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Stock">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="PriceId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Product" Relationship="RMSModel.FK_PrdId" FromRole="Stock" ToRole="Product" />
-        </EntityType>
-        <Association Name="FK_PrdId">
-          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Stock">
-              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1071,8 +1008,8 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Products" Relationship="RMSModel.FK_Company" FromRole="Company" ToRole="Product" />
-          <NavigationProperty Name="Purchases" Relationship="RMSModel.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSModel.FK_compId" FromRole="Company" ToRole="PurchasePaymentDetail" />
+          <NavigationProperty Name="Purchases" Relationship="RMSModel.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
         </EntityType>
         <Association Name="FK_Company">
           <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
@@ -1082,18 +1019,6 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Product">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CompanyId">
-          <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
-          <End Type="RMSModel.Purchase" Role="Purchase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Purchase">
               <PropertyRef Name="CompanyId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1235,6 +1160,89 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="ProductId" />
+            <PropertyRef Name="ExpiryDate" />
+            <PropertyRef Name="PriceId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="RMSModel.FK_PrdId" FromRole="Stock" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_PrdId">
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Stock">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Purchase">
+          <Key>
+            <PropertyRef Name="BillId" />
+          </Key>
+          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RunningBillNo" Type="Int32" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="SpecialDiscount" Type="Decimal" />
+          <Property Name="TransportCharges" Type="Decimal" />
+          <Property Name="TotalBillAmount" Type="Decimal" />
+          <Property Name="Tax" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="Company" Relationship="RMSModel.FK_CompanyId" FromRole="Purchase" ToRole="Company" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSModel.FK_PurchaseBillId" FromRole="Purchase" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSModel.FK_purchaseId" FromRole="Purchase" ToRole="PurchasePaymentDetail" />
+        </EntityType>
+        <Association Name="FK_CompanyId">
+          <End Type="RMSModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSModel.Purchase" Role="Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Purchase">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseBillId">
+          <End Type="RMSModel.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSModel.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchaseDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_purchaseId">
+          <End Type="RMSModel.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSModel.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchasePaymentDetail">
+              <PropertyRef Name="PurchaseBillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1275,22 +1283,6 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="ReorderPoint" ColumnName="ReorderPoint" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Purchases">
-            <EntityTypeMapping TypeName="RMSModel.Purchase">
-              <MappingFragment StoreEntitySet="Purchases">
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
-                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
-                <ScalarProperty Name="TotalBillAmount" ColumnName="TotalBillAmount" />
-                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -1356,18 +1348,6 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="parentId" ColumnName="parentId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Stocks">
-            <EntityTypeMapping TypeName="RMSModel.Stock">
-              <MappingFragment StoreEntitySet="Stocks">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1500,6 +1480,37 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stocks">
+            <EntityTypeMapping TypeName="RMSModel.Stock">
+              <MappingFragment StoreEntitySet="Stocks">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Purchases">
+            <EntityTypeMapping TypeName="RMSModel.Purchase">
+              <MappingFragment StoreEntitySet="Purchases">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="TotalBillAmount" ColumnName="TotalBillAmount" />
+                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
+                <ScalarProperty Name="SpecialDiscount" ColumnName="SpecialDiscount" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -3,9 +3,9 @@ using System;
 
 namespace RetailManagementSystem.ViewModel
 {
-    internal class PaneViewModel : WindowViewModelbase
+    internal class PaneViewModel : ViewModelBase
     {
-    public PaneViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
+    public PaneViewModel() 
     { }
 
 

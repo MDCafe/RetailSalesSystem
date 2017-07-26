@@ -54,7 +54,7 @@ namespace RetailManagementSystem.ViewModel.Base
 
         #endregion properties
 
-        public DocumentViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
+        public DocumentViewModel()
         {
 
         }

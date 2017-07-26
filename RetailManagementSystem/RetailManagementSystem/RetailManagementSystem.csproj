@@ -114,6 +114,7 @@
     <Compile Include="Converter\ActiveDocumentConverter.cs" />
     <Compile Include="Converter\ComboBoxConverter.cs" />
     <Compile Include="Converter\GridCellValueColorConverter.cs" />
+    <Compile Include="Converter\StringToDateConverter.cs" />
     <Compile Include="Converter\ZeroToVisibilityConverter.cs" />
     <Compile Include="Customer.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
@@ -203,8 +204,9 @@
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Base\CommonBusinessViewModel.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
+    <Compile Include="ViewModel\Base\PurchaseViewModelbase.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
-    <Compile Include="ViewModel\Base\WindowViewModelbase.cs" />
+    <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />

@@ -21,9 +21,11 @@ namespace RetailManagementSystem
         }
     
         public int BillId { get; set; }
+        public Nullable<int> RunningBillNo { get; set; }
         public int CompanyId { get; set; }
         public string InvoiceNo { get; set; }
         public Nullable<decimal> Discount { get; set; }
+        public Nullable<decimal> SpecialDiscount { get; set; }
         public Nullable<decimal> TransportCharges { get; set; }
         public Nullable<decimal> TotalBillAmount { get; set; }
         public Nullable<decimal> Tax { get; set; }
@@ -31,8 +33,8 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
+        public virtual Company Company { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
-        public virtual Company Company { get; set; }
     }
 }

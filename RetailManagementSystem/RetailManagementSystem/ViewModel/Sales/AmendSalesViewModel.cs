@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class AmendSalesViewModel : WindowViewModelbase
+    class AmendSalesViewModel : SalesViewModelbase
     {
         bool _showRestrictedCustomers;                
         Customer _selectedCustomer;               

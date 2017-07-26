@@ -1,25 +1,21 @@
-﻿using RetailManagementSystem.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using RetailManagementSystem.Interfaces;
+using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
-    class WindowViewModelbase : ViewModelBase
+    class SalesViewModelbase : CommonBusinessViewModel
     {
         protected int _categoryId;
         protected bool _showRestrictedCustomer;
 
-        public WindowViewModelbase(bool showRestrictedCustomer)
+        public SalesViewModelbase(bool showRestrictedCustomer)
         {
             _showRestrictedCustomer = showRestrictedCustomer;
             if (_showRestrictedCustomer)
                 _categoryId = Constants.CUSTOMERS_OTHERS;
             else
                 _categoryId = Constants.CUSTOMERS_HOTEL;
-        }
-
+        }       
     }
 }

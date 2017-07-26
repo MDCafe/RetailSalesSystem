@@ -16,6 +16,7 @@ namespace RetailManagementSystem
     {
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
+        public System.DateTime ExpiryDate { get; set; }
         public int PriceId { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }

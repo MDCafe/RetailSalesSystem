@@ -7,6 +7,7 @@ namespace RetailManagementSystem.Model
         private decimal? _purchasePrice;
         private decimal? _freeIssue;
         
+
         public decimal? PurchasePrice
         {
             get
@@ -42,5 +43,9 @@ namespace RetailManagementSystem.Model
                 this.OnPropertyChanged("FreeIssue");
             }
         }
+
+        public decimal? OldCostPrice { get; set; }
+        public decimal? OldSellingPrice { get; set; }
+        public DateTime? ExpiryDate { get; set; }
     }
 }

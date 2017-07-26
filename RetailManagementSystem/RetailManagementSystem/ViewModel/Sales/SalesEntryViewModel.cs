@@ -14,13 +14,12 @@ using RetailManagementSystem.ViewModel.Extensions;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class SalesEntryViewModel : CommonBusinessViewModel
+    class SalesEntryViewModel : SalesViewModelbase
     {
         #region Private Variables
         static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));                           
         Customer _selectedCustomer;        
-        Sale _billSales;                  
-        decimal _totalAmountDisplay = 0.0M;
+        Sale _billSales;                          
         decimal _amountPaid = 0.0M;              
         string _selectedCustomerText;
         IExtensions _extensions;
@@ -155,7 +154,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void CalculateTotalAmount()
         {
-            decimal? tempTotal = _salesDetailsList.Sum(a => a.Amount); ;
+            decimal? tempTotal = _salesDetailsList.Sum(a => a.Amount);
             if (_totalDiscountAmount.HasValue)
             {
                 tempTotal -= _totalDiscountAmount;
@@ -171,18 +170,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //TotalAmountDisplay = _totalAmount.Value;
             RaisePropertyChanged("TotalAmount");
             RaisePropertyChanged("BalanceAmount");
-        }
-
-        public decimal TotalAmountDisplay
-        {
-            get { return _totalAmountDisplay; }
-            set
-            {
-                _totalAmountDisplay = value;
-                RaisePropertyChanged("TotalAmountDisplay");
-            }
-
-        }
+        }       
 
         public decimal? TotalDiscountAmount
         {
@@ -447,6 +435,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _totalAmount = _extensions.Calculate(_totalAmount.Value);
 
             _billSales.TotalAmount = _totalAmount;
+            _billSales.Discount = GetDiscountValue();
             _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
 
            
@@ -489,8 +478,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (_salesParams.GetTemproaryData)
                 _closeCommand.Execute(null);
             Clear();
-        }
-
+        }       
 
         private void SaveInterim()
         {                                   

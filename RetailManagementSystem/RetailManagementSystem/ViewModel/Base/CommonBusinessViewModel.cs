@@ -20,7 +20,7 @@ namespace RetailManagementSystem.ViewModel.Base
         protected decimal? _totalDiscountPercent;
         protected decimal? _totalDiscountAmount;
 
-        public IEnumerable<ProductPrice> ProductsPriceList
+        protected IEnumerable<ProductPrice> ProductsPriceList
         {
             get { return _productsPriceList; }
             private set
@@ -30,7 +30,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public char SelectedPaymentId
+        protected char SelectedPaymentId
         {
             get { return _selectedPaymentId; }
             set
@@ -40,7 +40,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public DateTime TranscationDate
+        protected DateTime TranscationDate
         {
             get { return _transcationDate; }
             set
@@ -50,7 +50,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public int RunningBillNo
+        protected int RunningBillNo
         {
             get { return _runningBillNo; }
             set
@@ -60,7 +60,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public IEnumerable<PaymentMode> PaymentModes
+        protected IEnumerable<PaymentMode> PaymentModes
         {
             get { return _paymentModes; }
             private set
@@ -70,7 +70,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public PaymentMode SelectedPaymentMode
+        protected PaymentMode SelectedPaymentMode
         {
             get { return _selectedPaymentMode; }
             set
@@ -80,7 +80,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        public CommonBusinessViewModel(bool showRestrictedCustomer) : base(showRestrictedCustomer)
+        protected CommonBusinessViewModel()
         {
             PaymentMode pm = new PaymentMode();
             _paymentModes = pm.PaymentModes;
@@ -89,10 +89,19 @@ namespace RetailManagementSystem.ViewModel.Base
             SelectedPaymentId = '0';
 
         }
-
+       
         void INotifier.Notify(int runningNo)
         {
             RunningBillNo = runningNo;
+        }
+
+        protected decimal? GetDiscountValue()
+        {
+            if (_totalDiscountAmount.HasValue)
+                return _totalDiscountAmount;
+            if (_totalDiscountPercent.HasValue)
+                return _totalAmount * (_totalDiscountPercent / 100);
+            return null;
         }
 
         #region IsDirty
