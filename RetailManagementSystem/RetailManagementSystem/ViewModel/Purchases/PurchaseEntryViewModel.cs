@@ -22,7 +22,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private decimal? _transportCharges;
         private decimal? _localCoolieCharges;
 
-
         public PurchaseEntryViewModel(bool showRestrictedCompanies) : base(showRestrictedCompanies)
         {
             Title = "Purchase Entry ";
@@ -90,6 +89,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _totalDiscountAmount = value;
+                 ApplyDiscountToItemCostPrice(_totalDiscountAmount);
+                
 
                 if (_totalDiscountAmount.HasValue)
                     DiscountPercentEnabled = false;
@@ -107,6 +108,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _totalDiscountPercent = value;
+
+                var discountValue = _totalAmount * (_totalDiscountPercent / 100);
+                ApplyDiscountToItemCostPrice(discountValue);
 
                 if (_totalDiscountPercent.HasValue)
                     DiscountEnabled = false;
@@ -145,7 +149,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _coolieCharges = value;
-                CalculateTotalCharges();
+                CalculateTotalAmount();
+                ApplyExpensesToItemCostPrice();
                 RaisePropertyChanged("CoolieCharges");
             }
         }
@@ -156,7 +161,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _kCoolieCharges = value;
-                CalculateTotalCharges();
+                CalculateTotalAmount();
+                ApplyExpensesToItemCostPrice();
                 RaisePropertyChanged("KCoolieCharges");
             }
         }
@@ -167,6 +173,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _transportCharges = value;
+                CalculateTotalAmount();
+                ApplyExpensesToItemCostPrice();
                 RaisePropertyChanged("TransportCharges");
             }
         }
@@ -177,20 +185,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _localCoolieCharges = value;
+                CalculateTotalAmount();
+                ApplyExpensesToItemCostPrice();
                 RaisePropertyChanged("LocalCoolieCharges");
-            }
-        }
-
-        private void CalculateTotalCharges()
-        {
-           if(_coolieCharges.HasValue)
-            {
-                TotalAmount += _coolieCharges;
-            }
-
-            if (_kCoolieCharges.HasValue)
-            {
-                TotalAmount += _kCoolieCharges;
             }
         }
 
@@ -199,46 +196,107 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private void CalculateTotalAmount()
         {
             decimal? tempTotal = _purchaseDetailsList.Sum(a => a.Amount);
-            decimal? discountValue = 0;
-
-            if (_totalDiscountAmount.HasValue)
-            {
-                tempTotal -= _totalDiscountAmount;
-                discountValue = _totalDiscountAmount;
-            }
-
-            if (_totalDiscountPercent.HasValue)
-            {
-                discountValue = tempTotal * (_totalDiscountPercent / 100);
-                tempTotal -= discountValue;
-            }
-
-            var count = _purchaseDetailsList.Count();
-            if (count != 0)
-            {
-                //Change the cost price based on discounts
-                var amountToReduce = discountValue / count;
-                foreach (var item in _purchaseDetailsList)
-                {
-                    var itemAmt = item.Amount - amountToReduce;
-                    var totalQty = item.Qty + (item.FreeIssue.HasValue ? item.FreeIssue.Value : 0);
-                    var costPerItem = itemAmt / totalQty; 
-                    if(costPerItem.HasValue)
-                        item.CostPrice = costPerItem.Value;
-                }
-            }
+            var expenses = CalculateExpenses();
+            tempTotal = tempTotal - GetDiscount();
 
             if (_specialDiscountAmount.HasValue)
             {
                 tempTotal -= _specialDiscountAmount.Value;
             }
 
-
-            _totalAmount = tempTotal;
+            _totalAmount = tempTotal + expenses;
             RaisePropertyChanged("TotalAmount");
             RaisePropertyChanged("BalanceAmount");
 
-                     
+
+        }
+
+        private decimal? GetDiscount()
+        {
+            decimal? discountValue = 0;
+
+            if (_totalDiscountAmount.HasValue)
+            {
+                discountValue = _totalDiscountAmount;
+            }
+
+            if (_totalDiscountPercent.HasValue)
+            {
+                discountValue = _totalAmount * (_totalDiscountPercent / 100);
+            }
+
+            return discountValue;
+        }
+
+        private decimal? CalculateLocalExpenses()
+        {
+            decimal? charges = 0M;
+            if (_transportCharges.HasValue)
+            {
+                charges = _transportCharges;
+            }
+
+            if (_localCoolieCharges.HasValue)
+            {
+                charges += _localCoolieCharges;
+            }
+           
+            return charges;
+        }
+
+        private decimal? CalculateExpenses()
+        {
+            decimal? charges = 0M;
+            if (_coolieCharges.HasValue)
+            {
+                charges = _coolieCharges;
+            }
+
+            if (_kCoolieCharges.HasValue)
+            {
+                charges += _kCoolieCharges;
+            }
+
+            //ApplyExpensesToItemCostPrice();
+            return charges;
+        }
+
+        private void ApplyDiscountToItemCostPrice(decimal? discountValue)
+        {
+            //Change the cost price based on 
+            var count = _purchaseDetailsList.Count();
+            if (count == 0) return;
+
+            var expneses = CalculateExpenses() + CalculateLocalExpenses();
+
+            var amountToReduce = (discountValue.HasValue ? discountValue.Value : 0) - expneses / count;
+            foreach (var item in _purchaseDetailsList)
+            {
+                var itemAmt = item.Amount - amountToReduce;
+                var totalQty = item.Qty + (item.FreeIssue.HasValue ? item.FreeIssue.Value : 0);
+                var costPerItem = itemAmt / totalQty;
+                if (costPerItem.HasValue)
+                    item.CostPrice = costPerItem.Value;
+            }
+        }
+
+        private void ApplyExpensesToItemCostPrice()
+        {
+            //Change the cost price based on expenses
+            var count = _purchaseDetailsList.Count();
+            if (count == 0) return;
+           
+            var expneses = CalculateExpenses() + CalculateLocalExpenses();
+            var discount = GetDiscount();
+            var amountToAdd = expneses - discount / count;
+            foreach (var item in _purchaseDetailsList)
+            {
+                var itemAmt = item.Amount + amountToAdd;
+                var totalQty = item.Qty + (item.FreeIssue.HasValue ? item.FreeIssue.Value : 0);
+                var costPerItem = itemAmt / totalQty;
+                if (costPerItem.HasValue)
+                    item.CostPrice = costPerItem.Value;
+            }
         }
 
         public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
@@ -446,6 +504,24 @@ namespace RetailManagementSystem.ViewModel.Purchases
             Clear();
         }
 
+        #endregion
+
+        #region Clear Command
+        RelayCommand<object> _clearCommand = null;
+
+        public ICommand ClearCommand
+        {
+            get
+            {
+                if (_clearCommand == null)
+                {
+                    _clearCommand = new RelayCommand<object>((p) => Clear());
+                }
+
+                return _clearCommand;
+            }
+        }
+
         private void Clear()
         {
             PurchaseDetailList = new ObservableCollection<PurchaseDetailExtn>();
@@ -457,6 +533,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
             InvoiceNo = null;
             SelectedPaymentId = '0';
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            CoolieCharges = null;
+            KCoolieCharges = null;
+            TransportCharges = null;
+            LocalCoolieCharges = null;
         }
 
         #endregion
