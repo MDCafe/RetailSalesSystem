@@ -1,0 +1,2 @@
+"BillId";"CustomerId";"Discount";"TransportCharges";"TotalAmount";"IsCancelled";"CustomerOrderNo";"AddedOn";"ModifiedOn";"UpdatedBy";"RunningBillNo";"PaymentMode"
+68;18;0.0;0.0;715.0;"";"123";"2017-07-16 12:34:00";"2017-07-16 12:34:00";0;1;"1"

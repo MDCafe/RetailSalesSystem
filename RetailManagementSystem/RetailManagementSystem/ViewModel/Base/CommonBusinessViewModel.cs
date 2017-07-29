@@ -14,13 +14,13 @@ namespace RetailManagementSystem.ViewModel.Base
         protected DateTime _transcationDate;
         protected int _runningBillNo;
         protected PaymentMode _selectedPaymentMode;
-        protected char _selectedPaymentId;
-
+        protected char _selectedPaymentId;                
         protected decimal? _totalAmount = 0;
         protected decimal? _totalDiscountPercent;
         protected decimal? _totalDiscountAmount;
+        protected bool _discountEnabled = true, _discountPercentEnabled = true;
 
-        protected IEnumerable<ProductPrice> ProductsPriceList
+        public IEnumerable<ProductPrice> ProductsPriceList
         {
             get { return _productsPriceList; }
             private set
@@ -30,7 +30,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        protected char SelectedPaymentId
+        public char SelectedPaymentId
         {
             get { return _selectedPaymentId; }
             set
@@ -40,7 +40,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        protected DateTime TranscationDate
+        public DateTime TranscationDate
         {
             get { return _transcationDate; }
             set
@@ -50,7 +50,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        protected int RunningBillNo
+        public int RunningBillNo
         {
             get { return _runningBillNo; }
             set
@@ -60,7 +60,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        protected IEnumerable<PaymentMode> PaymentModes
+        public IEnumerable<PaymentMode> PaymentModes
         {
             get { return _paymentModes; }
             private set
@@ -70,7 +70,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        protected PaymentMode SelectedPaymentMode
+        public PaymentMode SelectedPaymentMode
         {
             get { return _selectedPaymentMode; }
             set
@@ -79,6 +79,28 @@ namespace RetailManagementSystem.ViewModel.Base
                 RaisePropertyChanged("SelectedPaymentMode");
             }
         }
+
+        public bool DiscountEnabled
+        {
+            get { return _discountEnabled; }
+            set
+            {
+                _discountEnabled = value;
+                RaisePropertyChanged("DiscountEnabled");
+            }
+        }
+
+        public bool DiscountPercentEnabled
+        {
+            get { return _discountPercentEnabled; }
+            set
+            {
+                _discountPercentEnabled = value;
+                RaisePropertyChanged("DiscountPercentEnabled");
+            }
+        }
+
+
 
         protected CommonBusinessViewModel()
         {

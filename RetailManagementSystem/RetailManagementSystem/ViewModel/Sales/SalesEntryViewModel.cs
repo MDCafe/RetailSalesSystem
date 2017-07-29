@@ -17,11 +17,10 @@ namespace RetailManagementSystem.ViewModel.Sales
     class SalesEntryViewModel : SalesViewModelbase
     {
         #region Private Variables
-        static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));                           
-        Customer _selectedCustomer;        
+        static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
         Sale _billSales;                          
         decimal _amountPaid = 0.0M;              
-        string _selectedCustomerText;
+        
         IExtensions _extensions;
         bool _isEditMode;        
         System.Timers.Timer _timer,_autoTimer;
@@ -32,8 +31,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         
         ObservableCollection<SaleDetailExtn> _salesDetailsList;        
         List<SaleDetailExtn> _deletedItems;
+        Customer _selectedCustomer;
+        string _selectedCustomerText;
         #endregion
- 
+
         #region Constructor
 
         public SalesEntryViewModel(SalesParams salesParams) : base(salesParams !=null ? salesParams.ShowAllCustomers : false)
@@ -117,28 +118,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _salesDetailsList = value;
             }
-        }               
-               
-        public Customer SelectedCustomer
-        {
-            get { return _selectedCustomer; }
-            set
-            {                
-                _selectedCustomer = value;                
-                RaisePropertyChanged("SelectedCustomer");
-            }
-        }
+        }                                      
 
-        public string SelectedCustomerText
-        {
-            get { return _selectedCustomerText; }
-            set
-            {
-                _selectedCustomerText = value;
-                //NotifyPropertyChanged(() => this._selectedCustomer);
-                RaisePropertyChanged("SelectedCustomerText");
-            }
-        }       
+      
 
         public string OrderNo { get; set; }       
 
@@ -238,6 +220,27 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return !_isEditMode; }
         }
 
+
+        public Customer SelectedCustomer
+        {
+            get { return _selectedCustomer; }
+            set
+            {
+                _selectedCustomer = value;
+                RaisePropertyChanged("SelectedCustomer");
+            }
+        }
+
+        public string SelectedCustomerText
+        {
+            get { return _selectedCustomerText; }
+            set
+            {
+                _selectedCustomerText = value;
+                //NotifyPropertyChanged(() => this._selectedCustomer);
+                RaisePropertyChanged("SelectedCustomerText");
+            }
+        }
 
         #endregion
 

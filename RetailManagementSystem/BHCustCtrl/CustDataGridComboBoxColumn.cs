@@ -6,7 +6,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Microsoft.Windows.Controls;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -52,7 +51,7 @@ namespace BHCustCtrl
     /// </summary>
     [DefaultProperty("Columns")]
     [ContentProperty("Columns")]
-    public class CustDataGridComboBoxColumn : DataGridComboBoxColumn
+    public class CustDataGridComboBoxColumn : Microsoft.Windows.Controls.DataGridComboBoxColumn
     {        
         public static readonly DependencyProperty CustComboBoxSelectedPathProperty = DependencyProperty.Register("CustComboBoxSelectedPathProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
         public static readonly DependencyProperty CustComboBoxSelectedValueProperty = DependencyProperty.Register("CustComboBoxSelectedValueProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
@@ -71,7 +70,7 @@ namespace BHCustCtrl
 
 
         //Columns of DataGrid
-        private ObservableCollection<DataGridTextColumn> columns;
+        private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
         public TextBox _cboTextBox;
         //Cust Combobox  cell edit
         public  CustComboBox comboBox;
@@ -144,13 +143,13 @@ namespace BHCustCtrl
 
         //The property is default and Content property for CustComboBox
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public ObservableCollection<DataGridTextColumn> Columns
+        public ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> Columns
         {
             get
             {
                 if (this.columns == null)
                 {
-                    this.columns = new ObservableCollection<DataGridTextColumn>();
+                    this.columns = new ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn>();
                 }
                 return this.columns;
             }
@@ -158,7 +157,7 @@ namespace BHCustCtrl
         /// <summary>
         ///     Creates the visual tree for text based cells.
         /// </summary>
-        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
+        protected override FrameworkElement GenerateEditingElement(Microsoft.Windows.Controls.DataGridCell cell, object dataItem)
         {
            if(comboBox.Columns.Count==0)
            {
@@ -177,7 +176,7 @@ namespace BHCustCtrl
         protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
         {
             if (editingEventArgs == null) return null;
-            DataGridCell cell = editingEventArgs.Source as DataGridCell;
+            Microsoft.Windows.Controls.DataGridCell cell = editingEventArgs.Source as Microsoft.Windows.Controls.DataGridCell;
             if (cell != null)
             {
                 // Changed to support EF POCOs

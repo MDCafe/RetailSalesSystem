@@ -1,0 +1,7 @@
+Id,parentId,name,RollingNo
+1,-1,Vegetables,NULL
+2,-1,Hotels,0
+3,-1,"Retail Customers",0
+4,-1,"Other Customers",1
+5,-1,"Main Suppliers",0
+6,-1,"Other Suppliers",0

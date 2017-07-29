@@ -26,9 +26,12 @@ namespace RetailManagementSystem
         public string InvoiceNo { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> SpecialDiscount { get; set; }
-        public Nullable<decimal> TransportCharges { get; set; }
         public Nullable<decimal> TotalBillAmount { get; set; }
         public Nullable<decimal> Tax { get; set; }
+        public Nullable<decimal> TransportCharges { get; set; }
+        public Nullable<decimal> CoolieCharges { get; set; }
+        public Nullable<decimal> KCoolieCharges { get; set; }
+        public Nullable<decimal> LocalCoolieCharges { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }

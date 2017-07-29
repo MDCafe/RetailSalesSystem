@@ -15,8 +15,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private decimal? _specialDiscountAmount;
         private string _invoiceNo;
         ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;
-        private RMSEntities _rmsEntities;
-        
+        private RMSEntities _rmsEntities;        
+        string _selectedCompanyText;
+        private decimal? _coolieCharges;
+        private decimal? _kCoolieCharges;
+        private decimal? _transportCharges;
+        private decimal? _localCoolieCharges;
+
+
         public PurchaseEntryViewModel(bool showRestrictedCompanies) : base(showRestrictedCompanies)
         {
             Title = "Purchase Entry ";
@@ -26,24 +32,26 @@ namespace RetailManagementSystem.ViewModel.Purchases
             RMSEntitiesHelper.Instance.AddPurchaseNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             _rmsEntities = new RMSEntities();
-        }      
+        }
 
+        #region Getters and Setters
         public ObservableCollection<PurchaseDetailExtn> PurchaseDetailList
         {
             get { return _purchaseDetailsList; }
             private set
             {
                 _purchaseDetailsList = value;
+                RaisePropertyChanged("PurchaseDetailList");
             }
         }
 
         public IEnumerable<Company> CompaniesList
         {
             get
-            {                
+            {
                 return RMSEntitiesHelper.Instance.RMSEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId);
             }
-        }     
+        }
 
         public Company SelectedCompany
         {
@@ -52,6 +60,17 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 _selectedCompany = value;
                 RaisePropertyChanged("SelectedCompany");
+            }
+        }
+
+        public string SelectedCompanyText
+        {
+            get { return _selectedCompanyText; }
+            set
+            {
+                _selectedCompanyText = value;
+                //NotifyPropertyChanged(() => this._selectedCustomer);
+                RaisePropertyChanged("SelectedCompanyText");
             }
         }
 
@@ -71,6 +90,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _totalDiscountAmount = value;
+
+                if (_totalDiscountAmount.HasValue)
+                    DiscountPercentEnabled = false;
+                else
+                    DiscountPercentEnabled = true;
+
                 CalculateTotalAmount();
                 RaisePropertyChanged("TotalDiscountAmount");
             }
@@ -82,6 +107,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _totalDiscountPercent = value;
+
+                if (_totalDiscountPercent.HasValue)
+                    DiscountEnabled = false;
+                else
+                    DiscountEnabled = true;
+
                 CalculateTotalAmount();
                 RaisePropertyChanged("TotalDiscountPercent");
             }
@@ -97,40 +128,117 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 RaisePropertyChanged("SpecialDiscountAmount");
             }
         }
-  
+
         public string InvoiceNo
         {
             get { return _invoiceNo; }
             set
             {
-                _invoiceNo = value;                
+                _invoiceNo = value;
                 RaisePropertyChanged("InvoiceNo");
             }
         }
 
+        public decimal? CoolieCharges
+        {
+            get { return _coolieCharges; }
+            set
+            {
+                _coolieCharges = value;
+                CalculateTotalCharges();
+                RaisePropertyChanged("CoolieCharges");
+            }
+        }
+
+        public decimal? KCoolieCharges
+        {
+            get { return _kCoolieCharges; }
+            set
+            {
+                _kCoolieCharges = value;
+                CalculateTotalCharges();
+                RaisePropertyChanged("KCoolieCharges");
+            }
+        }
+
+        public decimal? TransportCharges
+        {
+            get { return _transportCharges; }
+            set
+            {
+                _transportCharges = value;
+                RaisePropertyChanged("TransportCharges");
+            }
+        }
+
+        public decimal? LocalCoolieCharges
+        {
+            get { return _localCoolieCharges; }
+            set
+            {
+                _localCoolieCharges = value;
+                RaisePropertyChanged("LocalCoolieCharges");
+            }
+        }
+
+        private void CalculateTotalCharges()
+        {
+           if(_coolieCharges.HasValue)
+            {
+                TotalAmount += _coolieCharges;
+            }
+
+            if (_kCoolieCharges.HasValue)
+            {
+                TotalAmount += _kCoolieCharges;
+            }
+        }
+
+        #endregion
+
         private void CalculateTotalAmount()
         {
-            decimal? tempTotal = _purchaseDetailsList.Sum(a => a.Amount); ;
+            decimal? tempTotal = _purchaseDetailsList.Sum(a => a.Amount);
+            decimal? discountValue = 0;
+
             if (_totalDiscountAmount.HasValue)
             {
                 tempTotal -= _totalDiscountAmount;
+                discountValue = _totalDiscountAmount;
             }
 
             if (_totalDiscountPercent.HasValue)
             {
-                var discountValue = tempTotal * (_totalDiscountPercent / 100);
+                discountValue = tempTotal * (_totalDiscountPercent / 100);
                 tempTotal -= discountValue;
             }
 
-            if(_specialDiscountAmount.HasValue)
+            var count = _purchaseDetailsList.Count();
+            if (count != 0)
+            {
+                //Change the cost price based on discounts
+                var amountToReduce = discountValue / count;
+                foreach (var item in _purchaseDetailsList)
+                {
+                    var itemAmt = item.Amount - amountToReduce;
+                    var totalQty = item.Qty + (item.FreeIssue.HasValue ? item.FreeIssue.Value : 0);
+                    var costPerItem = itemAmt / totalQty; 
+                    if(costPerItem.HasValue)
+                        item.CostPrice = costPerItem.Value;
+                }
+            }
+
+            if (_specialDiscountAmount.HasValue)
             {
                 tempTotal -= _specialDiscountAmount.Value;
             }
 
+
             _totalAmount = tempTotal;
-            //TotalAmountDisplay = _totalAmount.Value;
             RaisePropertyChanged("TotalAmount");
-            RaisePropertyChanged("BalanceAmount");            
+            RaisePropertyChanged("BalanceAmount");
+
+                     
         }
 
         public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
@@ -168,7 +276,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     if (purchaseDetailExtn.FreeIssue.HasValue)
                         totalQtyWithFreeIssue = purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value;
                     else
-                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.Value;
+                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ? purchaseDetailExtn.Qty.Value : 0;
 
                     switch (e.PropertyName)
                     {
@@ -180,23 +288,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                 }
                                 break;
                             }
-
-
                         case Constants.AMOUNT:
                             {
                                 TotalAmount = _purchaseDetailsList.Sum(a => a.Amount);
+                                if (totalQtyWithFreeIssue == 0) return;
                                 purchaseDetailExtn.CostPrice = TotalAmount.Value / totalQtyWithFreeIssue;
                                 break;
                             }
-
-                        //case Constants.PURCHASE_PRICE:
-                        //    {
-                        //        if (purchaseDetailExtn.Qty.HasValue)
-                        //        {
-                        //            purchaseDetailExtn.CostPrice = TotalAmount.Value / purchaseDetailExtn.Qty.Value;
-                        //        }
-                        //        break;
-                        //    }
                     }
                                        
                     var amount = purchaseDetailExtn.PurchasePrice * purchaseDetailExtn.Qty;
@@ -225,7 +323,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
-        
+
         public ICommand SaveCommand
         {
             get
@@ -248,8 +346,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
 
         private void OnSave(object parameter)
-        {                        
-            Clear();
+        {                                    
 
             //Add free items to free items table
             //Sum up the free item to main stock
@@ -269,18 +366,89 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 var purchaseDetail = new PurchaseDetail();
                 purchaseDetail.ProductId = item.ProductId;
-                purchaseDetail.Discount = item.Discount;
-                purchaseDetail.PurchasedQty = item.Qty;
-                //purchaseDetail.
+                purchaseDetail.Discount = item.Discount;                
+                purchaseDetail.ActualPrice = item.PurchasePrice.Value;
 
+                var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
+                                                                        && pr.Price == item.PurchasePrice
+                                                                        && pr.SellingPrice == item.SellingPrice);
+                var priceId = 0;
+                PriceDetail priceDetailItem = null;
+                if (priceDetails.Any())
+                {
+                    //Same item exists. Just update the with new billId 
+                    var priceItem  = priceDetails.FirstOrDefault();
+                    priceItem.BillId = RunningBillNo;
+                    priceId = priceItem.PriceId;
+                }
+                else
+                {
+                    //New Price, add it to price details list
+                    priceDetailItem = new PriceDetail()
+                    {
+                        BillId = RunningBillNo,
+                        ProductId = item.ProductId,
+                        Price = item.PurchasePrice.Value,
+                        SellingPrice = item.SellingPrice.Value
+                    };
+                    _rmsEntities.PriceDetails.Add(priceDetailItem);
+                }
+
+                var stock = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
+                                                            && s.PriceId == priceId
+                                                            && s.ExpiryDate.CompareTo(item.ExpiryDate.Value) == 0);
+
+                var stock1 = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
+                                                            && s.PriceId == priceId
+                                                            && s.ExpiryDate.ToString("dd/MM/yyyy") == item.ExpiryDate.Value.ToString("dd/MM/yyyy"));
+                var qty = item.Qty;
+                if (item.FreeIssue.HasValue)
+                {
+                    qty = item.FreeIssue.Value + item.Qty.Value;
+                    _rmsEntities.PurchaseFreeDetails.Add(
+                        new PurchaseFreeDetail()
+                        {
+                            ProductId = item.ProductId,
+                            FreeQty = item.FreeIssue.Value,
+                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value
+                        });
+                }
+                if (stock.Any())
+                {                                      
+                    stock.FirstOrDefault().Quantity += qty.Value;
+                }
+                else
+                {
+                    //Add stock for new price
+                    _rmsEntities.Stocks.Add(new Stock()
+                    {
+                        PriceId = priceDetailItem.PriceId,
+                        ExpiryDate = item.ExpiryDate.Value,
+                        Quantity = qty.Value
+                    });
+                }
+
+                purchaseDetail.PurchasedQty = qty;
+                purchase.PurchaseDetails.Add(purchaseDetail);
             }
 
+
+            var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+            _category.RollingNo = _runningBillNo;
+
             _rmsEntities.Purchases.Add(purchase);
+            _rmsEntities.SaveChanges();
+
+
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RunningBillNo = _runningBillNo;            
+
+            Clear();
         }
 
         private void Clear()
         {
-            _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
+            PurchaseDetailList = new ObservableCollection<PurchaseDetailExtn>();
             TotalAmount = null;
             TotalDiscountAmount = null;
             TotalDiscountPercent = null;
@@ -288,6 +456,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             SelectedCompany = null;
             InvoiceNo = null;
             SelectedPaymentId = '0';
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
         }
 
         #endregion

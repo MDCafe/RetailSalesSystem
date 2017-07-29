@@ -1,5 +1,5 @@
 ﻿/*  
- * CustComboBox implements combobox with popup DataGrid control.
+ * CustComboBox implements combobox with popup System.Windows.Controls.DataGrid control.
  * Bahrudin Hrnjica, bhrnjica@hotmail.com
  * First Release Oct, 2009
  */
@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
-using Microsoft.Windows.Controls;
 using Microsoft.Windows.Controls.Primitives;
 
 namespace BHCustCtrl
@@ -36,9 +35,9 @@ namespace BHCustCtrl
     {
         const string partPopupDataGrid = "PART_PopupDataGrid";
         //Columns of DataGrid
-        private ObservableCollection<DataGridTextColumn> columns;
+        private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
         //Attached DataGrid control
-        private DataGrid popupDataGrid;
+        private Microsoft.Windows.Controls.DataGrid popupDataGrid;
 
         static CustComboBox()
         {
@@ -48,13 +47,13 @@ namespace BHCustCtrl
 
         //The property is default and Content property for CustComboBox
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public ObservableCollection<DataGridTextColumn> Columns
+        public ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> Columns
         {
             get
             {
                 if (this.columns == null)
                 {
-                    this.columns = new ObservableCollection<DataGridTextColumn>();
+                    this.columns = new ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn>();
                 }
                 return this.columns;
             }
@@ -66,7 +65,7 @@ namespace BHCustCtrl
             if (popupDataGrid == null)
             {
                 
-                popupDataGrid = this.Template.FindName(partPopupDataGrid, this) as DataGrid;
+                popupDataGrid = this.Template.FindName(partPopupDataGrid, this) as Microsoft.Windows.Controls.DataGrid;
                 if (popupDataGrid != null && columns != null)
                 {
                     //Add columns to DataGrid columns
@@ -89,7 +88,7 @@ namespace BHCustCtrl
             //When open in Blend prevent raising exception 
           if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                DataGrid dg = sender as DataGrid;
+                Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
                 if (dg != null)
                 {
                     SelectedItem = dg.SelectedItem;
@@ -100,17 +99,17 @@ namespace BHCustCtrl
                 }
             }
         }
-        //Event for DataGrid popup MouseDown
+        //Event for Microsoft.Windows.Controls.DataGrid popup MouseDown
         void popupDataGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DataGrid dg = sender as DataGrid;
+            Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
             if (dg != null)
             {
                 DependencyObject dep = (DependencyObject)e.OriginalSource;
 
                 // iteratively traverse the visual tree and stop when dep is one of ..
                 while ((dep != null) &&
-                        !(dep is DataGridCell) &&
+                        !(dep is Microsoft.Windows.Controls.DataGridCell) &&
                         !(dep is DataGridColumnHeader))
                 {
                     dep = VisualTreeHelper.GetParent(dep);
@@ -123,15 +122,15 @@ namespace BHCustCtrl
                 {
                    // do something
                 }
-                //When user clicks to DataGrid cell, popup have to be closed
-                if (dep is DataGridCell)
+                //When user clicks to Microsoft.Windows.Controls.DataGrid cell, popup have to be closed
+                if (dep is Microsoft.Windows.Controls.DataGridCell)
                 {
                     this.IsDropDownOpen = false;
                 }
             }
         }
 
-        //When selection changed in combobox (pressing  arrow key down or up) must be synchronized with opened DataGrid popup
+        //When selection changed in combobox (pressing  arrow key down or up) must be synchronized with opened Microsoft.Windows.Controls.DataGrid popup
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             base.OnSelectionChanged(e);

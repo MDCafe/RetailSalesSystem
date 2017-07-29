@@ -159,9 +159,12 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
           <Property Name="InvoiceNo" Type="varchar" MaxLength="45" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="SpecialDiscount" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TotalBillAmount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Tax" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CoolieCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="KCoolieCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="LocalCoolieCharges" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -248,7 +251,7 @@ warning 6002: The table/view 'def.rms.PurchasePaymentDetails' does not have a pr
           </Key>
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-          <Property Name="ExpiryDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="ExpiryDate" Type="date" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -1197,9 +1200,12 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
           <Property Name="InvoiceNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="Discount" Type="Decimal" />
           <Property Name="SpecialDiscount" Type="Decimal" />
-          <Property Name="TransportCharges" Type="Decimal" />
           <Property Name="TotalBillAmount" Type="Decimal" />
           <Property Name="Tax" Type="Decimal" />
+          <Property Name="TransportCharges" Type="Decimal" />
+          <Property Name="CoolieCharges" Type="Decimal" />
+          <Property Name="KCoolieCharges" Type="Decimal" />
+          <Property Name="LocalCoolieCharges" Type="Decimal" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
@@ -1502,9 +1508,12 @@ FROM `PurchasePaymentDetails` AS `PurchasePaymentDetails`</DefiningQuery>
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="LocalCoolieCharges" ColumnName="LocalCoolieCharges" />
+                <ScalarProperty Name="KCoolieCharges" ColumnName="KCoolieCharges" />
+                <ScalarProperty Name="CoolieCharges" ColumnName="CoolieCharges" />
+                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="TotalBillAmount" ColumnName="TotalBillAmount" />
-                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
                 <ScalarProperty Name="SpecialDiscount" ColumnName="SpecialDiscount" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
