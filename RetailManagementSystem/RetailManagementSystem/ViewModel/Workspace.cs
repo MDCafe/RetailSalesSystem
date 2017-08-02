@@ -219,8 +219,43 @@ namespace RetailManagementSystem.ViewModel
         {            
             try
             {
-                _documentViewModels.Add(new PurchaseEntryViewModel(false));
+                var purchaseParams = param as PurchaseParams;
+                _documentViewModels.Add(new PurchaseEntryViewModel(purchaseParams));
                 ActiveDocument = _documentViewModels.Last();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #region OpenAmendPurchaseCommand
+        RelayCommand<object> _openAmendPurchaseCommand = null;
+        public ICommand OpenAmendPurchaseCommand
+        {
+            get
+            {
+                if (_openAmendPurchaseCommand == null)
+                {
+                    _openAmendPurchaseCommand = new RelayCommand<object>((p) => OnOpenAmendPurchase(p));
+                }
+
+                return _openAmendPurchaseCommand;
+            }
+        }
+        private void OnOpenAmendPurchase(object showAll)
+        {
+            try
+            {
+                AmendPurchases amendPurchases = new AmendPurchases(false);
+                amendPurchases.ShowDialog();
             }
             catch (Exceptions.RMSException ex)
             {

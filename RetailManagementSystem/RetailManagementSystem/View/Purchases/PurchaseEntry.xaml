@@ -64,11 +64,13 @@
         </Grid.RowDefinitions>
         <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
         <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
+                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"
+                        IsEnabled="{Binding IsEditMode}"/>
         <Label Content="Supplier Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
         <ComboBox x:Name="CboCompanies" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
-                      ItemsSource="{Binding CompaniesList}"  IsEditable="True"                                        
-                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25">
+                        ItemsSource="{Binding CompaniesList}"  IsEditable="True"                                        
+                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
+                        IsEnabled="{Binding IsEditMode}">
             <ComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
                     <Setter Property="ContentTemplate">
@@ -80,6 +82,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                    <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding DueAmount}" HorizontalAlignment="Right"/>
                                 </Grid>
                             </DataTemplate>
                         </Setter.Value>
@@ -168,7 +171,7 @@
                         </DataTemplate>
                     </toolKit:DataGridTemplateColumn.CellEditingTemplate>
                 </toolKit:DataGridTemplateColumn>
-                <!--<toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate, StringFormat='dd/MM/yyyy', Converter={StaticResource StringToDateConverter}}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>-->
+                <toolKit:DataGridTextColumn Header="Tax" Binding="{Binding Tax}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Old Cost Price" Binding="{Binding OldCostPrice, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Old Selling Price" Binding="{Binding OldSellingPrice, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="90" Header="Stock" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
@@ -194,10 +197,10 @@
         <!--DataGrid-->
         <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
 
-            <Label Content="Discounts :"   Width="120" Margin="5" FontWeight="ExtraBlack"/>
-            <Label Content="" Width="120" Margin="5"/>
-            <Label Content="" Width="50" Margin="5"/>
             
+            <Label Content="Tax" Width="120" Margin="5"/>
+            <TextBox Text="{Binding TotalTax, TargetNullValue={x:Static sys:String.Empty}}" Width="50" Margin="5" Height="20" />
+            <Label Content="Discounts :"   Width="120" Margin="5" FontWeight="ExtraBlack"/>
             <Label Content="Spl Discount Amt"  Width="120" Margin="5"/>
             <TextBox Name="txtSpecialDiscount" Width="50"  Height="20" Margin="5" Text="{Binding SpecialDiscountAmount, TargetNullValue={x:Static sys:String.Empty}}"/>
             <Label Content="Bill Discount Amt"  Width="120" Margin="5"/>
@@ -218,7 +221,7 @@
             <Label Content="Local Coolie Charges" Width="120" Margin="5"/>
             <TextBox x:Name="txtLocalCoolie"  Width="50" Margin="5" Text="{Binding LocalCoolieCharges, TargetNullValue={x:Static sys:String.Empty}}" VerticalAlignment="Center"/>
 
-            <Label Content="Total Amount"  FontWeight="ExtraBold" Width="120" Margin="5"/>
+            <Label Content="Total Amount"  FontWeight="ExtraBold" Width="120" Margin="5" HorizontalContentAlignment="Right"/>
             <TextBlock x:Name="txtTotalAmount"  Width="100" Margin="5" Text="{Binding TotalAmount, TargetNullValue={x:Static sys:String.Empty}, StringFormat=N2}" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
 
         </StackPanel>
@@ -238,9 +241,9 @@
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" Grid.Row="7"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
-            <Button x:Name="btnSaveAndPrint" Content="Save &amp; Print"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnSaveAndPrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"  IsEnabled="{Binding IsEditMode}"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
         </StackPanel>
 

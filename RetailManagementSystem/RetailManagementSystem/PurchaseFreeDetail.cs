@@ -14,6 +14,7 @@ namespace RetailManagementSystem
     
     public partial class PurchaseFreeDetail
     {
+        public int Id { get; set; }
         public int ProductId { get; set; }
         public Nullable<decimal> FreeQty { get; set; }
         public Nullable<decimal> FreeAmount { get; set; }

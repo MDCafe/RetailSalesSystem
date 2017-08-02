@@ -18,7 +18,8 @@ namespace RetailManagementSystem.ViewModel.Base
         protected decimal? _totalAmount = 0;
         protected decimal? _totalDiscountPercent;
         protected decimal? _totalDiscountAmount;
-        protected bool _discountEnabled = true, _discountPercentEnabled = true;
+        protected decimal _amountPaid = 0.0M;
+        protected bool _discountEnabled = true, _discountPercentEnabled = true, _isEditMode;
 
         public IEnumerable<ProductPrice> ProductsPriceList
         {
@@ -99,6 +100,28 @@ namespace RetailManagementSystem.ViewModel.Base
                 RaisePropertyChanged("DiscountPercentEnabled");
             }
         }
+
+        public decimal AmountPaid
+        {
+            get { return _amountPaid; }
+            set
+            {
+                _amountPaid = value;
+                RaisePropertyChanged("AmountPaid");
+                RaisePropertyChanged("BalanceAmount");
+            }
+        }
+
+        public decimal BalanceAmount
+        {
+            get { return Math.Abs(_amountPaid != 0 ? _totalAmount.Value - _amountPaid : 0.00M); }
+        }
+
+        public bool IsEditMode
+        {
+            get { return !_isEditMode; }
+        }
+
 
 
 

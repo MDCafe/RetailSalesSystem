@@ -19,10 +19,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         #region Private Variables
         static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
         Sale _billSales;                          
-        decimal _amountPaid = 0.0M;              
         
-        IExtensions _extensions;
-        bool _isEditMode;        
+        IExtensions _extensions;   
         System.Timers.Timer _timer,_autoTimer;
         static object rootLock = new object();
         string _guid;
@@ -199,26 +197,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _extensions; }
         }        
 
-        public decimal AmountPaid
-        {
-            get { return _amountPaid; }
-            set
-            {
-                _amountPaid = value;
-                RaisePropertyChanged("AmountPaid");
-                RaisePropertyChanged("BalanceAmount");
-            }
-        }
-
-        public decimal BalanceAmount
-        {
-            get { return Math.Abs(_amountPaid != 0 ? _totalAmount.Value - _amountPaid : 0.00M); }            
-        }
-
-        public bool IsEditMode
-        {
-            get { return !_isEditMode; }
-        }
+       
 
 
         public Customer SelectedCustomer
@@ -467,7 +446,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         );
                 }
                 var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
-                customer.BalanceDue += outstandingBalance;
+                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
             }
                         
             
@@ -660,17 +639,16 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region GetBill Command       
 
-        private void OnEditBill(object billNo)
+        private void OnEditBill(int? billNo)
         {
-            //Clear();
             if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
-            var runningBillNo = Convert.ToInt32(billNo.ToString());
+            var runningBillNo = billNo.Value;
 
             _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(b => b.RunningBillNo == runningBillNo && b.CustomerId == _salesParams.CustomerId).FirstOrDefault();            
             SelectedCustomer = _billSales.Customer;
             SelectedCustomerText = SelectedCustomer.Name;
             TranscationDate = _billSales.AddedOn.Value;            
-            SelectedPaymentId = Char.Parse(_billSales.PaymentMode);
+            SelectedPaymentId = char.Parse(_billSales.PaymentMode);
             OrderNo = _billSales.CustomerOrderNo;
             var saleDetailsForBill = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);            
 

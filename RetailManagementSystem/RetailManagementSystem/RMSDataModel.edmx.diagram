@@ -4,18 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="71">
+      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="93">
         <EntityTypeShape EntityType="RMSModel.MeasuringUnit" Width="1.5" PointX="0.75" PointY="17.625" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.PriceDetail" Width="1.5" PointX="5.25" PointY="8.25" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.Product" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.User" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseDetail" Width="1.5" PointX="8.25" PointY="18.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseFreeDetail" Width="1.5" PointX="5.25" PointY="15.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.PurchasePaymentDetail" Width="1.5" PointX="5.25" PointY="19.25" IsExpanded="true" />
         <AssociationConnector Association="RMSModel.FK_MOU" ManuallyRouted="false" />
         <AssociationConnector Association="RMSModel.FK_Product" ManuallyRouted="false" />
-        <AssociationConnector Association="RMSModel.FK_ProductFree" ManuallyRouted="false" />
-        <AssociationConnector Association="RMSModel.FK_ProductId" ManuallyRouted="false" />
         <EntityTypeShape EntityType="RMSModel.Category" Width="1.5" PointX="0.75" PointY="3.875" />
         <AssociationConnector Association="RMSModel.FK_Category" />
         <EntityTypeShape EntityType="RMSModel.Role" Width="1.5" PointX="0.75" PointY="7.25" />
@@ -24,9 +19,6 @@
         <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="3" PointY="6.25" />
         <AssociationConnector Association="RMSModel.FK_customerId" />
         <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
-        <EntityTypeShape EntityType="RMSModel.Company" Width="1.5" PointX="0.75" PointY="20.25" />
-        <AssociationConnector Association="RMSModel.FK_Company" />
-        <AssociationConnector Association="RMSModel.FK_compId" />
         <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
         <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
         <AssociationConnector Association="RMSModel.FK_pay_bill" />
@@ -39,9 +31,18 @@
         <EntityTypeShape EntityType="RMSModel.Stock" Width="1.5" PointX="5.25" PointY="31.875" />
         <AssociationConnector Association="RMSModel.FK_PrdId" />
         <EntityTypeShape EntityType="RMSModel.Purchase" Width="1.5" PointX="3" PointY="20" />
+        <EntityTypeShape EntityType="RMSModel.Company" Width="1.5" PointX="0.75" PointY="16.125" />
+        <EntityTypeShape EntityType="RMSModel.PurchaseFreeDetail" Width="1.5" PointX="8.25" PointY="12.875" />
+        <EntityTypeShape EntityType="RMSModel.PurchasePaymentDetail" Width="1.5" PointX="9.625" PointY="21.75" />
+        <AssociationConnector Association="RMSModel.FK_Company" />
         <AssociationConnector Association="RMSModel.FK_CompanyId" />
-        <AssociationConnector Association="RMSModel.FK_PurchaseBillId" />
+        <AssociationConnector Association="RMSModel.FK_compId" />
+        <AssociationConnector Association="RMSModel.FK_ProductFree" />
         <AssociationConnector Association="RMSModel.FK_purchaseId" />
+        <EntityTypeShape EntityType="RMSModel.PurchaseDetail" Width="1.5" PointX="5.25" PointY="16.5" />
+        <AssociationConnector Association="RMSModel.FK_ProductId" />
+        <AssociationConnector Association="RMSModel.FK_PurchaseBillId" />
+        <AssociationConnector Association="RMSModel.FK_price_purchase" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

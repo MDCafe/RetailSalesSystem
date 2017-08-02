@@ -210,7 +210,9 @@
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
+    <Compile Include="ViewModel\Purchases\AmendPurchasesViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
+    <Compile Include="ViewModel\Purchases\PurchaseParams.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
@@ -228,6 +230,9 @@
     <Compile Include="View\Pane\LayoutInitializer.cs" />
     <Compile Include="View\Pane\PanesStyleSelector.cs" />
     <Compile Include="View\Pane\PanesTemplateSelector.cs" />
+    <Compile Include="View\Purchases\AmendPurchases.xaml.cs">
+      <DependentUpon>AmendPurchases.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
     </Compile>
@@ -274,6 +279,10 @@
     <Page Include="View\Masters\Customer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Purchases\AmendPurchases.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Purchases\PurchaseEntry.xaml">
       <Generator>MSBuild:Compile</Generator>

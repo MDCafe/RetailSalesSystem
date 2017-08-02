@@ -14,6 +14,7 @@ namespace RetailManagementSystem
     
     public partial class PurchasePaymentDetail
     {
+        public int id { get; set; }
         public int PurchaseBillId { get; set; }
         public int CompanyId { get; set; }
         public decimal AmountPaid { get; set; }

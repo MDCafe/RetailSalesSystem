@@ -8,7 +8,6 @@ namespace RetailManagementSystem.Model
         private decimal? _freeIssue;
         private DateTime? _expiryDate;
 
-
         public decimal? PurchasePrice
         {
             get
@@ -47,6 +46,7 @@ namespace RetailManagementSystem.Model
 
         public decimal? OldCostPrice { get; set; }
         public decimal? OldSellingPrice { get; set; }
+        public decimal? Tax { get; set; }
 
         public DateTime? ExpiryDate
         {
@@ -61,7 +61,7 @@ namespace RetailManagementSystem.Model
 
             set
             {   
-                if (Nullable.Equals<DateTime>(_expiryDate, value))
+                if (Nullable.Equals(_expiryDate, value))
                 {
                     _expiryDate = DateTime.Now.AddMonths(1);
                 }

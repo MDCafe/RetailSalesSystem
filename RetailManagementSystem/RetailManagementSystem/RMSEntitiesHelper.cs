@@ -143,11 +143,38 @@
             
             return customerBill;
         }
+
+        public static CompanyBill CheckIfPurchaseBillExists(int billNo, int categoryId)
+        {
+            var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Purchases
+                            join c in RMSEntitiesHelper.Instance.RMSEntities.Companies
+                            on s.CompanyId equals c.Id
+                            where s.RunningBillNo == billNo && c.CategoryTypeId.Value == categoryId
+                            select new CompanyBill
+                            {
+                                CompanyId = s.CompanyId,
+                            };
+
+            var companyBill = checkBill.FirstOrDefault();
+
+            if (checkBill.FirstOrDefault() == null)
+            {
+                Utility.ShowErrorBox("Bill Number doesn't exist");
+                return null;
+            }
+
+            return companyBill;
+        }
     }
 
     public class  CustomerBill
     {
         public int CustomerId { get; set; }
+    }
+
+    public class CompanyBill
+    {
+        public int CompanyId { get; set; }
     }
 
 }

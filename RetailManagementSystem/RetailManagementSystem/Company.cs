@@ -17,8 +17,8 @@ namespace RetailManagementSystem
         public Company()
         {
             this.Products = new HashSet<Product>();
-            this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
             this.Purchases = new HashSet<Purchase>();
+            this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
         }
     
         public int Id { get; set; }
@@ -30,12 +30,13 @@ namespace RetailManagementSystem
         public string VATNo { get; set; }
         public bool IsSupplier { get; set; }
         public Nullable<int> CategoryTypeId { get; set; }
+        public Nullable<decimal> DueAmount { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
         public virtual ICollection<Product> Products { get; set; }
-        public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
     }
 }

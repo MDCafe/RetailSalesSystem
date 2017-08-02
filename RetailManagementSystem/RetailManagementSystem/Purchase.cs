@@ -16,8 +16,8 @@ namespace RetailManagementSystem
     {
         public Purchase()
         {
-            this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
+            this.PurchaseDetails = new HashSet<PurchaseDetail>();
         }
     
         public int BillId { get; set; }
@@ -35,9 +35,11 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<bool> IsCancelled { get; set; }
+        public string PaymentMode { get; set; }
     
         public virtual Company Company { get; set; }
-        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
+        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
     }
 }

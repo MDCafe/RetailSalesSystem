@@ -14,6 +14,7 @@ namespace RetailManagementSystem
     
     public partial class PurchaseDetail
     {
+        public int Id { get; set; }
         public int BillId { get; set; }
         public Nullable<int> ProductId { get; set; }
         public Nullable<decimal> PurchasedQty { get; set; }
@@ -23,8 +24,10 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<int> PriceId { get; set; }
     
         public virtual Product Product { get; set; }
         public virtual Purchase Purchase { get; set; }
+        public virtual PriceDetail PriceDetail { get; set; }
     }
 }

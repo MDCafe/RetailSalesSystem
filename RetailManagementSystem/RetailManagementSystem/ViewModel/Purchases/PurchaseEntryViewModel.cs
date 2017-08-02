@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
@@ -15,22 +16,40 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private decimal? _specialDiscountAmount;
         private string _invoiceNo;
         ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;
+        List<PurchaseDetailExtn> _deletedItems;
         private RMSEntities _rmsEntities;        
         string _selectedCompanyText;
         private decimal? _coolieCharges;
         private decimal? _kCoolieCharges;
         private decimal? _transportCharges;
         private decimal? _localCoolieCharges;
+        private int? _editBillNo;
+        PurchaseParams _purchaseParams;
 
-        public PurchaseEntryViewModel(bool showRestrictedCompanies) : base(showRestrictedCompanies)
+        public PurchaseEntryViewModel(PurchaseParams purchaseParams) : base(purchaseParams != null ? purchaseParams.ShowAllCompanies : false)
         {
             Title = "Purchase Entry ";
             var count = RMSEntitiesHelper.Instance.RMSEntities.Companies.ToList();
             _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
+            _purchaseDetailsList.CollectionChanged += PurchaseDetailsListCollectionChanged;
+
+            _purchaseParams = purchaseParams;
 
             RMSEntitiesHelper.Instance.AddPurchaseNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             _rmsEntities = new RMSEntities();
+
+            if (purchaseParams != null)
+            {
+
+                if (purchaseParams.Billno.HasValue)
+                {
+                    //Amend Bill             
+                    OnEditBill(purchaseParams.Billno.Value);
+                    Title = "Purchase Bill Amend : " + _runningBillNo;
+                    return;
+                }
+            }
         }
 
         #region Getters and Setters
@@ -191,6 +210,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
         }
 
+        public decimal? TotalTax { get; set; }
+
         #endregion
 
         private void CalculateTotalAmount()
@@ -326,6 +347,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
 
+                var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
+                if (stock != null)
+                {
+                        purchaseDetailExtn.ExpiryDate = stock.ExpiryDate;
+                }
+
                 purchaseDetailExtn.PropertyChanged += (sender, e) =>
                 {
                     var prop = e.PropertyName;
@@ -416,8 +443,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 SpecialDiscount = SpecialDiscountAmount,
                 InvoiceNo = InvoiceNo,
                 TotalBillAmount = TotalAmount,
-                //TransportCharges = 
-                //Tax
+                TransportCharges = TransportCharges,
+                CoolieCharges = CoolieCharges,
+                KCoolieCharges = KCoolieCharges,
+                LocalCoolieCharges = LocalCoolieCharges,
+                Tax = TotalTax
             };
 
             foreach (var item in _purchaseDetailsList)
@@ -426,6 +456,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetail.ProductId = item.ProductId;
                 purchaseDetail.Discount = item.Discount;                
                 purchaseDetail.ActualPrice = item.PurchasePrice.Value;
+                purchaseDetail.Tax = item.Tax;
 
                 var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
                                                                         && pr.Price == item.PurchasePrice
@@ -455,10 +486,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 var stock = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
                                                             && s.PriceId == priceId
                                                             && s.ExpiryDate.CompareTo(item.ExpiryDate.Value) == 0);
-
-                var stock1 = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
-                                                            && s.PriceId == priceId
-                                                            && s.ExpiryDate.ToString("dd/MM/yyyy") == item.ExpiryDate.Value.ToString("dd/MM/yyyy"));
                 var qty = item.Qty;
                 if (item.FreeIssue.HasValue)
                 {
@@ -490,6 +517,27 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchase.PurchaseDetails.Add(purchaseDetail);
             }
 
+            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
+            var outstandingBalance = _totalAmount.Value - AmountPaid;
+            if (outstandingBalance > 0)
+            {
+                //var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
+                //var result = Utility.ShowMessageBoxWithOptions(msg);
+                //if (result == System.Windows.MessageBoxResult.Yes)
+                //{
+                    _rmsEntities.PurchasePaymentDetails.Add
+                        (
+                            new PurchasePaymentDetail   
+                            {
+                                PurchaseBillId = purchase.BillId,
+                                AmountPaid = AmountPaid,
+                                CompanyId = _selectedCompany.Id
+                            }
+                        );
+                //}
+                var company = _rmsEntities.Companies.FirstOrDefault(c => c.Id == SelectedCompany.Id);
+                company.DueAmount = company.DueAmount.HasValue ? company.DueAmount.Value + outstandingBalance : outstandingBalance;
+            }
 
             var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
             _category.RollingNo = _runningBillNo;
@@ -504,10 +552,64 @@ namespace RetailManagementSystem.ViewModel.Purchases
             Clear();
         }
 
-        #endregion
+        private void SaveOnEdit(object parameter)
+        {
+            //Check if there are any deletions
+            RemoveDeletedItems();
 
-        #region Clear Command
-        RelayCommand<object> _clearCommand = null;
+            var purchase = _rmsEntities.Purchases.Where(p => p.BillId == _editBillNo).FirstOrDefault();
+
+            foreach (var purchaseDetailItemExtn in _purchaseDetailsList)
+            {
+                var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(b => b.BillId == purchaseDetailItemExtn.BillId
+                                                                                 && b.ProductId == purchaseDetailItemExtn.ProductId
+                                                                                                    );
+                if (purchaseDetail == null)
+                {
+                    purchaseDetail = _rmsEntities.PurchaseDetails.Create();
+                    purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
+                    _rmsEntities.PurchaseDetails.Add(purchaseDetail);
+
+                    SetSaleDetailItem(purchaseDetailItemExtn, purchaseDetail);
+
+                    var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
+                                                                          && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
+                    if (stockNewItem != null)
+                    {
+                        stockNewItem.Quantity -= purchaseDetail.PurchasedQty.Value;
+                    }
+                    continue;
+                }
+
+                SetSaleDetailItem(purchaseDetailItemExtn, purchaseDetail);
+                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
+                                                                && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
+
+                if (stock != null)
+                {
+                    stock.Quantity = (stock.Quantity + purchaseDetailItemExtn.OriginalQty.Value) - purchaseDetail.PurchasedQty.Value;
+                }
+            }
+
+            if(purchase !=null)
+            {
+                purchase.Discount = GetDiscount();
+                purchase.CoolieCharges = CoolieCharges;
+                purchase.KCoolieCharges = KCoolieCharges;
+                purchase.TransportCharges = TransportCharges;
+                purchase.LocalCoolieCharges = LocalCoolieCharges;
+                purchase.TotalBillAmount = TotalAmount;
+            }
+            _rmsEntities.SaveChanges();
+            Clear();
+            CloseCommand.Execute(null);
+
+        }
+
+            #endregion
+
+            #region Clear Command
+            RelayCommand<object> _clearCommand = null;
 
         public ICommand ClearCommand
         {
@@ -537,8 +639,89 @@ namespace RetailManagementSystem.ViewModel.Purchases
             KCoolieCharges = null;
             TransportCharges = null;
             LocalCoolieCharges = null;
+            AmountPaid = 0.0M;
         }
 
         #endregion
+
+        #region GetBill Command       
+
+        private void OnEditBill(int? billNo)
+        {
+            if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
+            var runningBillNo = billNo;
+
+            var purhcases = _rmsEntities.Purchases.Where(b => b.RunningBillNo == runningBillNo && b.CompanyId == _purchaseParams.CompanyId).FirstOrDefault();
+            _editBillNo = purhcases.BillId;
+            SelectedCompany = purhcases.Company;
+            SelectedCompanyText = SelectedCompany.Name;
+            TranscationDate = purhcases.AddedOn.Value;
+            SelectedPaymentId = Char.Parse(purhcases.PaymentMode);
+            InvoiceNo = purhcases.InvoiceNo;
+            var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purhcases.BillId).ToList();
+
+            var tempTotalAmount = 0.0M;
+            foreach (var item  in purchaseDetailsForBill)
+            {
+                var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
+                var purchaseDetailExtn = new PurchaseDetailExtn()
+                {
+                    Discount = item.Discount,
+                    PriceId = item.PriceId.Value,
+                    ProductId = item.ProductId.Value,
+                    Qty = item.PurchasedQty,
+                    OriginalQty = item.PurchasedQty,
+                    //SellingPrice = item.SellingPrice,
+                    BillId = item.BillId,
+                    CostPrice = productPrice.Price,
+                    AvailableStock = productPrice.Quantity,
+                    Amount = item.ActualPrice * item.PurchasedQty
+                };
+
+                _purchaseDetailsList.Add(purchaseDetailExtn);
+                SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
+
+                tempTotalAmount += item.ActualPrice * item.PurchasedQty.Value;
+            }
+            TotalAmount = tempTotalAmount;
+
+            RunningBillNo = runningBillNo;
+            _isEditMode = true;
+
+            if (_deletedItems == null)
+                _deletedItems = new List<PurchaseDetailExtn>();
+            else
+                _deletedItems.Clear();
+        }
+
+
+        private void RemoveDeletedItems()
+        {
+            foreach (var item in _deletedItems)
+            {
+                var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(s => s.BillId == item.BillId && s.ProductId == item.ProductId);
+
+                var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId && s.PriceId == purchaseDetail.PriceId);
+                if (stockNewItem != null)
+                {
+                    stockNewItem.Quantity += item.Qty.Value;
+                }
+                _rmsEntities.PurchaseDetails.Remove(purchaseDetail);
+            }
+        }
+
+        private void PurchaseDetailsListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                var purchaseDetailExtn = e.OldItems[0] as PurchaseDetailExtn;
+                if (_isEditMode)
+                    _deletedItems.Add(purchaseDetailExtn);
+                TotalAmount -= purchaseDetailExtn.Amount;
+            }
+        }
+
+        #endregion
+
     }
 }

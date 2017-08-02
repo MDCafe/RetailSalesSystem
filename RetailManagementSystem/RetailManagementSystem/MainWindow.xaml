@@ -71,6 +71,9 @@
                     <RibbonGroup x:Name="Purchase" Header="Purchases">
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Purchase Entry" 
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
+                        <RibbonButton Label="Amend Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
+                                       KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
+
                     </RibbonGroup>
                     
                     <!-- Reports Group-->
