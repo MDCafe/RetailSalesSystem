@@ -369,7 +369,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             {
                                 if (purchaseDetailExtn.Qty.HasValue && purchaseDetailExtn.FreeIssue.HasValue)
                                 {
-                                    purchaseDetailExtn.CostPrice = TotalAmount.Value / totalQtyWithFreeIssue;
+                                    purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
                                 }
                                 break;
                             }
@@ -377,7 +377,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             {
                                 TotalAmount = _purchaseDetailsList.Sum(a => a.Amount);
                                 if (totalQtyWithFreeIssue == 0) return;
-                                purchaseDetailExtn.CostPrice = TotalAmount.Value / totalQtyWithFreeIssue;
+                                purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
                                 break;
                             }
                     }
@@ -395,7 +395,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         purchaseDetailExtn.Discount = discountAmount;
                         if (purchaseDetailExtn.Qty.HasValue)
                         {
-                            purchaseDetailExtn.CostPrice = TotalAmount.Value / totalQtyWithFreeIssue;
+                            purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
                         }
                         return;
                     }
@@ -431,8 +431,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
 
         private void OnSave(object parameter)
-        {                                    
-
+        {
+            if (_isEditMode)
+            {
+                SaveOnEdit(parameter);
+                return;
+            }
             //Add free items to free items table
             //Sum up the free item to main stock
             var purchase = new Purchase()
@@ -447,7 +451,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 CoolieCharges = CoolieCharges,
                 KCoolieCharges = KCoolieCharges,
                 LocalCoolieCharges = LocalCoolieCharges,
-                Tax = TotalTax
+                Tax = TotalTax,
+                PaymentMode = SelectedPaymentId.ToString()
             };
 
             foreach (var item in _purchaseDetailsList)
@@ -466,9 +471,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 if (priceDetails.Any())
                 {
                     //Same item exists. Just update the with new billId 
-                    var priceItem  = priceDetails.FirstOrDefault();
-                    priceItem.BillId = RunningBillNo;
-                    priceId = priceItem.PriceId;
+                    priceDetailItem = priceDetails.FirstOrDefault();
+                    priceDetailItem.BillId = item.BillId;
+                    priceId = priceDetailItem.PriceId;
+                    priceDetailItem.SellingPrice = item.SellingPrice.Value;
                 }
                 else
                 {
@@ -495,7 +501,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         {
                             ProductId = item.ProductId,
                             FreeQty = item.FreeIssue.Value,
-                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value
+                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value,
+                            BillId = RunningBillNo
+                           
                         });
                 }
                 if (stock.Any())
@@ -514,6 +522,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
 
                 purchaseDetail.PurchasedQty = qty;
+                purchaseDetail.PriceId = priceDetailItem.PriceId;
                 purchase.PurchaseDetails.Add(purchaseDetail);
             }
 
@@ -562,36 +571,67 @@ namespace RetailManagementSystem.ViewModel.Purchases
             foreach (var purchaseDetailItemExtn in _purchaseDetailsList)
             {
                 var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(b => b.BillId == purchaseDetailItemExtn.BillId
-                                                                                 && b.ProductId == purchaseDetailItemExtn.ProductId
-                                                                                                    );
+                                                                                 && b.ProductId == purchaseDetailItemExtn.ProductId);
+
+                var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == purchaseDetailItemExtn.ProductId
+                                                                        && pr.Price == purchaseDetailItemExtn.PurchasePrice
+                                                                        && pr.SellingPrice == purchaseDetailItemExtn.SellingPrice);
+                var priceId = 0;
+                PriceDetail priceDetailItem = null;
+                priceDetailItem = GetPriceDetails(purchaseDetailItemExtn, priceDetails, ref priceId);
+
                 if (purchaseDetail == null)
                 {
                     purchaseDetail = _rmsEntities.PurchaseDetails.Create();
                     purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
+                    purchaseDetail.PriceId = priceDetailItem.PriceId;
                     _rmsEntities.PurchaseDetails.Add(purchaseDetail);
 
-                    SetSaleDetailItem(purchaseDetailItemExtn, purchaseDetail);
+                    if (purchaseDetailItemExtn.FreeIssue.HasValue)
+                    {
+                        _rmsEntities.PurchaseFreeDetails.Add(
+                            new PurchaseFreeDetail()
+                            {
+                                ProductId = purchaseDetailItemExtn.ProductId,
+                                FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
+                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
+                                BillId = _editBillNo
+                            });
+                    }
+
+
+                    SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
 
                     var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
                                                                           && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
                     if (stockNewItem != null)
                     {
-                        stockNewItem.Quantity -= purchaseDetail.PurchasedQty.Value;
+                        stockNewItem.Quantity += purchaseDetail.PurchasedQty.Value;
                     }
                     continue;
                 }
 
-                SetSaleDetailItem(purchaseDetailItemExtn, purchaseDetail);
+                if (purchaseDetailItemExtn.FreeIssue.HasValue)
+                {
+                    var freeIssueEdit = _rmsEntities.PurchaseFreeDetails.Where(f => f.BillId == purchaseDetailItemExtn.BillId &&
+                                                                                f.ProductId == purchaseDetailItemExtn.ProductId).FirstOrDefault();
+                    if (freeIssueEdit != null)
+                        freeIssueEdit.FreeQty = purchaseDetailItemExtn.FreeIssue.Value;
+                }
+
+
+                SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
                 var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
                                                                 && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
 
                 if (stock != null)
                 {
-                    stock.Quantity = (stock.Quantity + purchaseDetailItemExtn.OriginalQty.Value) - purchaseDetail.PurchasedQty.Value;
+                    var qtyToAdd = purchaseDetailItemExtn.OriginalQty.Value - purchaseDetail.PurchasedQty.Value;
+                    stock.Quantity = (stock.Quantity + Math.Abs(qtyToAdd));
                 }
             }
 
-            if(purchase !=null)
+            if (purchase !=null)
             {
                 purchase.Discount = GetDiscount();
                 purchase.CoolieCharges = CoolieCharges;
@@ -599,6 +639,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchase.TransportCharges = TransportCharges;
                 purchase.LocalCoolieCharges = LocalCoolieCharges;
                 purchase.TotalBillAmount = TotalAmount;
+                purchase.Tax = TotalTax;
             }
             _rmsEntities.SaveChanges();
             Clear();
@@ -606,10 +647,49 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         }
 
-            #endregion
+        private PriceDetail GetPriceDetails(PurchaseDetailExtn purchaseDetailItemExtn, IQueryable<PriceDetail> priceDetails, ref int priceId)
+        {
+            PriceDetail priceDetailItem;
+            if (priceDetails.Any())
+            {
+                //Same item exists. Just update the with new billId 
+                priceDetailItem = priceDetails.FirstOrDefault();
+                priceDetailItem.BillId = purchaseDetailItemExtn.BillId;
+                priceId = priceDetailItem.PriceId;
+                priceDetailItem.SellingPrice = purchaseDetailItemExtn.SellingPrice.Value;
+            }
+            else
+            {
+                //New Price, add it to price details list
+                priceDetailItem = new PriceDetail()
+                {
+                    BillId = RunningBillNo,
+                    ProductId = purchaseDetailItemExtn.ProductId,
+                    Price = purchaseDetailItemExtn.PurchasePrice.Value,
+                    SellingPrice = purchaseDetailItemExtn.SellingPrice.Value
+                };
+                _rmsEntities.PriceDetails.Add(priceDetailItem);
+            }
 
-            #region Clear Command
-            RelayCommand<object> _clearCommand = null;
+            return priceDetailItem;
+        }
+
+        private void SetPurchaseDetailItem(PurchaseDetailExtn purchaseDetailExtn,  PurchaseDetail purchaseDetail)
+        {
+            purchaseDetail.Discount = purchaseDetailExtn.Discount;
+            purchaseDetail.PriceId = purchaseDetailExtn.PriceId;
+            purchaseDetail.ProductId = purchaseDetailExtn.ProductId;
+            purchaseDetail.PurchasedQty = purchaseDetailExtn.Qty;
+            purchaseDetail.ActualPrice = purchaseDetailExtn.PurchasePrice.Value;
+            purchaseDetail.BillId = _editBillNo.Value;
+            purchaseDetail.Tax = purchaseDetailExtn.Tax;
+        }
+
+
+        #endregion
+
+        #region Clear Command
+        RelayCommand<object> _clearCommand = null;
 
         public ICommand ClearCommand
         {
@@ -661,9 +741,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
             var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purhcases.BillId).ToList();
 
             var tempTotalAmount = 0.0M;
-            foreach (var item  in purchaseDetailsForBill)
+            foreach (var item  in purchaseDetailsForBill.ToList())
             {
                 var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
+                var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId).FirstOrDefault();
                 var purchaseDetailExtn = new PurchaseDetailExtn()
                 {
                     Discount = item.Discount,
@@ -681,11 +762,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 _purchaseDetailsList.Add(purchaseDetailExtn);
                 SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
 
+                purchaseDetailExtn.FreeIssue = freeIssue != null ? freeIssue.FreeQty : null;
+
                 tempTotalAmount += item.ActualPrice * item.PurchasedQty.Value;
             }
             TotalAmount = tempTotalAmount;
 
-            RunningBillNo = runningBillNo;
+            RunningBillNo = runningBillNo.Value;
             _isEditMode = true;
 
             if (_deletedItems == null)
@@ -693,7 +776,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             else
                 _deletedItems.Clear();
         }
-
 
         private void RemoveDeletedItems()
         {

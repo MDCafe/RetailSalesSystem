@@ -43,6 +43,7 @@
         <AssociationConnector Association="RMSModel.FK_ProductId" />
         <AssociationConnector Association="RMSModel.FK_PurchaseBillId" />
         <AssociationConnector Association="RMSModel.FK_price_purchase" />
+        <EntityTypeShape EntityType="RMSModel.ApplicationDetail" Width="1.5" PointX="5.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

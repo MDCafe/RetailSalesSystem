@@ -41,7 +41,7 @@ namespace RetailManagementSystem.Utilities
 
         public static MessageBoxResult ShowMessageBoxWithOptions(string message)
         {
-            return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
         }
       
     }

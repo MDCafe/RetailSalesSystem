@@ -36,11 +36,7 @@
             </DockPanel>
         </ControlTemplate>
 
-        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="HorizontalAlignment" Value="Right" />
-            </Style.Setters>
-        </Style>
+       
         <Conv:StringToDateConverter x:Key="StringToDateConverter"/>
 
     </UserControl.Resources>
@@ -229,7 +225,7 @@
         <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Height="35" Grid.ColumnSpan="5">
             <Label Content="Amount Paid" Margin="5" FontWeight="ExtraBlack"/>
             <TextBox x:Name="txtAmtPaid"  Width="100" Margin="5" Height="20" 
-                     Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}" FontWeight="ExtraBlack">
+                     Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}" FontWeight="ExtraBlack" IsEnabled="{Binding IsEditMode}">
                 <i:Interaction.Behaviors>
                     <behaviours:ClearOnFocusedBehavior/>
                 </i:Interaction.Behaviors>

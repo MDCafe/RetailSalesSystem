@@ -104,6 +104,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -194,6 +197,7 @@
     <Compile Include="UserControls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SalesBillPrint.cs" />
     <Compile Include="UserControls\SalesExtension.xaml.cs">
       <DependentUpon>SalesExtension.xaml</DependentUpon>
     </Compile>

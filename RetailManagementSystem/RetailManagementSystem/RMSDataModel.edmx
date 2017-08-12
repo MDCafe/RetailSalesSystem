@@ -5,6 +5,25 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="RMSModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ApplicationDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="Address" Type="varchar" MaxLength="45" />
+          <Property Name="City" Type="varchar" MaxLength="45" />
+          <Property Name="Province" Type="varchar" MaxLength="45" />
+          <Property Name="Country" Type="varchar" MaxLength="45" />
+          <Property Name="Lan Line No" Type="varchar" MaxLength="15" />
+          <Property Name="Mobile No" Type="varchar" MaxLength="15" />
+          <Property Name="FacebookURL" Type="varchar" MaxLength="100" />
+          <Property Name="TwitterURL" Type="varchar" MaxLength="100" />
+          <Property Name="EmailAddress" Type="varchar" MaxLength="100" />
+          <Property Name="WhatsAppNo" Type="varchar" MaxLength="15" />
+          <Property Name="LogoUrl" Type="varchar" MaxLength="45" />
+        </EntityType>
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,6 +151,7 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
+          <Property Name="BillId" Type="mediumint" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetails">
           <Key>
@@ -510,6 +530,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="RMSModelStoreContainer">
+          <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
@@ -799,6 +820,7 @@
             <End Role="PriceDetail" EntitySet="PriceDetails" />
             <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
           </AssociationSet>
+          <EntitySet Name="ApplicationDetails" EntityType="RMSModel.ApplicationDetail" />
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -1125,6 +1147,7 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProductFree" FromRole="PurchaseFreeDetail" ToRole="Product" />
+          <Property Name="BillId" Type="Int32" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetail">
           <Key>
@@ -1255,6 +1278,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ApplicationDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Province" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Country" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Lan_Line_No" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile_No" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FacebookURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TwitterURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAddress" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="WhatsAppNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LogoUrl" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1496,6 +1538,7 @@
           <EntitySetMapping Name="PurchaseFreeDetails">
             <EntityTypeMapping TypeName="RMSModel.PurchaseFreeDetail">
               <MappingFragment StoreEntitySet="PurchaseFreeDetails">
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -1532,6 +1575,26 @@
                 <ScalarProperty Name="PurchasedQty" ColumnName="PurchasedQty" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationDetails">
+            <EntityTypeMapping TypeName="RMSModel.ApplicationDetail">
+              <MappingFragment StoreEntitySet="ApplicationDetails">
+                <ScalarProperty Name="LogoUrl" ColumnName="LogoUrl" />
+                <ScalarProperty Name="WhatsAppNo" ColumnName="WhatsAppNo" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="TwitterURL" ColumnName="TwitterURL" />
+                <ScalarProperty Name="FacebookURL" ColumnName="FacebookURL" />
+                <ScalarProperty Name="Mobile_No" ColumnName="Mobile No" />
+                <ScalarProperty Name="Lan_Line_No" ColumnName="Lan Line No" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

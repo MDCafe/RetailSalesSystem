@@ -43,5 +43,6 @@ namespace RetailManagementSystem
         public DbSet<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
         public DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public DbSet<ApplicationDetail> ApplicationDetails { get; set; }
     }
 }

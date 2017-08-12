@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:RetailManagementSystem"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style.Setters>
+        </Style>
     </Application.Resources>
 </Application>

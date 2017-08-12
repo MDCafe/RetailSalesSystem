@@ -10,7 +10,7 @@ using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
-
+using RetailManagementSystem.UserControls;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -31,6 +31,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
+
+        SalesBillPrint _salesBillPrint;
         #endregion
 
         #region Constructor
@@ -40,7 +42,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             _salesParams = salesParams;            
             var cnt = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
             var cnt1 = RMSEntitiesHelper.Instance.RMSEntities.Products.ToList();
-            
+
+            _salesBillPrint = new SalesBillPrint();
+
 
             //base. _showAllCustomers = salesParams.ShowAllCustomers;
 
@@ -380,7 +384,34 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSave(object parameter)
         {
-            Monitor.Enter(rootLock); 
+            Monitor.Enter(rootLock);
+
+            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
+            var outstandingBalance = _totalAmount.Value - AmountPaid;
+            if (outstandingBalance > 0)
+            {
+                var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
+                var result = Utility.ShowMessageBoxWithOptions(msg);
+
+                if (result == System.Windows.MessageBoxResult.Cancel) return;
+
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    RMSEntitiesHelper.Instance.RMSEntities.PaymentDetails.Add
+                        (
+                            new PaymentDetail
+                            {
+                                BillId = _billSales.BillId,
+                                AmountPaid = AmountPaid,
+                                CustomerId = _selectedCustomer.Id
+                            }
+                        );
+                }
+                var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
+            }
+
+
             log.DebugFormat("Enter save :{0}", _guid);
             _billSales.CustomerId = _selectedCustomer.Id;
             _billSales.CustomerOrderNo = OrderNo;            
@@ -427,27 +458,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             _category.RollingNo = _runningBillNo;
             
 
-            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
-            var outstandingBalance = _totalAmount.Value - AmountPaid;
-            if (outstandingBalance > 0)
-            {
-                var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
-                var result = Utility.ShowMessageBoxWithOptions(msg);
-                if(result == System.Windows.MessageBoxResult.Yes)
-                {
-                    RMSEntitiesHelper.Instance.RMSEntities.PaymentDetails.Add
-                        (
-                            new PaymentDetail
-                            {
-                                BillId = _billSales.BillId,
-                                AmountPaid = AmountPaid,
-                                CustomerId = _selectedCustomer.Id                                
-                            }
-                        );
-                }
-                var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
-                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
-            }
                         
             
             RemoveTempSalesItemForGUID(_guid);
@@ -457,6 +467,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
             Monitor.Exit(rootLock);
             log.DebugFormat("Exit save :{0}", _guid);
+
+            _salesBillPrint.print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount);
+
             if (_salesParams.GetTemproaryData)
                 _closeCommand.Execute(null);
             Clear();
@@ -655,10 +668,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             var tempTotalAmount = 0.0M;
             foreach (var saleDetailItem in saleDetailsForBill)
             {
-                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();                
+                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
+                var discount = saleDetailItem.Discount.HasValue ? saleDetailItem.Discount.Value : 0.00M;
+
                 var saleDetailExtn = new SaleDetailExtn()
                 {
-                    Discount = saleDetailItem.Discount,
+                    DiscountAmount = discount,
                     PriceId = saleDetailItem.PriceId,
                     ProductId = saleDetailItem.ProductId,
                     Qty = saleDetailItem.Qty,
@@ -667,7 +682,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     BillId = saleDetailItem.BillId,
                     CostPrice = productPrice.Price,
                     AvailableStock = productPrice.Quantity,
-                    Amount = productPrice.SellingPrice * saleDetailItem.Qty
+                    Amount = (productPrice.SellingPrice * saleDetailItem.Qty) - discount
                 };
 
                 SaleDetailList.Add(saleDetailExtn);
@@ -716,6 +731,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             _extensions.Clear();
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             _isEditMode = false;
+            TotalDiscountAmount = null;
+            TotalDiscountPercent = null;
         }
 
         #endregion
@@ -799,7 +816,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     if (discountAmount != 0)
                     {
                         SaleDetailExtn.Amount = discountAmount;
-                        SaleDetailExtn.Discount = discountAmount;
+                        SaleDetailExtn.Discount = amount - discountAmount;
                         return;
                     }
 
