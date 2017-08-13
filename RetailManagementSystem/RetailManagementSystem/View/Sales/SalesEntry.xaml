@@ -222,7 +222,7 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="6"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
             <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" CommandParameter="SaveOnly"/>
             <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding IsEditMode}"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/> 

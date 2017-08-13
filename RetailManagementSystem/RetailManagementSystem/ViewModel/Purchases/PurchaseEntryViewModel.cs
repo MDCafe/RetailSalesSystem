@@ -786,7 +786,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId && s.PriceId == purchaseDetail.PriceId);
                 if (stockNewItem != null)
                 {
-                    stockNewItem.Quantity += item.Qty.Value;
+                    stockNewItem.Quantity -= item.Qty.Value;
                 }
                 _rmsEntities.PurchaseDetails.Remove(purchaseDetail);
             }

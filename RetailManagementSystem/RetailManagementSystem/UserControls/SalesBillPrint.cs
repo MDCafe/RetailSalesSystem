@@ -6,33 +6,33 @@ using System.Linq;
 using System.Collections.Generic;
 using RetailManagementSystem.Model;
 using System.Text;
+using log4net;
 
 namespace RetailManagementSystem.UserControls
 {
     internal class SalesBillPrint
     {
-        PrintDocument pdoc;
+        PrintDocument _pdoc;
         ApplicationDetail _appDetail;
-
         string _customerName;
-        //int _billNo;
         IEnumerable<SaleDetailExtn> _saleDetails;
         Sale _billSales;
         decimal? _amountPaid, _balanceAmt;
 
+        static readonly ILog _log = LogManager.GetLogger(typeof(SalesBillPrint));
 
         public SalesBillPrint()
         {
             PrintDialog pd = new PrintDialog();
             string strDefaultPrinter = pd.PrinterSettings.PrinterName;//Code to get default printer name  
-            pdoc = new PrintDocument();
+            _pdoc = new PrintDocument();
             PrinterSettings ps = new PrinterSettings();
             Font font = new Font("Courier New", 15);//set default font for page
                                                     //PaperSize psize = new PaperSize("Custom", 212, 130);//set paper size sing code
             //PaperSize psize = new PaperSize("Custom", 212, 100);
-            pd.Document = pdoc;
+            pd.Document = _pdoc;
             //pd.Document.DefaultPageSettings.PaperSize = psize;
-            pdoc.PrintPage += new PrintPageEventHandler(PrintPage);
+            _pdoc.PrintPage += new PrintPageEventHandler(PrintPage);
 
             string defaultPrinterName = ps.PrinterName; // Code to get default printer
 
@@ -43,7 +43,6 @@ namespace RetailManagementSystem.UserControls
             pd.PrinterSettings.PrintFileName = @"E:\PosPrint.pdf";
 
             RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.Count();
-
             _appDetail = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault();
 
         }
@@ -52,18 +51,18 @@ namespace RetailManagementSystem.UserControls
         {
             try
             {
-                _customerName = customerName;      
+                _customerName = customerName;
                 _billSales = billSales;
                 _saleDetails = saleDetails;
                 _billSales = billSales;
                 _amountPaid = amountPaid;
                 _balanceAmt = balanceAmt; 
-                pdoc.Print();
-
+                _pdoc.Print();
             }
             catch (Exception ex)
             {
-                
+                Utilities.Utility.ShowErrorBox("Error while Printing..!!" + ex.Message);
+                _log.Info("Error while Printing..!! - "  + _billSales.BillId, ex);
             }
         }
 
@@ -94,14 +93,9 @@ namespace RetailManagementSystem.UserControls
             e.Graphics.DrawString(_appDetail.EmailAddress, headerFont, solidBrush, headerStartX, startY + Offset, drawFormat);
             Offset = Offset + 25;
 
-            //Customer Name
-            e.Graphics.DrawString(_customerName, new Font("Times New Roman", 11, FontStyle.Bold), solidBrush, headerStartX, startY + Offset, drawFormat);
-            Offset = Offset + 25;
-
-
             RectangleF marginBounds = e.MarginBounds;
             RectangleF printableArea = e.PageSettings.PrintableArea;
-            int availableWidth = (int)Math.Floor(pdoc.OriginAtMargins ? marginBounds.Width : (e.PageSettings.Landscape
+            int availableWidth = (int)Math.Floor(_pdoc.OriginAtMargins ? marginBounds.Width : (e.PageSettings.Landscape
                                                     ? printableArea.Height
                                                     : printableArea.Width));
 
@@ -110,7 +104,7 @@ namespace RetailManagementSystem.UserControls
 
             e.Graphics.DrawString(DateTime.Now.ToString("dd/MM/yy HH:mm"), itemFont, solidBrush, startX, startY + Offset);
             e.Graphics.DrawString("Bill No: " + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
-            drawFormat.Alignment = StringAlignment.Far;
+            //drawFormat.Alignment = StringAlignment.Far;
             Offset = Offset + 20;
 
             if(!string.IsNullOrWhiteSpace(_billSales.CustomerOrderNo))
@@ -120,12 +114,15 @@ namespace RetailManagementSystem.UserControls
             }
 
             //********************************************ENd OF Header********************************************
-            e.Graphics.DrawString("Item", itemFont, solidBrush, startX, startY + Offset);
-            Offset = Offset + 20;
-
-            rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
 
             drawFormat.Alignment = StringAlignment.Center;
+            //Customer Name
+            e.Graphics.DrawString(_customerName, new Font("Times New Roman", 11, FontStyle.Bold), solidBrush, headerStartX, startY + Offset, drawFormat);
+            Offset = Offset + 25;
+
+
+            rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
+            
             e.Graphics.DrawString("Qty", itemFont, solidBrush, startX, startY + Offset);
             e.Graphics.DrawString("Unit", itemFont, solidBrush, rect, drawFormat);
             e.Graphics.DrawString("Total", itemFont, solidBrush, rect, rightAlignformat);

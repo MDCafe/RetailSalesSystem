@@ -390,7 +390,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var outstandingBalance = _totalAmount.Value - AmountPaid;
             if (outstandingBalance > 0)
             {
-                var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
+                var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
                 var result = Utility.ShowMessageBoxWithOptions(msg);
 
                 if (result == System.Windows.MessageBoxResult.Cancel) return;
@@ -468,7 +468,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             Monitor.Exit(rootLock);
             log.DebugFormat("Exit save :{0}", _guid);
 
-            _salesBillPrint.print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount);
+            if(parameter == null)
+                _salesBillPrint.print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount);
 
             if (_salesParams.GetTemproaryData)
                 _closeCommand.Execute(null);
