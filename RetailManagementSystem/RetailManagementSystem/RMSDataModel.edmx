@@ -33,6 +33,14 @@
           <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="RollingNo" Type="mediumint" />
         </EntityType>
+        <EntityType Name="CodeMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="5" />
+          <Property Name="Description" Type="varchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="Companies">
           <Key>
             <PropertyRef Name="Id" />
@@ -165,6 +173,20 @@
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
+        <EntityType Name="PurchaseReturn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BillId" Type="int" />
+          <Property Name="ProductId" Type="mediumint" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="PriceId" Type="mediumint" Nullable="false" />
+          <Property Name="ReturnReasonCode" Type="int" />
+          <Property Name="comments" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+        </EntityType>
         <EntityType Name="Purchases">
           <Key>
             <PropertyRef Name="BillId" />
@@ -200,6 +222,7 @@
           <Property Name="isReturn" Type="bool" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ReturnReasonCode" Type="int" />
         </EntityType>
         <EntityType Name="Roles">
           <Key>
@@ -457,6 +480,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductId_PR">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductId_RD">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="ReturnDamagedStocks" Type="Self.ReturnDamagedStocks" Multiplicity="*" />
@@ -490,6 +525,30 @@
             </Principal>
             <Dependent Role="PurchasePaymentDetails">
               <PropertyRef Name="PurchaseBillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_returnCode">
+          <End Role="CodeMaster" Type="Self.CodeMaster" Multiplicity="0..1" />
+          <End Role="ReturnDamagedStocks" Type="Self.ReturnDamagedStocks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReturnDamagedStocks">
+              <PropertyRef Name="ReturnReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_returnCode_PR">
+          <End Role="CodeMaster" Type="Self.CodeMaster" Multiplicity="0..1" />
+          <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ReturnReasonCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -532,6 +591,7 @@
         <EntityContainer Name="RMSModelStoreContainer">
           <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="rms" store:Type="Tables" />
@@ -541,6 +601,7 @@
           <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetails" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="PurchaseReturn" EntityType="Self.PurchaseReturn" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="rms" store:Type="Tables" />
           <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="rms" store:Type="Tables" />
@@ -605,6 +666,10 @@
             <End Role="Products" EntitySet="Products" />
             <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_ProductId_PR" Association="Self.FK_ProductId_PR">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturn" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductId_RD" Association="Self.FK_ProductId_RD">
             <End Role="Products" EntitySet="Products" />
             <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
@@ -616,6 +681,14 @@
           <AssociationSet Name="FK_purchaseId" Association="Self.FK_purchaseId">
             <End Role="Purchases" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_returnCode" Association="Self.FK_returnCode">
+            <End Role="CodeMaster" EntitySet="CodeMaster" />
+            <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_returnCode_PR" Association="Self.FK_returnCode_PR">
+            <End Role="CodeMaster" EntitySet="CodeMaster" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturn" />
           </AssociationSet>
           <AssociationSet Name="fk_role" Association="Self.fk_role">
             <End Role="Roles" EntitySet="Roles" />
@@ -683,6 +756,7 @@
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
           <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSModel.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
           <NavigationProperty Name="PurchaseDetails" Relationship="RMSModel.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="PurchaseReturns" Relationship="RMSModel.FK_ProductId_PR" FromRole="Product" ToRole="PurchaseReturn" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -821,6 +895,20 @@
             <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
           </AssociationSet>
           <EntitySet Name="ApplicationDetails" EntityType="RMSModel.ApplicationDetail" />
+          <EntitySet Name="CodeMasters" EntityType="RMSModel.CodeMaster" />
+          <EntitySet Name="PurchaseReturns" EntityType="RMSModel.PurchaseReturn" />
+          <AssociationSet Name="FK_returnCode" Association="RMSModel.FK_returnCode">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_returnCode_PR" Association="RMSModel.FK_returnCode_PR">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductId_PR" Association="RMSModel.FK_ProductId_PR">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -1049,6 +1137,8 @@
           <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProductId_RD" FromRole="ReturnDamagedStock" ToRole="Product" />
+          <Property Name="ReturnReasonCode" Type="Int32" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSModel.FK_returnCode" FromRole="ReturnDamagedStock" ToRole="CodeMaster" />
         </EntityType>
         <Association Name="FK_ProductId_RD">
           <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
@@ -1297,6 +1387,68 @@
           <Property Name="WhatsAppNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="LogoUrl" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="CodeMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSModel.FK_returnCode" FromRole="CodeMaster" ToRole="ReturnDamagedStock" />
+          <NavigationProperty Name="PurchaseReturns" Relationship="RMSModel.FK_returnCode_PR" FromRole="CodeMaster" ToRole="PurchaseReturn" />
+        </EntityType>
+        <EntityType Name="PurchaseReturn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="ReturnReasonCode" Type="Int32" />
+          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSModel.FK_returnCode_PR" FromRole="PurchaseReturn" ToRole="CodeMaster" />
+          <NavigationProperty Name="Product" Relationship="RMSModel.FK_ProductId_PR" FromRole="PurchaseReturn" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_returnCode">
+          <End Type="RMSModel.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSModel.ReturnDamagedStock" Role="ReturnDamagedStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReturnDamagedStock">
+              <PropertyRef Name="ReturnReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_returnCode_PR">
+          <End Type="RMSModel.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSModel.PurchaseReturn" Role="PurchaseReturn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ReturnReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductId_PR">
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSModel.PurchaseReturn" Role="PurchaseReturn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1468,6 +1620,7 @@
           <EntitySetMapping Name="ReturnDamagedStocks">
             <EntityTypeMapping TypeName="RMSModel.ReturnDamagedStock">
               <MappingFragment StoreEntitySet="ReturnDamagedStocks">
+                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="isReturn" ColumnName="isReturn" />
@@ -1595,6 +1748,30 @@
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CodeMasters">
+            <EntityTypeMapping TypeName="RMSModel.CodeMaster">
+              <MappingFragment StoreEntitySet="CodeMaster">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseReturns">
+            <EntityTypeMapping TypeName="RMSModel.PurchaseReturn">
+              <MappingFragment StoreEntitySet="PurchaseReturn">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

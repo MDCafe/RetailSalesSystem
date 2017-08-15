@@ -68,12 +68,13 @@
                     </RibbonGroup>
 
                     <!-- Purchase Group-->
-                    <RibbonGroup x:Name="Purchase" Header="Purchases">
+                    <RibbonGroup x:Name="Purchase" Header="Purchases" KeyTip="P">
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Purchase Entry" 
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
                         <RibbonButton Label="Amend Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
                                        KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
-
+                        <RibbonButton Label="Purchase Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Purchase Returns"
+                                       KeyTip="R" Command="{Binding OpenReturnPurchaseCommand}"/>
                     </RibbonGroup>
                     
                     <!-- Reports Group-->
@@ -201,6 +202,12 @@
                                 <PurchaseView:PurchaseEntry/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.PurchaseViewTemplate>
+
+                        <pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
+                            <DataTemplate>
+                                <PurchaseView:ReturnPurchase/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
 
                         <pane:PanesTemplateSelector.CustomerDataTemplate>
                             <DataTemplate>

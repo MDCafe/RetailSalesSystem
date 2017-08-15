@@ -110,6 +110,9 @@
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CodeMaster.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Company.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
@@ -152,6 +155,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PurchasePaymentDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseReturn.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ReturnDamagedStock.cs">
@@ -217,6 +223,7 @@
     <Compile Include="ViewModel\Purchases\AmendPurchasesViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseParams.cs" />
+    <Compile Include="ViewModel\Purchases\ReturnPurchaseViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
@@ -239,6 +246,9 @@
     </Compile>
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Purchases\ReturnPurchase.xaml.cs">
+      <DependentUpon>ReturnPurchase.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports.xaml.cs">
       <DependentUpon>Reports.xaml</DependentUpon>
@@ -289,6 +299,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Purchases\PurchaseEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Purchases\ReturnPurchase.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

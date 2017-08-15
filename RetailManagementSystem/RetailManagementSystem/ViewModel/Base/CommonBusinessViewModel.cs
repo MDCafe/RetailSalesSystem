@@ -21,6 +21,8 @@ namespace RetailManagementSystem.ViewModel.Base
         protected decimal _amountPaid = 0.0M;
         protected bool _discountEnabled = true, _discountPercentEnabled = true, _isEditMode;
 
+        System.Windows.Visibility _isVisible = System.Windows.Visibility.Collapsed;
+
         public IEnumerable<ProductPrice> ProductsPriceList
         {
             get { return _productsPriceList; }
@@ -122,7 +124,19 @@ namespace RetailManagementSystem.ViewModel.Base
             get { return !_isEditMode; }
         }
 
+        public System.Windows.Visibility IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
 
+            set
+            {
+                _isVisible = value;
+                RaisePropertyChanged("VisibIsVisiblele");
+            }
+        }
 
 
         protected CommonBusinessViewModel()
@@ -188,7 +202,7 @@ namespace RetailManagementSystem.ViewModel.Base
             return true;
         }
 
-        private void OnClose()
+        protected void OnClose()
         {
             var returnValue = Workspace.This.Close(this);
             if (!returnValue) return;

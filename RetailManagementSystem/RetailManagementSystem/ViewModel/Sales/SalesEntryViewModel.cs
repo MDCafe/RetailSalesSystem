@@ -79,6 +79,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     //Amend Bill             
                     OnEditBill(salesParams.Billno.Value);
                     Title = "Sale Bill Amend :" + _runningBillNo;
+                    IsVisible = System.Windows.Visibility.Visible;
                     return;
                 }
                 else if (salesParams.GetTemproaryData)
@@ -284,7 +285,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             return true;
         }
 
-        private void OnClose()
+        private new void  OnClose()
         {
             //Clear all the data if cancel is pressed
             if (_salesParams.GetTemproaryData)
@@ -734,6 +735,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _isEditMode = false;
             TotalDiscountAmount = null;
             TotalDiscountPercent = null;
+            IsVisible = System.Windows.Visibility.Collapsed;
         }
 
         #endregion

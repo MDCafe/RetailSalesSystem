@@ -21,7 +21,15 @@ namespace RetailManagementSystem.View.Pane
             set;
         }
 
+
+
         public DataTemplate PurchaseViewTemplate
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate ReturnPurchaseViewTemplate
         {
             get;
             set;
@@ -66,11 +74,13 @@ namespace RetailManagementSystem.View.Pane
             
             if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
 
+            if (item is ReturnPurchaseViewModel) return ReturnPurchaseViewTemplate;
+
             //if (item is FileStatsViewModel)
             //    return FileStatsViewTemplate;
 
-            //if (item is RecentFilesViewModel)
-            //  return RecentFilesViewTemplate;
+                //if (item is RecentFilesViewModel)
+                //  return RecentFilesViewTemplate;
 
             return base.SelectTemplate(item, container);
         }

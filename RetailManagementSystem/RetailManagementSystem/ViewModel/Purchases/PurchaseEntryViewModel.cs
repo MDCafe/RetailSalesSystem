@@ -47,6 +47,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     //Amend Bill             
                     OnEditBill(purchaseParams.Billno.Value);
                     Title = "Purchase Bill Amend : " + _runningBillNo;
+                    IsVisible = System.Windows.Visibility.Visible;
                     return;
                 }
             }
@@ -211,6 +212,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
 
         public decimal? TotalTax { get; set; }
+
 
         #endregion
 
@@ -720,6 +722,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             TransportCharges = null;
             LocalCoolieCharges = null;
             AmountPaid = 0.0M;
+            IsVisible = System.Windows.Visibility.Collapsed;
         }
 
         #endregion
@@ -803,6 +806,47 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
         }
 
+        #endregion
+
+        #region CancelPurchaseCommand
+        RelayCommand<object> _cancelPurchaseCommand = null;
+        public ICommand CancelPurchaseCommand
+        {
+            get
+            {
+                if (_cancelPurchaseCommand == null)
+                {
+                    _cancelPurchaseCommand = new RelayCommand<object>((p) => OnBillCancel(), (p) => CanBillCancel());
+                }
+
+                return _cancelPurchaseCommand;
+            }
+        }
+
+   
+        private bool CanBillCancel()
+        {
+            return _purchaseParams != null && _purchaseParams.Billno != null;
+        }
+
+        private void OnBillCancel()
+        {
+            var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno);
+
+            var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
+            if (msgResult == System.Windows.MessageBoxResult.No) return;
+
+            var cancelBillItems = _rmsEntities.PurchaseDetails.Where(s => s.BillId == cancelBill.BillId);
+            foreach (var item in cancelBillItems.ToList())
+            {
+                var stockItem = _rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
+                stockItem.Quantity -= item.PurchasedQty.Value;
+            }
+
+            cancelBill.IsCancelled = true;
+            _rmsEntities.SaveChanges();
+            OnClose();
+        }
         #endregion
 
     }

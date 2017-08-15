@@ -22,6 +22,7 @@ namespace RetailManagementSystem
             this.Stocks = new HashSet<Stock>();
             this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
+            this.PurchaseReturns = new HashSet<PurchaseReturn>();
         }
     
         public int Id { get; set; }
@@ -45,5 +46,6 @@ namespace RetailManagementSystem
         public virtual Company Company { get; set; }
         public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
+        public virtual ICollection<PurchaseReturn> PurchaseReturns { get; set; }
     }
 }

@@ -12,20 +12,19 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class ReturnDamagedStock
+    public partial class PurchaseReturn
     {
         public int Id { get; set; }
         public Nullable<int> BillId { get; set; }
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
         public int PriceId { get; set; }
+        public Nullable<int> ReturnReasonCode { get; set; }
         public string comments { get; set; }
-        public bool isReturn { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public Nullable<int> ReturnReasonCode { get; set; }
     
-        public virtual Product Product { get; set; }
         public virtual CodeMaster CodeMaster { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

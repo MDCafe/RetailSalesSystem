@@ -137,11 +137,11 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == BillNo && companyBill.CompanyId == s.CompanyId);
 
-            //if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
-            //{
-            //    Utility.ShowWarningBox("Bill has been cancelled already");
-            //    return;
-            //}
+            if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
+            {
+                Utility.ShowWarningBox("Bill has been cancelled already");
+                return;
+            }
 
             View.Entitlements.Login login = new View.Entitlements.Login(true);
             var result = login.ShowDialog();
@@ -155,7 +155,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
             _closeWindowCommand.Execute(window);
 
-            //window.DialogResult = true;
+         
         }       
 
         private bool CanExecuteMethod(object parameter)

@@ -70,4 +70,14 @@ namespace RetailManagementSystem.Model
             }
         }
     }
+
+    class ReturnPurchaseDetailExtn : PurchaseDetailExtn
+    {
+        public decimal ReturnQty { get; set; }
+        public decimal ReturnPrice { get; set; }
+        public bool Selected { get; set; }
+        public string ProductName { get; set; }
+        public decimal ReturnAmount { get; set; }
+        public CodeMaster SelectedReturnReason { get; set; }
+    }
 }
