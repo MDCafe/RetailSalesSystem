@@ -6,7 +6,8 @@
         xmlns:s="clr-namespace:System;assembly=mscorlib"        
         Title="Retail Management System"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
-        xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane"        
+        xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane" 
+        xmlns:report="clr-namespace:RetailManagementSystem.View"
         xmlns:SalesView="clr-namespace:RetailManagementSystem.View.Sales"
         xmlns:PurchaseView="clr-namespace:RetailManagementSystem.View.Purchases"
         xmlns:MastersView="clr-namespace:RetailManagementSystem.View.Masters"
@@ -78,14 +79,15 @@
                     </RibbonGroup>
                     
                     <!-- Reports Group-->
-                    <!--<RibbonGroup x:Name="Employee" Header="Reports">
-                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales Summary" KeyTip="V">
-                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Keep Text Only" KeyTip="T"/>
-                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Paste Special..." KeyTip="S"/>
+                    <RibbonGroup x:Name="Reports" Header="Reports">
+                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales" KeyTip="V">
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Sales Summary" KeyTip="RS" 
+                                            Command="{Binding OpenDailySalesReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Customer Sales" KeyTip="CS"/>
                         </RibbonMenuButton>
-                        <RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />
+                        <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
 
-                    </RibbonGroup>-->
+                    </RibbonGroup>
 
 
                 </RibbonTab>
@@ -209,6 +211,12 @@
                             </DataTemplate>
                         </pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
 
+                        <pane:PanesTemplateSelector.ReportViewTemplate>
+                            <DataTemplate>
+                                <report:Reports/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.ReportViewTemplate>
+                        
                         <pane:PanesTemplateSelector.CustomerDataTemplate>
                             <DataTemplate>
                                 <MastersView:Customer/>

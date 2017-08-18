@@ -240,30 +240,14 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
               _textContent = value;
               RaisePropertyChanged("TextContent");
-              IsDirty = true;
+              
             }
           }
         }
 
         #endregion
 
-        #region IsDirty
-
-        private bool _isDirty = false;
-        override public bool IsDirty
-        {
-          get { return _isDirty; }
-          set
-          {
-            if (_isDirty != value)
-            {
-              _isDirty = value;
-              RaisePropertyChanged("IsDirty");
-            }
-          }
-        }
-
-        #endregion
+       
 
         #region CloseCommand
         RelayCommand<object> _closeCommand = null;
@@ -831,7 +815,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool CanSaveAs(object parameter)
         {
-            return IsDirty;
+            return true;
         }      
 
        
@@ -853,7 +837,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         return;
                     }
                     //Save to temp table  
-                    IsDirty = true;
+                    //IsDirty = true;
                     //var deletedItems =RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Where(i => _salesDetailsList.Contains(j => j.ProductId != i.ProductId) == true);                    
                     var saleTempItems = RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Where(g => g.Guid == _guid);
 

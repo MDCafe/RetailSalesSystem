@@ -198,8 +198,6 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        
-
         #region OpenPurchaseEntryCommand
         RelayCommand<object> _openPurchaseEntryCommand = null;
         public ICommand OpenPurchaseEntryCommand
@@ -308,7 +306,6 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-
         #region OpenCustomerCommand
         RelayCommand<object> _openCustomerCommand = null;
         public ICommand OpenCustomerCommand
@@ -368,6 +365,49 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+
+        #region Reports
+
+        #region OpenDailySalesReportCommand
+        RelayCommand<object> _openDailySalesReportCommand = null;
+        public ICommand OpenDailySalesReportCommand
+        {
+            get
+            {
+                if (_openDailySalesReportCommand == null)
+                {
+                    _openDailySalesReportCommand = new RelayCommand<object>((p) => OnOpenDailySalesReportCommand(p));
+                }
+
+                return _openDailySalesReportCommand;
+            }
+        }
+
+        private void OnOpenDailySalesReportCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
+                _documentViewModels.Add(new ReportViewModel(showRestrictedCustomers,"Sales Summary"));
+                ActiveDocument = _documentViewModels.Last();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         internal bool Close(DocumentViewModel doc)
         {
             {
@@ -375,17 +415,17 @@ namespace RetailManagementSystem.ViewModel
 
                 if (docToClose != null)
                 {
-                    if (docToClose.IsDirty)
-                    {
-                        var res = MessageBox.Show("Unsaved changes..!! Do you want to save?", "Product Info here--", MessageBoxButton.YesNoCancel);
-                        if (res == MessageBoxResult.Cancel)
-                            return false;
+                    //if (docToClose.IsDirty)
+                    //{
+                    //    var res = MessageBox.Show("Unsaved changes..!! Do you want to save?", "Product Info here--", MessageBoxButton.YesNoCancel);
+                    //    if (res == MessageBoxResult.Cancel)
+                    //        return false;
 
-                        if (res == MessageBoxResult.Yes)
-                        {
-                            //doc.GetBillCommand.Execute(null);
-                        }
-                    }
+                    //    if (res == MessageBoxResult.Yes)
+                    //    {
+                    //        //doc.GetBillCommand.Execute(null);
+                    //    }
+                    //}
                     _documentViewModels.Remove(docToClose);                    
                 }
                 return true;

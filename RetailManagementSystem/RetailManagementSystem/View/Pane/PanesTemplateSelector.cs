@@ -4,6 +4,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
+using RetailManagementSystem.ViewModel;
 
 namespace RetailManagementSystem.View.Pane
 {
@@ -30,6 +31,12 @@ namespace RetailManagementSystem.View.Pane
         }
 
         public DataTemplate ReturnPurchaseViewTemplate
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate ReportViewTemplate
         {
             get;
             set;
@@ -75,6 +82,8 @@ namespace RetailManagementSystem.View.Pane
             if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
 
             if (item is ReturnPurchaseViewModel) return ReturnPurchaseViewTemplate;
+
+            if (item is ReportViewModel) return ReportViewTemplate;
 
             //if (item is FileStatsViewModel)
             //    return FileStatsViewTemplate;

@@ -163,25 +163,6 @@ namespace RetailManagementSystem.ViewModel.Base
             return null;
         }
 
-        #region IsDirty
-
-        private bool _isDirty = false;
-        override public bool IsDirty
-        {
-            get { return _isDirty; }
-            set
-            {
-                if (_isDirty != value)
-                {
-                    _isDirty = value;
-                    RaisePropertyChanged("IsDirty");
-                    RaisePropertyChanged("FileName");
-                }
-            }
-        }
-
-        #endregion
-
         #region CloseCommand
         RelayCommand<object> _closeCommand = null;
         override public ICommand CloseCommand

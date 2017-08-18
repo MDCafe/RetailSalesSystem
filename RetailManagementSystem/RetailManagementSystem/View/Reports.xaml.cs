@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetailManagementSystem.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,17 @@ namespace RetailManagementSystem.View
     /// </summary>
     public partial class Reports : UserControl
     {
+        ReportViewModel _rptVM;
+
         public Reports()
         {
             InitializeComponent();
+            this.DataContextChanged += Reports_DataContextChanged;
+        }
+
+        private void Reports_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            _rptVM = this.DataContext as ReportViewModel;
         }
     }
 }

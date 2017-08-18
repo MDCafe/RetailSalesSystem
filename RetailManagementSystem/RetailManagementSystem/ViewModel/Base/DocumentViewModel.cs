@@ -25,8 +25,8 @@ namespace RetailManagementSystem.ViewModel.Base
         {
             get
             {
-                if (_windowTitle == null)
-                    return "New Window" + (IsDirty ? "*" : "");
+                //if (_windowTitle == null)
+                //    return "New Window" + (IsDirty ? "*" : "");
                 return _windowTitle;            
             }
             set
@@ -35,7 +35,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        abstract public bool IsDirty { get; set; }
+        //abstract public bool IsDirty { get; set; }
 
         #region CloseCommand
         /// <summary>

@@ -218,23 +218,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #endregion
 
-        #region IsDirty
-
-        private bool _isDirty = false;
-        override public bool IsDirty
-        {
-            get { return _isDirty; }
-            set
-            {
-                if (_isDirty != value)
-                {
-                    _isDirty = value;
-                    RaisePropertyChanged("IsDirty");
-                }
-            }
-        }
-
-        #endregion
+       
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
