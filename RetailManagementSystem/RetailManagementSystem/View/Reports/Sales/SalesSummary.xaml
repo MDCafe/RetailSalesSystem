@@ -1,0 +1,47 @@
+﻿<Window x:Class="RetailManagementSystem.View.Reports.Sales.SalesSummary"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:RetailManagementSystem.View.Sales"
+        xmlns:Validator="clr-namespace:RetailManagementSystem.Validation" 
+        xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl" 
+        mc:Ignorable="d"
+        Name="SalesSummaryParamWindow"
+        FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
+        Title="Sales Summary Report" Height="210" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="207*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Bill No" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
+        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
+
+        <Label Content="From" Grid.Column="0" Grid.Row="1" Margin="5"/>
+        <DatePicker x:Name="FromSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding FromSalesDate}" BorderThickness="0" Margin="5" 
+                    Height="25" Grid.Column="1" Grid.Row="1" Width="100" HorizontalAlignment="Left"/>
+
+        <Label Content="To" Grid.Column="0" Grid.Row="2" Margin="5"/>
+        <DatePicker x:Name="ToSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding ToSalesDate}" BorderThickness="0" Margin="5" 
+                    Height="25" Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Left"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.Column="2">
+            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=SalesSummaryParamWindow}"  Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=SalesSummaryParamWindow}" Margin="5" IsCancel="True"/>
+        </StackPanel>
+       
+    </Grid>
+</Window>

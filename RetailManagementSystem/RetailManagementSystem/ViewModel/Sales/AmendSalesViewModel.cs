@@ -64,10 +64,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         public AmendSalesViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
         {            
             _showRestrictedCustomers = showRestrictedCustomers;            
-            RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();           
-
-            //var othersCategory = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.name == Constants.CUSTOMERS_OTHERS);
-            //_othersCategoryId = othersCategory.Id;           
+            RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();                      
             
         }
 

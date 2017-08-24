@@ -15,6 +15,8 @@ using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
+using RetailManagementSystem.View.Reports.Sales;
+using Microsoft.Reporting.WinForms;
 //using SimpleControls.MRU.ViewModel;
 
 namespace RetailManagementSystem.ViewModel
@@ -390,8 +392,10 @@ namespace RetailManagementSystem.ViewModel
                 var showRestrictedCustomers = false;
                 if (showAll != null)
                     showRestrictedCustomers = bool.Parse(showAll.ToString());
-                _documentViewModels.Add(new ReportViewModel(showRestrictedCustomers,"Sales Summary"));
-                ActiveDocument = _documentViewModels.Last();
+
+                SalesSummary salesSummary = new SalesSummary(false);
+                salesSummary.ShowDialog();
+
             }
             catch (Exceptions.RMSException ex)
             {
@@ -402,6 +406,16 @@ namespace RetailManagementSystem.ViewModel
                 Utility.ShowErrorBox(ex.Message);
                 //log here
             }
+        }
+
+        public void OpenSalesSummaryReport(bool showRestrictedCustomers, ReportDataSource[] reportDataSource)
+        {
+            string reportPath= @"View\Reports\Sales\SalesSummary.rdl";
+
+            _documentViewModels.Add(new ReportViewModel(showRestrictedCustomers,"Sales Summary", reportDataSource, reportPath));
+
+            ActiveDocument = _documentViewModels.Last();
+
         }
 
         #endregion

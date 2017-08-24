@@ -1,29 +1,17 @@
 ﻿using RetailManagementSystem.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RetailManagementSystem.View
 {
     /// <summary>
     /// Interaction logic for Reports.xaml
     /// </summary>
-    public partial class Reports : UserControl
+    public partial class ReportsViewer : UserControl
     {
         ReportViewModel _rptVM;
 
-        public Reports()
+        public ReportsViewer()
         {
             InitializeComponent();
             this.DataContextChanged += Reports_DataContextChanged;
@@ -32,6 +20,7 @@ namespace RetailManagementSystem.View
         private void Reports_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             _rptVM = this.DataContext as ReportViewModel;
+            _rptVM.RptViewer = this.ReportViewer;
         }
     }
 }

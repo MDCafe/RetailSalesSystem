@@ -213,7 +213,7 @@
 
                         <pane:PanesTemplateSelector.ReportViewTemplate>
                             <DataTemplate>
-                                <report:Reports/>
+                                <report:ReportsViewer/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.ReportViewTemplate>
                         

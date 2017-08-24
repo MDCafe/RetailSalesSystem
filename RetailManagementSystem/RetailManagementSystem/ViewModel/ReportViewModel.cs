@@ -1,4 +1,5 @@
-﻿using RetailManagementSystem.Command;
+﻿using Microsoft.Reporting.WinForms;
+using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Collections.Generic;
@@ -11,42 +12,38 @@ namespace RetailManagementSystem.ViewModel
 {
     internal class ReportViewModel : ReportBaseViewModel
     {
+        private ReportViewer _rptViewer;
+        private ReportDataSource[] _rptDataSource;
+        private string _reportPath;
 
-        public ReportViewModel(bool showResctricteCustomers, string title) : base(showResctricteCustomers)
+        public ReportViewModel(bool showResctricteCustomers, string title, ReportDataSource[] rptDataSource,
+                              string reportPath) 
+            : base(showResctricteCustomers)
         {
             this.Title = title;
+            _rptDataSource = rptDataSource;
+            _reportPath = reportPath;
         }
 
-
-        #region Clear Command
-        RelayCommand<object> _clearCommand = null;
-
-
-        public ICommand ClearCommand
+        public ReportViewer RptViewer
         {
             get
             {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => Clear());
-                }
+                return _rptViewer;
+            }
 
-                return _clearCommand;
+            set
+            {
+                _rptViewer = value;
+
+                foreach (var dataSource in _rptDataSource)
+                {
+                    _rptViewer.LocalReport.DataSources.Add(dataSource);
+                }
+                _rptViewer.LocalReport.ReportPath = _reportPath;
+
+                _rptViewer.RefreshReport();
             }
         }
-
-        private void Clear()
-        {
-            //_returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
-            //RaisePropertyChanged("ReturnSaleDetailList");
-            //BillNo = null;
-            //IsBillBasedReturn = false;
-            //TotalAmount = null;
-            ////sCompanyName = "";
-            //ModeOfPayment = "";
-            //PurchaseDate = null;
-        }
-
-        #endregion
     }
 }
