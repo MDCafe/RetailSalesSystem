@@ -40,11 +40,11 @@ namespace RetailManagementSystem
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
         public DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
         public DbSet<ApplicationDetail> ApplicationDetails { get; set; }
         public DbSet<CodeMaster> CodeMasters { get; set; }
         public DbSet<PurchaseReturn> PurchaseReturns { get; set; }
+        public DbSet<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
     }
 }

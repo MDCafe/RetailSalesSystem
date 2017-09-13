@@ -18,6 +18,7 @@ namespace RetailManagementSystem
         {
             this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
+            this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
         }
     
         public int BillId { get; set; }
@@ -41,5 +42,6 @@ namespace RetailManagementSystem
         public virtual Company Company { get; set; }
         public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
+        public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
     }
 }

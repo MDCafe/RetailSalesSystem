@@ -80,10 +80,16 @@
                     
                     <!-- Reports Group-->
                     <RibbonGroup x:Name="Reports" Header="Reports">
-                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales" KeyTip="V">
-                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Sales Summary" KeyTip="RS" 
+                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Sales" KeyTip="S">
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Sales Summary" KeyTip="SS" 
                                             Command="{Binding OpenDailySalesReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Customer Sales" KeyTip="CS"/>
+                        </RibbonMenuButton>
+
+                        <RibbonMenuButton LargeImageSource="Images\Users.jpg" Label="Purchase" KeyTip="P">
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Purchase Summary" KeyTip="PS" 
+                                            Command="{Binding OpenDailyPurchaseReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Supplierwise Purchase" KeyTip="SP"/>
                         </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
 

@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
-using Microsoft.Win32;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.View.Reports.Sales;
-using Microsoft.Reporting.WinForms;
-//using SimpleControls.MRU.ViewModel;
+using RetailManagementSystem.View.Reports.Purchases;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -408,17 +402,53 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        public void OpenSalesSummaryReport(bool showRestrictedCustomers, ReportDataSource[] reportDataSource)
+        #endregion
+
+        #region OpenDailySalesReportCommand
+        RelayCommand<object> _openDailyPurchaseReportCommand = null;
+        public ICommand OpenDailyPurchaseReportCommand
         {
-            string reportPath= @"View\Reports\Sales\SalesSummary.rdl";
+            get
+            {
+                if (_openDailyPurchaseReportCommand == null)
+                {
+                    _openDailyPurchaseReportCommand = new RelayCommand<object>((p) => OnOpenDailyPurchaseReportCommand(p));
+                }
 
-            _documentViewModels.Add(new ReportViewModel(showRestrictedCustomers,"Sales Summary", reportDataSource, reportPath));
+                return _openDailyPurchaseReportCommand;
+            }
+        }
 
-            ActiveDocument = _documentViewModels.Last();
+        private void OnOpenDailyPurchaseReportCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
 
+                var PurchaseSummary = new PurchaseSummary(false);
+                PurchaseSummary.ShowDialog();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
         }
 
         #endregion
+
+        public void OpenReport(ReportViewModel rptViewModel)
+        {
+            _documentViewModels.Add(rptViewModel);
+            ActiveDocument = _documentViewModels.Last();
+        }
 
         #endregion
 

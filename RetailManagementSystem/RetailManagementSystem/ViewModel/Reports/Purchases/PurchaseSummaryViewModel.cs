@@ -1,57 +1,57 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Configuration;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
 
-namespace RetailManagementSystem.ViewModel.Reports
+namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 {
-    class SalesSummaryViewModel : ReportViewModel
+    class PurchaseSummaryViewModel : ReportViewModel
     {
-        private DateTime _fromSalesDate;
-        private DateTime _toSalesDate;
+        private DateTime _fromPurchaseDate;
+        private DateTime _toPurchaseDate;
         private bool _showRestrictedCustomers;
 
-        public DateTime FromSalesDate
+        public DateTime FromPurchaseDate
         {
             get
             {
-                return _fromSalesDate;
+                return _fromPurchaseDate;
             }
 
             set
             {
-                _fromSalesDate = value;
-                RaisePropertyChanged("FromSalesDate");
+                _fromPurchaseDate = value;
+                RaisePropertyChanged("FromPurchaseDate");
             }
         }
 
-        public DateTime ToSalesDate
+        public DateTime ToPurchaseDate
         {
             get
             {
-                return _toSalesDate;
+                return _toPurchaseDate;
             }
 
             set
             {
-                _toSalesDate = value;
-                RaisePropertyChanged("ToSalesDate");
+                _toPurchaseDate = value;
+                RaisePropertyChanged("ToPurchaseDate");
             }
         }
 
-        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers,"Sales Summary")
+        public PurchaseSummaryViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers,"Purchase Summary")
         {
-            FromSalesDate = DateTime.Now;
-            ToSalesDate = DateTime.Now;
-            
+            FromPurchaseDate = DateTime.Now;
+            ToPurchaseDate = DateTime.Now;
+
             _showRestrictedCustomers = showRestrictedCustomers;
 
-            _reportPath = @"View\Reports\Sales\SalesSummary.rdl";
+            _reportPath = @"View\Reports\Purchases\PurchasesSummary.rdl";
+
         }
 
         #region Print Command
@@ -71,10 +71,11 @@ namespace RetailManagementSystem.ViewModel.Reports
 
         private void OnPrint(Window window)
         {
+
             _rptDataSource[0] = new ReportDataSource();
             _rptDataSource[0].Name = "DataSet1";
 
-            var query = "GetSales";
+            var query = "GetPurchases";
 
             using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
             {
@@ -83,18 +84,19 @@ namespace RetailManagementSystem.ViewModel.Reports
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    var fromSqlParam = new MySqlParameter("FromSalesDate", MySqlDbType.Date);
-                    fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
+                    var fromSqlParam = new MySqlParameter("FromPurchaseDate", MySqlDbType.Date);
+                    fromSqlParam.Value = FromPurchaseDate.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add(fromSqlParam);
 
-                    var toSqlParam = new MySqlParameter("ToSalesDate", MySqlDbType.Date);
-                    toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
+                    var toSqlParam = new MySqlParameter("ToPurchaseDate", MySqlDbType.Date);
+                    toSqlParam.Value = ToPurchaseDate.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add(toSqlParam);
 
                     DataTable dt = new DataTable();
-                    MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
-
-                    adpt.Fill(dt);
+                    using (MySqlDataAdapter adpt = new MySqlDataAdapter(cmd))
+                    {
+                        adpt.Fill(dt);
+                    }
 
                     _rptDataSource[0].Value = dt;
                 }
@@ -104,8 +106,6 @@ namespace RetailManagementSystem.ViewModel.Reports
             CloseWindow(window);
         }
         #endregion
-
-       
 
         #region Clear Command
         RelayCommand<object> _clearCommand = null;
@@ -124,8 +124,8 @@ namespace RetailManagementSystem.ViewModel.Reports
 
         private void OnClear()
         {
-            ToSalesDate = DateTime.Now;
-            FromSalesDate = DateTime.Now;
+            ToPurchaseDate = DateTime.Now;
+            FromPurchaseDate = DateTime.Now;
         }
         #endregion
     }

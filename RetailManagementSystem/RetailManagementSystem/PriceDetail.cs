@@ -18,6 +18,7 @@ namespace RetailManagementSystem
         {
             this.SaleDetails = new HashSet<SaleDetail>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
+            this.Stocks = new HashSet<Stock>();
         }
     
         public int PriceId { get; set; }
@@ -32,5 +33,6 @@ namespace RetailManagementSystem
         public virtual Product Product { get; set; }
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
+        public virtual ICollection<Stock> Stocks { get; set; }
     }
 }

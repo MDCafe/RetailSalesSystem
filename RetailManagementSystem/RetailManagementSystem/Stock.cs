@@ -23,5 +23,6 @@ namespace RetailManagementSystem
         public Nullable<int> UpdatedBy { get; set; }
     
         public virtual Product Product { get; set; }
+        public virtual PriceDetail PriceDetail { get; set; }
     }
 }

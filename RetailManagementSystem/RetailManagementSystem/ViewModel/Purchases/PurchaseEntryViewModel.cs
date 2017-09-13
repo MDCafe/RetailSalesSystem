@@ -466,7 +466,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetail.Tax = item.Tax;
 
                 var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
-                                                                        && pr.Price == item.PurchasePrice
+                                                                        && pr.Price == item.CostPrice
                                                                         && pr.SellingPrice == item.SellingPrice);
                 var priceId = 0;
                 PriceDetail priceDetailItem = null;
@@ -485,7 +485,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     {
                         BillId = RunningBillNo,
                         ProductId = item.ProductId,
-                        Price = item.PurchasePrice.Value,
+                        Price = item.CostPrice,
                         SellingPrice = item.SellingPrice.Value
                     };
                     _rmsEntities.PriceDetails.Add(priceDetailItem);
@@ -503,9 +503,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         {
                             ProductId = item.ProductId,
                             FreeQty = item.FreeIssue.Value,
-                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value,
-                            BillId = RunningBillNo
-                           
+                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value
+                            //BillId = RunningBillNo
                         });
                 }
                 if (stock.Any())
@@ -517,9 +516,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     //Add stock for new price
                     _rmsEntities.Stocks.Add(new Stock()
                     {
-                        PriceId = priceDetailItem.PriceId,
+                        //PriceId = priceDetailItem.PriceId,
                         ExpiryDate = item.ExpiryDate.Value,
-                        Quantity = qty.Value
+                        Quantity = qty.Value,
+                        ProductId = item.ProductId
                     });
                 }
 
@@ -596,8 +596,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             {
                                 ProductId = purchaseDetailItemExtn.ProductId,
                                 FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
-                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
-                                BillId = _editBillNo
+                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value
+                                //BillId = _editBillNo
                             });
                     }
 
