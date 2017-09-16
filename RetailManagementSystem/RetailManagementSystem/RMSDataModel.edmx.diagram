@@ -37,7 +37,7 @@
         <AssociationConnector Association="RMSModel.FK_CompanyId" />
         <AssociationConnector Association="RMSModel.FK_compId" />
         <AssociationConnector Association="RMSModel.FK_purchaseId" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseDetail" Width="1.5" PointX="5.25" PointY="16.5" />
+        <EntityTypeShape EntityType="RMSModel.PurchaseDetail" Width="1.5" PointX="12.75" PointY="16.25" />
         <AssociationConnector Association="RMSModel.FK_ProductId" />
         <AssociationConnector Association="RMSModel.FK_PurchaseBillId" />
         <AssociationConnector Association="RMSModel.FK_price_purchase" />

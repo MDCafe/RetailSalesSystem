@@ -394,7 +394,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     if (discountAmount != 0)
                     {
                         purchaseDetailExtn.Amount = discountAmount;
-                        purchaseDetailExtn.Discount = discountAmount;
+                        purchaseDetailExtn.Discount = amount - discountAmount;
                         if (purchaseDetailExtn.Qty.HasValue)
                         {
                             purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
@@ -488,7 +488,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         Price = item.CostPrice,
                         SellingPrice = item.SellingPrice.Value
                     };
-                    _rmsEntities.PriceDetails.Add(priceDetailItem);
+                    _rmsEntities.PriceDetails.Add(priceDetailItem); 
                 }
 
                 var stock = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
@@ -514,17 +514,22 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 else
                 {
                     //Add stock for new price
-                    _rmsEntities.Stocks.Add(new Stock()
+                    var newStock = new Stock()
                     {
                         //PriceId = priceDetailItem.PriceId,
                         ExpiryDate = item.ExpiryDate.Value,
                         Quantity = qty.Value,
                         ProductId = item.ProductId
-                    });
+                    };
+
+                    _rmsEntities.Stocks.Add(newStock);
+
+                    newStock.PriceDetail = priceDetailItem;
                 }
 
                 purchaseDetail.PurchasedQty = qty;
                 purchaseDetail.PriceId = priceDetailItem.PriceId;
+                purchaseDetail.PriceDetail = priceDetailItem;
                 purchase.PurchaseDetails.Add(purchaseDetail);
             }
 
@@ -764,6 +769,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                 _purchaseDetailsList.Add(purchaseDetailExtn);
                 SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
+                purchaseDetailExtn.PurchasePrice = item.ActualPrice;
+                purchaseDetailExtn.DiscountAmount = item.Discount.Value;
 
                 purchaseDetailExtn.FreeIssue = freeIssue != null ? freeIssue.FreeQty : null;
 
