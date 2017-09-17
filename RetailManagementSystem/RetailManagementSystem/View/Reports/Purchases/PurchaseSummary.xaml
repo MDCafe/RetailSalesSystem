@@ -21,7 +21,7 @@
             <ColumnDefinition Width="207*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Bill No" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
-        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
+        <TextBox Name="txtBillNo" Text="{Binding RunningBillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
 
         <Label Content="From" Grid.Column="0" Grid.Row="1" Margin="5"/>
         <DatePicker x:Name="FromSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 

@@ -28,7 +28,9 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>\\GOKU-PC\Deployments\</InstallUrl>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ProductName>Retail Management System</ProductName>
+    <PublisherName>Gokumarasu Moorthy</PublisherName>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -418,15 +420,19 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
-    <None Include="View\Reports\Purchases\PurchaseDetails.rdl">
+    <Resource Include="Images\Report.gif" />
+    <Content Include="View\Reports\Purchases\PurchaseAllDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <AdditionalFiles Include="View\Reports\Purchases\PurchaseDetails.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <None Include="View\Reports\Purchases\PurchasesSummary.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="View\Reports\Sales\SalesSummary.rdl">
+    <Content Include="View\Reports\Sales\SalesSummary.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

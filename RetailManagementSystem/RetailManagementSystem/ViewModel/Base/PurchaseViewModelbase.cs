@@ -6,7 +6,7 @@ namespace RetailManagementSystem.ViewModel.Base
 {
     class PurchaseViewModelbase : CommonBusinessViewModel
     {
-        protected int _categoryId;        
+             
         protected bool _showRestrictedCompanies;
 
         public PurchaseViewModelbase(bool showRestrictedCompanies)

@@ -2,6 +2,6 @@
 {
     internal interface INotifier
     {
-        void Notify(int runningNo);
+        void Notify(int runningNo,int category);
     }    
 }

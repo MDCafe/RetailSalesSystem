@@ -20,6 +20,7 @@ namespace RetailManagementSystem.ViewModel.Base
         protected decimal? _totalDiscountAmount;
         protected decimal _amountPaid = 0.0M;
         protected bool _discountEnabled = true, _discountPercentEnabled = true, _isEditMode;
+        protected int _categoryId;
 
         System.Windows.Visibility _isVisible = System.Windows.Visibility.Collapsed;
 
@@ -149,8 +150,9 @@ namespace RetailManagementSystem.ViewModel.Base
 
         }
        
-        void INotifier.Notify(int runningNo)
+        void INotifier.Notify(int runningNo,int categoryId)
         {
+            if (categoryId != _categoryId) return;
             RunningBillNo = runningNo;
         }
 

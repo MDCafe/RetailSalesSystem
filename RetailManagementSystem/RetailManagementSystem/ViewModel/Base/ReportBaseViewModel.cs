@@ -12,15 +12,27 @@ namespace RetailManagementSystem.ViewModel.Base
     class ReportBaseViewModel :  DocumentViewModel
     {
         protected int _categoryId;
-        protected bool _showRestrictedCustomer;
+        protected bool _showRestrictedPeople;
 
-        public ReportBaseViewModel(bool showRestrictedCustomer)
+        public ReportBaseViewModel(bool isSupplier, bool showRestrictedPeople)
         {
-            _showRestrictedCustomer = showRestrictedCustomer;
-            if (_showRestrictedCustomer)
-                _categoryId = Constants.CUSTOMERS_OTHERS;
+            _showRestrictedPeople = showRestrictedPeople;
+            if (!isSupplier)
+            {
+                if (_showRestrictedPeople)
+                    _categoryId = Constants.CUSTOMERS_OTHERS;
+                else
+                    _categoryId = Constants.CUSTOMERS_HOTEL;
+
+                return;
+            }
+
+            if (_showRestrictedPeople)
+                _categoryId = Constants.COMPANIES_OTHERS;
             else
-                _categoryId = Constants.CUSTOMERS_HOTEL;
+                _categoryId = Constants.COMPANIES_MAIN;
+
+
         }
 
         #region CloseCommand

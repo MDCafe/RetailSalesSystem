@@ -43,14 +43,16 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             }
         }
 
-        public PurchaseSummaryViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers,"Purchase Summary")
+        public int? RunningBillNo { get; set; }
+
+        public PurchaseSummaryViewModel(bool showRestrictedPeople) : base(true, showRestrictedPeople, "Purchase Summary")
         {
             FromPurchaseDate = DateTime.Now;
             ToPurchaseDate = DateTime.Now;
 
-            _showRestrictedCustomers = showRestrictedCustomers;
+            _showRestrictedCustomers = showRestrictedPeople;
 
-            _reportPath = @"View\Reports\Purchases\PurchasesSummary.rdl";
+            _reportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
 
         }
 
@@ -71,7 +73,6 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
         private void OnPrint(Window window)
         {
-
             _rptDataSource[0] = new ReportDataSource();
             _rptDataSource[0].Name = "DataSet1";
 
@@ -84,13 +85,13 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    var fromSqlParam = new MySqlParameter("FromPurchaseDate", MySqlDbType.Date);
-                    fromSqlParam.Value = FromPurchaseDate.ToString("yyyy-MM-dd");
-                    cmd.Parameters.Add(fromSqlParam);
+                    var runningBillNoSqlParam = new MySqlParameter("runningBillNo", MySqlDbType.Int32);
+                    runningBillNoSqlParam.Value = RunningBillNo;
+                    cmd.Parameters.Add(runningBillNoSqlParam);
 
-                    var toSqlParam = new MySqlParameter("ToPurchaseDate", MySqlDbType.Date);
-                    toSqlParam.Value = ToPurchaseDate.ToString("yyyy-MM-dd");
-                    cmd.Parameters.Add(toSqlParam);
+                    var categorySqlParam = new MySqlParameter("category", MySqlDbType.Int32);
+                    categorySqlParam.Value = _categoryId;
+                    cmd.Parameters.Add(categorySqlParam);
 
                     DataTable dt = new DataTable();
                     using (MySqlDataAdapter adpt = new MySqlDataAdapter(cmd))
@@ -126,6 +127,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
         {
             ToPurchaseDate = DateTime.Now;
             FromPurchaseDate = DateTime.Now;
+            RunningBillNo = null;
         }
         #endregion
     }

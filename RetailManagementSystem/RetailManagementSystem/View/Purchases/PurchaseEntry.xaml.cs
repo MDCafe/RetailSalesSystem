@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Controls;
-using RetailManagementSystem.ViewModel.Extensions;
-using RetailManagementSystem.ViewModel.Sales;
-using System.Windows;
+﻿using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.Model;
 
@@ -33,7 +28,12 @@ namespace RetailManagementSystem.View.Purchases
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
+
             _purchaseEntryViewModel.SetProductDetails(productPrice,PurchaseDataGrid.SelectedIndex);
+
+            custComboBoxCol.comboBox.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
+            custComboBoxCol.comboBox.SelectedIndex = -1;
+            custComboBoxCol.ClearSelection();
         }
     }   
 }

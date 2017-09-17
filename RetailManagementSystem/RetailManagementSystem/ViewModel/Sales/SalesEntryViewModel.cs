@@ -45,22 +45,18 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _salesBillPrint = new SalesBillPrint();
 
-
-            //base. _showAllCustomers = salesParams.ShowAllCustomers;
-
-            //if (_showAllCustomers)
-            //    _categoryId = Constants.CUSTOMERS_OTHERS;
-            //else
-            //{
-            //    _categoryId = Constants.CUSTOMERS_HOTEL;
-            //}            
-
             _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Create();
 
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
 
             _salesDetailsList.CollectionChanged += OnSalesDetailsListCollectionChanged;
-                       
+
+            Title = "Sales Entry";
+
+            if (_salesParams.ShowAllCustomers)
+            {
+                Title = "Sales Entry*";
+            }
 
             if (salesParams != null)
             {
@@ -68,7 +64,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if(salesParams.IsTempDataWindow)
                 {
                     AutoSaveData();
-                    Title = "Sales Entry";
+                    
+                    //Title = "Sales Entry";
                     RMSEntitiesHelper.Instance.AddNotifier(this);
                     RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
                     return;
@@ -91,7 +88,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //return;
             }
             
-            Title = "Sales Entry";
+            //Title = "Sales Entry";
             RMSEntitiesHelper.Instance.AddNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             SaveDataTemp();            

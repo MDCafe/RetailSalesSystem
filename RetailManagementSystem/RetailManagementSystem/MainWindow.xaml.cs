@@ -1,6 +1,7 @@
 ﻿using RetailManagementSystem.Utilities;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Sales;
 using System;
 using System.Windows;
@@ -17,13 +18,24 @@ namespace RetailManagementSystem
         {
             InitializeComponent();
             this.DataContext = Workspace.This;
-            AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
-            
+            AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);  
         }
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
             if (!((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))) return;
+
+            if (Keyboard.IsKeyDown(Key.P) && Keyboard.IsKeyDown(Key.R))
+            {
+                Workspace.This.OpenDailyPurchaseReportCommand.Execute(true);
+                return;
+            }
+
+            if (Keyboard.IsKeyDown(Key.S) && Keyboard.IsKeyDown(Key.R))
+            {
+                Workspace.This.OpenReturnSalesCommand.Execute(true);
+                return;
+            }
 
             switch (e.Key)
             {
@@ -38,7 +50,6 @@ namespace RetailManagementSystem
                 //Sales Amend
                 case Key.A:
                 {
-
                     try
                     {
                         AmendSales amendSales = new AmendSales(true);
@@ -54,13 +65,15 @@ namespace RetailManagementSystem
                     }
                     return;
                 }
+                
+
                 //Sales Return
-                case Key.R:
+                case Key.P:
                     {
-                        Workspace.This.OpenReturnSalesCommand.Execute(true);
+                        var purchaseParams = new PurchaseParams() { ShowAllCompanies = true};
+                        Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
                         return;
                     }
-
             }                                 
         }        
     }

@@ -404,7 +404,7 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        #region OpenDailySalesReportCommand
+        #region OpenDailyPurchaseReportCommand
         RelayCommand<object> _openDailyPurchaseReportCommand = null;
         public ICommand OpenDailyPurchaseReportCommand
         {
@@ -418,7 +418,6 @@ namespace RetailManagementSystem.ViewModel
                 return _openDailyPurchaseReportCommand;
             }
         }
-
         private void OnOpenDailyPurchaseReportCommand(object showAll)
         {
             try
@@ -427,7 +426,7 @@ namespace RetailManagementSystem.ViewModel
                 if (showAll != null)
                     showRestrictedCustomers = bool.Parse(showAll.ToString());
 
-                var PurchaseSummary = new PurchaseSummary(false);
+                var PurchaseSummary = new PurchaseSummary(showRestrictedCustomers);
                 PurchaseSummary.ShowDialog();
 
             }

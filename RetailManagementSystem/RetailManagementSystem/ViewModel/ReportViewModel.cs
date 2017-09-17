@@ -15,8 +15,8 @@ namespace RetailManagementSystem.ViewModel
         protected ReportDataSource[] _rptDataSource;
         protected string _reportPath;
 
-        public ReportViewModel(bool showResctricteCustomers, string title) 
-            : base(showResctricteCustomers)
+        public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title) 
+            : base(isSupplier,showResctricteCustomers)
         {
             this.Title = title;
             _rptDataSource = new ReportDataSource[2];
