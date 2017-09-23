@@ -6,6 +6,7 @@ using RetailManagementSystem.ViewModel.Sales;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Linq;
 
 namespace RetailManagementSystem
 {
@@ -18,8 +19,11 @@ namespace RetailManagementSystem
         {
             InitializeComponent();
             this.DataContext = Workspace.This;
-            AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);  
-        }
+            AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
+
+            this.Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
+                "Retail Management System";
+                }
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {

@@ -13,7 +13,7 @@ namespace RetailManagementSystem.ViewModel
     {
         private ReportViewer _rptViewer;
         protected ReportDataSource[] _rptDataSource;
-        protected string _reportPath;
+        private string _reportPath;
 
         public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title) 
             : base(isSupplier,showResctricteCustomers)
@@ -45,6 +45,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
+        
 
         public void AddApplicationDetailsToReportDataSource()
         {
@@ -82,6 +83,19 @@ namespace RetailManagementSystem.ViewModel
                 }
 
                 return _closeWindowCommand;
+            }
+        }
+
+        public string ReportPath
+        {
+            get
+            {
+                return _reportPath;
+            }
+
+            set
+            {
+                _reportPath = value;
             }
         }
 

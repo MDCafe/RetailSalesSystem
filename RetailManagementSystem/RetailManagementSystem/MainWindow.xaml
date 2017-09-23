@@ -4,7 +4,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:s="clr-namespace:System;assembly=mscorlib"        
-        Title="Retail Management System"  WindowStartupLocation="CenterScreen" WindowState="Maximized"
+         WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
         xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane" 
         xmlns:report="clr-namespace:RetailManagementSystem.View"

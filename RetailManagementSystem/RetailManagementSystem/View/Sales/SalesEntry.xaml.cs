@@ -65,6 +65,7 @@ namespace RetailManagementSystem.View.Sales
             custComboBoxCol.comboBox.SelectedIndex = -1;
             custComboBoxCol.ClearSelection();
             
+            
         }
 
         private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)

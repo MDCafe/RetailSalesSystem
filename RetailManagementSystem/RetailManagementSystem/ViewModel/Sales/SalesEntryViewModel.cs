@@ -11,6 +11,7 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
+using System.Windows;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -361,12 +362,30 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
                     _salesDetailsList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
-            //return IsDirty;
+            // 
         }
+
+        //private bool IsValid(DependencyObject obj)
+        //{
+        //    The dependency object is valid if it has no errors and all
+        //    of its children (that are dependency objects) are error-free.
+        //    return !Validation.QuantityValidationRule.GetHasError(obj) &&
+        //    LogicalTreeHelper.GetChildren(obj)
+        //    .OfType<DependencyObject>()
+        //    .All(IsValid);
+        //}
 
         private void OnSave(object parameter)
         {
             Monitor.Enter(rootLock);
+
+            //var result1 = Utility.IsValid(parameter as DependencyObject);
+
+            if(_salesDetailsList.Any(s=> s.Qty > s.AvailableStock))
+            {
+                Utility.ShowErrorBox("Quantity can't be more than the available stock");
+                return;
+            }
 
             //check if complete amount is paid, else mark it in PaymentDetails table against the customer
             var outstandingBalance = _totalAmount.Value - AmountPaid;

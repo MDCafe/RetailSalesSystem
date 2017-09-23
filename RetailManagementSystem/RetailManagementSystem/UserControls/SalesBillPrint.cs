@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using RetailManagementSystem.Model;
 using System.Text;
 using log4net;
+using System.Configuration;
 
 namespace RetailManagementSystem.UserControls
 {
@@ -34,13 +35,25 @@ namespace RetailManagementSystem.UserControls
             //pd.Document.DefaultPageSettings.PaperSize = psize;
             _pdoc.PrintPage += new PrintPageEventHandler(PrintPage);
 
-            string defaultPrinterName = ps.PrinterName; // Code to get default printer
+    
+            var printFileName = ConfigurationManager.AppSettings["PrintFileName"];
+            var printerName = ConfigurationManager.AppSettings["BillPrinter"];
+            if (!string.IsNullOrWhiteSpace(printFileName))
+            {
+                pd.PrinterSettings.PrintToFile = true;
+                pd.PrinterSettings.PrintFileName = printFileName;
+            }
+            else if(!string.IsNullOrWhiteSpace(printerName))
+            {
+                //string defaultPrinterName = ps.PrinterName; // Code to get default printer
 
-            ps.PrinterName = defaultPrinterName;//Code to set default printer name
-            pd.PrinterSettings.PrinterName = defaultPrinterName;//Code to set default printer name 
-
-            pd.PrinterSettings.PrintToFile = true;
-            pd.PrinterSettings.PrintFileName = @"E:\PosPrint.pdf";
+                ps.PrinterName = printerName;
+                pd.PrinterSettings.PrinterName = printerName;
+            }
+            else
+            {
+                Utilities.Utility.ShowErrorBox("Billing printer name is not configured");
+            }
 
             RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.Count();
             _appDetail = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault();

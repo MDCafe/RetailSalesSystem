@@ -108,7 +108,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnPrint()
         {
-            
+            ReportViewModel rptVM = new ReportViewModel(false, _showRestrictedCustomer, "Sales Bill");
+            rptVM.ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
         }
         #endregion
 
