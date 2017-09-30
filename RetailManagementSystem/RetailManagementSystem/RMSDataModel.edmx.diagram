@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="90">
+      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="RMSModel.MeasuringUnit" Width="1.5" PointX="0.75" PointY="17.625" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.PriceDetail" Width="1.5" PointX="5.25" PointY="8.25" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSModel.Product" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
@@ -16,11 +16,8 @@
         <EntityTypeShape EntityType="RMSModel.Role" Width="1.5" PointX="0.75" PointY="7.25" />
         <AssociationConnector Association="RMSModel.fk_role" />
         <EntityTypeShape EntityType="RMSModel.PaymentDetail" Width="1.5" PointX="10.5" PointY="5.625" />
-        <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="3" PointY="6.25" />
-        <AssociationConnector Association="RMSModel.FK_customerId" />
         <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
-        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
         <AssociationConnector Association="RMSModel.FK_pay_bill" />
         <EntityTypeShape EntityType="RMSModel.SaleDetail" Width="1.5" PointX="10.5" PointY="16.625" />
         <AssociationConnector Association="RMSModel.FK_price_id" />
@@ -51,6 +48,9 @@
         <AssociationConnector Association="RMSModel.FK_ProductFree" />
         <AssociationConnector Association="RMSModel.FK_pdt_bill" />
         <AssociationConnector Association="RMSModel.FK_priceId" />
+        <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="0.75" PointY="15.625" />
+        <AssociationConnector Association="RMSModel.FK_customerId" />
+        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

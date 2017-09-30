@@ -4,6 +4,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System.Configuration;
 using System.Data;
+using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,6 +15,7 @@ namespace RetailManagementSystem.ViewModel
         private ReportViewer _rptViewer;
         protected ReportDataSource[] _rptDataSource;
         private string _reportPath;
+        private PageSettings _pageSettings;
 
         public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title) 
             : base(isSupplier,showResctricteCustomers)
@@ -33,6 +35,20 @@ namespace RetailManagementSystem.ViewModel
             {
                 _rptViewer = value;
 
+                var pageSettings = _pageSettings;
+
+                if(_pageSettings == null)
+                {
+                    //default page settings
+                    PageSettings ps = new PageSettings();
+                    ps.PaperSize = new PaperSize("A4", 827, 1170);
+                    ps.Margins = new Margins(50, 0, 50, 0);
+                    ps.PaperSize.RawKind = (int)PaperKind.A4;
+                    pageSettings = ps;
+                }
+
+                _rptViewer.SetPageSettings(pageSettings);
+
                 AddApplicationDetailsToReportDataSource();
 
                 foreach (var dataSource in _rptDataSource)
@@ -42,6 +58,8 @@ namespace RetailManagementSystem.ViewModel
                 _rptViewer.LocalReport.ReportPath = _reportPath;
 
                 _rptViewer.RefreshReport();
+
+                
             }
         }
 
@@ -96,6 +114,19 @@ namespace RetailManagementSystem.ViewModel
             set
             {
                 _reportPath = value;
+            }
+        }
+
+        public PageSettings PageSettings
+        {
+            get
+            {
+                return _pageSettings;
+            }
+
+            set
+            {
+                _pageSettings = value;
             }
         }
 

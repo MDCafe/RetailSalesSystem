@@ -25,13 +25,15 @@ namespace RetailManagementSystem
         public string Description { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
-        public Nullable<int> MobileNo { get; set; }
-        public Nullable<int> LanNo { get; set; }
+        public string MobileNo { get; set; }
+        public string LanNo { get; set; }
+        public string FaxNo { get; set; }
         public string Email { get; set; }
         public Nullable<int> CustomerTypeId { get; set; }
         public Nullable<decimal> BalanceDue { get; set; }
         public Nullable<decimal> CreditLimit { get; set; }
         public int CreditDays { get; set; }
+        public string ContactPerson { get; set; }
         public bool IsExistingCustomer { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }

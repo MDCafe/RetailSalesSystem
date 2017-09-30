@@ -4,7 +4,8 @@ BEGIN
 
 declare billidValue int;
 
-select GetBillIdForCompanies(runningBillNo,category) into billidValue;
+select billId into billidValue from purchases p where p.RunningBillNo = runningBillNo and
+p.CompanyId in (select Id from companies c where c.CategoryTypeId = Category);
 
 select p.addedon,p.BillId,p.RunningBillNo,
 (select name from Companies where id = p.CompanyId) Supplier,
@@ -12,7 +13,7 @@ InvoiceNo,p.Discount,SpecialDiscount,TotalBillAmount,
 IsCancelled,
 (Select name from Products where id = ProductId) Product,
 (select Price from PriceDetails where PriceId = pd.PriceId) Price,
-(select freeqty from PurchaseFreeDetails pfd where pfd.billid = p.BillId) FreeIssue,
+(select freeqty from PurchaseFreeDetails pfd where pfd.billid = p.BillId and pfd.ProductId = pd.ProductId) FreeIssue,
 pd.PurchasedQty,
 pd.ActualPrice,
 pd.Discount ItemDiscount,

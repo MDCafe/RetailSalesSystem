@@ -7,6 +7,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
+using RetailManagementSystem.ViewModel.Reports.Purhcases;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
@@ -561,11 +562,20 @@ namespace RetailManagementSystem.ViewModel.Purchases
             _rmsEntities.Purchases.Add(purchase);
             _rmsEntities.SaveChanges();
 
+            if (parameter.ToString() == "PrintSave")
+            {
+                //Call the print on print & save
+                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+                psummVM.RunningBillNo = _runningBillNo;
+                psummVM.PrintCommand.Execute(null);
+            }
 
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-            RunningBillNo = _runningBillNo;            
-
+            RunningBillNo = _runningBillNo;
+            
             Clear();
+
+            
         }
 
         private void SaveOnEdit(object parameter)
@@ -686,7 +696,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             purchaseDetail.Discount = purchaseDetailExtn.Discount;
             purchaseDetail.PriceId = purchaseDetailExtn.PriceId;
             purchaseDetail.ProductId = purchaseDetailExtn.ProductId;
-            purchaseDetail.PurchasedQty = purchaseDetailExtn.Qty;
+            purchaseDetail.PurchasedQty = purchaseDetailExtn.Qty + purchaseDetailExtn.FreeIssue;
             purchaseDetail.ActualPrice = purchaseDetailExtn.PurchasePrice.Value;
             purchaseDetail.BillId = _editBillNo.Value;
             purchaseDetail.Tax = purchaseDetailExtn.Tax;
@@ -752,19 +762,22 @@ namespace RetailManagementSystem.ViewModel.Purchases
             foreach (var item  in purchaseDetailsForBill.ToList())
             {
                 var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
-                var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId).FirstOrDefault();
+                var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId
+                                                                      && p.ProductId == item.ProductId).FirstOrDefault();
+                var freeIssueQty = freeIssue != null ? freeIssue.FreeQty : 0;
+
                 var purchaseDetailExtn = new PurchaseDetailExtn()
                 {
                     Discount = item.Discount,
                     PriceId = item.PriceId.Value,
                     ProductId = item.ProductId.Value,
-                    Qty = item.PurchasedQty,
-                    OriginalQty = item.PurchasedQty,
+                    Qty = item.PurchasedQty - freeIssueQty,
+                    OriginalQty = item.PurchasedQty - freeIssueQty,
                     //SellingPrice = item.SellingPrice,
                     BillId = item.BillId,
                     CostPrice = productPrice.Price,
                     AvailableStock = productPrice.Quantity,
-                    Amount = item.ActualPrice * item.PurchasedQty
+                    Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty)
                 };
 
                 _purchaseDetailsList.Add(purchaseDetailExtn);
@@ -772,9 +785,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.PurchasePrice = item.ActualPrice;
                 purchaseDetailExtn.DiscountAmount = item.Discount.Value;
 
-                purchaseDetailExtn.FreeIssue = freeIssue != null ? freeIssue.FreeQty : null;
+                purchaseDetailExtn.FreeIssue = freeIssueQty;
 
-                tempTotalAmount += item.ActualPrice * item.PurchasedQty.Value;
+                var itemAmount = item.ActualPrice * (item.PurchasedQty - freeIssueQty);
+                tempTotalAmount += itemAmount.Value;
             }
             TotalAmount = tempTotalAmount;
 

@@ -51,7 +51,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             
             _showRestrictedCustomers = showRestrictedCustomers;
 
-            _reportPath = @"View\Reports\Sales\SalesSummary.rdl";
+            ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
         }
 
         #region Print Command

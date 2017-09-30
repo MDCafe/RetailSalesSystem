@@ -104,7 +104,8 @@
         public IEnumerable<ProductPrice> GetProductPriceList()
         {
             string productsSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
-                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId'" +
+                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                  " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'" +
                                   " from Products p, PriceDetails pd, Stocks st " +
                                   "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                   " and st.Quantity != 0 " +

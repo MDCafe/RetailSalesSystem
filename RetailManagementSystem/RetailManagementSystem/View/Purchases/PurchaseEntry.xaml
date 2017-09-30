@@ -237,8 +237,8 @@
         </StackPanel>
         
         <StackPanel Grid.Row="7" Orientation="Horizontal"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
-            <Button x:Name="btnSaveAndPrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnSaveAndPrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5" CommandParameter="PrintSave"/>
+            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" CommandParameter="SaveOnly"/>
             <Button x:Name="btnCancel" Content="Cancel Purchase"  Width="120" Command="{Binding CancelPurchaseCommand}" Margin="5" Visibility="{Binding IsVisible}"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"  IsEnabled="{Binding IsEditMode}"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>

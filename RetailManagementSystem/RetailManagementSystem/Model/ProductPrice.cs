@@ -8,5 +8,6 @@
         public decimal SellingPrice { get; set; }
         public decimal Quantity { get; set; }
         public int PriceId { get; set; }
+        public string ExpiryDate { get; set; }
     }
 }

@@ -144,6 +144,7 @@
                     <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 </BHCustCtrl:CustDataGridComboBoxColumn>
 
                 <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">

@@ -6,6 +6,7 @@ using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System.Collections.Generic;
 using RetailManagementSystem.ViewModel.Purchases;
+using RetailManagementSystem.ViewModel.Reports.Purhcases;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -93,23 +94,27 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Print Command
-        RelayCommand<object> _printCommand = null;
+        RelayCommand<Window> _printCommand = null;
         public ICommand PrintCommand
         {
             get
             {
                 if (_printCommand == null)
                 {
-                    _printCommand = new RelayCommand<object>((p) => OnPrint(), (p) => CanExecuteMethod(p));
+                    _printCommand = new RelayCommand<Window>((w) => OnPrint(w), (w) => CanExecuteMethod(w));
                 }
 
                 return _printCommand;
             }
         }
 
-        private void OnPrint()
+        private void OnPrint(Window window)
         {
-            
+            //Call the print on print & save
+            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+            psummVM.RunningBillNo = BillNo;
+            psummVM.PrintCommand.Execute(null);
+            _closeWindowCommand.Execute(window);
         }
         #endregion
 

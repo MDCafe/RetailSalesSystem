@@ -175,7 +175,7 @@ namespace RetailManagementSystem.UserControls
 
                 itemDiscountAmount += item.Discount.HasValue ? item.Discount.Value : 0.0M;
             }
-            Offset += -15;
+            Offset += -10;
 
             //********************************************End of Items*************************************
             drawFormat.Alignment = StringAlignment.Far;
@@ -226,12 +226,12 @@ namespace RetailManagementSystem.UserControls
 
             if(_billSales.PaymentMode == "1")
             {
-                e.Graphics.DrawString("Customer's Sign : ______________________", itemFont, solidBrush, startX, startY + Offset);
+                e.Graphics.DrawString("Customer's Sign : ______________________", itemFont, solidBrush, startX, startY + Offset + 10);
                 Offset = Offset + 20;
             }
 
             drawFormat.Alignment = StringAlignment.Center;
-            e.Graphics.DrawString("Thank You!", headerFont, solidBrush, headerStartX, startY + Offset,drawFormat);
+            e.Graphics.DrawString("Thank You!", headerFont, solidBrush, headerStartX, startY + Offset + 10, drawFormat);
 
             Offset = 0;
 

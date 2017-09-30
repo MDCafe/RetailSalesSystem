@@ -8,7 +8,7 @@ namespace RetailManagementSystem.ViewModel.Extensions
         decimal Calculate(decimal amount);
         void Clear();
         void SetValues(params decimal[] extensionValues);
-        decimal GetPropertyValue(string propertyName);
+        decimal GetPropertyValue(string propertyName,out decimal? oldValue);
 
     }
 }

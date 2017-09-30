@@ -45,15 +45,14 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
         public int? RunningBillNo { get; set; }
 
-        public PurchaseSummaryViewModel(bool showRestrictedPeople) : base(true, showRestrictedPeople, "Purchase Summary")
+        public PurchaseSummaryViewModel(bool showRestrictedPeople) : base(true, showRestrictedPeople, "Purchase Detail Report")
         {
             FromPurchaseDate = DateTime.Now;
             ToPurchaseDate = DateTime.Now;
 
             _showRestrictedCustomers = showRestrictedPeople;
 
-            _reportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
-
+             ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
         }
 
         #region Print Command

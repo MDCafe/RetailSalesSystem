@@ -1,22 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace RetailManagementSystem.ViewModel.Extensions
 {
     public class SalesExtensionViewModel : IExtensions
     {
-        decimal _transportCharges;
-        public decimal TransportCharges
+        decimal? _transportCharges;
+        decimal? _transportChargesOldValue;
+
+        public decimal? TransportCharges
         {
             get { return _transportCharges; }
             set
             {
+                _transportChargesOldValue = _transportCharges;
                 _transportCharges = value;
                 OnPropertyChanged("TransportCharges");
+            }
+        }
+
+        public decimal? TransportChargesOldValue
+        {
+            get { return _transportChargesOldValue; }
+            set
+            {
+                _transportChargesOldValue = value;
             }
         }
 
@@ -24,7 +31,8 @@ namespace RetailManagementSystem.ViewModel.Extensions
 
         public decimal Calculate(decimal value)
         {
-            return value +=  TransportCharges;                        
+            var totalAmount = value + (TransportCharges.HasValue ? TransportCharges.Value : 0);
+            return totalAmount;                        
         }
 
         public void Clear()
@@ -32,20 +40,26 @@ namespace RetailManagementSystem.ViewModel.Extensions
             TransportCharges = 0;
         }
 
-        public decimal GetPropertyValue(string propertyName)
+        public decimal GetPropertyValue(string propertyName, out decimal? oldValue)
         {
-            switch(propertyName)
+            oldValue = 0.0M;
+            switch (propertyName)
             {
                 case "TransportCharges":
-                    return TransportCharges;
+                    {
+                        oldValue = _transportChargesOldValue.HasValue ? _transportChargesOldValue.Value : 0;
+                        return TransportCharges.HasValue ? TransportCharges.Value : 0;
+                    }
             }
             return 0;
         }
 
         public void SetValues(params decimal[] extensionValues)
         {
-            if(extensionValues !=null && extensionValues.Length > 1)
-            TransportCharges = extensionValues[0];
+            if (extensionValues != null && extensionValues.Length > 0)
+            {
+                TransportCharges = extensionValues[0];
+            }
         }
 
         public virtual void OnPropertyChanged(string propertyName)

@@ -11,7 +11,6 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
-using System.Windows;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -149,6 +148,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                 tempTotal -= discountValue;
             }
 
+            if (_extensions != null)
+            {
+                decimal? oldTransportValue = 0.0M;
+                var transportCharges = _extensions.GetPropertyValue("TransportCharges", out oldTransportValue);
+                tempTotal = tempTotal + (transportCharges);
+            }
+
             _totalAmount = tempTotal;
             //TotalAmountDisplay = _totalAmount.Value;
             RaisePropertyChanged("TotalAmount");
@@ -193,7 +199,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 {
                     if (e.PropertyName == "TransportCharges")
                     {
-                        TotalAmount = _extensions.Calculate(_totalAmount.Value);
+                        //TotalAmount = _extensions.Calculate(_totalAmount.Value);
+                        CalculateTotalAmount();
                     }
                 };
             }
@@ -205,7 +212,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         public Customer SelectedCustomer
         {
-            get { return _selectedCustomer; }
+            get {
+                //if(_selectedCustomer == null)
+                //{
+                //    _selectedCustomer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault();
+                //    RaisePropertyChanged("SelectedCustomer");
+                 //   return _selectedCustomer;
+                //}
+                return _selectedCustomer;
+            }
             set
             {
                 _selectedCustomer = value;
@@ -244,9 +259,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         #endregion
-
        
-
         #region CloseCommand
         RelayCommand<object> _closeCommand = null;
         override public ICommand CloseCommand
@@ -450,7 +463,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _billSales.TotalAmount = _totalAmount;
             _billSales.Discount = GetDiscountValue();
-            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
+            decimal? oldValue;
+            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
 
            
             RMSEntitiesHelper.Instance.RMSEntities.Sales.Add(_billSales);
@@ -607,7 +621,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             _totalAmount = _extensions.Calculate(_totalAmount.Value);
 
             _billSales.TotalAmount = _totalAmount;
-            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges");
+            decimal? oldvalue;
+            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldvalue);
 
             RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
             Clear();
@@ -665,6 +680,10 @@ namespace RetailManagementSystem.ViewModel.Sales
             TranscationDate = _billSales.AddedOn.Value;            
             SelectedPaymentId = char.Parse(_billSales.PaymentMode);
             OrderNo = _billSales.CustomerOrderNo;
+            TotalDiscountAmount = _billSales.Discount;
+            //var transport = _billSales.TransportCharges;
+            //_extensions.SetValues
+            
             var saleDetailsForBill = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);            
 
             var tempTotalAmount = 0.0M;
@@ -794,7 +813,6 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             if (SaleDetailExtn != null)
             {
-                //selectedRowSaleDetail.Qty = productPrice.Quantity;
                 SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
                 SaleDetailExtn.CostPrice = productPrice.Price;
                 SaleDetailExtn.PriceId = productPrice.PriceId;
@@ -826,6 +844,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                     SaleDetailExtn.Amount = amount;
                     SaleDetailExtn.Discount = 0;
                 };
+
+                SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
             }
         }
 

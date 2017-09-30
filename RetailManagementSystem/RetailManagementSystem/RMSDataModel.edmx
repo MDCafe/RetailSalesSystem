@@ -46,8 +46,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Address" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
           <Property Name="MobileNo" Type="int" />
           <Property Name="LanNo" Type="int" />
           <Property Name="Email" Type="varchar" MaxLength="45" />
@@ -64,17 +65,19 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
           <Property Name="Description" Type="varchar" MaxLength="45" />
           <Property Name="Address" Type="varchar" MaxLength="500" />
-          <Property Name="City" Type="varchar" MaxLength="45" />
-          <Property Name="MobileNo" Type="int" />
-          <Property Name="LanNo" Type="int" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
+          <Property Name="MobileNo" Type="varchar" MaxLength="15" />
+          <Property Name="LanNo" Type="varchar" MaxLength="15" />
+          <Property Name="FaxNo" Type="varchar" MaxLength="15" />
           <Property Name="Email" Type="varchar" MaxLength="45" />
           <Property Name="CustomerTypeId" Type="mediumint" />
           <Property Name="BalanceDue" Type="decimal" Precision="10" Scale="0" />
           <Property Name="CreditLimit" Type="decimal" Precision="10" Scale="0" />
           <Property Name="CreditDays" Type="int" Nullable="false" />
+          <Property Name="ContactPerson" Type="varchar" MaxLength="100" />
           <Property Name="IsExistingCustomer" Type="bool" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -122,7 +125,7 @@
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="45" />
-          <Property Name="Name" Type="varchar" MaxLength="45" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
           <Property Name="Description" Type="varchar" MaxLength="100" />
           <Property Name="UnitOfMeasure" Type="mediumint" />
           <Property Name="CategoryId" Type="mediumint" />
@@ -854,17 +857,8 @@
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="PaymentDetails" EntityType="RMSModel.PaymentDetail" />
-          <EntitySet Name="Customers" EntityType="RMSModel.Customer" />
-          <AssociationSet Name="FK_customerId" Association="RMSModel.FK_customerId">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
           <EntitySet Name="SaleTemps" EntityType="RMSModel.SaleTemp" />
           <EntitySet Name="Sales" EntityType="RMSModel.Sale" />
-          <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Sale" EntitySet="Sales" />
-          </AssociationSet>
           <AssociationSet Name="FK_pay_bill" Association="RMSModel.FK_pay_bill">
             <End Role="Sale" EntitySet="Sales" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
@@ -952,6 +946,15 @@
             <End Role="PriceDetail" EntitySet="PriceDetails" />
             <End Role="Stock" EntitySet="Stocks" />
           </AssociationSet>
+          <EntitySet Name="Customers" EntityType="RMSModel.Customer" />
+          <AssociationSet Name="FK_customerId" Association="RMSModel.FK_customerId">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Sale" EntitySet="Sales" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
           <Key>
@@ -1009,44 +1012,9 @@
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_customerId" FromRole="PaymentDetail" ToRole="Customer" />
           <NavigationProperty Name="Sale" Relationship="RMSModel.FK_pay_bill" FromRole="PaymentDetail" ToRole="Sale" />
+          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_customerId" FromRole="PaymentDetail" ToRole="Customer" />
         </EntityType>
-        <EntityType Name="Customer">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="City" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="MobileNo" Type="Int32" />
-          <Property Name="LanNo" Type="Int32" />
-          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="CustomerTypeId" Type="Int32" />
-          <Property Name="BalanceDue" Type="Decimal" />
-          <Property Name="CreditLimit" Type="Decimal" />
-          <Property Name="CreditDays" Type="Int32" Nullable="false" />
-          <Property Name="IsExistingCustomer" Type="Boolean" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_customerId" FromRole="Customer" ToRole="PaymentDetail" />
-          <NavigationProperty Name="Sales" Relationship="RMSModel.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
-        </EntityType>
-        <Association Name="FK_customerId">
-          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentDetail">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="SaleTemp">
           <Key>
             <PropertyRef Name="Id" />
@@ -1084,22 +1052,10 @@
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
           <Property Name="PaymentMode" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
           <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_pay_bill" FromRole="Sale" ToRole="PaymentDetail" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
+          <NavigationProperty Name="Customer" Relationship="RMSModel.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
         </EntityType>
-        <Association Name="FK_Sales_Cust">
-          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Sale">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_pay_bill">
           <End Type="RMSModel.Sale" Role="Sale" Multiplicity="1" />
           <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
@@ -1269,6 +1225,7 @@
           <NavigationProperty Name="Products" Relationship="RMSModel.FK_Company" FromRole="Company" ToRole="Product" />
           <NavigationProperty Name="Purchases" Relationship="RMSModel.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSModel.FK_compId" FromRole="Company" ToRole="PurchasePaymentDetail" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetail">
           <Key>
@@ -1521,6 +1478,55 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="LanNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FaxNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerTypeId" Type="Int32" />
+          <Property Name="BalanceDue" Type="Decimal" />
+          <Property Name="CreditLimit" Type="Decimal" />
+          <Property Name="CreditDays" Type="Int32" Nullable="false" />
+          <Property Name="ContactPerson" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsExistingCustomer" Type="Boolean" Nullable="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSModel.FK_customerId" FromRole="Customer" ToRole="PaymentDetail" />
+          <NavigationProperty Name="Sales" Relationship="RMSModel.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_customerId">
+          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="RMSModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sales_Cust">
+          <End Type="RMSModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="RMSModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1608,28 +1614,6 @@
                 <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Customers">
-            <EntityTypeMapping TypeName="RMSModel.Customer">
-              <MappingFragment StoreEntitySet="Customers">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="IsExistingCustomer" ColumnName="IsExistingCustomer" />
-                <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
-                <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
-                <ScalarProperty Name="BalanceDue" ColumnName="BalanceDue" />
-                <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1744,6 +1728,7 @@
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="RMSModel.Company">
               <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -1844,6 +1829,30 @@
                 <ScalarProperty Name="FreeAmount" ColumnName="FreeAmount" />
                 <ScalarProperty Name="FreeQty" ColumnName="FreeQty" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="RMSModel.Customer">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="IsExistingCustomer" ColumnName="IsExistingCustomer" />
+                <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
+                <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
+                <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
+                <ScalarProperty Name="BalanceDue" ColumnName="BalanceDue" />
+                <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FaxNo" ColumnName="FaxNo" />
+                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
