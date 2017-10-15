@@ -15,10 +15,14 @@ namespace RetailManagementSystem.View.Sales
         public SalesEntry()
         {
             InitializeComponent();
-            this.Loaded += (send, evnt) =>
+            RoutedEventHandler handler = null;
+            handler = (object sender, RoutedEventArgs e) =>
             {
-                CboCustomers.SelectedIndex = 0;
+                if (_salesViewModel.IsEditMode == false)
+                    CboCustomers.SelectedIndex = 0;
+                Loaded -= handler;
             };
+            Loaded += handler;
 
             DataContextChanged += (sender, eventArgs) =>
             {
@@ -49,33 +53,33 @@ namespace RetailManagementSystem.View.Sales
                     //// selectedRow can be null due to virtualization
                     //if (selectedRow != null)
                     //{
-                        // there should always be a selected cell
-                        if (grid.SelectedCells.Count != 0)
+                    // there should always be a selected cell
+                    if (grid.SelectedCells.Count != 0)
+                    {
+                        // get the cell info
+                        Microsoft.Windows.Controls.DataGridCellInfo currentCell = grid.SelectedCells[0];
+
+                        // get the display index of the cell's column + 1 (for next column)
+                        int columnDisplayIndex = currentCell.Column.DisplayIndex;
+
+                        // if display index is valid
+                        if (columnDisplayIndex < grid.Columns.Count)
                         {
-                            // get the cell info
-                            Microsoft.Windows.Controls.DataGridCellInfo currentCell = grid.SelectedCells[0];
+                            // get the DataGridColumn instance from the display index
+                            Microsoft.Windows.Controls.DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
 
-                            // get the display index of the cell's column + 1 (for next column)
-                            int columnDisplayIndex = currentCell.Column.DisplayIndex;
+                            // now telling the grid, that we handled the key down event
+                            e.Handled = true;
 
-                            // if display index is valid
-                            if (columnDisplayIndex < grid.Columns.Count)
-                            {
-                                // get the DataGridColumn instance from the display index
-                                Microsoft.Windows.Controls.DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
+                            // setting the current cell (selected, focused)
+                            grid.CurrentCell = new Microsoft.Windows.Controls.DataGridCellInfo(grid.SelectedItem, nextColumn);
 
-                                // now telling the grid, that we handled the key down event
-                                e.Handled = true;
-
-                                // setting the current cell (selected, focused)
-                                grid.CurrentCell = new Microsoft.Windows.Controls.DataGridCellInfo(grid.SelectedItem, nextColumn);
-
-                                // tell the grid to initialize edit mode for the current cell
-                                //grid.BeginEdit();
-                            }
+                            // tell the grid to initialize edit mode for the current cell
+                            //grid.BeginEdit();
                         }
-                        //grid.BeginEdit();
-                        e.Handled = true;
+                    }
+                    //grid.BeginEdit();
+                    e.Handled = true;
                     //}
                 }
 
@@ -121,11 +125,13 @@ namespace RetailManagementSystem.View.Sales
         {
             var productPrice = selectedItem as ProductPrice;
             _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);
+            custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
+
             custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
             custComboBoxCol.comboBox.SelectedIndex = -1;
             custComboBoxCol.ClearSelection();
-            
-            
+            custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
+
         }
 
         private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)

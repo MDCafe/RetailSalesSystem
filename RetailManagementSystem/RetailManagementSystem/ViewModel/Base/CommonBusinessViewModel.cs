@@ -122,6 +122,11 @@ namespace RetailManagementSystem.ViewModel.Base
 
         public bool IsEditMode
         {
+            get { return _isEditMode; }
+        }
+
+        public bool NegateIsEditMode
+        {
             get { return !_isEditMode; }
         }
 

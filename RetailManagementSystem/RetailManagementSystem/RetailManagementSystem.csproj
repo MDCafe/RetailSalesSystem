@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -276,7 +276,8 @@
     <Compile Include="ViewModel\Purchases\PurchaseParams.cs" />
     <Compile Include="ViewModel\Purchases\ReturnPurchaseViewModel.cs" />
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
-    <Compile Include="ViewModel\Reports\SalesSummaryViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
     <Compile Include="ViewModel\ReportViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
@@ -423,6 +424,9 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
+    <Content Include="View\Reports\Sales\SalesBill.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\Report.gif" />
     <Content Include="View\Reports\Purchases\PurchaseAllDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

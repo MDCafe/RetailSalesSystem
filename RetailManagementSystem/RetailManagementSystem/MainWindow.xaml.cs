@@ -7,6 +7,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Linq;
+using log4net;
 
 namespace RetailManagementSystem
 {
@@ -15,15 +16,25 @@ namespace RetailManagementSystem
     /// </summary>
     public partial class MainWindow : Window
     {
+        static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = Workspace.This;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 
-            this.Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
-                "Retail Management System";
-                }
+            try
+            {
+                this.Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
+               "Retail Management System";
+            }
+            catch (System.Data.EntityException entityEx)
+            {
+                log.Error("Database Connection Exception", entityEx);
+                Utility.ShowErrorBox("Unable to connect to the database");
+                Application.Current.Shutdown();
+            }
+       }
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {

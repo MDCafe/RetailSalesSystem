@@ -123,6 +123,20 @@
             return RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();
         }
 
+        public decimal? GetLastSoldPrice(int productId,int customerId)
+        {
+            string lastSoldPriceSQL = "select sd.SellingPrice from sales s, saleDetails sd " +
+                                  "  where s.CustomerId = " + customerId +
+                                  "  and s.BillId = sd.billId " +
+                                  "  and sd.ProductId =  " + productId +
+                                  "  order by sd.ModifiedOn desc " +
+                                  "  limit 0, 1";
+
+            return Instance.RMSEntities.Database.SqlQuery<decimal?>(lastSoldPriceSQL).FirstOrDefault();
+        }
+
+
+
         public static CustomerBill CheckIfBillExists(int billNo, int categoryId)
         {
             var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales

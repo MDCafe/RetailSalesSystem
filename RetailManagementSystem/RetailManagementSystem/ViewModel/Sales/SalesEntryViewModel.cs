@@ -120,8 +120,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }                                      
 
-      
-
         public string OrderNo { get; set; }       
 
         public decimal? TotalAmount
@@ -459,7 +457,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }                
             }
 
-            _totalAmount = _extensions.Calculate(_totalAmount.Value);
+            //_totalAmount = _extensions.Calculate(_totalAmount.Value);
 
             _billSales.TotalAmount = _totalAmount;
             _billSales.Discount = GetDiscountValue();
@@ -471,9 +469,6 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
             _category.RollingNo = _runningBillNo;
-            
-
-                        
             
             RemoveTempSalesItemForGUID(_guid);
             //this is done to get the latest bill no
@@ -818,6 +813,27 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
                 SaleDetailExtn.SerialNo = selectedIndex;
+
+                //var customerSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Where(s => s.CustomerId == _selectedCustomer.Id);//.OrderByDescending(d => d.ModifiedOn);
+                var lastSoldPrice = RMSEntitiesHelper.Instance.GetLastSoldPrice(productPrice.ProductId, _selectedCustomer.Id);
+                if (lastSoldPrice != null)
+                {
+                    //var lastSaleDetail = customerSales. SaleDetails.Where(p => p.ProductId == productPrice.ProductId).OrderByDescending(d => d.ModifiedOn);
+                    //var lastSaleDetail1 = customerSales.SaleDetails.Where(p => p.ProductId == productPrice.ProductId);
+                    ////var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
+
+                    SaleDetailExtn.LastSoldPrice = lastSoldPrice;
+                }
+
+                //if (lastSoldDateByCustomer.Any())
+                //{
+                //    var lastSaleDetail = lastSoldDateByCustomer.FirstOrDefault().SaleDetails.Where(sd => sd.ProductId == productPrice.ProductId).FirstOrDefault();
+
+                //    var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
+
+                //    SaleDetailExtn.LastSoldPrice = lastSoldPrice;
+                //}
+
 
                 SaleDetailExtn.PropertyChanged += (sender, e) =>
                 {

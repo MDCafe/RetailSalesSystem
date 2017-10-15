@@ -61,7 +61,7 @@
                         <RibbonButton Label="Temp Entry" LargeImageSource="Images\SalesBasket -T.png" ToolTipTitle="Temprrary Sales Entry for many items" 
                                        KeyTip="T" Command="{Binding OpenSalesEntryTempCommand}" CommandParameter="true"/>
 
-                        <RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
+                        <RibbonButton Label="Amend/Print Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
 
                         <RibbonButton Label="Sale Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Returns"
@@ -72,7 +72,7 @@
                     <RibbonGroup x:Name="Purchase" Header="Purchases" KeyTip="P">
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Purchase Entry" 
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
-                        <RibbonButton Label="Amend Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
+                        <RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
                                        KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
                         <RibbonButton Label="Purchase Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Purchase Returns"
                                        KeyTip="R" Command="{Binding OpenReturnPurchaseCommand}"/>

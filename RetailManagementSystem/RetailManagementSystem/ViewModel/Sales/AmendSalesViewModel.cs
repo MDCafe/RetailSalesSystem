@@ -5,6 +5,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System.Collections.Generic;
+using RetailManagementSystem.ViewModel.Reports.Sales;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -92,24 +93,28 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Print Command
-        RelayCommand<object> _printCommand = null;
+        RelayCommand<Window> _printCommand = null;
         public ICommand PrintCommand
         {
             get
             {
                 if (_printCommand == null)
                 {
-                    _printCommand = new RelayCommand<object>((p) => OnPrint(), (p) => CanExecuteMethod(p));
+                    _printCommand = new RelayCommand<Window>((p) => OnPrint(p), (p) => CanExecuteMethod(p));
                 }
 
                 return _printCommand;
             }
         }
 
-        private void OnPrint()
+        private void OnPrint(Window window)
         {
-            ReportViewModel rptVM = new ReportViewModel(false, _showRestrictedCustomer, "Sales Bill");
-            rptVM.ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
+            //ReportViewModel rptVM = new ReportViewModel(false, _showRestrictedCustomer, "Sales Bill");
+            //rptVM.ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
+
+            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer);
+            salesReportVM.RunningBillNo = BillNo;
+            salesReportVM.PrintCommand.Execute(window);
         }
         #endregion
 

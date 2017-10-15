@@ -56,7 +56,7 @@
         <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
                       ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
                         Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
-                        IsEnabled="{Binding IsEditMode}"
+                        IsEnabled="{Binding NegateIsEditMode}"
                   >
             <ComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
@@ -162,6 +162,7 @@
                 <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Last Sold Price" Binding="{Binding LastSoldPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
             </toolKit:DataGrid.Columns>
             <toolKit:DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
@@ -215,7 +216,7 @@
             <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" CommandParameter="SaveOnly"/>
             <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5" Visibility="{Binding IsVisible}"/>
-            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding IsEditMode}"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding NegateIsEditMode}"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/> 
         </StackPanel>
 

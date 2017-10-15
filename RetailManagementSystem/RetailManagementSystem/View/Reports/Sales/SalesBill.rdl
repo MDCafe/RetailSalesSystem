@@ -16,11 +16,7 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="?">
-            <Value>=Parameters!Parameter1.Value</Value>
-          </QueryParameter>
-        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
         <CommandText>select s.AddedOn,(select Name as 'Name' from customers where id = s.customerId) as Customer,CustomerOrderNo,TransportCharges,RunningBillNo,
 s.Discount,
 CASE
@@ -34,8 +30,7 @@ sd.Discount as ItemDiscount,
 sd.Qty,
 sd.SellingPrice
 from sales s, SaleDetails sd
-where s.BillId = sd.BillId
-and s.billId = ?</CommandText>
+where s.BillId = sd.BillId</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -286,6 +281,8 @@ and s.billId = ?</CommandText>
                               <Color>#e5e5e5</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>#9eb6e4</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -303,7 +300,7 @@ and s.billId = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=(Fields!Qty.Value*Fields!Price.Value) - Fields!ItemDiscount.Value</Value>
+                                  <Value>=(Fields!Qty.Value*Fields!SellingPrice.Value) - Fields!ItemDiscount.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <Format>n2</Format>
@@ -322,6 +319,8 @@ and s.billId = ?</CommandText>
                               <Color>#e5e5e5</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>#9eb6e4</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -379,7 +378,7 @@ and s.billId = ?</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=sum((Fields!Qty.Value*Fields!Price.Value) - Fields!ItemDiscount.Value)</Value>
+                                  <Value>=sum((Fields!Qty.Value*Fields!SellingPrice.Value) - Fields!ItemDiscount.Value)</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
@@ -637,6 +636,7 @@ and s.billId = ?</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -653,7 +653,7 @@ and s.billId = ?</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="Textbox186">
                         <CanGrow>true</CanGrow>
@@ -793,7 +793,7 @@ and s.billId = ?</CommandText>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="ProductName">
                         <CanGrow>true</CanGrow>
@@ -805,7 +805,6 @@ and s.billId = ?</CommandText>
                                 <Value>=Fields!ProductName.Value</Value>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
-                                  <FontWeight>Bold</FontWeight>
                                   <Color>#465678</Color>
                                 </Style>
                               </TextRun>
@@ -820,6 +819,7 @@ and s.billId = ?</CommandText>
                             <Style>Solid</Style>
                           </Border>
                           <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <VerticalAlign>Middle</VerticalAlign>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -843,7 +843,6 @@ and s.billId = ?</CommandText>
                                     <Value>=Fields!Qty.Value</Value>
                                     <Style>
                                       <FontFamily>Tahoma</FontFamily>
-                                      <FontWeight>Bold</FontWeight>
                                       <Format>n2</Format>
                                       <Color>#465678</Color>
                                     </Style>
@@ -861,6 +860,7 @@ and s.billId = ?</CommandText>
                                 <Style>Solid</Style>
                               </Border>
                               <BackgroundColor>#9eb6e4</BackgroundColor>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -874,17 +874,16 @@ and s.billId = ?</CommandText>
                           <TablixHeader>
                             <Size>1in</Size>
                             <CellContents>
-                              <Textbox Name="Textbox199">
+                              <Textbox Name="SellingPrice">
                                 <CanGrow>true</CanGrow>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
-                                        <Value>=Fields!Price.Value</Value>
+                                        <Value>=Fields!SellingPrice.Value</Value>
                                         <Style>
                                           <FontFamily>Tahoma</FontFamily>
-                                          <FontWeight>Bold</FontWeight>
                                           <Format>n2</Format>
                                           <Color>#465678</Color>
                                         </Style>
@@ -895,13 +894,14 @@ and s.billId = ?</CommandText>
                                     </Style>
                                   </Paragraph>
                                 </Paragraphs>
-                                <rd:DefaultName>Textbox199</rd:DefaultName>
+                                <rd:DefaultName>SellingPrice</rd:DefaultName>
                                 <Style>
                                   <Border>
                                     <Color>#c6daf8</Color>
                                     <Style>Solid</Style>
                                   </Border>
                                   <BackgroundColor>#9eb6e4</BackgroundColor>
+                                  <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
                                   <PaddingTop>2pt</PaddingTop>
@@ -920,7 +920,7 @@ and s.billId = ?</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="Textbox206">
                         <CanGrow>true</CanGrow>
@@ -929,7 +929,7 @@ and s.billId = ?</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value />
+                                <Value>Total</Value>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
                                   <FontWeight>Bold</FontWeight>
@@ -1009,6 +1009,7 @@ and s.billId = ?</CommandText>
                                         <Style>
                                           <FontFamily>Tahoma</FontFamily>
                                           <FontWeight>Bold</FontWeight>
+                                          <Format>n2</Format>
                                           <Color>White</Color>
                                         </Style>
                                       </TextRun>
@@ -1039,7 +1040,7 @@ and s.billId = ?</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="Textbox208">
                         <CanGrow>true</CanGrow>
@@ -1158,7 +1159,7 @@ and s.billId = ?</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="Textbox201">
                         <CanGrow>true</CanGrow>
@@ -1280,7 +1281,7 @@ and s.billId = ?</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>3.19792in</Size>
+                    <Size>2.32292in</Size>
                     <CellContents>
                       <Textbox Name="Textbox213">
                         <CanGrow>true</CanGrow>
@@ -1400,10 +1401,10 @@ and s.billId = ?</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DataSet1</DataSetName>
-            <Top>1.00973in</Top>
+            <Top>1.26389in</Top>
             <Left>0.10416in</Left>
-            <Height>1.68958in</Height>
-            <Width>7.86458in</Width>
+            <Height>1.68957in</Height>
+            <Width>6.98958in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1438,8 +1439,7 @@ and s.billId = ?</CommandText>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
-                <Color>#7292cc</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
@@ -1468,14 +1468,13 @@ and s.billId = ?</CommandText>
             </Paragraphs>
             <rd:DefaultName>Customer</rd:DefaultName>
             <Top>0.05556in</Top>
-            <Left>1.30208in</Left>
+            <Left>1.17708in</Left>
             <Height>0.25in</Height>
-            <Width>3.88542in</Width>
+            <Width>2.72917in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
-                <Color>#c6daf8</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
@@ -1495,7 +1494,6 @@ and s.billId = ?</CommandText>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>White</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1512,10 +1510,8 @@ and s.billId = ?</CommandText>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
-                <Color>#7292cc</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#4c68a2</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1534,7 +1530,6 @@ and s.billId = ?</CommandText>
                       <FontFamily>Tahoma</FontFamily>
                       <FontWeight>Bold</FontWeight>
                       <Format>dd/MM/yy HH:MM</Format>
-                      <Color>#465678</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1545,16 +1540,14 @@ and s.billId = ?</CommandText>
             </Paragraphs>
             <rd:DefaultName>addedOn</rd:DefaultName>
             <Top>0.375in</Top>
-            <Left>1.30208in</Left>
+            <Left>1.17708in</Left>
             <Height>0.25in</Height>
             <Width>2in</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
-                <Color>#c6daf8</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#9eb6e4</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1573,7 +1566,6 @@ and s.billId = ?</CommandText>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>White</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1589,7 +1581,6 @@ and s.billId = ?</CommandText>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>White</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1597,17 +1588,15 @@ and s.billId = ?</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>RunningBillNo</rd:DefaultName>
-            <Top>0.36458in</Top>
-            <Left>6.48183in</Left>
+            <Top>0.36111in</Top>
+            <Left>4.44948in</Left>
             <Height>0.25in</Height>
             <Width>1.38352in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
-                <Color>#7292cc</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#4c68a2</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1625,7 +1614,6 @@ and s.billId = ?</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#465678</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1635,17 +1623,15 @@ and s.billId = ?</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>RunningBillNo2</rd:DefaultName>
-            <Top>0.36111in</Top>
-            <Left>8.05396in</Left>
+            <Top>0.35764in</Top>
+            <Left>5.89661in</Left>
             <Height>0.25in</Height>
             <Width>1.13352in</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
-                <Color>#c6daf8</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#9eb6e4</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1664,7 +1650,6 @@ and s.billId = ?</CommandText>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
-                      <Color>White</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1674,17 +1659,15 @@ and s.billId = ?</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox11</rd:DefaultName>
-            <Top>0.04514in</Top>
-            <Left>6.48183in</Left>
+            <Top>0.04167in</Top>
+            <Left>4.44948in</Left>
             <Height>0.25in</Height>
             <Width>1.38352in</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
-                <Color>#7292cc</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#4c68a2</BackgroundColor>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>
@@ -1702,7 +1685,6 @@ and s.billId = ?</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontWeight>Bold</FontWeight>
-                      <Color>#4c68a2</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1712,17 +1694,15 @@ and s.billId = ?</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>PaymentMode</rd:DefaultName>
-            <Top>0.05556in</Top>
-            <Left>8.05396in</Left>
+            <Top>0.05209in</Top>
+            <Left>5.89661in</Left>
             <Height>0.25in</Height>
             <Width>1.13352in</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border>
-                <Color>#e6eefc</Color>
-                <Style>Solid</Style>
+                <Style>None</Style>
               </Border>
-              <BackgroundColor>#c6daf8</BackgroundColor>
               <VerticalAlign>Top</VerticalAlign>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
@@ -1730,15 +1710,87 @@ and s.billId = ?</CommandText>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox12">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Order No</Value>
+                    <Style>
+                      <FontFamily>Tahoma</FontFamily>
+                      <FontSize>11pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox1</rd:DefaultName>
+            <Top>0.69444in</Top>
+            <Left>0.10416in</Left>
+            <Height>0.25in</Height>
+            <Width>1in</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="addedOn3">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!CustomerOrderNo.Value, "DataSet1")</Value>
+                    <Style>
+                      <FontFamily>Tahoma</FontFamily>
+                      <FontWeight>Bold</FontWeight>
+                      <Format>dd/MM/yy HH:MM</Format>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>addedOn</rd:DefaultName>
+            <Top>0.69444in</Top>
+            <Left>1.1736in</Left>
+            <Height>0.25in</Height>
+            <Width>2in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>3.47709in</Height>
+        <Height>2.95346in</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>11.03819in</Width>
+      <Width>7.10494in</Width>
       <Page>
         <PageHeader>
           <Height>1.00986in</Height>
@@ -1766,9 +1818,9 @@ and s.billId = ?</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Name</rd:DefaultName>
-              <Left>2.64458in</Left>
+              <Left>1.25457in</Left>
               <Height>0.4375in</Height>
-              <Width>6.5429in</Width>
+              <Width>5.07415in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1802,7 +1854,7 @@ and s.billId = ?</CommandText>
               <rd:WatermarkTextbox>Title</rd:WatermarkTextbox>
               <rd:DefaultName>ReportTitle</rd:DefaultName>
               <Top>0.46528in</Top>
-              <Left>4.8229in</Left>
+              <Left>2.8229in</Left>
               <Height>0.4in</Height>
               <Width>1.9375in</Width>
               <ZIndex>1</ZIndex>
@@ -1825,7 +1877,7 @@ and s.billId = ?</CommandText>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>0.45in</Height>
+          <Height>1.03819in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1847,7 +1899,7 @@ and s.billId = ?</CommandText>
               </Paragraphs>
               <rd:DefaultName>ExecutionTime</rd:DefaultName>
               <Top>0.06944in</Top>
-              <Left>8.9861in</Left>
+              <Left>5.10494in</Left>
               <Height>0.25in</Height>
               <Width>2in</Width>
               <Style>
@@ -1875,12 +1927,6 @@ and s.billId = ?</CommandText>
       </Page>
     </ReportSection>
   </ReportSections>
-  <ReportParameters>
-    <ReportParameter Name="Parameter1">
-      <DataType>String</DataType>
-      <Prompt>Parameter1</Prompt>
-    </ReportParameter>
-  </ReportParameters>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>8242098f-f345-4987-bfb2-9e123a68ee66</rd:ReportID>
 </Report>
