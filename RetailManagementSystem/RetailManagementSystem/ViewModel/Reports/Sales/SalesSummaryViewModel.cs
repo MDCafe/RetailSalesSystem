@@ -1,7 +1,6 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Configuration;
 using System.Data;
@@ -44,7 +43,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             }
         }
 
-        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Summary")
+        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Summary Report")
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
@@ -52,6 +51,8 @@ namespace RetailManagementSystem.ViewModel.Reports
             _showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
+
+            
         }
 
         #region Print Command

@@ -7,9 +7,13 @@
              xmlns:rv="clr-namespace:Microsoft.Reporting.WinForms;assembly=Microsoft.ReportViewer.WinForms"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <WindowsFormsHost>
+    <DockPanel >
+        <Button DockPanel.Dock="Top" Name="PrintReport" Visibility="{Binding ShowPrintReceiptButton}" Content="Print Receipt" 
+                Width="130" Height="30" Grid.Row="0" Command="{Binding PrintReceiptCommand}" HorizontalAlignment="Left" Margin="5" Background="BlueViolet" Foreground="White"
+                FontWeight="Bold"/>
+        <WindowsFormsHost Grid.Row="1">
             <rv:ReportViewer x:Name="ReportViewer"/>
         </WindowsFormsHost>
-    </Grid>
+    </DockPanel>
+  
 </UserControl>

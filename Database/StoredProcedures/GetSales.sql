@@ -18,5 +18,13 @@ CASE
 TotalAmount
 
 from sales s
-where Date(s.addedOn) between fromSalesDate and toSalesDate;
+where Date(s.addedOn) between fromSalesDate and toSalesDate
+
+union
+
+select ModifiedOn, (select Name as 'Name' from customers where Id = (select customerId from sales sa where sa.BillId =rs.billid)) as Customer,
+'','','Return',(select RunningBillNo from sales sa where sa.BillId =rs.billid) RunningBillNo,rs.CreatedOn,'','','', 
+-rs.Quantity * (select sellingPrice from PriceDetails where PriceId = rs.PriceId) TotalAmount
+from ReturnDamagedStocks rs 
+where rs.ModifiedOn between fromSalesDate and toSalesDate;
 END

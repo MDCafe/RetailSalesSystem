@@ -83,7 +83,7 @@ namespace RetailManagementSystem.View.Sales
                     //}
                 }
 
-            };
+                };
 
             //custComboBoxCol.comboBox.PreviewTextInput += ComboBox_PreviewTextInput;
             //custComboBoxCol.OnComboLoadedEvent += (txt) =>
@@ -124,6 +124,7 @@ namespace RetailManagementSystem.View.Sales
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
+         
             _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);
             custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
 

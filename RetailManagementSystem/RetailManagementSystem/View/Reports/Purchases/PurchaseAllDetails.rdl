@@ -2829,7 +2829,7 @@ where p.BillId = pd.BillId</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=(Fields!TotalBillAmount.Value + Fields!cooliecharges.Value  + Fields!KcoolieCharges.Value + Fields!trannsportcharges.Value + Fields!localCoolieCharges.Value) - (Fields!SpecialDiscount.Value + Fields!Discount.Value)</Value>
+                                  <Value>=(Fields!TotalBillAmount.Value)</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
@@ -2873,6 +2873,7 @@ where p.BillId = pd.BillId</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -3803,7 +3804,6 @@ where p.BillId = pd.BillId</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>ExecutionTime</rd:DefaultName>
-              <Top>0in</Top>
               <Left>5.10589in</Left>
               <Height>0.25in</Height>
               <Width>2in</Width>

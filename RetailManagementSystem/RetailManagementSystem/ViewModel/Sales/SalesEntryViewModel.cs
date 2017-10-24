@@ -63,7 +63,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //Temp window to save 10 items                
                 if(salesParams.IsTempDataWindow)
                 {
-                    AutoSaveData();
+                    //AutoSaveData();
                     
                     //Title = "Sales Entry";
                     RMSEntitiesHelper.Instance.AddNotifier(this);
@@ -91,7 +91,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //Title = "Sales Entry";
             RMSEntitiesHelper.Instance.AddNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-            SaveDataTemp();            
+            //SaveDataTemp();            
         }
        
         #endregion
@@ -102,7 +102,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get
             {
-                if (_salesParams.GetTemproaryData)
+                if (_salesParams.GetTemproaryData) 
                     return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId ==  _categoryId);
                 if(_salesParams.ShowAllCustomers)
                     return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
@@ -402,13 +402,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             var outstandingBalance = _totalAmount.Value - AmountPaid;
             if (outstandingBalance > 0)
             {
-                var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
-                var result = Utility.ShowMessageBoxWithOptions(msg);
+                //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
+                //var result = Utility.ShowMessageBoxWithOptions(msg);
 
-                if (result == System.Windows.MessageBoxResult.Cancel) return;
+                //if (result == System.Windows.MessageBoxResult.Cancel) return;
 
-                if (result == System.Windows.MessageBoxResult.Yes)
-                {
+                //if (result == System.Windows.MessageBoxResult.Yes)
+                //{
                     RMSEntitiesHelper.Instance.RMSEntities.PaymentDetails.Add
                         (
                             new PaymentDetail
@@ -418,7 +418,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                 CustomerId = _selectedCustomer.Id
                             }
                         );
-                }
+                //}
                 var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
                 customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
             }
@@ -467,13 +467,15 @@ namespace RetailManagementSystem.ViewModel.Sales
            
             RMSEntitiesHelper.Instance.RMSEntities.Sales.Add(_billSales);
 
-            var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-            _category.RollingNo = _runningBillNo;
             
             RemoveTempSalesItemForGUID(_guid);
             //this is done to get the latest bill no
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
             _billSales.RunningBillNo = _runningBillNo;
+
+            var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+            _category.RollingNo = _runningBillNo;
+
             RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
             Monitor.Exit(rootLock);
             log.DebugFormat("Exit save :{0}", _guid);
@@ -736,7 +738,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         private void Clear()
         {
             _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
-            SelectedCustomer = null;
+            SelectedCustomer.Id = 1;
             SelectedPaymentId = '0';
             OrderNo = "";
             SaleDetailList.Clear();
@@ -784,12 +786,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (productPrice == null) return;
             var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
-            if (saleItem !=null)
-            {
-                Utility.ShowWarningBox("Item is already added");
-                selRowSaleDetailExtn.ProductId = 0;
-                return;
-            }            
+            //if (saleItem !=null)
+            //{
+            //    Utility.ShowWarningBox("Item is already added");
+            //    selRowSaleDetailExtn.ProductId = 0;
+            //    return;
+            //}            
             SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
         }
 

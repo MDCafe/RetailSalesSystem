@@ -111,8 +111,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             //ReportViewModel rptVM = new ReportViewModel(false, _showRestrictedCustomer, "Sales Bill");
             //rptVM.ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
+            
 
             SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer);
+            salesReportVM.ShowPrintReceiptButton = Visibility.Visible;
             salesReportVM.RunningBillNo = BillNo;
             salesReportVM.PrintCommand.Execute(window);
         }

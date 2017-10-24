@@ -14,13 +14,14 @@ namespace RetailManagementSystem.View
         public ReportsViewer()
         {
             InitializeComponent();
-            this.DataContextChanged += Reports_DataContextChanged;
+            DataContextChanged += Reports_DataContextChanged;
         }
 
         private void Reports_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             _rptVM = this.DataContext as ReportViewModel;
             _rptVM.RptViewer = this.ReportViewer;
+            this.ReportViewer.ShowPrintButton = _rptVM.ShowReportPrintButton;
         }
     }
 }

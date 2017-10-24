@@ -657,6 +657,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchase.LocalCoolieCharges = LocalCoolieCharges;
                 purchase.TotalBillAmount = TotalAmount;
                 purchase.Tax = TotalTax;
+                purchase.SpecialDiscount = SpecialDiscountAmount;
             }
             _rmsEntities.SaveChanges();
             Clear();
@@ -749,14 +750,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
             if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
             var runningBillNo = billNo;
 
-            var purhcases = _rmsEntities.Purchases.Where(b => b.RunningBillNo == runningBillNo && b.CompanyId == _purchaseParams.CompanyId).FirstOrDefault();
-            _editBillNo = purhcases.BillId;
-            SelectedCompany = purhcases.Company;
+            var purchases = _rmsEntities.Purchases.Where(b => b.RunningBillNo == runningBillNo && b.CompanyId == _purchaseParams.CompanyId).FirstOrDefault();
+            _editBillNo = purchases.BillId;
+            SelectedCompany = purchases.Company;
             SelectedCompanyText = SelectedCompany.Name;
-            TranscationDate = purhcases.AddedOn.Value;
-            SelectedPaymentId = Char.Parse(purhcases.PaymentMode);
-            InvoiceNo = purhcases.InvoiceNo;
-            var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purhcases.BillId).ToList();
+            TranscationDate = purchases.AddedOn.Value;
+            SelectedPaymentId = Char.Parse(purchases.PaymentMode);
+            InvoiceNo = purchases.InvoiceNo;
+            var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purchases.BillId).ToList();
 
             var tempTotalAmount = 0.0M;
             foreach (var item  in purchaseDetailsForBill.ToList())
@@ -791,6 +792,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 tempTotalAmount += itemAmount.Value;
             }
             TotalAmount = tempTotalAmount;
+
+            CoolieCharges = purchases.CoolieCharges;
+            KCoolieCharges = purchases.KCoolieCharges;
+            TransportCharges = purchases.TransportCharges;
+            LocalCoolieCharges = purchases.TransportCharges;
+            SpecialDiscountAmount = purchases.SpecialDiscount;
+            TotalDiscountAmount = purchases.Discount;
 
             RunningBillNo = runningBillNo.Value;
             _isEditMode = true;

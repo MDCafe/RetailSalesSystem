@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
+using System;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -16,6 +17,14 @@ namespace RetailManagementSystem.ViewModel
         protected ReportDataSource[] _rptDataSource;
         private string _reportPath;
         private PageSettings _pageSettings;
+        private bool _showReportPrintButton = true;
+        private Visibility _showPrintReceiptButton = Visibility.Collapsed;
+
+        public bool ShowReportPrintButton
+        {
+            get { return _showReportPrintButton; }
+            set { _showReportPrintButton = value; }
+        }
 
         public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title) 
             : base(isSupplier,showResctricteCustomers)
@@ -62,8 +71,6 @@ namespace RetailManagementSystem.ViewModel
                 
             }
         }
-
-        
 
         public void AddApplicationDetailsToReportDataSource()
         {
@@ -138,5 +145,38 @@ namespace RetailManagementSystem.ViewModel
             }
         }
         #endregion
+
+        public RelayCommand<object> _printReceiptCommand { get; private set; }
+
+        public ICommand PrintReceiptCommand
+        {
+            get
+            {
+                if (_printReceiptCommand == null)
+                {
+                    _printReceiptCommand = new RelayCommand<object>((p) => PrintReceipt(p));
+                }
+
+                return _printReceiptCommand;
+            }
+        }
+
+        public Visibility ShowPrintReceiptButton
+        {
+            get
+            {
+                return _showPrintReceiptButton;
+            }
+
+            set
+            {
+                _showPrintReceiptButton = value;
+            }
+        }
+
+        public virtual void PrintReceipt(object p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

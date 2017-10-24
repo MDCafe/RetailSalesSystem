@@ -28,6 +28,7 @@ namespace RetailManagementSystem.UserControls
             string strDefaultPrinter = pd.PrinterSettings.PrinterName;//Code to get default printer name  
             _pdoc = new PrintDocument();
             PrinterSettings ps = new PrinterSettings();
+            
             Font font = new Font("Courier New", 15);//set default font for page
                                                     //PaperSize psize = new PaperSize("Custom", 212, 130);//set paper size sing code
             //PaperSize psize = new PaperSize("Custom", 212, 100);
@@ -65,7 +66,6 @@ namespace RetailManagementSystem.UserControls
             try
             {
                 _customerName = customerName;
-                _billSales = billSales;
                 _saleDetails = saleDetails;
                 _billSales = billSales;
                 _amountPaid = amountPaid;
@@ -98,13 +98,13 @@ namespace RetailManagementSystem.UserControls
             e.Graphics.DrawString(_appDetail.Name, new Font("Maiandra GD", 12, FontStyle.Bold), solidBrush, headerStartX, startY + Offset, drawFormat);
             Offset = Offset + 16;
             e.Graphics.DrawString(_appDetail.Address, headerFont, solidBrush, headerStartX, startY + Offset, drawFormat);
-            Offset = Offset + 16;
+            Offset = Offset + 12;
             e.Graphics.DrawString(_appDetail.City, headerFont, solidBrush, headerStartX, startY + Offset, drawFormat);
-            Offset = Offset + 16;
+            Offset = Offset + 11;
             e.Graphics.DrawString(_appDetail.Lan_Line_No + "," + _appDetail.Mobile_No, headerFont, solidBrush, headerStartX, startY + Offset, drawFormat);
-            Offset = Offset + 16;
+            Offset = Offset + 11;
             e.Graphics.DrawString(_appDetail.EmailAddress, headerFont, solidBrush, headerStartX, startY + Offset, drawFormat);
-            Offset = Offset + 25;
+            Offset = Offset + 20;
 
             RectangleF marginBounds = e.MarginBounds;
             RectangleF printableArea = e.PageSettings.PrintableArea;
@@ -152,11 +152,11 @@ namespace RetailManagementSystem.UserControls
                 var product = RMSEntitiesHelper.Instance.RMSEntities.Products.Find(item.ProductId);
                 e.Graphics.DrawString(product.Name, itemFont, solidBrush, startX, startY + Offset);
                 Offset = Offset + 20;
-
+                 
                 var qtyString = item.Qty.Value.ToString("G").Replace('.', '-');
                 //var itemValue = qtyString[0];
 
-                var itemValueRest = qtyString + product.MeasuringUnit.unit + "              ";
+                var itemValueRest = qtyString + " " + product.MeasuringUnit.unit + "              ";
 
                 rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
 
@@ -190,6 +190,19 @@ namespace RetailManagementSystem.UserControls
 
             Offset = Offset + 20;
 
+            var isTransportOrDiscountAvailable = false;
+
+            //Transport Amount
+            var transport = _billSales.TransportCharges.HasValue ? _billSales.TransportCharges.Value : 0.00M;
+            if (transport != 0.0M)
+            {
+                rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
+                e.Graphics.DrawString("Transport", itemFont, solidBrush, startX, startY + Offset);
+                e.Graphics.DrawString(transport.ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
+                Offset = Offset + 20;
+                isTransportOrDiscountAvailable = true;
+            }
+
             var discount = _billSales.Discount.HasValue ? _billSales.Discount.Value : 0.00M;
             if (discount != 0.00M || itemDiscountAmount !=0.0M)
             {
@@ -201,7 +214,11 @@ namespace RetailManagementSystem.UserControls
                 Offset = Offset + 5;
                 e.Graphics.DrawString("_______________________________________", itemFont, solidBrush, startX, startY + Offset);
                 Offset = Offset + 20;
+                isTransportOrDiscountAvailable = true;
+            }
 
+            if (isTransportOrDiscountAvailable)
+            {
                 rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
                 e.Graphics.DrawString("Total", itemFont, solidBrush, startX, startY + Offset);
                 e.Graphics.DrawString(_billSales.TotalAmount.Value.ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
@@ -216,7 +233,7 @@ namespace RetailManagementSystem.UserControls
                 Offset = Offset + 20;
             }
 
-            if (_balanceAmt.HasValue && _amountPaid.Value != 0.00M)
+            if (_balanceAmt.HasValue && _balanceAmt.Value != 0.00M)
             {
                 rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
                 e.Graphics.DrawString("Balance Amount", itemFont, solidBrush, startX, startY + Offset);
@@ -231,7 +248,7 @@ namespace RetailManagementSystem.UserControls
             }
 
             drawFormat.Alignment = StringAlignment.Center;
-            e.Graphics.DrawString("Thank You!", headerFont, solidBrush, headerStartX, startY + Offset + 10, drawFormat);
+            e.Graphics.DrawString("Thank You", headerFont, solidBrush, headerStartX, startY + Offset + 10, drawFormat);
 
             Offset = 0;
 

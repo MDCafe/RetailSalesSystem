@@ -1,6 +1,8 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Model;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -13,13 +15,15 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         private bool _showRestrictedCustomers;
 
         public int? RunningBillNo { get; set; }
+        
 
-        public SalesBillDetailsViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Summary")
+        public SalesBillDetailsViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Bill Report")
         {
 
             _showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesBill.rdl";
+            ShowReportPrintButton = false;
         }
 
         #region Print Command
@@ -37,13 +41,55 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             }
         }
 
+        public override void PrintReceipt(object p)
+        {
+            var dataTable = GetDataTable();
+            var billSales = new Sale();
+            var salesDetails = new List<SaleDetailExtn>();
+            var customer = "";
+            billSales.RunningBillNo = RunningBillNo.Value;
+            
+
+            foreach (var item in dataTable.Rows)
+            {
+                var itemArray = item as DataRow;
+                customer =  itemArray.Field<string>("Customer");
+                billSales.CustomerOrderNo = itemArray.Field<string>("CustomerOrderNo");
+                billSales.TransportCharges = itemArray.IsNull("TransportCharges") ? 0.0M : itemArray.Field<decimal>("TransportCharges");
+                billSales.Discount = itemArray.IsNull("Discount") ? 0.0M : itemArray.Field<decimal>("Discount");
+                billSales.TotalAmount   = itemArray.Field<decimal>("TotalAmount");
+                billSales.PaymentMode = itemArray.Field<string>("PaymentMode");
+                salesDetails.Add(
+                    new SaleDetailExtn()
+                    {
+                        AddedOn = itemArray.Field<System.DateTime>("AddedOn"),
+                        SellingPrice = itemArray.Field<decimal>("SellingPrice"),
+                        Discount = itemArray.IsNull("ItemDiscount") ? 0.0M : itemArray.Field<decimal>("ItemDiscount"),
+                        ProductId = itemArray.Field<int>("ProductId"),
+                        Qty  = itemArray.Field<decimal>("Qty"),
+                        CostPrice = itemArray.Field<decimal>("Price")
+                    }
+                );
+            }
+            UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint();
+            sp.print(customer, salesDetails, billSales, null, null);
+            
+        }
+
         private void OnPrint(Window window)
         {
             _rptDataSource[0] = new ReportDataSource();
             _rptDataSource[0].Name = "DataSet1";
+            
+            _rptDataSource[0].Value = GetDataTable();
 
+            Workspace.This.OpenReport(this);
+            CloseWindow(window);
+        }
+
+        private DataTable GetDataTable()
+        {
             var query = "GetSalesDetailsForBillId";
-
             using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -64,13 +110,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     {
                         adpt.Fill(dt);
                     }
-
-                    _rptDataSource[0].Value = dt;
+                    return dt;
                 }
             }
-
-            Workspace.This.OpenReport(this);
-            CloseWindow(window);
         }
         #endregion
     }

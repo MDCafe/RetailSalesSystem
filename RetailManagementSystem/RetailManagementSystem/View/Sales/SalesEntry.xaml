@@ -112,9 +112,20 @@
                                       SelectionMode="Single" Grid.ColumnSpan="5"
                                       LoadingRow="DataGrid_LoadingRow"
                                       RowHeaderWidth="25"
-                                      VirtualizingStackPanel.IsVirtualizing="False"
+                                      SelectionUnit="FullRow"
                                        >
             <toolKit:DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="Yellow"/>
+                </Style>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background" Value="#6F0090FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>
                     <Style.Triggers>
@@ -128,6 +139,17 @@
                 <Style x:Key="CellStyle" TargetType="DataGridCell">
                     <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
                 </Style>-->
+                <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="LightBlue"/>-->
+                
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+                
+
+
+
             </toolKit:DataGrid.Resources>
             <toolKit:DataGrid.Columns>
                 <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
@@ -157,7 +179,7 @@
                     </toolKit:DataGridTextColumn.Binding>
                 </toolKit:DataGridTextColumn>
                 <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
                 <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
@@ -188,9 +210,9 @@
         <!--DataGrid-->
         <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
             <Label Content="Discount Amt"  Margin="5,5,5,5"/>
-            <TextBox Name="txtDiscount" Width="40" Margin="5,5,10,5" Height="20" Text="{Binding TotalDiscountAmount}"/>
+            <TextBox Name="txtDiscount" Width="40" Margin="5,5,10,5" Height="20" Text="{Binding TotalDiscountAmount, TargetNullValue={x:Static sys:String.Empty}}"/>
             <Label Content="Discount %" Width="70" Margin="5"/>
-            <TextBox Name="txtDiscountPercent" Width="30" Margin="5" Height="20" Text="{Binding TotalDiscountPercent}"/>
+            <TextBox Name="txtDiscountPercent" Width="30" Margin="5" Height="20" Text="{Binding TotalDiscountPercent, TargetNullValue={x:Static sys:String.Empty}}"/>
             <UC:SalesExtension  Margin="5" x:Name="SalesExtn"  Width="120" Height="25"/>
 
             <Label Content="Total" Margin="5" FontWeight="ExtraBold"/>
