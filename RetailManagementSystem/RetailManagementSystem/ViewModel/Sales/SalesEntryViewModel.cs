@@ -11,6 +11,7 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
+using System.Configuration;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -44,12 +45,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             var cnt1 = RMSEntitiesHelper.Instance.RMSEntities.Products.ToList();
 
             _salesBillPrint = new SalesBillPrint();
-
             _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Create();
-
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
-
             _salesDetailsList.CollectionChanged += OnSalesDetailsListCollectionChanged;
+
+            //SelectedCustomer = DefaultCustomer;
 
             Title = "Sales Entry";
 
@@ -102,12 +102,22 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get
             {
-                if (_salesParams.GetTemproaryData) 
-                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId ==  _categoryId);
+                var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
+                IEnumerable<Customer> customerList = null;
+                
+                if (_salesParams.GetTemproaryData)
+                    customerList = RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId ==  _categoryId);
                 if(_salesParams.ShowAllCustomers)
-                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+                    customerList =  RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+                else
+                    customerList  = RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
 
-                return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
+                var defaultCustomerByConfig = customerList.FirstOrDefault(c => c.Name.ToUpper() == defaultCustomerConfigName.ToUpper());
+                if(defaultCustomerByConfig != null)
+                {
+                    DefaultCustomer = defaultCustomerByConfig;
+                }
+                return customerList;
             }
         }
          
@@ -205,9 +215,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _extensions; }
         }        
 
-       
-
-
         public Customer SelectedCustomer
         {
             get {
@@ -236,7 +243,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 RaisePropertyChanged("SelectedCustomerText");
             }
         }
-
+        
         #endregion
 
         #region TextContent

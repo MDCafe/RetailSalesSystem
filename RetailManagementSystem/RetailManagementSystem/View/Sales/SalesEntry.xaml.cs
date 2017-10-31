@@ -3,7 +3,6 @@ using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.Model;
 using System.Windows.Input;
-using System;
 using System.Windows;
 
 namespace RetailManagementSystem.View.Sales
@@ -19,7 +18,7 @@ namespace RetailManagementSystem.View.Sales
             handler = (object sender, RoutedEventArgs e) =>
             {
                 if (_salesViewModel.IsEditMode == false)
-                    CboCustomers.SelectedIndex = 0;
+                    CboCustomers.SelectedValue = _salesViewModel.DefaultCustomer.Id;
                 Loaded -= handler;
             };
             Loaded += handler;

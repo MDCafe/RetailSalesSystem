@@ -223,7 +223,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -279,7 +278,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -294,7 +292,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -350,7 +347,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -406,7 +402,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -421,7 +416,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -477,7 +471,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -533,7 +526,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -813,7 +805,7 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>=Fields!ItemDiscount.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <Format>n2</Format>
+                                    <Format>#,0,,.00;(#,0,,.00);''</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -821,33 +813,10 @@ where p.BillId = pd.BillId</CommandText>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>ItemDiscount</rd:DefaultName>
-                          <Visibility>
-                            <Hidden>=Fields!ItemDiscount.Value = 0 or Fields!ItemDiscount.Value is nothing</Hidden>
-                          </Visibility>
                           <Style>
                             <Border>
                               <Style>Solid</Style>
                             </Border>
-                            <TopBorder>
-                              <Color>Black</Color>
-                              <Style>Solid</Style>
-                              <Width>1pt</Width>
-                            </TopBorder>
-                            <BottomBorder>
-                              <Color>Black</Color>
-                              <Style>Solid</Style>
-                              <Width>1pt</Width>
-                            </BottomBorder>
-                            <LeftBorder>
-                              <Color>Black</Color>
-                              <Style>Solid</Style>
-                              <Width>1pt</Width>
-                            </LeftBorder>
-                            <RightBorder>
-                              <Color>Black</Color>
-                              <Style>Solid</Style>
-                              <Width>1pt</Width>
-                            </RightBorder>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -1080,9 +1049,7 @@ where p.BillId = pd.BillId</CommandText>
                               <TextRuns>
                                 <TextRun>
                                   <Value>Total</Value>
-                                  <Style>
-                                    <FontWeight>Bold</FontWeight>
-                                  </Style>
+                                  <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -1135,7 +1102,6 @@ where p.BillId = pd.BillId</CommandText>
                                 <TextRun>
                                   <Value>=IIF(Sum(Fields!ItemDiscount.Value) = 0," " , Sum(Fields!ItemDiscount.Value))</Value>
                                   <Style>
-                                    <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
@@ -1189,7 +1155,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>=sum((Fields!ActualPrice.Value * (Fields!PurchasedQty.Value)) - Fields!ItemDiscount.Value)</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
@@ -2137,7 +2102,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>Spl. Discount</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -2192,7 +2156,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>=Fields!SpecialDiscount.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
@@ -2456,7 +2419,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>Discount</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -2511,7 +2473,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>=Fields!Discount.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
@@ -2777,7 +2738,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>Total</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -2832,7 +2792,6 @@ where p.BillId = pd.BillId</CommandText>
                                   <Value>=(Fields!TotalBillAmount.Value)</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
@@ -2873,7 +2832,6 @@ where p.BillId = pd.BillId</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2883,7 +2841,11 @@ where p.BillId = pd.BillId</CommandText>
             <TablixColumnHierarchy>
               <TablixMembers>
                 <TablixMember />
-                <TablixMember />
+                <TablixMember>
+                  <Visibility>
+                    <Hidden>=Fields!FreeIssue.Value=0</Hidden>
+                  </Visibility>
+                </TablixMember>
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -2907,7 +2869,6 @@ where p.BillId = pd.BillId</CommandText>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
                                   <FontSize>11pt</FontSize>
-                                  <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
                             </TextRuns>
@@ -3008,11 +2969,6 @@ where p.BillId = pd.BillId</CommandText>
                                       <GroupExpression>=Fields!Product.Value</GroupExpression>
                                     </GroupExpressions>
                                   </Group>
-                                  <SortExpressions>
-                                    <SortExpression>
-                                      <Value>=Fields!Product.Value</Value>
-                                    </SortExpression>
-                                  </SortExpressions>
                                   <TablixHeader>
                                     <Size>1.85416in</Size>
                                     <CellContents>
@@ -3416,7 +3372,6 @@ where p.BillId = pd.BillId</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -3486,7 +3441,6 @@ where p.BillId = pd.BillId</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -3592,7 +3546,6 @@ where p.BillId = pd.BillId</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -3629,7 +3582,6 @@ where p.BillId = pd.BillId</CommandText>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
                       <FontSize>11pt</FontSize>
-                      <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -3697,10 +3649,10 @@ where p.BillId = pd.BillId</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>7.11631in</Width>
+      <Width>7.10589in</Width>
       <Page>
         <PageHeader>
-          <Height>0.75694in</Height>
+          <Height>0.26736in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -3714,19 +3666,18 @@ where p.BillId = pd.BillId</CommandText>
                       <Value>=First(Fields!Name.Value, "DataSet2")</Value>
                       <Style>
                         <FontFamily>Maiandra GD</FontFamily>
-                        <FontSize>18pt</FontSize>
-                        <FontWeight>Bold</FontWeight>
+                        <FontSize>12pt</FontSize>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style>
-                    <TextAlign>Center</TextAlign>
+                    <TextAlign>Right</TextAlign>
                   </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Name</rd:DefaultName>
-              <Height>0.31945in</Height>
-              <Width>6.5429in</Width>
+              <Height>0.25695in</Height>
+              <Width>2.84498in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -3745,30 +3696,30 @@ where p.BillId = pd.BillId</CommandText>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Purchase Details</Value>
+                      <Value> -  Purchase Details</Value>
                       <Style>
                         <FontFamily>Verdana</FontFamily>
-                        <FontSize>16pt</FontSize>
+                        <FontSize>12pt</FontSize>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style>
-                    <TextAlign>Center</TextAlign>
+                    <TextAlign>Left</TextAlign>
                   </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:WatermarkTextbox>Title</rd:WatermarkTextbox>
               <rd:DefaultName>ReportTitle</rd:DefaultName>
-              <Top>0.32639in</Top>
-              <Left>1.95957in</Left>
-              <Height>0.41042in</Height>
-              <Width>2.66667in</Width>
+              <Top>0.00695in</Top>
+              <Left>2.88665in</Left>
+              <Height>0.26041in</Height>
+              <Width>2.24528in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
-                <VerticalAlign>Middle</VerticalAlign>
+                <VerticalAlign>Top</VerticalAlign>
                 <PaddingLeft>2pt</PaddingLeft>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
@@ -3783,41 +3734,9 @@ where p.BillId = pd.BillId</CommandText>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>0.25in</Height>
+          <Height>0.01042in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
-          <ReportItems>
-            <Textbox Name="ExecutionTime">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=Globals!PageNumber</Value>
-                      <Style />
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Right</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>ExecutionTime</rd:DefaultName>
-              <Left>5.10589in</Left>
-              <Height>0.25in</Height>
-              <Width>2in</Width>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-          </ReportItems>
           <Style>
             <Border>
               <Style>None</Style>

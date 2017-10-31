@@ -16,7 +16,6 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <CommandType>StoredProcedure</CommandType>
         <CommandText>select s.AddedOn,(select Name as 'Name' from customers where id = s.customerId) as Customer,CustomerOrderNo,TransportCharges,RunningBillNo,
 s.Discount,
 CASE
@@ -30,7 +29,8 @@ sd.Discount as ItemDiscount,
 sd.Qty,
 sd.SellingPrice
 from sales s, SaleDetails sd
-where s.BillId = sd.BillId</CommandText>
+where s.BillId = sd.BillId
+order by sd.id asc</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -636,7 +636,6 @@ where s.BillId = sd.BillId</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -1405,6 +1404,7 @@ where s.BillId = sd.BillId</CommandText>
             <Left>0.10416in</Left>
             <Height>1.68957in</Height>
             <Width>6.98958in</Width>
+            <DataElementOutput>Output</DataElementOutput>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1632,6 +1632,7 @@ where s.BillId = sd.BillId</CommandText>
               <Border>
                 <Style>None</Style>
               </Border>
+              <VerticalAlign>Bottom</VerticalAlign>
               <PaddingLeft>2pt</PaddingLeft>
               <PaddingRight>2pt</PaddingRight>
               <PaddingTop>2pt</PaddingTop>

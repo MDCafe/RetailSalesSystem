@@ -16,6 +16,7 @@ namespace RetailManagementSystem.ViewModel.Base
   {
         #region Fields
         private string _windowTitle;
+        bool _panelLoading;
         #endregion Fields
 
         #region properties
@@ -36,6 +37,19 @@ namespace RetailManagementSystem.ViewModel.Base
         }
 
         //abstract public bool IsDirty { get; set; }
+
+        public bool PanelLoading
+        {
+            get
+            {
+                return _panelLoading;
+            }
+            set
+            {
+                _panelLoading = value;
+                RaisePropertyChanged("PanelLoading");
+            }
+        }
 
         #region CloseCommand
         /// <summary>

@@ -20,7 +20,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         IEnumerable<PriceDetail> _returnPriceList;        
         Sale _billSales;
         DateTime? _saleDate;        
-        bool _isBillBasedReturn, _panelLoading;
+        bool _isBillBasedReturn;
         new decimal? _totalAmount;
         string _customerName;
         string _modeOfPayment;
@@ -71,19 +71,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _isBillBasedReturn = value;                
                 MakeReadonlyEvent?.Invoke(_isBillBasedReturn);
-            }
-        }
-
-        public bool PanelLoading
-        {
-            get
-            {
-                return _panelLoading;
-            }
-            set
-            {
-                _panelLoading = value;
-                RaisePropertyChanged("PanelLoading");
             }
         }
 

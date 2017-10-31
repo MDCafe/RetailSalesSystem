@@ -4,6 +4,8 @@ using System.Windows.Input;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Interfaces;
+using System.Configuration;
+using System.Linq;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
@@ -144,6 +146,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
+        public Customer DefaultCustomer { get; set; }
 
         protected CommonBusinessViewModel()
         {
@@ -152,7 +155,6 @@ namespace RetailManagementSystem.ViewModel.Base
             _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
             _transcationDate = DateTime.Now;
             SelectedPaymentId = '0';
-
         }
        
         void INotifier.Notify(int runningNo,int categoryId)

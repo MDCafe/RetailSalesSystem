@@ -29,7 +29,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         public PurchaseEntryViewModel(PurchaseParams purchaseParams) : base(purchaseParams != null ? purchaseParams.ShowAllCompanies : false)
         {
-            Title = "Purchase Entry ";
+            if (purchaseParams !=null &&  purchaseParams.ShowAllCompanies)
+                Title = "Purchase Entry*";
+            else
+                Title = "Purchase Entry";
+
             var count = RMSEntitiesHelper.Instance.RMSEntities.Companies.ToList();
             _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
             _purchaseDetailsList.CollectionChanged += PurchaseDetailsListCollectionChanged;
@@ -362,7 +366,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     var totalQtyWithFreeIssue = 0.0M;
 
                     if (purchaseDetailExtn.FreeIssue.HasValue)
-                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value;
+                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ?  purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value : 0;
                     else
                         totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ? purchaseDetailExtn.Qty.Value : 0;
 
@@ -440,142 +444,156 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 SaveOnEdit(parameter);
                 return;
             }
-            //Add free items to free items table
-            //Sum up the free item to main stock
-            var purchase = new Purchase()
-            {
-                RunningBillNo = RunningBillNo,
-                CompanyId = SelectedCompany.Id,
-                Discount = GetDiscountValue(),
-                SpecialDiscount = SpecialDiscountAmount,
-                InvoiceNo = InvoiceNo,
-                TotalBillAmount = TotalAmount,
-                TransportCharges = TransportCharges,
-                CoolieCharges = CoolieCharges,
-                KCoolieCharges = KCoolieCharges,
-                LocalCoolieCharges = LocalCoolieCharges,
-                Tax = TotalTax,
-                PaymentMode = SelectedPaymentId.ToString()
-            };
 
-            foreach (var item in _purchaseDetailsList)
+            PanelLoading = true;
+            var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
-                var purchaseDetail = new PurchaseDetail();
-                purchaseDetail.ProductId = item.ProductId;
-                purchaseDetail.Discount = item.Discount;                
-                purchaseDetail.ActualPrice = item.PurchasePrice.Value;
-                purchaseDetail.Tax = item.Tax;
 
-                var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
-                                                                        && pr.Price == item.CostPrice
-                                                                        && pr.SellingPrice == item.SellingPrice);
-                var priceId = 0;
-                PriceDetail priceDetailItem = null;
-                if (priceDetails.Any())
+                //Add free items to free items table
+                //Sum up the free item to main stock
+                var purchase = new Purchase()
                 {
-                    //Same item exists. Just update the with new billId 
-                    priceDetailItem = priceDetails.FirstOrDefault();
-                    priceDetailItem.BillId = item.BillId;
-                    priceId = priceDetailItem.PriceId;
-                    priceDetailItem.SellingPrice = item.SellingPrice.Value;
-                }
-                else
+                    RunningBillNo = RunningBillNo,
+                    CompanyId = SelectedCompany.Id,
+                    Discount = GetDiscountValue(),
+                    SpecialDiscount = SpecialDiscountAmount,
+                    InvoiceNo = InvoiceNo,
+                    TotalBillAmount = TotalAmount,
+                    TransportCharges = TransportCharges,
+                    CoolieCharges = CoolieCharges,
+                    KCoolieCharges = KCoolieCharges,
+                    LocalCoolieCharges = LocalCoolieCharges,
+                    Tax = TotalTax,
+                    PaymentMode = SelectedPaymentId.ToString()
+                };
+
+                foreach (var item in _purchaseDetailsList)
                 {
-                    //New Price, add it to price details list
-                    priceDetailItem = new PriceDetail()
+                    var purchaseDetail = new PurchaseDetail();
+                    purchaseDetail.ProductId = item.ProductId;
+                    purchaseDetail.Discount = item.Discount;                
+                    purchaseDetail.ActualPrice = item.PurchasePrice.Value;
+                    purchaseDetail.Tax = item.Tax;
+
+                    var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
+                                                                            && pr.Price == item.CostPrice
+                                                                            && pr.SellingPrice == item.SellingPrice);
+                    var priceId = 0;
+                    PriceDetail priceDetailItem = null;
+                    if (priceDetails.Any())
                     {
-                        BillId = RunningBillNo,
-                        ProductId = item.ProductId,
-                        Price = item.CostPrice,
-                        SellingPrice = item.SellingPrice.Value
-                    };
-                    _rmsEntities.PriceDetails.Add(priceDetailItem); 
-                }
-
-                var stock = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
-                                                            && s.PriceId == priceId
-                                                            && s.ExpiryDate.CompareTo(item.ExpiryDate.Value) == 0);
-                var qty = item.Qty;
-                if (item.FreeIssue.HasValue)
-                {
-                    qty = item.FreeIssue.Value + item.Qty.Value;
-                    _rmsEntities.PurchaseFreeDetails.Add(
-                        new PurchaseFreeDetail()
+                        //Same item exists. Just update the with new billId 
+                        priceDetailItem = priceDetails.FirstOrDefault();
+                        priceDetailItem.BillId = item.BillId;
+                        priceId = priceDetailItem.PriceId;
+                        priceDetailItem.SellingPrice = item.SellingPrice.Value;
+                    }
+                    else
+                    {
+                        //New Price, add it to price details list
+                        priceDetailItem = new PriceDetail()
                         {
+                            BillId = RunningBillNo,
                             ProductId = item.ProductId,
-                            FreeQty = item.FreeIssue.Value,
-                            FreeAmount = item.PurchasePrice * item.FreeIssue.Value
-                            //BillId = RunningBillNo
-                        });
-                }
-                if (stock.Any())
-                {                                      
-                    stock.FirstOrDefault().Quantity += qty.Value;
-                }
-                else
-                {
-                    //Add stock for new price
-                    var newStock = new Stock()
+                            Price = item.CostPrice,
+                            SellingPrice = item.SellingPrice.Value
+                        };
+                        _rmsEntities.PriceDetails.Add(priceDetailItem); 
+                    }
+
+                    var stock = _rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
+                                                                && s.PriceId == priceId
+                                                                && s.ExpiryDate.CompareTo(item.ExpiryDate.Value) == 0);
+                    var qty = item.Qty;
+                    if (item.FreeIssue.HasValue)
                     {
-                        //PriceId = priceDetailItem.PriceId,
-                        ExpiryDate = item.ExpiryDate.Value,
-                        Quantity = qty.Value,
-                        ProductId = item.ProductId
-                    };
+                        qty = item.FreeIssue.Value + item.Qty.Value;
+                        _rmsEntities.PurchaseFreeDetails.Add(
+                            new PurchaseFreeDetail()
+                            {
+                                ProductId = item.ProductId,
+                                FreeQty = item.FreeIssue.Value,
+                                FreeAmount = item.PurchasePrice * item.FreeIssue.Value
+                                //BillId = RunningBillNo
+                            });
+                    }
+                    if (stock.Any())
+                    {                                      
+                        stock.FirstOrDefault().Quantity += qty.Value;
+                    }
+                    else
+                    {
+                        //Add stock for new price
+                        var newStock = new Stock()
+                        {
+                            //PriceId = priceDetailItem.PriceId,
+                            ExpiryDate = item.ExpiryDate.Value,
+                            Quantity = qty.Value,
+                            ProductId = item.ProductId
+                        };
 
-                    _rmsEntities.Stocks.Add(newStock);
+                        _rmsEntities.Stocks.Add(newStock);
 
-                    newStock.PriceDetail = priceDetailItem;
+                        newStock.PriceDetail = priceDetailItem;
+                    }
+
+                    purchaseDetail.PurchasedQty = qty;
+                    purchaseDetail.PriceId = priceDetailItem.PriceId;
+                    purchaseDetail.PriceDetail = priceDetailItem;
+                    purchase.PurchaseDetails.Add(purchaseDetail);
                 }
 
-                purchaseDetail.PurchasedQty = qty;
-                purchaseDetail.PriceId = priceDetailItem.PriceId;
-                purchaseDetail.PriceDetail = priceDetailItem;
-                purchase.PurchaseDetails.Add(purchaseDetail);
-            }
+                //check if complete amount is paid, else mark it in PaymentDetails table against the customer
+                var outstandingBalance = _totalAmount.Value - AmountPaid;
+                if (outstandingBalance > 0)
+                {
+                    //var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
+                    //var result = Utility.ShowMessageBoxWithOptions(msg);
+                    //if (result == System.Windows.MessageBoxResult.Yes)
+                    //{
+                        _rmsEntities.PurchasePaymentDetails.Add
+                            (
+                                new PurchasePaymentDetail   
+                                {
+                                    PurchaseBillId = purchase.BillId,
+                                    AmountPaid = AmountPaid,
+                                    CompanyId = _selectedCompany.Id
+                                }
+                            );
+                    //}
+                    var company = _rmsEntities.Companies.FirstOrDefault(c => c.Id == SelectedCompany.Id);
+                    company.DueAmount = company.DueAmount.HasValue ? company.DueAmount.Value + outstandingBalance : outstandingBalance;
+                }
 
-            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
-            var outstandingBalance = _totalAmount.Value - AmountPaid;
-            if (outstandingBalance > 0)
-            {
-                //var msg = "Outstanding balance Rs " + outstandingBalance + ". Do you want to keep as pending balance amount?";
-                //var result = Utility.ShowMessageBoxWithOptions(msg);
-                //if (result == System.Windows.MessageBoxResult.Yes)
-                //{
-                    _rmsEntities.PurchasePaymentDetails.Add
-                        (
-                            new PurchasePaymentDetail   
-                            {
-                                PurchaseBillId = purchase.BillId,
-                                AmountPaid = AmountPaid,
-                                CompanyId = _selectedCompany.Id
-                            }
-                        );
-                //}
-                var company = _rmsEntities.Companies.FirstOrDefault(c => c.Id == SelectedCompany.Id);
-                company.DueAmount = company.DueAmount.HasValue ? company.DueAmount.Value + outstandingBalance : outstandingBalance;
-            }
+                var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+                _category.RollingNo = _runningBillNo;
 
-            var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-            _category.RollingNo = _runningBillNo;
+                _rmsEntities.Purchases.Add(purchase);
+                _rmsEntities.SaveChanges();
 
-            _rmsEntities.Purchases.Add(purchase);
-            _rmsEntities.SaveChanges();
+                var currentRunningBillNo = _runningBillNo;
 
-            if (parameter.ToString() == "PrintSave")
-            {
-                //Call the print on print & save
-                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
-                psummVM.RunningBillNo = _runningBillNo;
-                psummVM.PrintCommand.Execute(null);
-            }
+                if (parameter.ToString() == "PrintSave")
+                {
+                    App.Current.Dispatcher.BeginInvoke((Action) (()=> 
+                    {
+                        //Call the print on print & save
+                        PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+                        psummVM.RunningBillNo = currentRunningBillNo;
+                        psummVM.PrintCommand.Execute(null);
+                    }));
+                 }
 
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-            RunningBillNo = _runningBillNo;
+                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                RunningBillNo = _runningBillNo;
             
-            Clear();
+                Clear();
 
-            
+            }).ContinueWith(
+            (t) =>
+            {
+                PanelLoading = false;
+            });
         }
 
         private void SaveOnEdit(object parameter)
@@ -599,11 +617,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                 if (purchaseDetail == null)
                 {
-                    purchaseDetail = _rmsEntities.PurchaseDetails.Create();
-                    purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
-                    purchaseDetail.PriceId = priceDetailItem.PriceId;
-                    _rmsEntities.PurchaseDetails.Add(purchaseDetail);
-
                     if (purchaseDetailItemExtn.FreeIssue.HasValue)
                     {
                         _rmsEntities.PurchaseFreeDetails.Add(
@@ -611,11 +624,25 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             {
                                 ProductId = purchaseDetailItemExtn.ProductId,
                                 FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
-                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value
-                                //BillId = _editBillNo
+                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
+                                BillId = _editBillNo.Value
                             });
+
+                        //oontinue only if free item is added
+                        if (purchaseDetailItemExtn.Qty == 0 || purchaseDetailItemExtn.Qty == null)
+                        {
+                            var maxPriceId = _rmsEntities.Stocks.Where(s => s.ProductId == purchaseDetailItemExtn.ProductId).Max(i => i.PriceId);
+                            var stockLastAddedItem = _rmsEntities.Stocks.FirstOrDefault(m => m.PriceId == maxPriceId);
+                                                                        //.Aggregate((agg,next) => next.PriceId > agg.PriceId ? next : agg);
+                            stockLastAddedItem.Quantity += purchaseDetailItemExtn.FreeIssue.Value;
+                            continue;
+                        }
                     }
 
+                    purchaseDetail = _rmsEntities.PurchaseDetails.Create();
+                    purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
+                    purchaseDetail.PriceId = priceDetailItem.PriceId;
+                    _rmsEntities.PurchaseDetails.Add(purchaseDetail);
 
                     SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
 
@@ -757,6 +784,23 @@ namespace RetailManagementSystem.ViewModel.Purchases
             TranscationDate = purchases.AddedOn.Value;
             SelectedPaymentId = Char.Parse(purchases.PaymentMode);
             InvoiceNo = purchases.InvoiceNo;
+
+            //only free items without any purchase
+            var freeIssueOnly = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == _editBillNo).FirstOrDefault();
+
+            if(freeIssueOnly != null && freeIssueOnly.FreeQty !=0)
+            {
+                var purchaseDetailExtn = new PurchaseDetailExtn()
+                {
+                    ProductId = freeIssueOnly.ProductId,
+                    Qty = freeIssueOnly.FreeQty,
+                    //SellingPrice = item.SellingPrice,
+                    BillId = freeIssueOnly.BillId
+                };
+
+                _purchaseDetailsList.Add(purchaseDetailExtn);
+            }
+
             var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purchases.BillId).ToList();
 
             var tempTotalAmount = 0.0M;
