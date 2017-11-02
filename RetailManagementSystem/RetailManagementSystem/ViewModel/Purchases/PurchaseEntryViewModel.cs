@@ -431,10 +431,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
        
         public bool CanSave(object parameter)
         {
-            //return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
-            //        _salesDetailsList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
-            ////return IsDirty;
-            return true;
+            return _selectedCompany != null && _selectedCompany.Id != 0 && _purchaseDetailsList.Count != 0 &&
+                    _purchaseDetailsList[0].ProductId != 0 && _selectedCompanyText == _selectedCompany.Name;
         }
 
         private void OnSave(object parameter)
@@ -448,7 +446,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
-
                 //Add free items to free items table
                 //Sum up the free item to main stock
                 var purchase = new Purchase()
@@ -469,6 +466,18 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                 foreach (var item in _purchaseDetailsList)
                 {
+                    if(item.Qty ==null || item.Qty <= 0)
+                    {
+                        Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
+                        return;
+
+                        //App.Current.Dispatcher.BeginInvoke(
+                        //    (Action)(() =>
+                        //    {
+                        //        Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
+                        //    }
+                        //    ));
+                    }
                     var purchaseDetail = new PurchaseDetail();
                     purchaseDetail.ProductId = item.ProductId;
                     purchaseDetail.Discount = item.Discount;                

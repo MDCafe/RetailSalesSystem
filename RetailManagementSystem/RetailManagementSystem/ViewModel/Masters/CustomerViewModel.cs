@@ -14,11 +14,18 @@ namespace RetailManagementSystem.ViewModel.Masters
         Customer _customer;
         bool _isEditMode;
         IEnumerable<Customer> _customersList;
+        IEnumerable<Category> _customerCategory;
+        RMSEntities _rmsEntities;
 
         public CustomerViewModel()
         {
             //var names = RMSEntitiesHelper.RMSEntities.Customers.SelectMany(c => c.Name);
             _customer = new Customer();
+            _rmsEntities = new RMSEntities();
+            var cnt = _rmsEntities.Categories.Count();
+
+            _customerCategory = _rmsEntities.Categories.Where(c => c.parentId == 1).ToList();
+
         }
 
         #region Public Variables
@@ -28,7 +35,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             get
             {
                 if(_customersList == null)
-                    _customersList = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
+                    _customersList = _rmsEntities.Customers.ToList();
 
                 return _customersList;
             }
@@ -56,6 +63,19 @@ namespace RetailManagementSystem.ViewModel.Masters
         }
 
         public string SearchText { get; set; }
+
+        public IEnumerable<Category> CustomerCategory
+        {
+            get
+            {
+                return _customerCategory;
+            }
+
+            set
+            {
+                _customerCategory = value;
+            }
+        }
 
         #endregion
 
@@ -112,7 +132,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                             _isEditMode = false;
                             DblClickSelectedCustomer = null;
-                            CustomersList = RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();
+                            CustomersList = _rmsEntities.Customers.ToList();
                             SearchText = "";
                         }
                         );
@@ -149,13 +169,13 @@ namespace RetailManagementSystem.ViewModel.Masters
             {
                 if (_isEditMode)
                 {
-                    var cust = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+                    var cust = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
                     cust = _customer;
                 }
                 else
-                    RMSEntitiesHelper.Instance.RMSEntities.Customers.Add(_customer);
+                    _rmsEntities.Customers.Add(_customer);
 
-                RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+                _rmsEntities.SaveChanges();
                 ClearCommand.Execute(null);
                 RaisePropertyChanged("CustomersList");
             }
@@ -194,15 +214,15 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return;
             }
 
-            var cust = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+            var cust = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
             if(cust == null)
             {
                 Utility.ShowMessageBoxWithOptions("Customer : " + _customer.Name + " doesn't exist");
                 return;
             }
 
-            RMSEntitiesHelper.Instance.RMSEntities.Customers.Remove(cust);
-            RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+            _rmsEntities.Customers.Remove(cust);
+            _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
             RaisePropertyChanged("CustomersList");         
         }
@@ -256,6 +276,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return _searchCommand;
             }
         }
+
+       
 
 
         #endregion

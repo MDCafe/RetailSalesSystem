@@ -109,15 +109,16 @@
                                   " from Products p, PriceDetails pd, Stocks st " +
                                   "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                   " and st.Quantity != 0 " +
-                                  //" union " +
-                                  //  "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
-                                  //  "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId'" +
-                                  //  " from Products p, PriceDetails pd, Stocks st " +
-                                  //  " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                  //  " and st.Quantity = 0 " +
-                                  //  " and St.ModifiedOn = " +
-                                  //  " (select max(ModifiedOn) from Stocks s " +
-                                  //   "   where s.ProductId = st.ProductId) " +
+                                  " union " +
+                                    "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
+                                    "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                    " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'" +
+                                    " from Products p, PriceDetails pd, Stocks st " +
+                                    " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                    " and st.Quantity = 0 " +
+                                    " and St.ModifiedOn = " +
+                                    " (select max(ModifiedOn) from Stocks s " +
+                                     "   where s.ProductId = st.ProductId) " +
                                     " order by ProductName ";
 
             return RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();

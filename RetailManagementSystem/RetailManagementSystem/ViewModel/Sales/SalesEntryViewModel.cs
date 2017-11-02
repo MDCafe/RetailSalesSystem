@@ -395,104 +395,117 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSave(object parameter)
         {
-            Monitor.Enter(rootLock);
-
+           
             //var result1 = Utility.IsValid(parameter as DependencyObject);
 
-            if(_salesDetailsList.Any(s=> s.Qty > s.AvailableStock))
+            PanelLoading = true;
+            var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
-                Utility.ShowErrorBox("Quantity can't be more than the available stock");
-                return;
-            }
-
-            //check if complete amount is paid, else mark it in PaymentDetails table against the customer
-            var outstandingBalance = _totalAmount.Value - AmountPaid;
-            if (outstandingBalance > 0)
-            {
-                //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
-                //var result = Utility.ShowMessageBoxWithOptions(msg);
-
-                //if (result == System.Windows.MessageBoxResult.Cancel) return;
-
-                //if (result == System.Windows.MessageBoxResult.Yes)
+                //Monitor.Enter(rootLock);
+                //if(_salesDetailsList.Any(s=> s.Qty > s.AvailableStock || ))
                 //{
-                    RMSEntitiesHelper.Instance.RMSEntities.PaymentDetails.Add
-                        (
-                            new PaymentDetail
-                            {
-                                BillId = _billSales.BillId,
-                                AmountPaid = AmountPaid,
-                                CustomerId = _selectedCustomer.Id
-                            }
-                        );
+                //    Utility.ShowErrorBox("Quantity can't be more than the available stock");
+                //    return;
                 //}
-                var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
-                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
-            }
+
+                //check if complete amount is paid, else mark it in PaymentDetails table against the customer
+                var outstandingBalance = _totalAmount.Value - AmountPaid;
+                if (outstandingBalance > 0)
+                {
+                    //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
+                    //var result = Utility.ShowMessageBoxWithOptions(msg);
+
+                    //if (result == System.Windows.MessageBoxResult.Cancel) return;
+
+                    //if (result == System.Windows.MessageBoxResult.Yes)
+                    //{
+                        RMSEntitiesHelper.Instance.RMSEntities.PaymentDetails.Add
+                            (
+                                new PaymentDetail
+                                {
+                                    BillId = _billSales.BillId,
+                                    AmountPaid = AmountPaid,
+                                    CustomerId = _selectedCustomer.Id
+                                }
+                            );
+                    //}
+                    var customer = RMSEntitiesHelper.Instance.RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                    customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
+                }
 
 
-            log.DebugFormat("Enter save :{0}", _guid);
-            _billSales.CustomerId = _selectedCustomer.Id;
-            _billSales.CustomerOrderNo = OrderNo;            
-            _billSales.RunningBillNo = _runningBillNo;
-            _billSales.PaymentMode = SelectedPaymentId.ToString();
+                log.DebugFormat("Enter save :{0}", _guid);
+                _billSales.CustomerId = _selectedCustomer.Id;
+                _billSales.CustomerOrderNo = OrderNo;            
+                _billSales.RunningBillNo = _runningBillNo;
+                _billSales.PaymentMode = SelectedPaymentId.ToString();
 
-            if (_isEditMode)
-            {
-                SaveOnEdit();
-                return;
-            }
+                if (_isEditMode)
+                {
+                    SaveOnEdit();
+                    return;
+                }
 
-            foreach (var saleDetailItem in _salesDetailsList)
-            {
-                if (saleDetailItem.ProductId == 0) continue;
-                var saleDetail = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Create();
-                saleDetail.Discount = saleDetailItem.Discount;
-                saleDetail.PriceId = saleDetailItem.PriceId;
-                saleDetail.ProductId = saleDetailItem.ProductId;
-                saleDetail.Qty = saleDetailItem.Qty;
-                saleDetail.SellingPrice = saleDetailItem.SellingPrice;
-                saleDetail.BillId = _billSales.BillId;                
-                _billSales.SaleDetails.Add(saleDetail);
+                foreach (var saleDetailItem in _salesDetailsList)
+                {
+                    if (saleDetailItem.ProductId == 0) continue;
+                    if(saleDetailItem.Qty == null || saleDetailItem.Qty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                    {
+                        Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
+                        return;
+                    }
+                    var saleDetail = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Create();
+                    saleDetail.Discount = saleDetailItem.Discount;
+                    saleDetail.PriceId = saleDetailItem.PriceId;
+                    saleDetail.ProductId = saleDetailItem.ProductId;
+                    saleDetail.Qty = saleDetailItem.Qty;
+                    saleDetail.SellingPrice = saleDetailItem.SellingPrice;
+                    saleDetail.BillId = _billSales.BillId;                
+                    _billSales.SaleDetails.Add(saleDetail);
 
-                var stockToReduceColln = RMSEntitiesHelper.Instance.RMSEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
-                var stock = stockToReduceColln.FirstOrDefault();
+                    var stockToReduceColln = RMSEntitiesHelper.Instance.RMSEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
+                    var stock = stockToReduceColln.FirstOrDefault();
                              
-                if(stock != null)
-                {                    
-                        stock.Quantity -= saleDetailItem.Qty.Value;
-                }                
-            }
+                    if(stock != null)
+                    {                    
+                            stock.Quantity -= saleDetailItem.Qty.Value;
+                    }                
+                }
 
-            //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+                //_totalAmount = _extensions.Calculate(_totalAmount.Value);
 
-            _billSales.TotalAmount = _totalAmount;
-            _billSales.Discount = GetDiscountValue();
-            decimal? oldValue;
-            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
+                _billSales.TotalAmount = _totalAmount;
+                _billSales.Discount = GetDiscountValue();
+                decimal? oldValue;
+                _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
 
            
-            RMSEntitiesHelper.Instance.RMSEntities.Sales.Add(_billSales);
+                RMSEntitiesHelper.Instance.RMSEntities.Sales.Add(_billSales);
 
             
-            RemoveTempSalesItemForGUID(_guid);
-            //this is done to get the latest bill no
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-            _billSales.RunningBillNo = _runningBillNo;
+                RemoveTempSalesItemForGUID(_guid);
+                //this is done to get the latest bill no
+                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                _billSales.RunningBillNo = _runningBillNo;
 
-            var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-            _category.RollingNo = _runningBillNo;
+                var _category = RMSEntitiesHelper.Instance.RMSEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+                _category.RollingNo = _runningBillNo;
 
-            RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
-            Monitor.Exit(rootLock);
-            log.DebugFormat("Exit save :{0}", _guid);
+                RMSEntitiesHelper.Instance.RMSEntities.SaveChanges();
+                //Monitor.Exit(rootLock);
+                log.DebugFormat("Exit save :{0}", _guid);
 
-            if(parameter == null)
-                _salesBillPrint.print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount);
+                if(parameter == null)
+                    _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount,_showRestrictedCustomer);
 
-            if (_salesParams.GetTemproaryData)
-                _closeCommand.Execute(null);
-            Clear();
+                if (_salesParams.GetTemproaryData)
+                    _closeCommand.Execute(null);
+                Clear();
+            }).ContinueWith(
+            (t) =>
+            {
+                PanelLoading = false;
+            });
         }       
 
         private void SaveInterim()
@@ -691,9 +704,14 @@ namespace RetailManagementSystem.ViewModel.Sales
             var saleDetailsForBill = RMSEntitiesHelper.Instance.RMSEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);            
 
             var tempTotalAmount = 0.0M;
-            foreach (var saleDetailItem in saleDetailsForBill)
+            var priceIdParam = new MySql.Data.MySqlClient.MySqlParameter("priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
+            foreach (var saleDetailItem in saleDetailsForBill.ToList())
             {
-                var productPrice = _productsPriceList.Where(p => p.PriceId == saleDetailItem.PriceId).FirstOrDefault();
+                priceIdParam.Value = saleDetailItem.PriceId;
+                //var productPrice = RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>
+                //                       ("CALL GetProductPriceForPriceId(@priceId)", priceIdParam).FirstOrDefault();
+
+                var productPrice = _productsPriceList.FirstOrDefault(p => p.PriceId == saleDetailItem.PriceId);
                 var discount = saleDetailItem.Discount.HasValue ? saleDetailItem.Discount.Value : 0.00M;
 
                 var saleDetailExtn = new SaleDetailExtn()
@@ -748,7 +766,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             SelectedCustomer.Id = 1;
             SelectedPaymentId = '0';
             OrderNo = "";
-            SaleDetailList.Clear();
+            SaleDetailList = new ObservableCollection<SaleDetailExtn>();
             _billSales = RMSEntitiesHelper.Instance.RMSEntities.Sales.Create();     
             _totalAmount = 0;
             TotalAmount = null;
@@ -869,7 +887,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                     SaleDetailExtn.Amount = amount;
                     SaleDetailExtn.Discount = 0;
                 };
-
+                //&& SaleDetailExtn.AvailableStock >
+                //SaleDetailExtn.Qty.Value
                 SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
             }
         }
@@ -878,8 +897,6 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             return true;
         }      
-
-       
 
         private void SaveDataTemp()
         {

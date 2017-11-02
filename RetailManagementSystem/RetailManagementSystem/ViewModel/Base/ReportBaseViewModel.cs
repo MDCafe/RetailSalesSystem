@@ -31,8 +31,6 @@ namespace RetailManagementSystem.ViewModel.Base
                 _categoryId = Constants.COMPANIES_OTHERS;
             else
                 _categoryId = Constants.COMPANIES_MAIN;
-
-
         }
 
         #region CloseCommand

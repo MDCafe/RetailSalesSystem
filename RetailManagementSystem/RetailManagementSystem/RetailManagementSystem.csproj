@@ -17,7 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>\\GOKU-PC\Deployments\</PublishUrl>
+    <PublishUrl>\\MUNCHEE-PC\Users\Public\RMS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -27,11 +27,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\GOKU-PC\Deployments\</InstallUrl>
+    <InstallUrl>\\MUNCHEE-PC\Users\Public\RMS\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>18</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -259,6 +259,7 @@
     </Compile>
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\ErrorValidator.cs" />
+    <Compile Include="Utilities\MySQLDataAccess.cs" />
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />

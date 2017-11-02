@@ -72,7 +72,9 @@
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="3" TextWrapping="Wrap" Text="{Binding SelectedCustomer.MobileNo}" VerticalAlignment="Top" Width="217"/>
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="3" TextWrapping="Wrap" Text="{Binding SelectedCustomer.LanNo}" VerticalAlignment="Top" Width="175"/>
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedCustomer.Email}" VerticalAlignment="Top" Width="217"/>
-        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CustomerType}" VerticalAlignment="Top" Width="175"/>
+        <ComboBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" VerticalAlignment="Top" Width="175"
+                  ItemsSource="{Binding CustomerCategory}" DisplayMemberPath="name" SelectedValuePath="Id" SelectedValue="{Binding SelectedCustomer.CustomerTypeId}"
+                  />
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.BalanceDue}" VerticalAlignment="Top" Width="217"/>
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditLimit}" VerticalAlignment="Top" Width="175"/>
         <TextBox  Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditDays}" VerticalAlignment="Top" Width="217"/>

@@ -35,5 +35,10 @@ namespace RetailManagementSystem.View.Purchases
             custComboBoxCol.comboBox.SelectedIndex = -1;
             custComboBoxCol.ClearSelection();
         }
+
+        private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        }
     }   
 }

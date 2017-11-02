@@ -19,7 +19,7 @@ namespace RetailManagementSystem.UserControls
         IEnumerable<SaleDetailExtn> _saleDetails;
         Sale _billSales;
         decimal? _amountPaid, _balanceAmt;
-
+        bool _showRestrictedCustomers;
         static readonly ILog _log = LogManager.GetLogger(typeof(SalesBillPrint));
 
         public SalesBillPrint()
@@ -61,7 +61,8 @@ namespace RetailManagementSystem.UserControls
 
         }
 
-        public void print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal? amountPaid,decimal? balanceAmt)
+        public void Print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal? amountPaid,decimal? balanceAmt,
+                          bool showRestrictedCustomers)
         {
             try
             {
@@ -69,7 +70,8 @@ namespace RetailManagementSystem.UserControls
                 _saleDetails = saleDetails;
                 _billSales = billSales;
                 _amountPaid = amountPaid;
-                _balanceAmt = balanceAmt; 
+                _balanceAmt = balanceAmt;
+                _showRestrictedCustomers = showRestrictedCustomers;
                 _pdoc.Print();
             }
             catch (Exception ex)
@@ -116,7 +118,10 @@ namespace RetailManagementSystem.UserControls
             var rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
 
             e.Graphics.DrawString(DateTime.Now.ToString("dd/MM/yy HH:mm"), itemFont, solidBrush, startX, startY + Offset);
-            e.Graphics.DrawString("Bill No: " + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
+            if(_showRestrictedCustomers)
+                e.Graphics.DrawString("Bill No:C" + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
+            else
+                e.Graphics.DrawString("Bill No: " + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
             //drawFormat.Alignment = StringAlignment.Far;
             Offset = Offset + 20;
 
@@ -137,7 +142,7 @@ namespace RetailManagementSystem.UserControls
             rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
             
             e.Graphics.DrawString("Qty", itemFont, solidBrush, startX, startY + Offset);
-            e.Graphics.DrawString("Unit", itemFont, solidBrush, rect, drawFormat);
+            e.Graphics.DrawString("Unit Price", itemFont, solidBrush, rect, drawFormat);
             e.Graphics.DrawString("Total", itemFont, solidBrush, rect, rightAlignformat);
 
             Offset = Offset + 5;
