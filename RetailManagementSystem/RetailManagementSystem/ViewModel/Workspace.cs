@@ -339,6 +339,41 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenProductCommand
+        RelayCommand<object> _openProductCommand = null;
+        public ICommand OpenProductCommand
+        {
+            get
+            {
+                if (_openProductCommand == null)
+                {
+                    _openProductCommand = new RelayCommand<object>((p) => OnOpenProductCommand());
+                }
+
+                return _openProductCommand;
+            }
+        }
+
+        private void OnOpenProductCommand()
+        {
+            try
+            {
+                View.Masters.Products productView = new View.Masters.Products();
+                productView.ShowDialog();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
         #region ActiveDocument
 
         private DocumentViewModel _activeDocument = null;

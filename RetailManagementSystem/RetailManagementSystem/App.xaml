@@ -10,6 +10,10 @@
             </Style.Setters>
         </Style>
 
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="Black"></Setter>
+        </Style>
+
         <Style TargetType="{x:Type DatePickerTextBox}">
             <Setter Property="Control.Template">
                 <Setter.Value>

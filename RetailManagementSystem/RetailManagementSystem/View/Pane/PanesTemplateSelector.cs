@@ -65,6 +65,11 @@ namespace RetailManagementSystem.View.Pane
             get;
             set;            
         }
+        public DataTemplate ProductsDataTemplate
+        {
+            get;
+            set;
+        }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -84,6 +89,8 @@ namespace RetailManagementSystem.View.Pane
             if (item is ReturnPurchaseViewModel) return ReturnPurchaseViewTemplate;
 
             if (item is ReportViewModel) return ReportViewTemplate;
+
+            if (item is ProductsViewModel) return ProductsDataTemplate;
 
             //if (item is FileStatsViewModel)
             //    return FileStatsViewTemplate;

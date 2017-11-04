@@ -21,7 +21,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         IEnumerable<PriceDetail> _returnPriceList;        
         Purchase _billPurchase;
         DateTime? _purchaseDate;        
-        bool _isBillBasedReturn, _panelLoading;
+        bool _isBillBasedReturn;
         new decimal? _totalAmount;
         Company _selectedCompany;
         string _modeOfPayment;
@@ -88,19 +88,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
         public IEnumerable<CodeMaster> ReturnReasons
         { get { return _rmsEntities.CodeMasters.Local.Where(r => r.Code == "RTN"); } }
-
-        public bool PanelLoading
-        {
-            get
-            {
-                return _panelLoading;
-            }
-            set
-            {
-                _panelLoading = value;
-                RaisePropertyChanged("PanelLoading");
-            }
-        }
 
         public ReturnPurchaseViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
         {            

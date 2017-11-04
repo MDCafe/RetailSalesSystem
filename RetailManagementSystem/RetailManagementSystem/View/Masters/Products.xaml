@@ -1,0 +1,112 @@
+﻿<Window x:Class="RetailManagementSystem.View.Masters.Products"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RetailManagementSystem.View.Masters"
+        xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        mc:Ignorable="d"
+        Name="ProductsWindow"
+        xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
+        Title="Products" Height="536" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <conv:UOMCodeConverter x:Key="uomCodeConverter"/>
+        <conv:CompanyCodeConverter x:Key="companyCodeConverter"/>
+        <conv:CategoryCodeConverter x:Key="categoryCodeConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="61*"/>
+            <ColumnDefinition Width="88*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="72*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+
+
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Border Height="50" BorderThickness="2" BorderBrush="Blue" CornerRadius="4" Grid.Row="0"  Grid.ColumnSpan="4" Margin="5">
+            <Label Content="Products" Background="LightBlue" FontWeight="Bold" 
+                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"/>
+        </Border>
+        <Label x:Name="label1" Content="Name"  Margin="5,5,5,0" Grid.Row="1" VerticalAlignment="Top" Height="26"/>
+
+        <Label x:Name="label2" Content="Description"  Margin="5,5,5,0" Grid.Row="2" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label3" Content="Supplier"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label4" Content="Category"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <Label x:Name="label5" Content="Unit of Measure"  Margin="5,5,5,0" Grid.Row="4" VerticalAlignment="Top" Height="26"/>
+        <Label x:Name="label6" Content="Re-Order Point"  Margin="5,5,5,0" Grid.Row="4" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <Label  Content="Code"  Margin="5,5,5,0" Grid.Row="2" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+
+        <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding ProductsList}"  
+                                      AutoGenerateColumns="False" RowHeight="25" 
+                                      Grid.Row="6"
+                                      SelectionMode="Single" Grid.ColumnSpan="4"
+                                      IsReadOnly="True"
+                                      Margin="5"
+                                      SelectedItem="{Binding DblClickSelectedProduct}"
+                                       >
+            <toolKit:DataGrid.InputBindings>
+                <MouseBinding   MouseAction="LeftDoubleClick"
+                                Command="{Binding DoubleClickCommand}"
+                                CommandParameter="{Binding CollectionView/}"/>
+            </toolKit:DataGrid.InputBindings>
+            <toolKit:DataGrid.Columns>
+                <toolKit:DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+                <toolKit:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <toolKit:DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="200" />
+                <toolKit:DataGridTextColumn Header="Unit Of Measure" Binding="{Binding MeasuringUnit, Converter={StaticResource uomCodeConverter}}" />
+                <toolKit:DataGridTextColumn Header="Supplier Name" Binding="{Binding Company, Converter={StaticResource companyCodeConverter}}" />
+                <toolKit:DataGridTextColumn Header="Category" Binding="{Binding Category,  Converter={StaticResource categoryCodeConverter}}" />
+                <toolKit:DataGridTextColumn Header="Re-Order Point" Binding="{Binding ReorderPoint}" />
+            </toolKit:DataGrid.Columns>
+        </toolKit:DataGrid>
+        <TextBox Grid.Column="1" Margin="5" Grid.Row="1" Height="23" TextWrapping="Wrap" Text="{Binding SelectedProduct.Name}" Width="217" HorizontalAlignment="Left" BorderBrush="Black"/>
+        <TextBox Grid.Column="1" Margin="5" Grid.Row="2"  Height="23" Text="{Binding SelectedProduct.Description}" Width="217" HorizontalAlignment="Left"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedProduct.Code}" VerticalAlignment="Top" Width="170"/>
+        <ComboBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="3" 
+                  SelectedValue="{Binding SelectedProduct.CompanyId}" VerticalAlignment="Top" Width="217"
+                  ItemsSource="{Binding Companies}" SelectedValuePath="Id" DisplayMemberPath="Name"/>
+        <ComboBox Name="Category" Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="3" 
+                  SelectedValue="{Binding SelectedProduct.CategoryId}" VerticalAlignment="Top" Width="175"
+                  ItemsSource="{Binding ProductCategories}" SelectedValuePath="Id" DisplayMemberPath="name"
+                  />
+        <ComboBox Name="UOM" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" 
+                  SelectedValue="{Binding SelectedProduct.UnitOfMeasure}" VerticalAlignment="Top" Width="217"
+                  ItemsSource="{Binding UnitOfMeasures}" SelectedValuePath="Id" DisplayMemberPath="unit"
+                 />
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedProduct.ReorderPoint}" VerticalAlignment="Top" Width="175"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="9"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
+            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
+        </StackPanel>
+        <Label Content="Search on Product Name" Grid.Row="5" Grid.Column="0" Margin="0,0,0,5" />
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3">
+            <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                      Width="217">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}"></KeyBinding>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Image Source="/RetailManagementSystem;component/Images/search_blue.png" >
+                <Image.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding SearchCommand, Mode=OneTime}" />
+                </Image.InputBindings>
+            </Image>
+        </StackPanel>
+
+
+    </Grid>
+</Window>

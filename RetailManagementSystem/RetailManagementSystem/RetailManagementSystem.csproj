@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -159,6 +159,7 @@
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Converter\CodeConverter.cs" />
     <Compile Include="CodeMaster.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -271,6 +272,7 @@
     <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
+    <Compile Include="ViewModel\Masters\ProductsViewModel.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
     <Compile Include="ViewModel\Purchases\AmendPurchasesViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
@@ -290,6 +292,9 @@
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Masters\Products.xaml.cs">
+      <DependentUpon>Products.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Masters\Customer.xaml.cs">
       <DependentUpon>Customer.xaml</DependentUpon>
@@ -351,6 +356,10 @@
     <Page Include="View\Entitlements\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Masters\Products.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Masters\Customer.xaml">
       <SubType>Designer</SubType>
@@ -425,6 +434,7 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
+    <Resource Include="Images\Products.png" />
     <Content Include="View\Reports\Sales\SalesBill.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

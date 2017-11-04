@@ -103,6 +103,8 @@
                     <RibbonGroup x:Name="Maintenance" Header="Maintenance">
                         <RibbonButton Label="Customers" LargeImageSource="Images\Users.jpg" ToolTipTitle="Add/Edit Customers" 
                                        KeyTip="C" Command="{Binding OpenCustomerCommand}" CommandParameter="false"></RibbonButton>
+                        <RibbonButton Label="Products" LargeImageSource="Images\Products.png" ToolTipTitle="Add/Edit Products" 
+                                       KeyTip="P" Command="{Binding OpenProductCommand}" CommandParameter="false"></RibbonButton>
                         <!--<RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
                                       ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
                         <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>-->
@@ -189,7 +191,7 @@
                 Name="DockingManager"
                          >
                 <xcad:DockingManager.Theme>
-                    <xcad:AeroTheme/>
+                    <xcad:VS2010Theme/>
                 </xcad:DockingManager.Theme>
                 <xcad:DockingManager.LayoutItemTemplateSelector>
                     <pane:PanesTemplateSelector>
@@ -228,6 +230,12 @@
                                 <MastersView:Customer/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.CustomerDataTemplate>
+
+                        <pane:PanesTemplateSelector.ProductsDataTemplate>
+                            <DataTemplate>
+                                <MastersView:Products/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.ProductsDataTemplate>
 
                     </pane:PanesTemplateSelector>
                 </xcad:DockingManager.LayoutItemTemplateSelector>
