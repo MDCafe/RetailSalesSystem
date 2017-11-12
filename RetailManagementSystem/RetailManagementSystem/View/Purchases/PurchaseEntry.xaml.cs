@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.Model;
+using System;
 
 namespace RetailManagementSystem.View.Purchases
 {
@@ -21,6 +22,14 @@ namespace RetailManagementSystem.View.Purchases
                 _purchaseEntryViewModel = DataContext as PurchaseEntryViewModel;
                 custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
+                _purchaseEntryViewModel.notifierCollectionChangedEvent +=() =>
+                {
+                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
+                    }));
+                 };
+
                 //_salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
             };
         }      

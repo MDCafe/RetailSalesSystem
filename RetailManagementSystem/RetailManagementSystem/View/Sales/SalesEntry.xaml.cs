@@ -4,6 +4,7 @@ using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.Model;
 using System.Windows.Input;
 using System.Windows;
+using System;
 
 namespace RetailManagementSystem.View.Sales
 {
@@ -28,7 +29,15 @@ namespace RetailManagementSystem.View.Sales
                 _salesViewModel = this.DataContext as SalesEntryViewModel;
                 custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
-                _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;                
+                _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
+
+                _salesViewModel.notifierCollectionChangedEvent += () =>
+                {
+                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                    }));
+                };
             };
 
             SalesDataGrid.PreviewKeyUp += (s, e) =>

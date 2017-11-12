@@ -3,5 +3,6 @@
     internal interface INotifier
     {
         void Notify(int runningNo,int category);
+        void NotifyPurchaseUpdate();
     }    
 }

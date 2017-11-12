@@ -330,15 +330,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
         public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
         {
             if (productPrice == null) return;
-            var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
-            var selRowSaleDetailExtn = _purchaseDetailsList[selectedIndex];
-            if (saleItem != null)
-            {
-                Utility.ShowWarningBox("Item is already added");
-                selRowSaleDetailExtn.ProductId = 0;
-                return;
-            }
-            SetPurchaseDetailExtn(productPrice, selRowSaleDetailExtn);
+            //var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
+            var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
+            //var selRowSaleDetailExtn = _purchaseDetailsList[selectedIndex];
+            //if (saleItem != null)
+            //{
+            //    Utility.ShowWarningBox("Item is already added");
+            //    selRowSaleDetailExtn.ProductId = 0;
+            //    return;
+            //}
+            SetPurchaseDetailExtn(productPrice, saleItem);
         }
 
         private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn)
@@ -493,9 +494,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     {
                         //Same item exists. Just update the with new billId 
                         priceDetailItem = priceDetails.FirstOrDefault();
-                        priceDetailItem.BillId = item.BillId;
+                        //priceDetailItem.BillId = item.BillId;
                         priceId = priceDetailItem.PriceId;
                         priceDetailItem.SellingPrice = item.SellingPrice.Value;
+                        purchaseDetail.PriceDetail = priceDetailItem;
                     }
                     else
                     {
@@ -526,9 +528,49 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                 //BillId = RunningBillNo
                             });
                     }
+
                     if (stock.Any())
-                    {                                      
-                        stock.FirstOrDefault().Quantity += qty.Value;
+                    {
+                        var st = stock.FirstOrDefault();
+                        st.Quantity += qty.Value;
+
+                        var stockTrans = _rmsEntities.StockTransactions.Where(s => s.StockId == st.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
+
+                        //stock transaction not available for this product. Add them 
+                        if(stockTrans == null)
+                        {
+                            var firstStockTrans = new StockTransaction()
+                            {
+                                OpeningBalance = item.Qty,
+                                Inward = item.Qty,
+                                ClosingBalance = item.Qty,
+                                StockId = st.Id
+                            };
+
+                            _rmsEntities.StockTransactions.Add(firstStockTrans);
+                        }
+                        //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
+                        else
+                        {
+
+                            var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
+                            if (dateDiff == 0)
+                            {
+                                stockTrans.Inward += item.Qty;
+                                stockTrans.ClosingBalance += item.Qty;
+                            }
+                            else
+                            {
+                                var newStockTrans = new StockTransaction()
+                                {
+                                    OpeningBalance = stockTrans.ClosingBalance,
+                                    Inward = item.Qty,
+                                    ClosingBalance = item.Qty + stockTrans.ClosingBalance,
+                                    StockId = st.Id
+                                };
+                                _rmsEntities.StockTransactions.Add(newStockTrans);
+                            }
+                        }
                     }
                     else
                     {
@@ -540,11 +582,22 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             Quantity = qty.Value,
                             ProductId = item.ProductId
                         };
-
+                        //first time stock for the new price
+                        var firstStockTrans = new StockTransaction()
+                        {
+                            OpeningBalance = item.Qty,
+                            Inward = item.Qty,
+                            ClosingBalance = item.Qty
+                        };
+                        firstStockTrans.Stock = newStock;
+                        
+                        _rmsEntities.StockTransactions.Add(firstStockTrans);
                         _rmsEntities.Stocks.Add(newStock);
 
                         newStock.PriceDetail = priceDetailItem;
                     }
+
+
 
                     purchaseDetail.PurchasedQty = qty;
                     purchaseDetail.PriceId = priceDetailItem.PriceId;
@@ -593,9 +646,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     }));
                  }
 
-                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-                RunningBillNo = _runningBillNo;
-            
                 Clear();
 
             }).ContinueWith(
@@ -637,7 +687,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                 BillId = _editBillNo.Value
                             });
 
-                        //oontinue only if free item is added
+                        //Continue only if free item is added
                         if (purchaseDetailItemExtn.Qty == 0 || purchaseDetailItemExtn.Qty == null)
                         {
                             var maxPriceId = _rmsEntities.Stocks.Where(s => s.ProductId == purchaseDetailItemExtn.ProductId).Max(i => i.PriceId);
@@ -674,13 +724,25 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
 
                 SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
-                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
+                var oldPriceId = purchaseDetail.PriceId;
+                //New  Price
+                if (priceDetailItem.PriceId ==0)
+                {
+                    purchaseDetail.PriceDetail = priceDetailItem;
+                }
+                else
+                    purchaseDetail.PriceId = priceDetailItem.PriceId;
+                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == oldPriceId
                                                                 && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
 
                 if (stock != null)
                 {
-                    var qtyToAdd = purchaseDetailItemExtn.OriginalQty.Value - purchaseDetail.PurchasedQty.Value;
-                    stock.Quantity = (stock.Quantity + Math.Abs(qtyToAdd));
+                    var purchaseQty = purchaseDetail.PurchasedQty.Value;
+                    stock.PriceId = priceDetailItem.PriceId;
+                    if (purchaseDetailItemExtn.OriginalQty.Value > purchaseDetail.PurchasedQty.Value)
+                        stock.Quantity -= (purchaseDetailItemExtn.OriginalQty.Value - purchaseQty);
+                    else
+                        stock.Quantity += (purchaseQty - purchaseDetailItemExtn.OriginalQty.Value);
                 }
             }
 
@@ -731,7 +793,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private void SetPurchaseDetailItem(PurchaseDetailExtn purchaseDetailExtn,  PurchaseDetail purchaseDetail)
         {
             purchaseDetail.Discount = purchaseDetailExtn.Discount;
-            purchaseDetail.PriceId = purchaseDetailExtn.PriceId;
+            //purchaseDetail.PriceId = purchaseDetailExtn.PriceId;
             purchaseDetail.ProductId = purchaseDetailExtn.ProductId;
             purchaseDetail.PurchasedQty = purchaseDetailExtn.Qty + purchaseDetailExtn.FreeIssue;
             purchaseDetail.ActualPrice = purchaseDetailExtn.PurchasePrice.Value;
@@ -769,6 +831,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             InvoiceNo = null;
             SelectedPaymentId = '0';
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RunningBillNo = _runningBillNo;
             CoolieCharges = null;
             KCoolieCharges = null;
             TransportCharges = null;

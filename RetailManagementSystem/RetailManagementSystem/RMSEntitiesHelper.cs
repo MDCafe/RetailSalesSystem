@@ -6,6 +6,7 @@
     using Utilities;
     using Interfaces;
     using Model;
+    using System.Collections.ObjectModel;
 
     internal class RMSEntitiesHelper
     {
@@ -85,13 +86,16 @@
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
             var salesNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
 
-            if(sourceFilePath.Contains("PurchaseEntryViewModel"))
+            //Purhcase or sales is done, refresh the purchase & sales screens product list
+            _salesNotifierList.ForEach(s => s.NotifyPurchaseUpdate());
+            _purchaseNotifierList.ForEach(p => p.NotifyPurchaseUpdate());
+
+            if (sourceFilePath.Contains("PurchaseEntryViewModel"))
             {
                 foreach (var purchaseNotifyList in _purchaseNotifierList)
                 {
                     purchaseNotifyList.Notify(salesNo,categoryId);
                 }
-
                 return;
             }
 
@@ -101,7 +105,7 @@
             }
         }
 
-        public IEnumerable<ProductPrice> GetProductPriceList()
+        public ObservableCollection<ProductPrice> GetProductPriceList()
         {
             string productsSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                   " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
@@ -121,7 +125,11 @@
                                      "   where s.ProductId = st.ProductId) " +
                                     " order by ProductName ";
 
-            return RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL).ToList();
+            return new ObservableCollection<ProductPrice>(RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL));
+            //foreach (var item in productList)
+            //{
+            //    productPriceList.Add(item);
+            //}
         }
 
         public decimal? GetLastSoldPrice(int productId,int customerId)

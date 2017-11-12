@@ -4,15 +4,17 @@ using System.Windows.Input;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Interfaces;
-using System.Configuration;
-using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
     internal class CommonBusinessViewModel : DocumentViewModel, INotifier
     {
+        public delegate void INotifierCollectionChanged();
+        public event INotifierCollectionChanged notifierCollectionChangedEvent;
+
         protected IEnumerable<PaymentMode> _paymentModes;
-        protected IEnumerable<ProductPrice> _productsPriceList;
+        protected ObservableCollection<ProductPrice> _productsPriceList;
         protected DateTime _transcationDate;
         protected int _runningBillNo;
         protected PaymentMode _selectedPaymentMode;
@@ -26,10 +28,10 @@ namespace RetailManagementSystem.ViewModel.Base
 
         System.Windows.Visibility _isVisible = System.Windows.Visibility.Collapsed;
 
-        public IEnumerable<ProductPrice> ProductsPriceList
+        public ObservableCollection<ProductPrice> ProductsPriceList
         {
             get { return _productsPriceList; }
-            private set
+            set
             {
                 _productsPriceList = value;                
                 RaisePropertyChanged("ProductsPriceList");
@@ -152,15 +154,22 @@ namespace RetailManagementSystem.ViewModel.Base
         {
             PaymentMode pm = new PaymentMode();
             _paymentModes = pm.PaymentModes;
-            _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
+            //_productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
             _transcationDate = DateTime.Now;
             SelectedPaymentId = '0';
+            RefreshProductList();
         }
        
         void INotifier.Notify(int runningNo,int categoryId)
         {
+            //RefreshProductList();
             if (categoryId != _categoryId) return;
             RunningBillNo = runningNo;
+        }
+
+        void INotifier.NotifyPurchaseUpdate()
+        {
+            RefreshProductList(); 
         }
 
         protected decimal? GetDiscountValue()
@@ -170,6 +179,14 @@ namespace RetailManagementSystem.ViewModel.Base
             if (_totalDiscountPercent.HasValue)
                 return _totalAmount * (_totalDiscountPercent / 100);
             return null;
+        }
+
+
+        public void RefreshProductList()
+        { 
+            _productsPriceList =  RMSEntitiesHelper.Instance.GetProductPriceList();
+            RaisePropertyChanged("ProductsPriceList");
+            notifierCollectionChangedEvent?.Invoke();
         }
 
         #region CloseCommand
@@ -197,8 +214,9 @@ namespace RetailManagementSystem.ViewModel.Base
             var returnValue = Workspace.This.Close(this);
             if (!returnValue) return;
 
-            RMSEntitiesHelper.Instance.RemoveNotifier(this);
+            RMSEntitiesHelper.Instance.RemovePurchaseNotifier(this);
         }
+
         #endregion
     }   
 

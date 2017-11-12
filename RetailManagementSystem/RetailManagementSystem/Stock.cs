@@ -14,6 +14,12 @@ namespace RetailManagementSystem
     
     public partial class Stock
     {
+        public Stock()
+        {
+            this.StockTransactions = new HashSet<StockTransaction>();
+        }
+    
+        public int Id { get; set; }
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
         public System.DateTime ExpiryDate { get; set; }
@@ -22,7 +28,8 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual Product Product { get; set; }
         public virtual PriceDetail PriceDetail { get; set; }
+        public virtual Product Product { get; set; }
+        public virtual ICollection<StockTransaction> StockTransactions { get; set; }
     }
 }

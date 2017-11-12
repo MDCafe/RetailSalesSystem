@@ -380,7 +380,6 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
                     _salesDetailsList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
-            // 
         }
 
         //private bool IsValid(DependencyObject obj)
@@ -395,9 +394,6 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSave(object parameter)
         {
-           
-            //var result1 = Utility.IsValid(parameter as DependencyObject);
-
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
@@ -762,7 +758,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void Clear()
         {
-            _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
+            RefreshProductList();
             SelectedCustomer.Id = 1;
             SelectedPaymentId = '0';
             OrderNo = "";

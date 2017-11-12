@@ -291,10 +291,9 @@
         </EntityType>
         <EntityType Name="Stocks">
           <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="ExpiryDate" />
-            <PropertyRef Name="PriceId" />
+            <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="ExpiryDate" Type="date" Nullable="false" />
@@ -302,6 +301,20 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
+        </EntityType>
+        <EntityType Name="StockTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StockId" Type="int" />
+          <Property Name="Inward" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Outward" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="OpeningBalance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="BalanceQty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -617,6 +630,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_stockId">
+          <End Role="Stocks" Type="Self.Stocks" Multiplicity="0..1" />
+          <End Role="StockTransaction" Type="Self.StockTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stocks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockTransaction">
+              <PropertyRef Name="StockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="RMSModelStoreContainer">
           <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="rms" store:Type="Tables" />
@@ -638,6 +663,7 @@
           <EntitySet Name="Sales" EntityType="Self.Sales" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
@@ -739,6 +765,10 @@
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Sales" EntitySet="Sales" />
           </AssociationSet>
+          <AssociationSet Name="fk_stockId" Association="Self.fk_stockId">
+            <End Role="Stocks" EntitySet="Stocks" />
+            <End Role="StockTransaction" EntitySet="StockTransaction" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -790,11 +820,11 @@
           <NavigationProperty Name="Category" Relationship="RMSModel.FK_Category" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="SaleDetails" Relationship="RMSModel.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSModel.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
-          <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
           <NavigationProperty Name="Company" Relationship="RMSModel.FK_Company" FromRole="Product" ToRole="Company" />
           <NavigationProperty Name="PurchaseDetails" Relationship="RMSModel.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
           <NavigationProperty Name="PurchaseReturns" Relationship="RMSModel.FK_ProductId_PR" FromRole="Product" ToRole="PurchaseReturn" />
           <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSModel.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
+          <NavigationProperty Name="Stocks" Relationship="RMSModel.FK_PrdId" FromRole="Product" ToRole="Stock" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -881,11 +911,6 @@
             <End Role="Product" EntitySet="Products" />
             <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
           </AssociationSet>
-          <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
-          <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="Stock" EntitySet="Stocks" />
-          </AssociationSet>
           <EntitySet Name="Purchases" EntityType="RMSModel.Purchase" />
           <EntitySet Name="Companies" EntityType="RMSModel.Company" />
           <EntitySet Name="PurchasePaymentDetails" EntityType="RMSModel.PurchasePaymentDetail" />
@@ -942,10 +967,6 @@
             <End Role="Purchase" EntitySet="Purchases" />
             <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_priceId" Association="RMSModel.FK_priceId">
-            <End Role="PriceDetail" EntitySet="PriceDetails" />
-            <End Role="Stock" EntitySet="Stocks" />
-          </AssociationSet>
           <EntitySet Name="Customers" EntityType="RMSModel.Customer" />
           <AssociationSet Name="FK_customerId" Association="RMSModel.FK_customerId">
             <End Role="Customer" EntitySet="Customers" />
@@ -954,6 +975,20 @@
           <AssociationSet Name="FK_Sales_Cust" Association="RMSModel.FK_Sales_Cust">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Sale" EntitySet="Sales" />
+          </AssociationSet>
+          <EntitySet Name="Stocks" EntityType="RMSModel.Stock" />
+          <EntitySet Name="StockTransactions" EntityType="RMSModel.StockTransaction" />
+          <AssociationSet Name="FK_priceId" Association="RMSModel.FK_priceId">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="Stock" EntitySet="Stocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PrdId" Association="RMSModel.FK_PrdId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Stock" EntitySet="Stocks" />
+          </AssociationSet>
+          <AssociationSet Name="fk_stockId" Association="RMSModel.fk_stockId">
+            <End Role="Stock" EntitySet="Stocks" />
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Category">
@@ -1147,34 +1182,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ReturnDamagedStock">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Stock">
-          <Key>
-            <PropertyRef Name="ProductId" />
-            <PropertyRef Name="ExpiryDate" />
-            <PropertyRef Name="PriceId" />
-          </Key>
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Product" Relationship="RMSModel.FK_PrdId" FromRole="Stock" ToRole="Product" />
-          <NavigationProperty Name="PriceDetail" Relationship="RMSModel.FK_priceId" FromRole="Stock" ToRole="PriceDetail" />
-        </EntityType>
-        <Association Name="FK_PrdId">
-          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Stock">
               <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1466,18 +1473,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_priceId">
-          <End Type="RMSModel.PriceDetail" Role="PriceDetail" Multiplicity="1" />
-          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriceDetail">
-              <PropertyRef Name="PriceId" />
-            </Principal>
-            <Dependent Role="Stock">
-              <PropertyRef Name="PriceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
@@ -1524,6 +1519,73 @@
             </Principal>
             <Dependent Role="Sale">
               <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSModel.FK_priceId" FromRole="Stock" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSModel.FK_PrdId" FromRole="Stock" ToRole="Product" />
+          <NavigationProperty Name="StockTransactions" Relationship="RMSModel.fk_stockId" FromRole="Stock" ToRole="StockTransaction" />
+        </EntityType>
+        <EntityType Name="StockTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="Inward" Type="Decimal" />
+          <Property Name="Outward" Type="Decimal" />
+          <Property Name="OpeningBalance" Type="Decimal" />
+          <Property Name="ClosingBalance" Type="Decimal" />
+          <Property Name="BalanceQty" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Stock" Relationship="RMSModel.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
+        </EntityType>
+        <Association Name="FK_priceId">
+          <End Type="RMSModel.PriceDetail" Role="PriceDetail" Multiplicity="1" />
+          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceDetail">
+              <PropertyRef Name="PriceId" />
+            </Principal>
+            <Dependent Role="Stock">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PrdId">
+          <End Type="RMSModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Stock">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_stockId">
+          <End Type="RMSModel.Stock" Role="Stock" Multiplicity="0..1" />
+          <End Type="RMSModel.StockTransaction" Role="StockTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockTransaction">
+              <PropertyRef Name="StockId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1689,19 +1751,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Stocks">
-            <EntityTypeMapping TypeName="RMSModel.Stock">
-              <MappingFragment StoreEntitySet="Stocks">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Purchases">
             <EntityTypeMapping TypeName="RMSModel.Purchase">
               <MappingFragment StoreEntitySet="Purchases">
@@ -1853,6 +1902,35 @@
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stocks">
+            <EntityTypeMapping TypeName="RMSModel.Stock">
+              <MappingFragment StoreEntitySet="Stocks">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockTransactions">
+            <EntityTypeMapping TypeName="RMSModel.StockTransaction">
+              <MappingFragment StoreEntitySet="StockTransaction">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="BalanceQty" ColumnName="BalanceQty" />
+                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
+                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+                <ScalarProperty Name="Outward" ColumnName="Outward" />
+                <ScalarProperty Name="Inward" ColumnName="Inward" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

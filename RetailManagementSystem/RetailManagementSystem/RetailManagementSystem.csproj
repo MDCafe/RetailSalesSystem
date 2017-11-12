@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -159,14 +159,14 @@
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Converter\CodeConverter.cs" />
     <Compile Include="CodeMaster.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Company.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Converter\CodeConverter.cs" />
+    <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Converter\ActiveDocumentConverter.cs" />
     <Compile Include="Converter\ComboBoxConverter.cs" />
     <Compile Include="Converter\GridCellValueColorConverter.cs" />
@@ -179,6 +179,7 @@
     <Compile Include="Helpers\CommandManagerHelper.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Interfaces\INotifier.cs" />
+    <Compile Include="Interfaces\INotifierCollectionChanged.cs" />
     <Compile Include="MeasuringUnit.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -242,6 +243,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Stock.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StockTransaction.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="User.cs">
