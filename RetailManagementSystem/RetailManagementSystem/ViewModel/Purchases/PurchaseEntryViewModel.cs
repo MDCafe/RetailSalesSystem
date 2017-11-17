@@ -662,10 +662,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             var stockLastAddedItem = _rmsEntities.Stocks.FirstOrDefault(m => m.PriceId == maxPriceId);
                                                                         //.Aggregate((agg,next) => next.PriceId > agg.PriceId ? next : agg);
                             stockLastAddedItem.Quantity += purchaseDetailItemExtn.FreeIssue.Value;
-
                             SetStockTransaction(purchaseDetail, stockLastAddedItem);
-                            //var stkTrans = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(st => st.StockId == stockLastAddedItem.Id 
-                            //                    && st.AddedOn.Value.Date == stockLastAddedItem.AddedOn.Value.Date);
                             
                             continue;
                         }
@@ -716,18 +713,23 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                                 && st.AddedOn.Value.Date == purchaseDetail.AddedOn.Value.Date);
 
                     var purchaseQty = purchaseDetail.PurchasedQty.Value;
-                    stock.PriceId = priceDetailItem.PriceId;
+                    if (priceDetailItem.PriceId == 0)
+                        stock.PriceDetail = priceDetailItem;
+                    else
+                        stock.PriceId = priceDetailItem.PriceId;
                     if (purchaseDetailItemExtn.OriginalQty.Value > purchaseDetail.PurchasedQty.Value)
                     {
-                        stock.Quantity -= (purchaseDetailItemExtn.OriginalQty.Value - purchaseQty);
-                        stockTransExisting.Inward -= (purchaseDetailItemExtn.OriginalQty.Value - purchaseQty);
-                        stockTransExisting.ClosingBalance -= (purchaseDetailItemExtn.OriginalQty.Value - purchaseQty);
+                        var qty = purchaseDetailItemExtn.OriginalQty.Value - purchaseQty;
+                        stock.Quantity -= qty;
+                        stockTransExisting.Inward -= qty;
+                        stockTransExisting.ClosingBalance -= qty;
                     }
-                    else
+                    else if(purchaseDetailItemExtn.OriginalQty.Value < purchaseDetail.PurchasedQty.Value)
                     {
-                        stock.Quantity += (purchaseQty - purchaseDetailItemExtn.OriginalQty.Value);
-                        stockTransExisting.Inward += (purchaseQty - purchaseDetailItemExtn.OriginalQty.Value);
-                        stockTransExisting.ClosingBalance += (purchaseQty - purchaseDetailItemExtn.OriginalQty.Value);
+                        var qtySmall = purchaseQty - purchaseDetailItemExtn.OriginalQty.Value;
+                        stock.Quantity += qtySmall;
+                        stockTransExisting.Inward += qtySmall;
+                        stockTransExisting.ClosingBalance += qtySmall;
                     }
                 }
             }
@@ -1009,7 +1011,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno);
 
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
-            if (msgResult == System.Windows.MessageBoxResult.No) return;
+            if (msgResult != System.Windows.MessageBoxResult.OK) return;
 
             var cancelBillItems = _rmsEntities.PurchaseDetails.Where(s => s.BillId == cancelBill.BillId);
             foreach (var item in cancelBillItems.ToList())
