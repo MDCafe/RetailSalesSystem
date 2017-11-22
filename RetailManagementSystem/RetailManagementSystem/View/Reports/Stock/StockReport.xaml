@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Name="StockReport"
-        FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
-        Title="Sales Summary Report" Height="210" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Name="StockReportWindow"
+        FocusManager.FocusedElement="{Binding ElementName=CboCompanies}"
+        Title="Stock Report" Height="300" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>
@@ -22,52 +22,43 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="85*"/>
             <ColumnDefinition Width="207*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Supplier" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
-
-        <Label Content="Date" Grid.Column="0" Grid.Row="2" Margin="5"/>
-        <DatePicker x:Name="ToSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-            SelectedDateFormat="Short" SelectedDate="{Binding ToSalesDate}" BorderThickness="0" Margin="5,8,0,8" 
-                    Height="25" Grid.Column="1" Grid.Row="2" Width="205" HorizontalAlignment="Left"/>
-
-        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.Column="2">
-            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=SalesSummaryParamWindow}"  Margin="5"/>
-            <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
-                CommandParameter="{Binding ElementName=SalesSummaryParamWindow}" Margin="5" IsCancel="True"/>
-        </StackPanel>
-        <ComboBox x:Name="CboCustomers"  Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name"  ItemsSource="{Binding SupplierList}"  
-            IsEditable="True" Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Height="25" Margin="10,10,0,6" Width="200" HorizontalAlignment="Left" SelectedItem="{Binding SelectedSupplier, NotifyOnValidationError=True}" Text="{Binding SelectedSupplierText}">
-            <ComboBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ComboBoxItem}">
-                    <Setter Property="ContentTemplate">
-                        <Setter.Value>
-                            <DataTemplate>
-                                <Grid Height="30" Width="Auto">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200"/>
-                                        <!--<ColumnDefinition Width="10*"/>-->
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                    <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
-                                    <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </DataTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ComboBox.ItemContainerStyle>
-        </ComboBox>
+        <Label Content="Company" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
+        <ComboBox x:Name="CboCompanies"  Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name"  ItemsSource="{Binding Companies}"  
+             Margin="10,10,0,10" Width="200" HorizontalAlignment="Left" 
+                  SelectedItem="{Binding SelectedCompany}"/>
         <Label Content="Category" Grid.Row="1" Grid.Column="0" Margin="5,0,5,10"/>
         <ComboBox x:Name="Category" Grid.Column="1" HorizontalAlignment="Left" Height="23" Grid.Row="1" 
-            SelectedValue="{Binding SelectedProduct.CategoryId}" VerticalAlignment="Top" Width="200"
-            ItemsSource="{Binding ProductCategories}" SelectedValuePath="Id" DisplayMemberPath="name" Margin="10,8,0,0"
-                  />
+            SelectedItem="{Binding SelectedCategory}" VerticalAlignment="Top" Width="200"
+            ItemsSource="{Binding ProductCategories}" SelectedValuePath="Id" DisplayMemberPath="name" Margin="10,8,0,0"/>
+        <Label Content="Product" Grid.Row="2" Grid.Column="0" Margin="5,0,5,10"/>
+        <ComboBox x:Name="CboProduct" Grid.Column="1" HorizontalAlignment="Left" Height="23" Grid.Row="2" 
+            SelectedItem="{Binding SelectedProduct}" VerticalAlignment="Top" Width="200"
+            ItemsSource="{Binding ProductList}" SelectedValuePath="Id" DisplayMemberPath="Name" Margin="10,8,0,0"/>
+        
+        <Label Content="From Date" Grid.Column="0" Grid.Row="3" Margin="5"/>
+        <DatePicker x:Name="FromDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding FromDate}" BorderThickness="0" Margin="5,8,0,8" 
+                    Height="25" Grid.Column="1" Grid.Row="3" Width="147" HorizontalAlignment="Left"/>
+
+        <Label Content="To Date" Grid.Column="0" Grid.Row="4" Margin="5"/>
+        <DatePicker x:Name="ToDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding ToDate}" BorderThickness="0" Margin="5,8,0,8" 
+                    Height="25" Grid.Column="1" Grid.Row="4" Width="147" HorizontalAlignment="Left"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Grid.Column="2">
+            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=StockReportWindow}"  
+                    Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=StockReportWindow}" Margin="5" IsCancel="True"/>
+        </StackPanel>
+        
 
     </Grid>
 </Window>

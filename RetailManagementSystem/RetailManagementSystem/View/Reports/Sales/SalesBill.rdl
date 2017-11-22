@@ -1807,7 +1807,7 @@ order by sd.id asc</CommandText>
                     <TextRun>
                       <Value>=First(Fields!Name.Value, "DataSet2")</Value>
                       <Style>
-                        <FontFamily>Maiandra GD</FontFamily>
+                        <FontFamily>Monotype Corsiva</FontFamily>
                         <FontSize>24pt</FontSize>
                         <FontWeight>Bold</FontWeight>
                       </Style>

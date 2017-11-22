@@ -285,6 +285,7 @@
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Stock\StockReportViewModel.cs" />
     <Compile Include="ViewModel\ReportViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
@@ -323,6 +324,9 @@
     </Compile>
     <Compile Include="View\Reports\Sales\SalesSummary.xaml.cs">
       <DependentUpon>SalesSummary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Stock\StockReport.xaml.cs">
+      <DependentUpon>StockReport.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Sales\AmendSales.xaml.cs">
       <DependentUpon>AmendSales.xaml</DependentUpon>
@@ -393,6 +397,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Reports\Stock\StockReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Sales\AmendSales.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -437,6 +445,9 @@
     <None Include="RetailManagementSystem_TemporaryKey.pfx" />
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
+    </None>
+    <None Include="View\Reports\Stock\StockDetails.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Resource Include="Images\Products.png" />
     <Content Include="View\Reports\Sales\SalesBill.rdl">

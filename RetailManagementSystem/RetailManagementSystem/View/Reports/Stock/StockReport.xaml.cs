@@ -1,20 +1,16 @@
-﻿using RetailManagementSystem.ViewModel;
-using RetailManagementSystem.ViewModel.Reports;
-using RetailManagementSystem.ViewModel.Sales;
+﻿using RetailManagementSystem.ViewModel.Reports.Stock;
 using System.Windows;
-using System.Windows.Controls;
 
-namespace RetailManagementSystem.View.Reports.Sales
+namespace RetailManagementSystem.View.Reports.Stock
 {
-    public partial class SalesSummary : Window
+    public partial class StockReport : Window
     {
-        SalesSummaryViewModel _salesSummaryViewModel = new SalesSummaryViewModel(false);
+        StockReportViewModel _stockReportViewModel = new StockReportViewModel(false);
 
-        public SalesSummary(bool showRestrictedCustomers)
+        public StockReport(bool showRestrictedCustomers)
         {
             InitializeComponent();
-            this.DataContext = _salesSummaryViewModel;
-            
+            this.DataContext = _stockReportViewModel;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
 using System;
-using System.Configuration;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
@@ -77,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Reports
 
             var query = "GetSales";
 
-            using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
+            using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {

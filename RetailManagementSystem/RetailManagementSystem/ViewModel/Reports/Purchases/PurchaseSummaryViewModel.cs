@@ -1,6 +1,7 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
 using System;
 using System.Configuration;
 using System.Data;
@@ -77,7 +78,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
             var query = "GetPurchases";
 
-            using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
+            using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {

@@ -2,12 +2,12 @@
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
-using System.Configuration;
 using System.Data;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
 using System;
+using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -76,7 +76,7 @@ namespace RetailManagementSystem.ViewModel
         {
             _rptDataSource[1] = new ReportDataSource();
 
-            using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
+            using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {

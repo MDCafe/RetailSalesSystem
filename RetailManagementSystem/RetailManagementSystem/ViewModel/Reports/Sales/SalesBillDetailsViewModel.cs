@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
+using RetailManagementSystem.Utilities;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -90,7 +91,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         private DataTable GetDataTable()
         {
             var query = "GetSalesDetailsForBillId";
-            using (var conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["RMSConnectionString"].ConnectionString))
+            using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {

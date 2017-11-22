@@ -91,6 +91,10 @@
                                             Command="{Binding OpenDailyPurchaseReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Report.gif" Header="Supplierwise Purchase" KeyTip="SP"/>
                         </RibbonMenuButton>
+                        <RibbonMenuButton LargeImageSource="Images\Report.gif" Label="Stock" KeyTip="P">
+                            <RibbonMenuItem ImageSource="Images\Report.gif" Header="Stock report" KeyTip="SR" 
+                                            Command="{Binding OpenStockReportCommand}"/>
+                        </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
 
                     </RibbonGroup>

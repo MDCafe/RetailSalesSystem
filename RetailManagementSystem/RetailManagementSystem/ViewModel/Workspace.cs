@@ -12,6 +12,7 @@ using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.View.Reports.Sales;
 using RetailManagementSystem.View.Reports.Purchases;
+using RetailManagementSystem.View.Reports.Stock;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -463,6 +464,45 @@ namespace RetailManagementSystem.ViewModel
 
                 var PurchaseSummary = new PurchaseSummary(showRestrictedCustomers);
                 PurchaseSummary.ShowDialog();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #region OpenStockReportCommand
+        RelayCommand<object> _openStockReportCommand = null;
+        public ICommand OpenStockReportCommand
+        {
+            get
+            {
+                if (_openStockReportCommand == null)
+                {
+                    _openStockReportCommand = new RelayCommand<object>((p) => OnOpenStockReportCommand(p));
+                }
+
+                return _openStockReportCommand;
+            }
+        }
+        private void OnOpenStockReportCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
+
+                var stockReport = new StockReport(showRestrictedCustomers);
+                stockReport.ShowDialog();
 
             }
             catch (Exceptions.RMSException ex)

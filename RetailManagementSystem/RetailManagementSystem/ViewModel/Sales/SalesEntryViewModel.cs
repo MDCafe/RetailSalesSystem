@@ -893,7 +893,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     {
                         OpeningBalance = stockTrans.ClosingBalance,
                         Outward = saleDetail.Qty,
-                        ClosingBalance = saleDetail.Qty - stockTrans.ClosingBalance,
+                        ClosingBalance = stockTrans.ClosingBalance - saleDetail.Qty,
                         StockId = stockNewItem.Id
                     };
                     rmsEntities.StockTransactions.Add(newStockTrans);
