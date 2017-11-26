@@ -34,16 +34,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
             else
                 Title = "Purchase Entry";
 
-            var count = RMSEntitiesHelper.Instance.RMSEntities.Companies.ToList();
+            _rmsEntities = new RMSEntities();
+
+            var count = _rmsEntities.Companies.ToList();
             _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
             _purchaseDetailsList.CollectionChanged += PurchaseDetailsListCollectionChanged;
-
             _purchaseParams = purchaseParams;
 
             RMSEntitiesHelper.Instance.AddPurchaseNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-            _rmsEntities = new RMSEntities();
-
+            
             if (purchaseParams != null)
             {
 
@@ -73,7 +73,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             get
             {
-                return RMSEntitiesHelper.Instance.RMSEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId);
+                return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId);
             }
         }
 

@@ -4,56 +4,56 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="935a38be571342f28cc17510608cadd7" Name="Diagram1" ZoomLevel="97">
-        <EntityTypeShape EntityType="RMSModel.MeasuringUnit" Width="1.5" PointX="0.75" PointY="17.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.PriceDetail" Width="1.5" PointX="5.25" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.Product" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSModel.User" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="RMSModel.FK_MOU" ManuallyRouted="false" />
-        <AssociationConnector Association="RMSModel.FK_Product" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="RMSModel.Category" Width="1.5" PointX="0.75" PointY="3.875" />
-        <AssociationConnector Association="RMSModel.FK_Category" />
-        <EntityTypeShape EntityType="RMSModel.Role" Width="1.5" PointX="0.75" PointY="7.25" />
-        <AssociationConnector Association="RMSModel.fk_role" />
-        <EntityTypeShape EntityType="RMSModel.PaymentDetail" Width="1.5" PointX="10.5" PointY="5.625" />
-        <EntityTypeShape EntityType="RMSModel.SaleTemp" Width="1.5" PointX="3.375" PointY="0.75" />
-        <EntityTypeShape EntityType="RMSModel.Sale" Width="1.5" PointX="5.25" PointY="26.5" />
-        <AssociationConnector Association="RMSModel.FK_pay_bill" />
-        <EntityTypeShape EntityType="RMSModel.SaleDetail" Width="1.5" PointX="10.5" PointY="16.625" />
-        <AssociationConnector Association="RMSModel.FK_price_id" />
-        <AssociationConnector Association="RMSModel.FK_ProdId" />
-        <AssociationConnector Association="RMSModel.Fk_sale_bill" />
-        <EntityTypeShape EntityType="RMSModel.ReturnDamagedStock" Width="1.5" PointX="5.25" PointY="22.75" />
-        <AssociationConnector Association="RMSModel.FK_ProductId_RD" />
-        <EntityTypeShape EntityType="RMSModel.Purchase" Width="1.5" PointX="3" PointY="20" />
-        <EntityTypeShape EntityType="RMSModel.Company" Width="1.5" PointX="0.75" PointY="16.125" />
-        <EntityTypeShape EntityType="RMSModel.PurchasePaymentDetail" Width="1.5" PointX="9.625" PointY="21.75" />
-        <AssociationConnector Association="RMSModel.FK_Company" />
-        <AssociationConnector Association="RMSModel.FK_CompanyId" />
-        <AssociationConnector Association="RMSModel.FK_compId" />
-        <AssociationConnector Association="RMSModel.FK_purchaseId" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseDetail" Width="1.5" PointX="12.75" PointY="16.25" />
-        <AssociationConnector Association="RMSModel.FK_ProductId" />
-        <AssociationConnector Association="RMSModel.FK_PurchaseBillId" />
-        <AssociationConnector Association="RMSModel.FK_price_purchase" />
-        <EntityTypeShape EntityType="RMSModel.ApplicationDetail" Width="1.875" PointX="5.375" PointY="0.75" />
-        <EntityTypeShape EntityType="RMSModel.CodeMaster" Width="1.5" PointX="6.375" PointY="12.25" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseReturn" Width="1.5" PointX="8.625" PointY="8.75" />
-        <AssociationConnector Association="RMSModel.FK_returnCode" />
-        <AssociationConnector Association="RMSModel.FK_returnCode_PR" />
-        <AssociationConnector Association="RMSModel.FK_ProductId_PR" />
-        <EntityTypeShape EntityType="RMSModel.PurchaseFreeDetail" Width="1.5" PointX="8.25" PointY="16.875" />
-        <AssociationConnector Association="RMSModel.FK_ProductFree" />
-        <AssociationConnector Association="RMSModel.FK_pdt_bill" />
-        <EntityTypeShape EntityType="RMSModel.Customer" Width="1.5" PointX="0.75" PointY="15.625" />
-        <AssociationConnector Association="RMSModel.FK_customerId" />
-        <AssociationConnector Association="RMSModel.FK_Sales_Cust" />
-        <EntityTypeShape EntityType="RMSModel.Stock" Width="1.5" PointX="11.5" PointY="11" />
-        <EntityTypeShape EntityType="RMSModel.StockTransaction" Width="1.5" PointX="13.75" PointY="11" />
-        <AssociationConnector Association="RMSModel.FK_priceId" />
-        <AssociationConnector Association="RMSModel.FK_PrdId" />
-        <AssociationConnector Association="RMSModel.fk_stockId" />
-        </Diagram>
+      <Diagram DiagramId="ddddd9e81f944322bb70aca824ac26e7" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="RMSEntities.ApplicationDetail" Width="1.5" PointX="9.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Category" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.CodeMaster" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Company" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Customer" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.MeasuringUnit" Width="1.5" PointX="0.75" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.PriceDetail" Width="1.5" PointX="5.25" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Product" Width="1.5" PointX="3" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.PurchaseDetail" Width="1.5" PointX="7.5" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.PurchaseFreeDetail" Width="1.5" PointX="5.25" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.PurchasePaymentDetail" Width="1.5" PointX="5.25" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.PurchaseReturn" Width="1.5" PointX="5.25" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Purchase" Width="1.5" PointX="3" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.ReturnDamagedStock" Width="1.5" PointX="10.25" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Role" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.SaleDetail" Width="1.5" PointX="7.5" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Sale" Width="1.5" PointX="5.25" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.SaleTemp" Width="1.5" PointX="9.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.Stock" Width="1.5" PointX="10.5" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.StockTransaction" Width="1.5" PointX="12.75" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="RMSEntities.User" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="RMSEntities.FK_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_returnCode" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_returnCode_PR" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_Company" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_CompanyId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_compId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_Sales_Cust" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_MOU" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_price_id" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_price_purchase" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_priceId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_PrdId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_ProdId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_ProductFree" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_ProductId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_ProductId_PR" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_ProductId_RD" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_PurchaseBillId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_pdt_bill" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.FK_purchaseId" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.fk_role" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.Fk_sale_bill" ManuallyRouted="false" />
+        <AssociationConnector Association="RMSEntities.fk_stockId" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="RMSEntities.PaymentDetail" Width="1.5" PointX="7.5" PointY="5.5" />
+        <AssociationConnector Association="RMSEntities.FK_cust_pay" />
+        <AssociationConnector Association="RMSEntities.Fk_sale_pay" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

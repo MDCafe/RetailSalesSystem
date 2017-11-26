@@ -1,0 +1,226 @@
+﻿<UserControl x:Class="RetailManagementSystem.View.Stock.StockTransactions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+             xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl"    
+             xmlns:Validator="clr-namespace:RetailManagementSystem.Validation" 
+             xmlns:behaviours="clr-namespace:RetailManagementSystem.View.Behaviours"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="800"
+             FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
+             xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"
+             >
+    <UserControl.Resources>
+
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+
+        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style.Setters>
+        </Style>
+
+    </UserControl.Resources>
+    <xctk:BusyIndicator IsBusy="{Binding DataContext.PanelLoading, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="113" />
+                <ColumnDefinition Width="106"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="213"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
+            <DatePicker Name="StockSwapDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
+            <Label Content="Name" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
+            <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
+                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
+                        Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
+                        IsEnabled="{Binding NegateIsEditMode}"
+                  >
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Grid Height="30" Width="Auto">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200"/>
+                                            <!--<ColumnDefinition Width="10*"/>-->
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
+                                        <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
+                                        <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+                <ComboBox.SelectedItem>
+                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <Validator:ValidateComboRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.SelectedItem>
+                <ComboBox.Text>
+                    <Binding Path="SelectedCustomerText"/>
+                </ComboBox.Text>
+            </ComboBox>
+            <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
+                <Label Content="Bill No" Width="45" Margin="15,5,0,0"></Label>
+                <Label x:Name="txtBillNo" Width="60" Margin="5" Content="{Binding RunningBillNo}"/>
+            </StackPanel>
+
+            <Label Content="Mode" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
+            <ComboBox Name="CboPaymentMode" ItemsSource="{Binding SwapsCodeList}" SelectedValuePath="Code"
+                      DisplayMemberPath="Description" SelectedItem="SelectedSwapMode" Grid.Row="1" Grid.Column="1" Margin="0,8,10,10" />
+
+            <Label Content="Order No:"  Margin="0,5,0,0" Grid.Row="1" Grid.Column="2"></Label>
+            <TextBox Name="txtOrderNo" Text="{Binding OrderNo}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="20" />
+
+            <!--DataGrid-->
+            <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding SaleDetailList}"  
+                                      AutoGenerateColumns="False" RowHeight="25" 
+                                      Grid.Row="2"
+                                      SelectionMode="Single" Grid.ColumnSpan="5"
+                                      LoadingRow="DataGrid_LoadingRow"
+                                      RowHeaderWidth="25"
+                                      SelectionUnit="FullRow"
+                                       >
+                <toolKit:DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="Yellow"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" Value="#6F0090FF"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                        <Setter Property="Padding" Value="-2"/>
+                        <Style.Triggers>
+                            <Trigger Property="Validation.HasError" Value="True">
+                                <Setter Property="Background" Value="Red"/>
+                                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <!--<Converter:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
+                <Style x:Key="CellStyle" TargetType="DataGridCell">
+                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
+                </Style>-->
+                    <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="LightBlue"/>-->
+
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+                </toolKit:DataGrid.Resources>
+                <toolKit:DataGrid.Columns>
+                    <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
+                                                                    ItemsSource="{Binding ProductsPriceList}"                                                                  
+                                                                    SelectedValuePath="ProductId"
+                                                                    DisplayMemberPath="ProductName"  
+                                                                    CustComboBoxSelectedPath ="ProductId"
+                                                                    CustComboBoxSelectedValue ="ProductId"
+                                                                    SelectedValueBinding="{Binding ProductId}" 
+                                                                    ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
+                                >
+                        <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" >
+                        </toolKit:DataGridTextColumn>
+                        <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    </BHCustCtrl:CustDataGridComboBoxColumn>
+
+                    <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
+                        <toolKit:DataGridTextColumn.Binding>
+                            <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </toolKit:DataGridTextColumn.Binding>
+                    </toolKit:DataGridTextColumn>
+                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
+                    <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Last Sold Price" Binding="{Binding LastSoldPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                </toolKit:DataGrid.Columns>
+                <toolKit:DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
+                        <Setter Property="FontWeight"  Value="Bold" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </toolKit:DataGrid.ColumnHeaderStyle>
+
+                <!--<toolKit:DataGrid.RowValidationRules>
+                <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
+            </toolKit:DataGrid.RowValidationRules>
+
+            <toolKit:DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,0,-2"  ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}},
+                                                        Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" Width="{TemplateBinding FontSize}"  Height="{TemplateBinding FontSize}" />
+                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"  />
+                    </Grid>
+                </ControlTemplate>
+            </toolKit:DataGrid.RowValidationErrorTemplate>-->
+            </toolKit:DataGrid>
+            <!--DataGrid-->
+            <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
+
+                <Label Content="Total" Margin="5" FontWeight="ExtraBold"/>
+                <TextBlock x:Name="txtTotalAmount"  Width="100" Margin="5,5,5,5" Text="{Binding TotalAmount, TargetNullValue={x:Static sys:String.Empty} ,
+                                StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="35" Grid.ColumnSpan="5"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Height="35" Grid.ColumnSpan="5" >
+                <TextBlock x:Name="txtBalance"  Width="100" Margin="5,5,5,5" Text="{Binding BalanceAmount, StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+                <Button x:Name="btnSavePrint" Content="Save &amp; Print"  Width="100" Command="{Binding SaveCommand}" Margin="5"/>
+                <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" CommandParameter="SaveOnly"/>
+                <Button x:Name="btnCancel" Content="Cancel Bill "  Width="80" Command="{Binding CancelBillCommand}" Margin="5" Visibility="{Binding IsVisible}"/>
+                <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding NegateIsEditMode}"/>
+                <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
+            </StackPanel>
+
+        </Grid>
+    </xctk:BusyIndicator>
+</UserControl>

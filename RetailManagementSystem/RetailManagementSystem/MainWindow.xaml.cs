@@ -28,7 +28,7 @@ namespace RetailManagementSystem
                 this.Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
                "Retail Management System";
             }
-            catch (System.Data.EntityException entityEx)
+            catch (System.Data.DataException entityEx)
             {
                 log.Error("Database Connection Exception", entityEx);
                 Utility.ShowErrorBox("Unable to connect to the database");

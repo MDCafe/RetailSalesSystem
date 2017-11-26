@@ -44,7 +44,8 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         void Login(PasswordBox passwordBox)
         {            
             var password = passwordBox.Password;
-            var count = RMSEntitiesHelper.Instance.RMSEntities.Users.Local.ToList().Count;           
+            RMSEntities rmsEntities = new RMSEntities();
+            var count = rmsEntities.Users.Local.ToList().Count;           
 
             //RMSEntitiesHelper.RMSEntities.Configuration.LazyLoadingEnabled = false;
 
@@ -53,7 +54,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
             {
                 var pwdGrid = passwordBox.Parent as Grid;
                 var window = pwdGrid.Parent as Window;
-                if (RMSEntitiesHelper.Instance.RMSEntities.Users.Any(u => u.username == UserId && u.password == password && u.RoleId == 1))
+                if (rmsEntities.Users.Any(u => u.username == UserId && u.password == password && u.RoleId == 1))
                 {                    
                     window.DialogResult = true;
                     window.Close();

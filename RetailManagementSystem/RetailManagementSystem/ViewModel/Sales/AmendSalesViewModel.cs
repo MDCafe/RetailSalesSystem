@@ -15,6 +15,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         Customer _selectedCustomer;               
         string _selectedCustomerText;
         IEnumerable<Sale> _billList;
+        RMSEntities _rmsEntities;
         
         public int? BillNo { get; set; }
         public string BillNoText { get; set; }
@@ -24,9 +25,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             get
             {               
                 if (_showRestrictedCustomers)
-                    return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
 
-                return RMSEntitiesHelper.Instance.RMSEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
+                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
             }
         }
 
@@ -63,9 +64,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         public AmendSalesViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
-        {            
+        {
+            _rmsEntities = new RMSEntities();
             _showRestrictedCustomers = showRestrictedCustomers;            
-            RMSEntitiesHelper.Instance.RMSEntities.Customers.ToList();                      
+            _rmsEntities.Customers.ToList();                      
             
         }
 
@@ -89,6 +91,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             BillNo = null;
             SelectedCustomer = null;
             BillList = null;
+            //_rmsEntities = new RMSEntities();
         }
         #endregion
 
@@ -109,10 +112,6 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnPrint(Window window)
         {
-            //ReportViewModel rptVM = new ReportViewModel(false, _showRestrictedCustomer, "Sales Bill");
-            //rptVM.ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
-            
-
             SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer);
             salesReportVM.ShowPrintReceiptButton = Visibility.Visible;
             salesReportVM.RunningBillNo = BillNo;
@@ -141,7 +140,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (customerBill == null)
                 return;
 
-            var cancelBill = RMSEntitiesHelper.Instance.RMSEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
+            var cancelBill = _rmsEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
 
             if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
             {
@@ -220,9 +219,9 @@ namespace RetailManagementSystem.ViewModel.Sales
         private void GetCustomerBills()
         {
             if(BillList == null)
-                RMSEntitiesHelper.Instance.RMSEntities.Sales.ToList();
+                _rmsEntities.Sales.ToList();
 
-            BillList = RMSEntitiesHelper.Instance.RMSEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
+            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
         }
 
 

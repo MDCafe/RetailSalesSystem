@@ -27,6 +27,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
 
 
             <RowDefinition Height="35"/>
@@ -49,7 +50,7 @@
         <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding ProductsList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
-                                      Grid.Row="6"
+                                      Grid.Row="7"
                                       SelectionMode="Single" Grid.ColumnSpan="4"
                                       IsReadOnly="True"
                                       Margin="5"
@@ -85,15 +86,15 @@
                   ItemsSource="{Binding UnitOfMeasures}" SelectedValuePath="Id" DisplayMemberPath="unit"
                  />
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedProduct.ReorderPoint}" VerticalAlignment="Top" Width="175"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="9"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
+        <StackPanel Orientation="Horizontal" Grid.Row="10"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
                 CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
-        <Label Content="Search on Product Name" Grid.Row="5" Grid.Column="0" Margin="0,0,0,5" />
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3">
+        <Label Content="Search on Product Name" Grid.Row="6" Grid.Column="0" Margin="0,0,0,5" />
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3">
             <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                       Width="217">
                 <TextBox.InputBindings>
@@ -106,6 +107,7 @@
                 </Image.InputBindings>
             </Image>
         </StackPanel>
+        <Label x:Name="label5_Copy" Content="Cost Price"  Margin="0,9,10,0" Grid.Row="5" VerticalAlignment="Top" Height="26"/>
 
 
     </Grid>

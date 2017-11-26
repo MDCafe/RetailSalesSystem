@@ -5,6 +5,7 @@ using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Stocks;
 
 namespace RetailManagementSystem.View.Pane
 {
@@ -21,8 +22,6 @@ namespace RetailManagementSystem.View.Pane
             get;
             set;
         }
-
-
 
         public DataTemplate PurchaseViewTemplate
         {
@@ -65,11 +64,19 @@ namespace RetailManagementSystem.View.Pane
             get;
             set;            
         }
+
         public DataTemplate ProductsDataTemplate
         {
             get;
             set;
         }
+
+        public DataTemplate StockTansactionViewTemplate
+        {
+            get;
+            set;
+        }
+
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -91,6 +98,8 @@ namespace RetailManagementSystem.View.Pane
             if (item is ReportViewModel) return ReportViewTemplate;
 
             if (item is ProductsViewModel) return ProductsDataTemplate;
+
+            if (item is StockTransactionsViewModel) return StockTansactionViewTemplate;
 
             //if (item is FileStatsViewModel)
             //    return FileStatsViewTemplate;

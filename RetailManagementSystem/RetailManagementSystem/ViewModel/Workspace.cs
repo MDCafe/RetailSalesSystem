@@ -13,6 +13,7 @@ using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.View.Reports.Sales;
 using RetailManagementSystem.View.Reports.Purchases;
 using RetailManagementSystem.View.Reports.Stock;
+using RetailManagementSystem.ViewModel.Stocks;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -371,6 +372,28 @@ namespace RetailManagementSystem.ViewModel
                 Utility.ShowErrorBox(ex.Message);
                 //log here
             }
+        }
+
+        #endregion
+
+        #region OpenStockTransactionCommand
+        RelayCommand<object> _openStockTransactionCommand = null;
+        public ICommand OpenStockTransactionCommand
+        {
+            get
+            {
+                if (_openStockTransactionCommand == null)
+                {
+                    _openStockTransactionCommand = new RelayCommand<object>((p) => OnOpenStockTransactionCommand(p));
+                }
+                return _openStockTransactionCommand;
+            }
+        }
+
+        private void OnOpenStockTransactionCommand(object paramValue)
+        {
+            _documentViewModels.Add(new StockTransactionsViewModel());
+            ActiveDocument = _documentViewModels.Last();
         }
 
         #endregion
