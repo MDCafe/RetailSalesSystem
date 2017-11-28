@@ -21,6 +21,7 @@ namespace RetailManagementSystem.UserControls
         decimal? _amountPaid, _balanceAmt;
         bool _showRestrictedCustomers;
         static readonly ILog _log = LogManager.GetLogger(typeof(SalesBillPrint));
+        RMSEntities _rmsEntities;
 
         public SalesBillPrint()
         {
@@ -56,8 +57,12 @@ namespace RetailManagementSystem.UserControls
                 Utilities.Utility.ShowErrorBox("Billing printer name is not configured");
             }
 
-            RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.Count();
-            _appDetail = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault();
+            _rmsEntities = new RMSEntities();
+
+            _rmsEntities.ApplicationDetails.Count();
+            _appDetail = _rmsEntities.ApplicationDetails.FirstOrDefault();
+
+
 
         }
 
@@ -157,7 +162,7 @@ namespace RetailManagementSystem.UserControls
                 var itemDiscountAmount = 0.00M;
                 foreach (var item in _saleDetails)
                 {
-                    var product = RMSEntitiesHelper.Instance.RMSEntities.Products.Find(item.ProductId);
+                    var product = _rmsEntities.Products.Find(item.ProductId);
                     e.Graphics.DrawString(product.Name, itemFont, solidBrush, startX, startY + Offset);
                     Offset = Offset + 20;
 

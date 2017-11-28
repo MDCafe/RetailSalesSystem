@@ -19,7 +19,11 @@ namespace RetailManagementSystem.View.Sales
             handler = (object sender, RoutedEventArgs e) =>
             {
                 if (_salesViewModel.IsEditMode == false)
+                {
                     CboCustomers.SelectedValue = _salesViewModel.DefaultCustomer.Id;
+                    CboCustomers.SelectedItem = _salesViewModel.DefaultCustomer;
+                    //CboCustomers.Text = _salesViewModel.SelectedCustomerText;
+                }
                 Loaded -= handler;
             };
             Loaded += handler;

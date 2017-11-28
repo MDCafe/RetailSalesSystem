@@ -92,6 +92,10 @@ namespace RetailManagementSystem.ViewModel.Reports
                     toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
                     cmd.Parameters.Add(toSqlParam);
 
+                    var categoryIdSqlParam = new MySqlParameter("categoryId", MySqlDbType.Int32);
+                    categoryIdSqlParam.Value = _categoryId;
+                    cmd.Parameters.Add(categoryIdSqlParam);
+
                     DataTable dt = new DataTable();
                     MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
 

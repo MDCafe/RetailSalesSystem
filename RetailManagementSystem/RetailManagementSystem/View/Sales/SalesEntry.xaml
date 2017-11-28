@@ -54,8 +54,8 @@
             <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
                         SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
             <Label Content="Customer Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
-            <ComboBox x:Name="CboCustomers" SelectedValuePath="Id" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" 
-                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                        
+            <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" SelectedValuePath=""
+                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                  
                         Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
                         IsEnabled="{Binding NegateIsEditMode}"
                   >

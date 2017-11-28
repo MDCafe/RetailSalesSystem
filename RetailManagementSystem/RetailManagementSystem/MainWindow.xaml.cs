@@ -40,56 +40,92 @@ namespace RetailManagementSystem
         {
             if (!((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift))) return;
 
-            if (Keyboard.IsKeyDown(Key.P) && Keyboard.IsKeyDown(Key.R))
-            {
-                Workspace.This.OpenDailyPurchaseReportCommand.Execute(true);
-                return;
-            }
+            #region Sales
 
-            if (Keyboard.IsKeyDown(Key.S) && Keyboard.IsKeyDown(Key.R))
+            if (Keyboard.IsKeyDown(Key.S))
             {
-                Workspace.This.OpenReturnSalesCommand.Execute(true);
-                return;
-            }
-
-            switch (e.Key)
-            {
-                //Sales Entry
-                case Key.S:
+                switch(e.Key)
                 {
-                    var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true };
-                    Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
-                    return;
-                }
-
-                //Sales Amend
-                case Key.A:
-                {
-                    try
-                    {
-                        AmendSales amendSales = new AmendSales(true);
-                        amendSales.ShowDialog();
-                    }
-                    catch (Exceptions.RMSException ex)
-                    {
-                        Utility.ShowErrorBox(ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        Utility.ShowErrorBox(ex.Message);
-                    }
-                    return;
-                }
-                
-
-                //Sales Return
-                case Key.P:
-                    {
-                        var purchaseParams = new PurchaseParams() { ShowAllCompanies = true};
-                        Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
+                    case Key.R:
+                        Workspace.This.OpenReturnSalesCommand.Execute(true);
                         return;
-                    }
-            }                                 
+                    case Key.A:
+                        try
+                        {
+                            AmendSales amendSales = new AmendSales(true);
+                            amendSales.ShowDialog();
+                        }
+                        catch (Exceptions.RMSException ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        return;
+                    case Key.E:
+                        {
+                            var saleParams = new SalesParams() { ShowAllCustomers = true, IsTempDataWindow = true };
+                            Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
+                            return;
+                        }
+                } 
+            }
+            #endregion
+
+            #region Purchases
+
+            if (Keyboard.IsKeyDown(Key.P))
+            {
+                switch (e.Key)
+                {
+                    case Key.R:
+                        Workspace.This.OpenReturnSalesCommand.Execute(true);
+                        return;
+                    case Key.A:
+                        try
+                        {
+                            AmendPurchases amendPurchase = new AmendPurchases(true);
+                            amendPurchase.ShowDialog();
+                        }
+                        catch (Exceptions.RMSException ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        return;
+                    case Key.E:
+                        {
+                            var purchaseParams = new PurchaseParams() { ShowAllCompanies = true };
+                            Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
+                            return;
+                        }
+                }
+            }
+            #endregion
+
+            if (Keyboard.IsKeyDown(Key.R))
+            {
+                switch (e.Key)
+                {
+                    case Key.P:
+                        Workspace.This.OpenDailyPurchaseReportCommand.Execute(true);
+                        return;
+                    case Key.S:
+                        Workspace.This.OpenDailySalesReportCommand.Execute(true);
+                        return;
+                    //case Key.E:
+                    //    {
+                    //        var purchaseParams = new PurchaseParams() { ShowAllCompanies = true };
+                    //        Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
+                    //        return;
+                    //    }
+                }
+            }
         }        
     }
 }

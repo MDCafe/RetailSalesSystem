@@ -1,6 +1,6 @@
-CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date)
+CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date,IN categoryId int)
 BEGIN
-select AddedOn,(select Name as 'Name' from customers where id = s.customerId) as Customer,CustomerOrderNo,TransportCharges,
+select s.AddedOn,C.Name as Customer,CustomerOrderNo,TransportCharges,
 	CASE
         WHEN s.isCancelled =1 THEN 'Cancelled'
         ELSE NULL
@@ -17,14 +17,16 @@ CASE
     END AS 'Credit Sales',
 TotalAmount
 
-from sales s
-where Date(s.addedOn) between fromSalesDate and toSalesDate
+from sales s,Customers c
+where s.CustomerId = c.Id
+and c.CustomerTypeId = categoryId
+and Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate
 
-union
+/*union
 
 select ModifiedOn, (select Name as 'Name' from customers where Id = (select customerId from sales sa where sa.BillId =rs.billid)) as Customer,
 '','','Return',(select RunningBillNo from sales sa where sa.BillId =rs.billid) RunningBillNo,rs.CreatedOn,'','','', 
 -rs.Quantity * (select sellingPrice from PriceDetails where PriceId = rs.PriceId) TotalAmount
 from ReturnDamagedStocks rs 
-where rs.ModifiedOn between fromSalesDate and toSalesDate;
+where Date(rs.ModifiedOn) >= fromSalesDate and Date(rs.ModifiedOn) <= toSalesDate*/ ;
 END

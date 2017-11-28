@@ -44,7 +44,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             _salesParams = salesParams;
             _rmsEntities = RMSEntitiesHelper.Instance.RMSEntities;
-            var cnt = _rmsEntities.Customers.ToList();
+            //var cnt = _rmsEntities.Customers.ToList();
             var cnt1 = _rmsEntities.Products.ToList();
 
             _salesBillPrint = new SalesBillPrint();
@@ -106,14 +106,45 @@ namespace RetailManagementSystem.ViewModel.Sales
             get
             {
                 var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
-                IEnumerable<Customer> customerList = null;
-                
+                List<Customer> customerList = new List<Customer>();
+                var cnt = _rmsEntities.Customers.ToList().Count();
+
+                customerList = new List<Customer>(cnt);
+
                 if (_salesParams.GetTemproaryData)
-                    customerList = _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId ==  _categoryId);
+                {
+                    foreach (var item in _rmsEntities.Customers)
+                    {
+                        if(item.CustomerTypeId == _categoryId)
+                        {
+                            customerList.Add(item);
+                        }
+
+                    }
+                    //_rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == _categoryId);
+                }
                 if(_salesParams.ShowAllCustomers)
-                    customerList =  _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+                {
+                    foreach (var item in _rmsEntities.Customers)
+                    {
+                        if (item.CustomerTypeId == Constants.CUSTOMERS_OTHERS)
+                        {
+                            customerList.Add(item);
+                        }
+                    }
+                }
+                    //customerList =  _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
                 else
-                    customerList  = _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
+                {
+                    foreach (var item in _rmsEntities.Customers)
+                    {
+                        if (item.CustomerTypeId == Constants.CUSTOMERS_HOTEL)
+                        {
+                            customerList.Add(item);
+                        }
+                    }
+                }
+                    //customerList  = _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
 
                 var defaultCustomerByConfig = customerList.FirstOrDefault(c => c.Name.ToUpper() == defaultCustomerConfigName.ToUpper());
                 if(defaultCustomerByConfig != null)
@@ -518,8 +549,10 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
                 catch (Exception ex)
                 {
-                    if (dbTrans != null)
-                        dbTrans.Rollback();
+                    if (dbTrans != null) dbTrans.Rollback();
+
+                    Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
+                        log.Error(ex.Message, ex);
                 }
             }
             }).ContinueWith(
@@ -892,8 +925,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                     ClosingBalance = stockNewItem.Quantity,
                     StockId = stockNewItem.Id
                 };
-                _rmsEntities.StockTransactions.Add(firstStockTrans);
-                //stockNewItem.StockTransactions.Add(firstStockTrans);
+                //_rmsEntities.StockTransactions.Add(firstStockTrans);
+                stockNewItem.StockTransactions.Add(firstStockTrans);
             }
             //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
             else
@@ -913,7 +946,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                         ClosingBalance = stockTrans.ClosingBalance - saleDetail.Qty,
                         StockId = stockNewItem.Id
                     };
-                    rmsEntities.StockTransactions.Add(newStockTrans);
+                    //rmsEntities.StockTransactions.Add(newStockTrans);
+                    stockNewItem.StockTransactions.Add(newStockTrans);
                 }
             }
         }

@@ -446,7 +446,7 @@ namespace RetailManagementSystem.ViewModel
                 if (showAll != null)
                     showRestrictedCustomers = bool.Parse(showAll.ToString());
 
-                SalesSummary salesSummary = new SalesSummary(false);
+                SalesSummary salesSummary = new SalesSummary(showRestrictedCustomers);
                 salesSummary.ShowDialog();
 
             }
