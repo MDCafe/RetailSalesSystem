@@ -80,7 +80,7 @@
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.BalanceDue}" VerticalAlignment="Top" Width="217"/>
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditLimit}" VerticalAlignment="Top" Width="175"/>
         <TextBox  Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="6" TextWrapping="Wrap" Text="{Binding SelectedCustomer.CreditDays}" VerticalAlignment="Top" Width="217"/>
-        <Label Content="Search on Customer Name" Grid.Row="7" Grid.Column="0" ></Label>
+        <Label Content="Search on Customer Name" Grid.Row="7" Grid.Column="0" FontWeight="Bold" FontStyle="Italic" ></Label>
 
         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3">
             <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"

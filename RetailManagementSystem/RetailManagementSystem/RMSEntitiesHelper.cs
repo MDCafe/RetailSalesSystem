@@ -7,6 +7,7 @@
     using Interfaces;
     using Model;
     using System.Collections.ObjectModel;
+    using System;
 
     internal class RMSEntitiesHelper
     {
@@ -125,7 +126,7 @@
                                      "   where s.ProductId = st.ProductId) " +
                                     " order by ProductName ";
 
-            return new ObservableCollection<ProductPrice>(RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL));
+            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL));
             //foreach (var item in productList)
             //{
             //    productPriceList.Add(item);
@@ -143,8 +144,6 @@
 
             return Instance.RMSEntities.Database.SqlQuery<decimal?>(lastSoldPriceSQL).FirstOrDefault();
         }
-
-
 
         public static CustomerBill CheckIfBillExists(int billNo, int categoryId)
         {
@@ -188,6 +187,13 @@
             }
 
             return companyBill;
+        }
+
+        public static DateTime GetServerDate()
+        {
+            var sql = "select RMS.GetSysDate()";
+            var serverDateTime = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
+            return serverDateTime.FirstOrDefault();
         }
     }
 

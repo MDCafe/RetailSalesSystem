@@ -392,7 +392,7 @@ namespace RetailManagementSystem.ViewModel
 
         private void OnOpenStockTransactionCommand(object paramValue)
         {
-            _documentViewModels.Add(new StockTransactionsViewModel());
+            _documentViewModels.Add(new SwapsViewModel());
             ActiveDocument = _documentViewModels.Last();
         }
 
@@ -567,7 +567,11 @@ namespace RetailManagementSystem.ViewModel
                     //        //doc.GetBillCommand.Execute(null);
                     //    }
                     //}
-                    _documentViewModels.Remove(docToClose);                    
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        _documentViewModels.Remove(docToClose);
+                    }
+                    );
                 }
                 return true;
             }

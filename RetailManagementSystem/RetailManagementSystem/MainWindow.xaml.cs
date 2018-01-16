@@ -108,6 +108,7 @@ namespace RetailManagementSystem
             }
             #endregion
 
+            #region Reports
             if (Keyboard.IsKeyDown(Key.R))
             {
                 switch (e.Key)
@@ -118,14 +119,9 @@ namespace RetailManagementSystem
                     case Key.S:
                         Workspace.This.OpenDailySalesReportCommand.Execute(true);
                         return;
-                    //case Key.E:
-                    //    {
-                    //        var purchaseParams = new PurchaseParams() { ShowAllCompanies = true };
-                    //        Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
-                    //        return;
-                    //    }
                 }
-            }
+            } 
+            #endregion
         }        
     }
 }

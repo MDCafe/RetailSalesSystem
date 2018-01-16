@@ -17,7 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>\\MUNCHEE-PC\Users\Public\RMS\</PublishUrl>
+    <PublishUrl>\\WOODLANDSSERVER\Shared\RMS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -27,11 +27,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\MUNCHEE-PC\Users\Public\RMS\</InstallUrl>
+    <InstallUrl>\\WOODLANDSSERVER\Shared\RMS\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -215,6 +215,7 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\RMSException.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\CommandManagerHelper.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Interfaces\INotifier.cs" />
@@ -332,7 +333,7 @@
     <Compile Include="ViewModel\PaneViewModel.cs" />
     <Compile Include="ViewModel\Extensions\SalesExtensionViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesParams.cs" />
-    <Compile Include="ViewModel\Stocks\StockTransactionsViewModel.cs" />
+    <Compile Include="ViewModel\Stocks\SwapsViewModel.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
@@ -377,8 +378,8 @@
     <Compile Include="View\Sales\SalesEntry.xaml.cs">
       <DependentUpon>SalesEntry.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Stock\StockTransactions.xaml.cs">
-      <DependentUpon>StockTransactions.xaml</DependentUpon>
+    <Compile Include="View\Stock\Swaps.xaml.cs">
+      <DependentUpon>Swaps.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -456,7 +457,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Stock\StockTransactions.xaml">
+    <Page Include="View\Stock\Swaps.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -494,9 +495,9 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
-    <None Include="View\Reports\Stock\StockDetails.rdl">
+    <Content Include="View\Reports\Stock\StockDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Resource Include="Images\Products.png" />
     <Resource Include="docs\MySqlTransaction.xml" />
     <Resource Include="docs\MySqlParameterCollection.xml" />
@@ -540,7 +541,9 @@
     <None Condition=" '$(Configuration)' == 'Debug' " Include="appDebug\App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Condition=" '$(Configuration)' == 'Release' " Include="appRelease\App.config" />
+    <None Condition=" '$(Configuration)' == 'Release' " Include="appRelease\App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

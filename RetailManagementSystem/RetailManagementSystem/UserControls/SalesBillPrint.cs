@@ -83,7 +83,7 @@ namespace RetailManagementSystem.UserControls
             catch (Exception ex)
             {
                 Utilities.Utility.ShowErrorBox("Error while Printing..!!" + ex.Message);
-                _log.Info("Error while Printing..!! - "  + _billSales.BillId, ex);
+                _log.Error("Error while Printing..!! - "  + _billSales.BillId, ex);
             }
         }
 
@@ -91,12 +91,14 @@ namespace RetailManagementSystem.UserControls
         {
             //using (System.Security.Principal.WindowsImpersonationContext wic = System.Security.Principal.WindowsIdentity.Impersonate(IntPtr.Zero))
             //{
+            try
+            {
                 int startX = 5;// Position of x-axis
                 int startY = 2;//starting position of y-axis
                 int Offset = 0;
                 //**********************Header***************************************************************************************//
                 var headerFont = new Font("Maiandra GD", 8, FontStyle.Bold);
-                var itemFont = new Font("Times New Roman", 9, FontStyle.Regular);
+                var itemFont = new Font("Arial", 9, FontStyle.Regular);
                 float fontHeight = itemFont.GetHeight();
                 var solidBrush = new SolidBrush(Color.Black);
 
@@ -163,6 +165,12 @@ namespace RetailManagementSystem.UserControls
                 foreach (var item in _saleDetails)
                 {
                     var product = _rmsEntities.Products.Find(item.ProductId);
+                    if(product == null)
+                    {
+                        var msg = "Product not found." + item.ProductId;
+                        Utilities.Utility.ShowErrorBox(msg);
+                        _log.Error(msg);
+                    }
                     e.Graphics.DrawString(product.Name, itemFont, solidBrush, startX, startY + Offset);
                     Offset = Offset + 20;
 
@@ -267,6 +275,12 @@ namespace RetailManagementSystem.UserControls
                 e.Graphics.DrawString("Thank You", headerFont, solidBrush, headerStartX, startY + Offset + 10, drawFormat);
 
                 Offset = 0;
+            }
+            catch (Exception ex) 
+            {
+                _log.Error("Error while Printing..!! - " + _billSales.BillId, ex);
+                throw;
+            }
             //}
         }
 

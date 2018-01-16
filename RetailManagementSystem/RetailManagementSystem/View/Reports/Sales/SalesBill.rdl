@@ -786,11 +786,6 @@ order by sd.id asc</CommandText>
                       <GroupExpression>=Fields!ProductName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!ProductName.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
                   <TablixHeader>
                     <Size>2.32292in</Size>
                     <CellContents>
@@ -825,6 +820,7 @@ order by sd.id asc</CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
+                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>

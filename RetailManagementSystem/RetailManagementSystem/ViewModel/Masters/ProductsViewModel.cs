@@ -6,6 +6,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System.Windows;
 using RetailManagementSystem.Utilities;
+using System.Collections.ObjectModel;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -18,6 +19,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         IEnumerable<Company> _companiesList;
         IEnumerable<MeasuringUnit> _unitOfMeasureList;
         RMSEntities _rmsEntities;
+        ObservableCollection<PriceDetail> _priceDetailsList;
 
         public ProductsViewModel()
         {
@@ -28,7 +30,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             _productsCategory = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
             _unitOfMeasureList = _rmsEntities.MeasuringUnits.ToList().OrderBy(p => p.unit);
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
-
+            _priceDetailsList = new ObservableCollection<PriceDetail>();
         }
 
         #region Public Variables
@@ -110,6 +112,20 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
+
+        public ObservableCollection<PriceDetail> PriceDetailList
+        {
+            get
+            {
+                return _priceDetailsList;
+            }
+
+            private set
+            {
+                _priceDetailsList = value;
+                RaisePropertyChanged("PriceList");
+            }
+        }
         #endregion
 
         #region CloseWindow Command
@@ -150,6 +166,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                         {
                             _product = new Product();
                             RaisePropertyChanged("SelectedProduct");
+                            _priceDetailsList.Clear();
+                            RaisePropertyChanged("PriceDetailsList");
 
                             _isEditMode = false;
                             DblClickSelectedProduct = null;
@@ -179,6 +197,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }        
 
+
         public bool CanSave(object parameter)
         {
             return !string.IsNullOrWhiteSpace(SelectedProduct.Name);                        
@@ -192,6 +211,13 @@ namespace RetailManagementSystem.ViewModel.Masters
                 {
                     var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
                     cust = _product;
+                    var priceDetailsToSave = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
+                    foreach (var item in _priceDetailsList)
+                    {
+                        var itemToUpdate = priceDetailsToSave.Find(a => a.PriceId == item.PriceId);
+                        itemToUpdate.Price = item.Price;
+                        itemToUpdate.SellingPrice = item.SellingPrice;
+                    }
                 }
                 else
                     _rmsEntities.Products.Add(_product);
@@ -263,7 +289,11 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 _isEditMode = true;
-                                SelectedProduct = DblClickSelectedProduct;                      
+                                SelectedProduct = DblClickSelectedProduct;
+                                _priceDetailsList.Clear();
+                                var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
+                                priceDetails.ForEach((prd) => _priceDetailsList.Add(prd));
+                                //RaisePropertyChanged("PriceDetailList");
                             }
                         );
                 }
@@ -288,8 +318,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 if (string.IsNullOrWhiteSpace(SearchText)) return;
+                                _priceDetailsList.Clear();
                                 ProductsList = ProductsList.Where(c => c.Name.StartsWith(SearchText,StringComparison.InvariantCultureIgnoreCase));
-                                
                             }
                         );
                 }

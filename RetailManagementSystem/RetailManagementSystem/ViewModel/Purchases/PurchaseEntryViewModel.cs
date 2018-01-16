@@ -463,7 +463,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     LocalCoolieCharges = LocalCoolieCharges,
                     Tax = TotalTax,
                     PaymentMode = SelectedPaymentId.ToString(),
-                    AddedOn = TranscationDate
+                    AddedOn = _transcationDate,
+                    ModifiedOn = RMSEntitiesHelper.GetServerDate()
                 };
 
                 foreach (var item in _purchaseDetailsList)
@@ -485,6 +486,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     purchaseDetail.Discount = item.Discount;                
                     purchaseDetail.ActualPrice = item.PurchasePrice.Value;
                     purchaseDetail.Tax = item.Tax;
+                    purchaseDetail.AddedOn = _transcationDate;
+                    purchaseDetail.ModifiedOn = RMSEntitiesHelper.GetServerDate();
 
                     var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == item.ProductId
                                                                             && pr.Price == item.CostPrice
@@ -671,7 +674,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     purchaseDetail = _rmsEntities.PurchaseDetails.Create();
                     purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
                     purchaseDetail.PriceId = priceDetailItem.PriceId;
-                    //purchaseDetail.PurchasedQty = purchaseDetailItemExtn.Qty;
+                    purchaseDetail.ModifiedOn = RMSEntitiesHelper.GetServerDate();
+                    //purchaseDetail. = purchaseDetailItemExtn.Qty;
                     _rmsEntities.PurchaseDetails.Add(purchaseDetail);
 
                     SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
@@ -744,6 +748,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchase.TotalBillAmount = TotalAmount;
                 purchase.Tax = TotalTax;
                 purchase.SpecialDiscount = SpecialDiscountAmount;
+                //purchase.ModifiedOn = RMSEntitiesHelper.GetServerDate();
             }
             _rmsEntities.SaveChanges();
             Clear();
@@ -958,6 +963,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(s => s.BillId == item.BillId && s.ProductId == item.ProductId);
 
+                if (purchaseDetail == null) continue;
+
                 var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId && s.PriceId == purchaseDetail.PriceId);
                 if (stockNewItem != null)
                 {
@@ -977,9 +984,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 var purchaseDetailExtn = e.OldItems[0] as PurchaseDetailExtn;
-                if (_isEditMode)
+                if (_isEditMode && purchaseDetailExtn.ProductId !=0)
+                {
                     _deletedItems.Add(purchaseDetailExtn);
-                TotalAmount -= purchaseDetailExtn.Amount;
+                    TotalAmount -= purchaseDetailExtn.Amount;
+                }
             }
         }
 

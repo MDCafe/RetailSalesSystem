@@ -58,8 +58,8 @@
                     <RibbonGroup x:Name="Sales" Header="Sales">
                         <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
                                       ToolTipDescription="Sales Entry" KeyTip="S" Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"/>
-                        <RibbonButton Label="Temp Entry" LargeImageSource="Images\SalesBasket -T.png" ToolTipTitle="Temprrary Sales Entry for many items" 
-                                       KeyTip="T" Command="{Binding OpenSalesEntryTempCommand}" CommandParameter="true"/>
+                        <!--<RibbonButton Label="Temp Entry" LargeImageSource="Images\SalesBasket -T.png" ToolTipTitle="Temprrary Sales Entry for many items" 
+                                       KeyTip="T" Command="{Binding OpenSalesEntryTempCommand}" CommandParameter="true"/>-->
 
                         <RibbonButton Label="Amend/Print Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
@@ -121,9 +121,9 @@
                     </RibbonGroup>
 
                 </RibbonTab>
-                <RibbonTab Header="PageLayout" KeyTip="L">
-                    <!-- Launch/Applications group-->
-                </RibbonTab>
+                <!--<RibbonTab Header="PageLayout" KeyTip="L">
+                    --><!-- Launch/Applications group--><!--
+                </RibbonTab>-->
             </Ribbon>
             <!--<Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Sales">
@@ -249,7 +249,7 @@
 
                         <pane:PanesTemplateSelector.StockTansactionViewTemplate>
                             <DataTemplate>
-                                <StockView:StockTransactions/>
+                                <StockView:Swaps/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.StockTansactionViewTemplate>
 

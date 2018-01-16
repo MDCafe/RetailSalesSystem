@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Name="ProductsWindow"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
-        Title="Products" Height="536" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+        Title="Products" Height="730" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
     <Window.Resources>
         <conv:UOMCodeConverter x:Key="uomCodeConverter"/>
         <conv:CompanyCodeConverter x:Key="companyCodeConverter"/>
@@ -27,16 +27,17 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
 
 
             <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="125"/>
             <RowDefinition Height="200"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Border Height="50" BorderThickness="2" BorderBrush="Blue" CornerRadius="4" Grid.Row="0"  Grid.ColumnSpan="4" Margin="5">
+        <Border BorderThickness="2" BorderBrush="Blue" CornerRadius="4" Grid.Row="0"  Grid.ColumnSpan="4" Margin="5">
             <Label Content="Products" Background="LightBlue" FontWeight="Bold" 
-                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30"/>
+                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" Margin="0,0,0,8"/>
         </Border>
         <Label x:Name="label1" Content="Name"  Margin="5,5,5,0" Grid.Row="1" VerticalAlignment="Top" Height="26"/>
 
@@ -50,7 +51,7 @@
         <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding ProductsList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
-                                      Grid.Row="7"
+                                      Grid.Row="8"
                                       SelectionMode="Single" Grid.ColumnSpan="4"
                                       IsReadOnly="True"
                                       Margin="5"
@@ -71,9 +72,9 @@
                 <toolKit:DataGridTextColumn Header="Re-Order Point" Binding="{Binding ReorderPoint}" />
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
-        <TextBox Grid.Column="1" Margin="5" Grid.Row="1" Height="23" TextWrapping="Wrap" Text="{Binding SelectedProduct.Name}" Width="217" HorizontalAlignment="Left" BorderBrush="Black"/>
-        <TextBox Grid.Column="1" Margin="5" Grid.Row="2"  Height="23" Text="{Binding SelectedProduct.Description}" Width="217" HorizontalAlignment="Left"/>
-        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedProduct.Code}" VerticalAlignment="Top" Width="170"/>
+        <TextBox Grid.Column="1" Margin="5,8,0,8" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedProduct.Name}" Width="217" HorizontalAlignment="Left" BorderBrush="Black"/>
+        <TextBox Grid.Column="1" Margin="5,8,0,8" Grid.Row="2" Text="{Binding SelectedProduct.Description}" Width="217" HorizontalAlignment="Left"/>
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedProduct.Code}" VerticalAlignment="Top" Width="170"/>
         <ComboBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="3" 
                   SelectedValue="{Binding SelectedProduct.CompanyId}" VerticalAlignment="Top" Width="217"
                   ItemsSource="{Binding Companies}" SelectedValuePath="Id" DisplayMemberPath="Name"/>
@@ -85,16 +86,16 @@
                   SelectedValue="{Binding SelectedProduct.UnitOfMeasure}" VerticalAlignment="Top" Width="217"
                   ItemsSource="{Binding UnitOfMeasures}" SelectedValuePath="Id" DisplayMemberPath="unit"
                  />
-        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedProduct.ReorderPoint}" VerticalAlignment="Top" Width="175"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="10"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="4" TextWrapping="Wrap" Text="{Binding SelectedProduct.ReorderPoint}" VerticalAlignment="Top" Width="175"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="9"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
                 CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
-        <Label Content="Search on Product Name" Grid.Row="6" Grid.Column="0" Margin="0,0,0,5" />
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3">
+        <Label Content="Search on Product Name" Grid.Row="5" Grid.Column="0" Margin="0,0,0,5" FontWeight="Bold" FontStyle="Italic" />
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3">
             <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                       Width="217">
                 <TextBox.InputBindings>
@@ -107,7 +108,18 @@
                 </Image.InputBindings>
             </Image>
         </StackPanel>
-        <Label x:Name="label5_Copy" Content="Cost Price"  Margin="0,9,10,0" Grid.Row="5" VerticalAlignment="Top" Height="26"/>
+        <toolKit:DataGrid x:Name="PriceGrid" IsSynchronizedWithCurrentItem="True" 
+            ItemsSource="{Binding PriceDetailList}"  CanUserDeleteRows ="False" CanUserAddRows="False" 
+            AutoGenerateColumns="False" RowHeight="25" Grid.Row="7" SelectionMode="Single" Grid.ColumnSpan="4"
+            Margin="5,10,5,0"
+           >
+            <toolKit:DataGrid.Columns>
+                <toolKit:DataGridTextColumn Header="Price Id" Binding="{Binding PriceId}" IsReadOnly="True" />
+                <toolKit:DataGridTextColumn Header="Cost Price" Binding="{Binding Price}" />
+                <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" />
+            </toolKit:DataGrid.Columns>
+        </toolKit:DataGrid>
+        <Label Content="Price Details" Grid.Row="6" Grid.Column="0" Margin="0,0,0,10" FontWeight="Bold" FontStyle="Italic" />
 
 
     </Grid>

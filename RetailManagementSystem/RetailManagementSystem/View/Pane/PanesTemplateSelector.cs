@@ -99,13 +99,7 @@ namespace RetailManagementSystem.View.Pane
 
             if (item is ProductsViewModel) return ProductsDataTemplate;
 
-            if (item is StockTransactionsViewModel) return StockTansactionViewTemplate;
-
-            //if (item is FileStatsViewModel)
-            //    return FileStatsViewTemplate;
-
-                //if (item is RecentFilesViewModel)
-                //  return RecentFilesViewTemplate;
+            if (item is SwapsViewModel) return StockTansactionViewTemplate;
 
             return base.SelectTemplate(item, container);
         }

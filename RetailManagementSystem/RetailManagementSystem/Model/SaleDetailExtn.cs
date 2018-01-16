@@ -19,8 +19,8 @@ namespace RetailManagementSystem.Model
         private decimal? _originalQty;
         private int _serialNo;
         private decimal? _lastSoldPrice;
+        private string _productName;
 
-       
 
         public int SerialNo
         {
@@ -248,7 +248,6 @@ namespace RetailManagementSystem.Model
         public decimal DiscountPercentage { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal AvailableStock { get; set; }
-
         public decimal? LastSoldPrice
         {
             get
@@ -259,6 +258,20 @@ namespace RetailManagementSystem.Model
             set
             {
                 _lastSoldPrice = value;
+            }
+        }
+        public string ProductName
+        {
+
+            get
+            {
+                return _productName;
+            }
+
+            set
+            {
+                _productName = value;
+                OnPropertyChanged("ProductName");
             }
         }
     }

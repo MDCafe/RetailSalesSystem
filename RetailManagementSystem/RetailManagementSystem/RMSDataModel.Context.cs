@@ -29,7 +29,6 @@ namespace RetailManagementSystem
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<CodeMaster> CodeMasters { get; set; }
         public virtual DbSet<Company> Companies { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<MeasuringUnit> MeasuringUnits { get; set; }
         public virtual DbSet<PriceDetail> PriceDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
@@ -47,5 +46,6 @@ namespace RetailManagementSystem
         public virtual DbSet<StockTransaction> StockTransactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
     }
 }

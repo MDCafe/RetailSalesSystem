@@ -39,10 +39,13 @@ namespace RetailManagementSystem.View.Sales
                 {
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {
-                        custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                        //custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                        //_salesViewModel.SetProductName();
                     }));
                 };
             };
+
+            
 
             SalesDataGrid.PreviewKeyUp += (s, e) =>
             {
