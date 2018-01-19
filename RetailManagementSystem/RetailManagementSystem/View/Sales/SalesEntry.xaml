@@ -117,9 +117,10 @@
                                        >
                 <toolKit:DataGrid.Resources>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Background" Value="Yellow"/>
+                        <Setter Property="Background" Value="LightYellow"/>
                     </Style>
                     <Style TargetType="DataGridCell">
+                        <Setter Property="IsEnabled" Value="{Binding PropertyReadOnly}" />
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter Property="Background" Value="#6F0090FF"/>
@@ -147,7 +148,6 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
                 </toolKit:DataGrid.Resources>
                 <toolKit:DataGrid.Columns>
                     <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
@@ -158,13 +158,23 @@
                                                                     CustComboBoxSelectedValue ="ProductId"
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
-                                >
-                        <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" >
-                        </toolKit:DataGridTextColumn>
+                                 IsReadOnly="{Binding NegateIsEditMode}" >
+                        <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
                         <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                         <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                         <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                         <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+
+                        <!--<BHCustCtrl:CustDataGridComboBoxColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=PropertyReadOnly}" Value="True">
+                                        <Setter Property="IsTabStop" Value="False"></Setter>
+                                        <Setter Property="Focusable" Value="False"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </BHCustCtrl:CustDataGridComboBoxColumn.CellStyle>-->
                     </BHCustCtrl:CustDataGridComboBoxColumn>
 
                     <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">

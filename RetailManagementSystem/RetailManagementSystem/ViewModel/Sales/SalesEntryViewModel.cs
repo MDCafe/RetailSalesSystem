@@ -86,7 +86,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 else if (salesParams.GetTemproaryData)
                 {
                     //Get Temproary window from DB
-                    GetTempDataFromDB(salesParams.Guid);
+                    //GetTempDataFromDB(salesParams.Guid);
                     return;
                 }
                 //return;
@@ -442,116 +442,123 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //{
                 //    try
                 //    {
-                        log.DebugFormat("Enter save :{0}", _guid);
-                        _billSales.CustomerId = _selectedCustomer.Id;
-                        _billSales.CustomerOrderNo = OrderNo;
-                        _billSales.RunningBillNo = _runningBillNo;
-                        _billSales.PaymentMode = SelectedPaymentId.ToString();
-                        _billSales.AddedOn = _transcationDate;
-                        _billSales.ModifiedOn = _transcationDate;
+                    log.DebugFormat("Enter save :{0}", _guid);
+                    _billSales.CustomerId = _selectedCustomer.Id;
+                    _billSales.CustomerOrderNo = OrderNo;
+                    _billSales.RunningBillNo = _runningBillNo;
+                    _billSales.PaymentMode = SelectedPaymentId.ToString();
+                    _billSales.AddedOn = _transcationDate;
+                    _billSales.ModifiedOn = _transcationDate;
 
-                        if (_isEditMode)
+                    if (_isEditMode)
+                    {
+                        _billSales.ModifiedOn = RMSEntitiesHelper.GetServerDate();
+                        SaveOnEdit(parameter);
+                        return;
+                    }
+
+                    foreach (var saleDetailItem in _salesDetailsList)
+                    {
+                        if (saleDetailItem.ProductId == 0) continue;
+                        if (saleDetailItem.Qty == null || saleDetailItem.Qty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
                         {
-                            SaveOnEdit();
+                            Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
                             return;
                         }
+                        var saleDetail = _rmsEntities.SaleDetails.Create();
+                        saleDetail.Discount = saleDetailItem.Discount;
+                        saleDetail.PriceId = saleDetailItem.PriceId;
+                        saleDetail.ProductId = saleDetailItem.ProductId;
+                        saleDetail.Qty = saleDetailItem.Qty;
+                        saleDetail.SellingPrice = saleDetailItem.SellingPrice;
+                        saleDetail.BillId = _billSales.BillId;
+                        saleDetail.AddedOn = _transcationDate;
+                        saleDetail.ModifiedOn = _transcationDate;
+                        _billSales.SaleDetails.Add(saleDetail);
 
-                        foreach (var saleDetailItem in _salesDetailsList)
+                        var stockToReduceColln = _rmsEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
+                        var stock = stockToReduceColln.FirstOrDefault();
+
+                        if (stock != null)
                         {
-                            if (saleDetailItem.ProductId == 0) continue;
-                            if (saleDetailItem.Qty == null || saleDetailItem.Qty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                            var stkQty = stock.Quantity;
+                            if((stkQty - saleDetailItem.Qty.Value) < 0)
                             {
-                                Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
+                                Utility.ShowErrorBox("Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
                                 return;
                             }
-                            var saleDetail = _rmsEntities.SaleDetails.Create();
-                            saleDetail.Discount = saleDetailItem.Discount;
-                            saleDetail.PriceId = saleDetailItem.PriceId;
-                            saleDetail.ProductId = saleDetailItem.ProductId;
-                            saleDetail.Qty = saleDetailItem.Qty;
-                            saleDetail.SellingPrice = saleDetailItem.SellingPrice;
-                            saleDetail.BillId = _billSales.BillId;
-                            saleDetail.AddedOn = _transcationDate;
-                            saleDetail.ModifiedOn = _transcationDate;
-                            _billSales.SaleDetails.Add(saleDetail);
-
-                            var stockToReduceColln = _rmsEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
-                            var stock = stockToReduceColln.FirstOrDefault();
-
-                            if (stock != null)
-                            {
-                                stock.Quantity -= saleDetailItem.Qty.Value;
-                                SetStockTransaction(saleDetail, stock);
-                            }
+                            stock.Quantity -= saleDetailItem.Qty.Value;
+                            SetStockTransaction(saleDetail, stock);
                         }
+                    }
 
-                        //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+                    //_totalAmount = _extensions.Calculate(_totalAmount.Value);
 
-                        _billSales.TotalAmount = _totalAmount;
-                        _billSales.Discount = GetDiscountValue();
-                        decimal? oldValue;
-                        _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
+                    _billSales.TotalAmount = _totalAmount;
+                    _billSales.Discount = GetDiscountValue();
+                    decimal? oldValue;
+                    _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
 
-                        _rmsEntities.Entry(_billSales).State = EntityState.Added;
+                    _rmsEntities.Entry(_billSales).State = EntityState.Added;
 
-                        //_rmsEntities.Sales.Add(_billSales);
+                    //_rmsEntities.Sales.Add(_billSales);
 
-                        RemoveTempSalesItemForGUID(_guid);
-                        //this is done to get the latest bill no
-                        RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
-                        _billSales.RunningBillNo = _runningBillNo;
+                    //RemoveTempSalesItemForGUID(_guid);
+                    //this is done to get the latest bill no
+                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                    _billSales.RunningBillNo = _runningBillNo;
 
-                        var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-                        _category.RollingNo = _runningBillNo;
+                    var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+                    _category.RollingNo = _runningBillNo;
 
-                        //_rmsEntities.SaveChanges();
+                    //_rmsEntities.SaveChanges();
 
-                        var outstandingBalance = _totalAmount.Value - AmountPaid;
-                        if (outstandingBalance > 0)
+                    var outstandingBalance = _totalAmount.Value - AmountPaid;
+                    if (outstandingBalance > 0)
+                    {
+                        //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
+                        //var result = Utility.ShowMessageBoxWithOptions(msg);
+
+                        //if (result == System.Windows.MessageBoxResult.Cancel) return;
+
+                        //if (result == System.Windows.MessageBoxResult.Yes)
+                        //{
+                        //Customer cust = new Customer();
+                        //cust = SelectedCustomer;
+                        //Sale saleNew = new Sale();
+                        //saleNew = _billSales;
+                        var custPaymentDetail = new PaymentDetail
                         {
-                            //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
-                            //var result = Utility.ShowMessageBoxWithOptions(msg);
+                            AmountPaid = AmountPaid,
+                            CustomerId = SelectedCustomer.Id,
+                            //BillId = _billSales.BillId,
+                            //Customer = SelectedCustomer,
+                            Sale = _billSales,
+                            PaymentMode = "Cash"
+                        };
 
-                            //if (result == System.Windows.MessageBoxResult.Cancel) return;
-
-                            //if (result == System.Windows.MessageBoxResult.Yes)
-                            //{
-                            //Customer cust = new Customer();
-                            //cust = SelectedCustomer;
-                            //Sale saleNew = new Sale();
-                            //saleNew = _billSales;
-                            var custPaymentDetail = new PaymentDetail
-                            {
-                                AmountPaid = AmountPaid,
-                                CustomerId = SelectedCustomer.Id,
-                                //BillId = _billSales.BillId,
-                                //Customer = SelectedCustomer,
-                                Sale = _billSales,
-                                PaymentMode = "Cash"
-                            };
-
-                            _rmsEntities.PaymentDetails.Add
-                                (
-                                    custPaymentDetail
-                                );
+                        _rmsEntities.PaymentDetails.Add
+                            (
+                                custPaymentDetail
+                            );
 
 
-                            //_billSales.PaymentDetails.Add(custPaymentDetail);
-                            var customer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
-                            customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
-                        }
+                        //_billSales.PaymentDetails.Add(custPaymentDetail);
+                        var customer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                        customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
+                    }
 
-                    _rmsEntities.SaveChanges();
-                    //dbTrans.Commit();
-                    //Monitor.Exit(rootLock);
-                    log.DebugFormat("Exit save :{0}", _guid);
+                _rmsEntities.SaveChanges();
+                //dbTrans.Commit();
+                //Monitor.Exit(rootLock);
+                log.DebugFormat("Exit save :{0}", _guid);
 
-                    if (parameter == null)
-                        _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                if (parameter == null)
+                    _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
-                    if (_salesParams.GetTemproaryData)
-                        _closeCommand.Execute(null);
-                    Clear();
+                if (_salesParams.GetTemproaryData)
+                    _closeCommand.Execute(null);
+                Clear();
 
             //    //}
             //    //catch (Exception ex)
@@ -660,7 +667,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
 
-        private void SaveOnEdit()
+        private void SaveOnEdit(object parameter)
         {
             //Check if there are any deletions
             RemoveDeletedItems();
@@ -670,9 +677,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                 var saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
                                                                                                     && b.ProductId == saleDetailItemExtn.ProductId
                                                                                                     );
+                var serverDate = RMSEntitiesHelper.GetServerDate();
+                //New item added
                 if (saleDetail == null)
                 {
-                    saleDetail = _rmsEntities.SaleDetails.Create();
+                    saleDetail = _rmsEntities.SaleDetails.Create();                    
+                    saleDetail.AddedOn = serverDate;
+                    saleDetail.ModifiedOn = serverDate;
                     saleDetailItemExtn.OriginalQty = saleDetailItemExtn.Qty;
                     _rmsEntities.SaleDetails.Add(saleDetail);
 
@@ -681,13 +692,22 @@ namespace RetailManagementSystem.ViewModel.Sales
                     var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
                     if (stockNewItem != null)
                     {
+                        var stkQty = stockNewItem.Quantity;
+                        if ((stkQty - saleDetail.Qty.Value) < 0)
+                        {
+                            Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetail.Qty.Value);
+                            return;
+                        }
                         stockNewItem.Quantity -= saleDetail.Qty.Value;
                         SetStockTransaction(saleDetail, stockNewItem);
                     }
                     continue;
                 }
 
+                //Update existing item
                 SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+                saleDetail.ModifiedOn = serverDate;
+
                 var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
 
                 if (stock != null)
@@ -698,6 +718,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                     if (saleDetailItemExtn.OriginalQty.Value > saleDetail.Qty.Value)
                     {
                         var qty = saleDetailItemExtn.OriginalQty.Value - saleDetail.Qty.Value;
+                        if (stock.Quantity - qty < 0)
+                        {
+                            Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qty);
+                            return;
+                        }
                         stock.Quantity -= qty;
                         stockTransExisting.Outward -= qty;
                         stockTransExisting.ClosingBalance -= qty;
@@ -705,6 +730,12 @@ namespace RetailManagementSystem.ViewModel.Sales
                     else if(saleDetailItemExtn.OriginalQty.Value < saleDetail.Qty.Value)
                     {
                         var qtyValue = saleDetail.Qty.Value - saleDetailItemExtn.OriginalQty.Value;
+                        if (stock.Quantity - qtyValue < 0)
+                        {
+                            Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qtyValue);
+                            return;
+                        }
+
                         stock.Quantity += qtyValue;
                         stockTransExisting.Outward += qtyValue;
                         stockTransExisting.ClosingBalance += qtyValue;
@@ -719,6 +750,10 @@ namespace RetailManagementSystem.ViewModel.Sales
             _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldvalue);
 
             _rmsEntities.SaveChanges();
+
+            if (parameter == null)
+                _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+
             Clear();
             _closeCommand.Execute(null);
         }
@@ -727,6 +762,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             foreach (var saleDetailExtn in _deletedItems)
             {
+                //New item added and removed
+                if (saleDetailExtn.BillId == 0) continue;
                 var saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(s => s.BillId == saleDetailExtn.BillId && s.ProductId == saleDetailExtn.ProductId);
 
                 var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
@@ -774,6 +811,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
             var runningBillNo = billNo.Value;
 
+            _isEditMode = true;
+
             _billSales = _rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo && b.CustomerId == _salesParams.CustomerId).FirstOrDefault();            
             SelectedCustomer = _billSales.Customer;
             SelectedCustomerText = SelectedCustomer.Name;
@@ -804,22 +843,24 @@ namespace RetailManagementSystem.ViewModel.Sales
                     ProductId = saleDetailItem.ProductId,
                     Qty = saleDetailItem.Qty,
                     OriginalQty = saleDetailItem.Qty,
-                    SellingPrice = saleDetailItem.SellingPrice,
+                    //SellingPrice = saleDetailItem.SellingPrice,
                     BillId = saleDetailItem.BillId,
                     CostPrice = productPrice.Price,
                     AvailableStock = productPrice.Quantity,
-                    Amount = (productPrice.SellingPrice * saleDetailItem.Qty) - discount
+                    Amount = (saleDetailItem.SellingPrice * saleDetailItem.Qty) - discount,
+                    PropertyReadOnly = true
                 };
 
                 SaleDetailList.Add(saleDetailExtn);
                 SetSaleDetailExtn(productPrice, saleDetailExtn,0);
+                saleDetailExtn.SellingPrice = saleDetailItem.SellingPrice;
 
                 tempTotalAmount += productPrice.SellingPrice * saleDetailItem.Qty.Value;
             }
             TotalAmount = tempTotalAmount;
 
             RunningBillNo = runningBillNo;
-            _isEditMode = true;
+            
             if (_deletedItems == null)
                 _deletedItems = new List<SaleDetailExtn>();
             else
@@ -911,7 +952,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             foreach (var item in _salesDetailsList)
             {
-                item.ProductName = item.ProductName;
+                item.OnPropertyChanged("ProductId");
+                //item.ProductId = item.ProductId;
             }
         }
 
@@ -980,7 +1022,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
                 SaleDetailExtn.SerialNo = selectedIndex;
-                SaleDetailExtn.ProductName = productPrice.ProductName;
+                //SaleDetailExtn.ProductName = productPrice.ProductName;
 
                 //var customerSales = _rmsEntities.Sales.Where(s => s.CustomerId == _selectedCustomer.Id);//.OrderByDescending(d => d.ModifiedOn);
                 var lastSoldPrice = RMSEntitiesHelper.Instance.GetLastSoldPrice(productPrice.ProductId, _selectedCustomer.Id);

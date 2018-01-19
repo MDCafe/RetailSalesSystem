@@ -127,9 +127,9 @@ namespace RetailManagementSystem.UserControls
                 var rightAlignformat = new StringFormat() { Alignment = StringAlignment.Far };
                 var rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
 
-                e.Graphics.DrawString(DateTime.Now.ToString("dd/MM/yy HH:mm"), itemFont, solidBrush, startX, startY + Offset);
+                e.Graphics.DrawString(_billSales.AddedOn.Value.ToString("dd/MM/yy HH:mm"), itemFont, solidBrush, startX, startY + Offset);
                 if (_showRestrictedCustomers)
-                    e.Graphics.DrawString("Bill No:C" + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
+                    e.Graphics.DrawString("Bill No:C " + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
                 else
                     e.Graphics.DrawString("Bill No: " + _billSales.RunningBillNo, itemFont, solidBrush, rect, rightAlignformat);
                 //drawFormat.Alignment = StringAlignment.Far;
@@ -142,10 +142,20 @@ namespace RetailManagementSystem.UserControls
                 }
 
                 //********************************************ENd OF Header********************************************
+                string paymentMode;
+
+                if(_billSales.PaymentMode == "0")
+                    paymentMode = "Cash";
+                else
+                    paymentMode = "Credit";
+
+                //drawFormat.Alignment = StringAlignment.Near;
+                //Payment Mode
+                e.Graphics.DrawString(paymentMode, itemFont, solidBrush, startX, startY + Offset);
 
                 drawFormat.Alignment = StringAlignment.Center;
                 //Customer Name
-                e.Graphics.DrawString(_customerName, new Font("Times New Roman", 11, FontStyle.Bold), solidBrush, headerStartX, startY + Offset, drawFormat);
+                e.Graphics.DrawString(_customerName, new Font("Arial", 11, FontStyle.Bold), solidBrush, headerStartX, startY + Offset, drawFormat);
                 Offset = Offset + 25;
 
 

@@ -156,7 +156,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId };
+            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId,ShowAllCustomers = _showRestrictedCustomer};
 
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);

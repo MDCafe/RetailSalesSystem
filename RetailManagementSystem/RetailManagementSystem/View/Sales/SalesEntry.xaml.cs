@@ -23,6 +23,26 @@ namespace RetailManagementSystem.View.Sales
                     CboCustomers.SelectedValue = _salesViewModel.DefaultCustomer.Id;
                     CboCustomers.SelectedItem = _salesViewModel.DefaultCustomer;
                     //CboCustomers.Text = _salesViewModel.SelectedCustomerText;
+                }else
+                {
+                    SalesDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
+                    (ExecutedRoutedEventHandler)((cmdSender, args) =>
+                    {
+                        if (args.Command == Microsoft.Windows.Controls.DataGrid.BeginEditCommand)
+                        {
+                            var dataGrid = (Microsoft.Windows.Controls.DataGrid)cmdSender;
+                            if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
+                            DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
+                            FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
+                            var saleDetailExtn = focusedElement.DataContext as SaleDetailExtn;
+                            if (saleDetailExtn == null) return;
+                            var model = (SaleDetailExtn)focusedElement.DataContext;
+                            if (model.PropertyReadOnly)
+                            {
+                                args.Handled = true;
+                            }
+                        }
+                    }));
                 }
                 Loaded -= handler;
             };
@@ -39,12 +59,13 @@ namespace RetailManagementSystem.View.Sales
                 {
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {
-                        //custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
-                        //_salesViewModel.SetProductName();
+                        custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
+                        _salesViewModel.SetProductName();
                     }));
                 };
             };
 
+            
             
 
             SalesDataGrid.PreviewKeyUp += (s, e) =>

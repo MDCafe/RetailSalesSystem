@@ -60,6 +60,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                 billSales.Discount = itemArray.IsNull("Discount") ? 0.0M : itemArray.Field<decimal>("Discount");
                 billSales.TotalAmount   = itemArray.Field<decimal>("TotalAmount");
                 billSales.PaymentMode = itemArray.Field<string>("PaymentMode");
+                billSales.AddedOn = itemArray.Field<System.DateTime>("AddedOn");
                 salesDetails.Add(
                     new SaleDetailExtn()
                     {

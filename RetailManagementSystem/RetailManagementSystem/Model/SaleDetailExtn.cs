@@ -19,7 +19,7 @@ namespace RetailManagementSystem.Model
         private decimal? _originalQty;
         private int _serialNo;
         private decimal? _lastSoldPrice;
-        private string _productName;
+        private bool _propertyReadOnly;
 
 
         public int SerialNo
@@ -68,10 +68,10 @@ namespace RetailManagementSystem.Model
 
             set
             {
-                if (_productId == value)
-                {
-                    return;
-                }
+                //if (_productId == value)
+                //{
+                //    return;
+                //}
                 _productId = value;
                 OnPropertyChanged("ProductId");
             }
@@ -260,18 +260,17 @@ namespace RetailManagementSystem.Model
                 _lastSoldPrice = value;
             }
         }
-        public string ProductName
+        public bool PropertyReadOnly
         {
-
             get
             {
-                return _productName;
+                return _propertyReadOnly;
             }
 
             set
             {
-                _productName = value;
-                OnPropertyChanged("ProductName");
+                _propertyReadOnly = value;
+                OnPropertyChanged("PropertyReadOnly");
             }
         }
     }

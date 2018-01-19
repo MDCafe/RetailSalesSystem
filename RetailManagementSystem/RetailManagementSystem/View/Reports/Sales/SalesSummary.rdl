@@ -697,7 +697,7 @@ from sales s</CommandText>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
                                   <FontWeight>Bold</FontWeight>
-                                  <Format>dd/MM/yy HH:MM</Format>
+                                  <Format>dd/MM/yy HH:mm</Format>
                                   <Color>#465678</Color>
                                 </Style>
                               </TextRun>
@@ -718,6 +718,7 @@ from sales s</CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
+                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -727,11 +728,6 @@ from sales s</CommandText>
                           <GroupExpression>=Fields!Customer.Value</GroupExpression>
                         </GroupExpressions>
                       </Group>
-                      <SortExpressions>
-                        <SortExpression>
-                          <Value>=Fields!Customer.Value</Value>
-                        </SortExpression>
-                      </SortExpressions>
                       <TablixHeader>
                         <Size>1.65278in</Size>
                         <CellContents>
