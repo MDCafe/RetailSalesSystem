@@ -27,9 +27,11 @@ sd.Discount as ItemDiscount,
 (select Price from priceDetails pd where pd.PriceId = sd.PriceId and pd.ProductId = sd.ProductId) as Price,
 (select p.Name from Products p where p.Id = sd.ProductId ) as ProductName,
 sd.Qty,
-sd.SellingPrice
+sd.SellingPrice,
+"" QtyString
 from sales s, SaleDetails sd
 where s.BillId = sd.BillId
+/*and s.RunningBillNo = ?*/
 order by sd.id asc</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -85,6 +87,10 @@ order by sd.id asc</CommandText>
         <Field Name="SellingPrice">
           <DataField>SellingPrice</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="QtyString">
+          <DataField>QtyString</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -695,7 +701,7 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Qty">
+                          <Textbox Name="QtyString">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -716,7 +722,7 @@ order by sd.id asc</CommandText>
                                 </Style>
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Qty</rd:DefaultName>
+                            <rd:DefaultName>QtyString</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#7292cc</Color>
@@ -820,7 +826,6 @@ order by sd.id asc</CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -828,17 +833,16 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Qty1">
+                          <Textbox Name="QtyString1">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>=Fields!Qty.Value</Value>
+                                    <Value>=Fields!QtyString.Value</Value>
                                     <Style>
                                       <FontFamily>Tahoma</FontFamily>
-                                      <Format>n2</Format>
                                       <Color>#465678</Color>
                                     </Style>
                                   </TextRun>
@@ -848,7 +852,7 @@ order by sd.id asc</CommandText>
                                 </Style>
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Qty1</rd:DefaultName>
+                            <rd:DefaultName>QtyString1</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#c6daf8</Color>
@@ -955,7 +959,7 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Textbox193">
+                          <Textbox Name="Textbox3">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -973,7 +977,7 @@ order by sd.id asc</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox193</rd:DefaultName>
+                            <rd:DefaultName>Textbox3</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#9eb6e4</Color>
@@ -1075,7 +1079,7 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Textbox209">
+                          <Textbox Name="Textbox4">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -1093,7 +1097,7 @@ order by sd.id asc</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox209</rd:DefaultName>
+                            <rd:DefaultName>Textbox4</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#9eb6e4</Color>
@@ -1194,7 +1198,7 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Textbox202">
+                          <Textbox Name="Textbox5">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -1212,7 +1216,7 @@ order by sd.id asc</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox202</rd:DefaultName>
+                            <rd:DefaultName>Textbox5</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#9eb6e4</Color>
@@ -1316,7 +1320,7 @@ order by sd.id asc</CommandText>
                       <TablixHeader>
                         <Size>1in</Size>
                         <CellContents>
-                          <Textbox Name="Textbox214">
+                          <Textbox Name="Textbox6">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -1334,7 +1338,7 @@ order by sd.id asc</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox214</rd:DefaultName>
+                            <rd:DefaultName>Textbox6</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#9eb6e4</Color>
@@ -1795,7 +1799,7 @@ order by sd.id asc</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>7.10494in</Width>
+      <Width>8.09374in</Width>
       <Page>
         <PageHeader>
           <Height>1.00986in</Height>

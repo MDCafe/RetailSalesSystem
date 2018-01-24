@@ -112,6 +112,20 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     {
                         adpt.Fill(dt);
                     }
+
+                    dt.Columns.Add("QtyString", typeof(string));
+                    //format Qty
+                    foreach (var row in dt.Rows)
+                    {
+                        var r = (DataRow)row;
+                        var qty = r.Field<decimal>("Qty");
+                        if(qty.ToString().Split(new char[] { '.'})[1] == "000")
+                        {
+                            //var qtyInt = (int)qty;
+                            r.SetField<string>("QtyString", qty.ToString("######"));
+                        }else
+                        r.SetField<string>("QtyString", qty.ToString("0.##0"));
+                    }
                     return dt;
                 }
             }

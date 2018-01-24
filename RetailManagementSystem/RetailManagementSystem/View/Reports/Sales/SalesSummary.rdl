@@ -16,30 +16,38 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <CommandText>select AddedOn,(select Name as 'Name' from customers where id = s.customerId) as Customer,CustomerOrderNo,TransportCharges,
+        <CommandText>select BillId,s.AddedOn,C.Name as Customer,CustomerOrderNo,
+CASE
+        WHEN s.TransportCharges= 0.00 THEN null
+        ELSE s.TransportCharges
+    END AS 'TransportCharges',
 	CASE
         WHEN s.isCancelled =1 THEN 'Cancelled'
         ELSE NULL
     END AS 'Cancelled',
 RunningBillNo,s.addedOn,
-Discount,
+s.Discount,
+(select sum(sd.sellingprice *qty) from saleDetails sd
+where sd.billId = s.BillId) TotalAmount,
 CASE
-        WHEN s.PaymentMode = '0' THEN TotalAmount
-        ELSE NULL
+        WHEN s.PaymentMode = '0' THEN TotalAmount ELSE NULL
     END AS 'Cash Sales',
     CASE
-        WHEN PaymentMode = '1'  THEN TotalAmount
-        ELSE NULL
-    END AS 'Credit Sales',
-TotalAmount
+        WHEN PaymentMode = '1'  THEN TotalAmount ELSE NULL
+    END AS 'Credit Sales'
+from sales s,Customers c
 
-from sales s</CommandText>
+where s.CustomerId = c.Id</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="Customer">
           <DataField>Customer</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillId">
+          <DataField>BillId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Cash_Sales">
           <DataField>Cash Sales</DataField>
@@ -216,7 +224,7 @@ from sales s</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!TotalAmount.Value)</Value>
+                                  <Value>=Fields!TotalAmount.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <Format>n2</Format>
@@ -678,11 +686,6 @@ from sales s</CommandText>
                       <GroupExpression>=Fields!AddedOn.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
-                  <SortExpressions>
-                    <SortExpression>
-                      <Value>=Fields!AddedOn.Value</Value>
-                    </SortExpression>
-                  </SortExpressions>
                   <TablixHeader>
                     <Size>1.21527in</Size>
                     <CellContents>
@@ -1372,7 +1375,7 @@ from sales s</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>15.69444in</Width>
+      <Width>11.24652in</Width>
       <Page>
         <PageHeader>
           <Height>1.00986in</Height>
