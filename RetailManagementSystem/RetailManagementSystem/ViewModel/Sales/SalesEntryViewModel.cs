@@ -5,21 +5,21 @@ using System.Threading;
 using log4net;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.Entity;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
-using System.Configuration;
-using System.Data.Entity;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
     class SalesEntryViewModel : SalesViewModelbase
     {
         #region Private Variables
-        static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
+        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
         Sale _billSales;                          
         
         IExtensions _extensions;   
@@ -438,11 +438,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
+                //RemoveProductWithNullValues();
                 //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
                 //{
                 //    try
                 //    {
-                log.DebugFormat("Enter save :{0}", _guid);
+                _log.DebugFormat("Enter save :{0}", _billSales.BillId);
                 _billSales.CustomerId = _selectedCustomer.Id;
                 _billSales.CustomerOrderNo = OrderNo;
                 _billSales.RunningBillNo = _runningBillNo;
@@ -556,7 +557,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _rmsEntities.SaveChanges();
             //dbTrans.Commit();
             //Monitor.Exit(rootLock);
-            log.DebugFormat("Exit save :{0}", _guid);
+            _log.DebugFormat("Exit save :{0}", _guid);
 
             if (parameter == null)
                 _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
@@ -597,7 +598,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
 
             Monitor.Enter(rootLock);
-            log.Debug("Enter save :SaveInterim");
+            _log.Debug("Enter save :SaveInterim");
 
             var totalAmount = 0M;
 
@@ -667,7 +668,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
 
             Monitor.Exit(rootLock);
-            log.Debug("Exit SaveIternim");
+            _log.Debug("Exit SaveIternim");
             //_autoResetEvent.Set();                        
         }
 
@@ -784,6 +785,18 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
                 _rmsEntities.SaleDetails.Remove(saleDetail);
             }
+        }
+
+        private void RemoveProductWithNullValues()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (var item in _salesDetailsList.Reverse())
+                {
+                    if (item.ProductId == 0)
+                        _salesDetailsList.Remove(item);
+                }
+            });
         }
 
         private void OnSalesDetailsListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -943,14 +956,21 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             if (productPrice == null) return;
             var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
-            var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
-            //if (saleItem !=null)
-            //{
-            //    Utility.ShowWarningBox("Item is already added");
-            //    selRowSaleDetailExtn.ProductId = 0;
-            //    return;
-            //}            
-            SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
+            try
+            {
+                var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
+                //if (saleItem !=null)
+                //{
+                //    Utility.ShowWarningBox("Item is already added");
+                //    selRowSaleDetailExtn.ProductId = 0;
+                //    return;
+                //}            
+                SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error on SetProductDetails", ex);
+            }
         }
 
         public void SetProductName()

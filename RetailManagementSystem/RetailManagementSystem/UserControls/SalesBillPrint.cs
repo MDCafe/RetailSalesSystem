@@ -178,8 +178,9 @@ namespace RetailManagementSystem.UserControls
                     if(product == null)
                     {
                         var msg = "Product not found." + item.ProductId;
-                        Utilities.Utility.ShowErrorBox(msg);
+                        //Utilities.Utility.ShowErrorBox(msg);
                         _log.Error(msg);
+                        continue;
                     }
                     e.Graphics.DrawString(product.Name, itemFont, solidBrush, startX, startY + Offset);
                     Offset = Offset + 20;
@@ -216,7 +217,7 @@ namespace RetailManagementSystem.UserControls
 
                 rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
                 //Total
-                e.Graphics.DrawString(_saleDetails.Sum(a => a.Qty.Value * a.SellingPrice.Value).ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
+                e.Graphics.DrawString(_saleDetails.Sum(a => a.ProductId !=0 ?  (a.Qty.Value * a.SellingPrice.Value): 0).ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
                 e.Graphics.DrawString("Total", itemFont, solidBrush, startX, startY + Offset);
 
                 Offset = Offset + 20;

@@ -303,7 +303,7 @@ where s.CustomerId = c.Id</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.21527in</Size>
+                    <Size>0.80904in</Size>
                     <CellContents>
                       <Textbox Name="Textbox1">
                         <CanGrow>true</CanGrow>
@@ -312,7 +312,7 @@ where s.CustomerId = c.Id</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Sales Date</Value>
+                                <Value>Bill No</Value>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
                                   <FontSize>11pt</FontSize>
@@ -344,7 +344,7 @@ where s.CustomerId = c.Id</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>1.65278in</Size>
+                        <Size>1.45488in</Size>
                         <CellContents>
                           <Textbox Name="Textbox49">
                             <CanGrow>true</CanGrow>
@@ -353,7 +353,7 @@ where s.CustomerId = c.Id</CommandText>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>Customer</Value>
+                                    <Value>Sale Date</Value>
                                     <Style>
                                       <FontFamily>Tahoma</FontFamily>
                                       <FontSize>11pt</FontSize>
@@ -385,16 +385,17 @@ where s.CustomerId = c.Id</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>0.89236in</Size>
+                            <Size>1.93401in</Size>
                             <CellContents>
                               <Textbox Name="RunningBillNo">
                                 <CanGrow>true</CanGrow>
+                                <CanShrink>true</CanShrink>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
-                                        <Value>Bill No</Value>
+                                        <Value>Customer</Value>
                                         <Style>
                                           <FontFamily>Tahoma</FontFamily>
                                           <FontSize>11pt</FontSize>
@@ -644,63 +645,51 @@ where s.CustomerId = c.Id</CommandText>
                                                 </CellContents>
                                               </TablixHeader>
                                               <TablixMembers>
-                                                <TablixMember>
-                                                  <KeepWithGroup>After</KeepWithGroup>
-                                                  <RepeatOnNewPage>true</RepeatOnNewPage>
-                                                </TablixMember>
+                                                <TablixMember />
                                               </TablixMembers>
-                                              <KeepWithGroup>After</KeepWithGroup>
-                                              <RepeatOnNewPage>true</RepeatOnNewPage>
                                             </TablixMember>
                                           </TablixMembers>
-                                          <KeepWithGroup>After</KeepWithGroup>
-                                          <RepeatOnNewPage>true</RepeatOnNewPage>
                                         </TablixMember>
                                       </TablixMembers>
-                                      <KeepWithGroup>After</KeepWithGroup>
-                                      <RepeatOnNewPage>true</RepeatOnNewPage>
                                     </TablixMember>
                                   </TablixMembers>
-                                  <KeepWithGroup>After</KeepWithGroup>
-                                  <RepeatOnNewPage>true</RepeatOnNewPage>
                                 </TablixMember>
                               </TablixMembers>
-                              <KeepWithGroup>After</KeepWithGroup>
-                              <RepeatOnNewPage>true</RepeatOnNewPage>
                             </TablixMember>
                           </TablixMembers>
-                          <KeepWithGroup>After</KeepWithGroup>
-                          <RepeatOnNewPage>true</RepeatOnNewPage>
                         </TablixMember>
                       </TablixMembers>
-                      <KeepWithGroup>After</KeepWithGroup>
-                      <RepeatOnNewPage>true</RepeatOnNewPage>
                     </TablixMember>
                   </TablixMembers>
                   <KeepWithGroup>After</KeepWithGroup>
                   <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
-                  <Group Name="AddedOn">
+                  <Group Name="RunningBillNo1">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!AddedOn.Value</GroupExpression>
+                      <GroupExpression>=Fields!RunningBillNo.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!RunningBillNo.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
                   <TablixHeader>
-                    <Size>1.21527in</Size>
+                    <Size>0.80904in</Size>
                     <CellContents>
-                      <Textbox Name="AddedOn">
+                      <Textbox Name="RunningBillNo1">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>=Fields!AddedOn.Value</Value>
+                                <Value>=Fields!RunningBillNo.Value</Value>
                                 <Style>
                                   <FontFamily>Tahoma</FontFamily>
                                   <FontWeight>Bold</FontWeight>
-                                  <Format>dd/MM/yy HH:mm</Format>
+                                  <Format>0;(0)</Format>
                                   <Color>#465678</Color>
                                 </Style>
                               </TextRun>
@@ -708,7 +697,7 @@ where s.CustomerId = c.Id</CommandText>
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>AddedOn</rd:DefaultName>
+                        <rd:DefaultName>RunningBillNo1</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>#c6daf8</Color>
@@ -721,30 +710,25 @@ where s.CustomerId = c.Id</CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
                     <TablixMember>
-                      <Group Name="Customer">
-                        <GroupExpressions>
-                          <GroupExpression>=Fields!Customer.Value</GroupExpression>
-                        </GroupExpressions>
-                      </Group>
                       <TablixHeader>
-                        <Size>1.65278in</Size>
+                        <Size>1.45488in</Size>
                         <CellContents>
-                          <Textbox Name="Customer">
+                          <Textbox Name="addedOn">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>=Fields!Customer.Value</Value>
+                                    <Value>=Fields!addedOn.Value</Value>
                                     <Style>
                                       <FontFamily>Tahoma</FontFamily>
                                       <FontWeight>Bold</FontWeight>
+                                      <Format>dd-MM-yyyy HH:mm</Format>
                                       <Color>#465678</Color>
                                     </Style>
                                   </TextRun>
@@ -752,7 +736,7 @@ where s.CustomerId = c.Id</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Customer</rd:DefaultName>
+                            <rd:DefaultName>addedOn</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>#c6daf8</Color>
@@ -765,31 +749,23 @@ where s.CustomerId = c.Id</CommandText>
                               <PaddingBottom>2pt</PaddingBottom>
                             </Style>
                           </Textbox>
+                          <rd:Selected>true</rd:Selected>
                         </CellContents>
                       </TablixHeader>
                       <TablixMembers>
                         <TablixMember>
-                          <Group Name="RunningBillNo">
-                            <GroupExpressions>
-                              <GroupExpression>=Fields!RunningBillNo.Value</GroupExpression>
-                            </GroupExpressions>
-                          </Group>
-                          <SortExpressions>
-                            <SortExpression>
-                              <Value>=Fields!RunningBillNo.Value</Value>
-                            </SortExpression>
-                          </SortExpressions>
                           <TablixHeader>
-                            <Size>0.89236in</Size>
+                            <Size>1.93401in</Size>
                             <CellContents>
-                              <Textbox Name="RunningBillNo1">
+                              <Textbox Name="Customer1">
                                 <CanGrow>true</CanGrow>
+                                <CanShrink>true</CanShrink>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
-                                        <Value>=Fields!RunningBillNo.Value</Value>
+                                        <Value>=Fields!Customer.Value</Value>
                                         <Style>
                                           <FontFamily>Tahoma</FontFamily>
                                           <FontWeight>Bold</FontWeight>
@@ -800,7 +776,7 @@ where s.CustomerId = c.Id</CommandText>
                                     <Style />
                                   </Paragraph>
                                 </Paragraphs>
-                                <rd:DefaultName>RunningBillNo1</rd:DefaultName>
+                                <rd:DefaultName>Customer1</rd:DefaultName>
                                 <Style>
                                   <Border>
                                     <Color>#e6eefc</Color>
@@ -1030,9 +1006,9 @@ where s.CustomerId = c.Id</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.21527in</Size>
+                    <Size>0.80904in</Size>
                     <CellContents>
-                      <Textbox Name="Textbox4">
+                      <Textbox Name="Textbox2">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -1050,7 +1026,7 @@ where s.CustomerId = c.Id</CommandText>
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox4</rd:DefaultName>
+                        <rd:DefaultName>Textbox2</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>#9eb6e4</Color>
@@ -1068,7 +1044,7 @@ where s.CustomerId = c.Id</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>1.65278in</Size>
+                        <Size>1.45488in</Size>
                         <CellContents>
                           <Textbox Name="Textbox16">
                             <CanGrow>true</CanGrow>
@@ -1106,16 +1082,17 @@ where s.CustomerId = c.Id</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>0.89236in</Size>
+                            <Size>1.93401in</Size>
                             <CellContents>
-                              <Textbox Name="Textbox52">
+                              <Textbox Name="Textbox3">
                                 <CanGrow>true</CanGrow>
+                                <CanShrink>true</CanShrink>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
-                                        <Value>Total</Value>
+                                        <Value />
                                         <Style>
                                           <FontFamily>Tahoma</FontFamily>
                                           <FontWeight>Bold</FontWeight>
@@ -1126,7 +1103,7 @@ where s.CustomerId = c.Id</CommandText>
                                     <Style />
                                   </Paragraph>
                                 </Paragraphs>
-                                <rd:DefaultName>Textbox52</rd:DefaultName>
+                                <rd:DefaultName>Textbox3</rd:DefaultName>
                                 <Style>
                                   <Border>
                                     <Color>#9eb6e4</Color>
@@ -1146,14 +1123,14 @@ where s.CustomerId = c.Id</CommandText>
                               <TablixHeader>
                                 <Size>0.95833in</Size>
                                 <CellContents>
-                                  <Textbox Name="Textbox6">
+                                  <Textbox Name="Textbox52">
                                     <CanGrow>true</CanGrow>
                                     <KeepTogether>true</KeepTogether>
                                     <Paragraphs>
                                       <Paragraph>
                                         <TextRuns>
                                           <TextRun>
-                                            <Value />
+                                            <Value>Total</Value>
                                             <Style>
                                               <FontFamily>Tahoma</FontFamily>
                                               <FontWeight>Bold</FontWeight>
@@ -1164,7 +1141,7 @@ where s.CustomerId = c.Id</CommandText>
                                         <Style />
                                       </Paragraph>
                                     </Paragraphs>
-                                    <rd:DefaultName>Textbox6</rd:DefaultName>
+                                    <rd:DefaultName>Textbox52</rd:DefaultName>
                                     <Style>
                                       <Border>
                                         <Color>#9eb6e4</Color>
@@ -1360,7 +1337,7 @@ where s.CustomerId = c.Id</CommandText>
             <Top>0.06944in</Top>
             <Left>0.10416in</Left>
             <Height>0.75in</Height>
-            <Width>11.07984in</Width>
+            <Width>11.51736in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1375,7 +1352,7 @@ where s.CustomerId = c.Id</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>11.24652in</Width>
+      <Width>11.62152in</Width>
       <Page>
         <PageHeader>
           <Height>1.00986in</Height>
