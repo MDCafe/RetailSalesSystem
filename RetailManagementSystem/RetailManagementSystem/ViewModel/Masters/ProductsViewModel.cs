@@ -31,6 +31,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             _unitOfMeasureList = _rmsEntities.MeasuringUnits.ToList().OrderBy(p => p.unit);
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
             _priceDetailsList = new ObservableCollection<PriceDetail>();
+            _priceDetailsList.Add(new PriceDetail());
         }
 
         #region Public Variables
@@ -167,6 +168,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                             _product = new Product();
                             RaisePropertyChanged("SelectedProduct");
                             _priceDetailsList.Clear();
+                            _priceDetailsList.Add(new PriceDetail());
                             RaisePropertyChanged("PriceDetailsList");
 
                             _isEditMode = false;
@@ -220,7 +222,23 @@ namespace RetailManagementSystem.ViewModel.Masters
                     }
                 }
                 else
+                {
+                    var priceDetailNew = _priceDetailsList[0];
+                    if (priceDetailNew.Price == 0 || priceDetailNew.SellingPrice == 0)
+                    {
+                        Utility.ShowErrorBox("Please enter Cost price and Selling Price");
+                        return;
+                    }
+                    _rmsEntities.Stocks.Add(new Stock()
+                    {
+                        ExpiryDate = DateTime.Now.AddMonths(6),
+                        PriceDetail = priceDetailNew,
+                        Quantity = 0,
+                        Product = _product
+                    });
                     _rmsEntities.Products.Add(_product);
+                    _rmsEntities.PriceDetails.Add(priceDetailNew);
+                }
 
                 _rmsEntities.SaveChanges();
                 ClearCommand.Execute(null);

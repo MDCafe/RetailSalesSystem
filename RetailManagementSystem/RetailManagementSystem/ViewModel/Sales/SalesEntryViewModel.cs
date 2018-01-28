@@ -499,7 +499,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                             {
                                 productName = product.Name;
                             }
-                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: "  + productName  +"\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
+                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: "  + productName  +
+                                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
                             return;
                         }
                         stock.Quantity -= saleDetailItem.Qty.Value;
