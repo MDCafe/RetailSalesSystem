@@ -1,4 +1,3 @@
-DELIMITER $$
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date,IN categoryId int)
 BEGIN
 select s.BillId,s.AddedOn,C.Name as Customer,CustomerOrderNo,
@@ -12,13 +11,13 @@ CASE
     END AS 'Cancelled',
 RunningBillNo,s.addedOn,
 sum(sd.Discount) + if(isnull(s.discount),0,s.discount) Discount,
-(sum(sd.sellingprice *sd.qty) - sum(sd.Discount)) + s.TransportCharges TotalAmount,
+(sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges TotalAmount,
 CASE
-        WHEN s.PaymentMode = '0' THEN (sum(sd.sellingprice *sd.qty) - sum(sd.Discount)) + s.TransportCharges
+        WHEN s.PaymentMode = '0' THEN (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges
         ELSE NULL
     END AS 'Cash Sales',
     CASE
-        WHEN PaymentMode = '1'  THEN (sum(sd.sellingprice *sd.qty) - sum(sd.Discount)) + s.TransportCharges 
+        WHEN PaymentMode = '1'  THEN (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges 
         ELSE NULL
     END AS 'Credit Sales'
 from sales s,Customers c, SaleDetails sd
@@ -26,6 +25,7 @@ where s.CustomerId = c.Id
 and sd.BillId = s.BillId
 and c.CustomerTypeId = categoryId
 and Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate
+and (if(isnull(s.IsCancelled),0,s.IsCancelled)) = 0 
 group by s.billId
 order by s.RunningBillNo 
 
@@ -36,5 +36,4 @@ select ModifiedOn, (select Name as 'Name' from customers where Id = (select cust
 -rs.Quantity * (select sellingPrice from PriceDetails where PriceId = rs.PriceId) TotalAmount
 from ReturnDamagedStocks rs 
 where Date(rs.ModifiedOn) >= fromSalesDate and Date(rs.ModifiedOn) <= toSalesDate*/ ;
-END$$
-DELIMITER ;
+END

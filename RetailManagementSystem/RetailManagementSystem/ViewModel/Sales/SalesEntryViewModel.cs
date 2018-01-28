@@ -466,7 +466,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                 foreach (var saleDetailItem in _salesDetailsList)
                 {
                     if (saleDetailItem.ProductId == 0) continue;
-                    if (saleDetailItem.Qty == null || saleDetailItem.Qty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                    var saleQty = saleDetailItem.Qty;
+                    if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                        && (saleQty > 0))
                     {
                         Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
                         return;
@@ -488,9 +490,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                     if (stock != null)
                     {
                         var stkQty = stock.Quantity;
-                        if((stkQty - saleDetailItem.Qty.Value) < 0)
+                        var saleQtyValue = saleDetailItem.Qty.Value;
+                        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
                         {
-                            Utility.ShowErrorBox("Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
+                            var product = _rmsEntities.Products.Find(saleDetail.ProductId);
+                            var productName = "";
+                            if(product != null)
+                            {
+                                productName = product.Name;
+                            }
+                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: "  + productName  +"\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
                             return;
                         }
                         stock.Quantity -= saleDetailItem.Qty.Value;
@@ -812,7 +821,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void SetSaleDetailItem(SaleDetailExtn saleDetailItemExtn, SaleDetail saleDetail)
         {
-            saleDetail.Discount = saleDetailItemExtn.Discount;
+            saleDetail.Discount = saleDetailItemExtn.DiscountAmount;
             saleDetail.PriceId = saleDetailItemExtn.PriceId;
             saleDetail.ProductId = saleDetailItemExtn.ProductId;
             saleDetail.Qty = saleDetailItemExtn.Qty;

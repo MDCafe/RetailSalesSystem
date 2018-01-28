@@ -671,10 +671,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         }
                     }
 
+                    var serverDate = RMSEntitiesHelper.GetServerDate();
                     purchaseDetail = _rmsEntities.PurchaseDetails.Create();
                     purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
                     purchaseDetail.PriceId = priceDetailItem.PriceId;
-                    purchaseDetail.ModifiedOn = RMSEntitiesHelper.GetServerDate();
+                    purchaseDetail.AddedOn = serverDate;
+                    purchaseDetail.ModifiedOn = serverDate;
                     //purchaseDetail. = purchaseDetailItemExtn.Qty;
                     _rmsEntities.PurchaseDetails.Add(purchaseDetail);
 
@@ -725,15 +727,21 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     {
                         var qty = purchaseDetailItemExtn.OriginalQty.Value - purchaseQty;
                         stock.Quantity -= qty;
-                        stockTransExisting.Inward -= qty;
-                        stockTransExisting.ClosingBalance -= qty;
+                        if(stockTransExisting !=null)
+                        {
+                            stockTransExisting.Inward -= qty;
+                            stockTransExisting.ClosingBalance -= qty;
+                        }
                     }
                     else if(purchaseDetailItemExtn.OriginalQty.Value < purchaseDetail.PurchasedQty.Value)
                     {
                         var qtySmall = purchaseQty - purchaseDetailItemExtn.OriginalQty.Value;
                         stock.Quantity += qtySmall;
-                        stockTransExisting.Inward += qtySmall;
-                        stockTransExisting.ClosingBalance += qtySmall;
+                        if (stockTransExisting != null)
+                        {
+                            stockTransExisting.Inward += qtySmall;
+                            stockTransExisting.ClosingBalance += qtySmall;
+                        }
                     }
                 }
             }
@@ -751,6 +759,18 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 //purchase.ModifiedOn = RMSEntitiesHelper.GetServerDate();
             }
             _rmsEntities.SaveChanges();
+
+            if (parameter.ToString() == "PrintSave")
+            {
+                App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    //Call the print on print & save
+                    PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+                    psummVM.RunningBillNo = purchase.RunningBillNo;
+                    psummVM.PrintCommand.Execute(null);
+                }));
+            }
+
             Clear();
             CloseCommand.Execute(null);
         }

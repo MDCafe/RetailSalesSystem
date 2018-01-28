@@ -1,12 +1,11 @@
-﻿using Microsoft.Reporting.WinForms;
-using MySql.Data.MySqlClient;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.Utilities;
-using System;
-using System.Configuration;
+﻿using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
+using MySql.Data.MySqlClient;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using Microsoft.Reporting.WinForms;
 
 namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 {

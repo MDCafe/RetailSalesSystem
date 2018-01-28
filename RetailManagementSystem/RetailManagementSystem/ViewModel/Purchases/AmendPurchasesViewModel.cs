@@ -155,7 +155,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId };
+            var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId,ShowAllCompanies = _showRestrictedCompanies };
 
             Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
             _closeWindowCommand.Execute(window);

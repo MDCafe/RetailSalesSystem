@@ -1,9 +1,5 @@
-﻿using Microsoft.Windows.Controls;
-using RetailManagementSystem.ViewModel.Masters;
-using System;
+﻿using RetailManagementSystem.ViewModel.Masters;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace RetailManagementSystem.View.Masters
 {
