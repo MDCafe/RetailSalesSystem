@@ -358,7 +358,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
                 if (stock != null)
                 {
-                        purchaseDetailExtn.ExpiryDate = stock.ExpiryDate;
+                        //purchaseDetailExtn.ExpiryDate = stock.ExpiryDate;
                 }
 
                 purchaseDetailExtn.PropertyChanged += (sender, e) =>
@@ -488,6 +488,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         Utility.ShowErrorBox("Selling price can't be empty or zero");
                         return;
                     }
+                    if (item.ExpiryDate == null || item.ExpiryDate <= DateTime.Now)
+                    {
+                        Utility.ShowErrorBox("Expiry Date can't be empty or less than today's date");
+                        return;
+                    }
+
                     var purchaseDetail = new PurchaseDetail();
                     purchaseDetail.ProductId = item.ProductId;
                     purchaseDetail.Discount = item.Discount;                

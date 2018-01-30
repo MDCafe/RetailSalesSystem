@@ -54,17 +54,17 @@ namespace RetailManagementSystem.Model
             {
                 if (_expiryDate == null)
                 {
-                    return _expiryDate = DateTime.Now.AddMonths(1);
+                    return _expiryDate;// = DateTime.Now.AddMonths(1);
                 }
                 return _expiryDate;
             }
 
             set
             {   
-                if (Nullable.Equals(_expiryDate, value))
-                {
-                    _expiryDate = DateTime.Now.AddMonths(1);
-                }
+                //if (Nullable.Equals(_expiryDate, value))
+                //{
+                //    //_expiryDate = DateTime.Now.AddMonths(1);
+                //}
                 _expiryDate = value;
                 this.OnPropertyChanged("ExpiryDate");
             }
