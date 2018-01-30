@@ -1,10 +1,10 @@
 ﻿using System.Windows.Controls;
-using RetailManagementSystem.ViewModel.Extensions;
-using RetailManagementSystem.ViewModel.Sales;
-using RetailManagementSystem.Model;
 using System.Windows.Input;
 using System.Windows;
 using System;
+using RetailManagementSystem.ViewModel.Extensions;
+using RetailManagementSystem.ViewModel.Sales;
+using RetailManagementSystem.Model;
 
 namespace RetailManagementSystem.View.Sales
 {
@@ -60,13 +60,10 @@ namespace RetailManagementSystem.View.Sales
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {
                         custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
-                        _salesViewModel.SetProductName();
+                        _salesViewModel.SetProductId();
                     }));
                 };
             };
-
-            
-            
 
             SalesDataGrid.PreviewKeyUp += (s, e) =>
             {

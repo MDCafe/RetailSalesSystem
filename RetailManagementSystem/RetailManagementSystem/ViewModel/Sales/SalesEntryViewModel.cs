@@ -983,12 +983,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public void SetProductName()
+        public void SetProductId()
         {
             foreach (var item in _salesDetailsList)
             {
                 item.OnPropertyChanged("ProductId");
-                //item.ProductId = item.ProductId;
             }
         }
 

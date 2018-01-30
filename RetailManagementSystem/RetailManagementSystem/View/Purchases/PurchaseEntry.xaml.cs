@@ -1,7 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.Model;
-using System;
 
 namespace RetailManagementSystem.View.Purchases
 {
@@ -11,7 +11,6 @@ namespace RetailManagementSystem.View.Purchases
     public partial class PurchaseEntry : UserControl
     {
         PurchaseEntryViewModel _purchaseEntryViewModel;
-
 
         public PurchaseEntry()
         {
@@ -27,6 +26,7 @@ namespace RetailManagementSystem.View.Purchases
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {
                         custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
+                        _purchaseEntryViewModel.SetProductId();
                     }));
                  };
 

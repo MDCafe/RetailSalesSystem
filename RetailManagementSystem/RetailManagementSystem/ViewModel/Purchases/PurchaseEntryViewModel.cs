@@ -352,7 +352,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.CostPrice = productPrice.Price;
                 purchaseDetailExtn.PriceId = productPrice.PriceId;
                 purchaseDetailExtn.AvailableStock = productPrice.Quantity;
-                purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
+                //purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
 
                 var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
@@ -412,7 +412,15 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     purchaseDetailExtn.Discount = 0;
                 };
             }
-        }      
+        }
+
+        public void SetProductId()
+        {
+            foreach (var item in _purchaseDetailsList)
+            {
+                item.OnPropertyChanged("ProductId");
+            }
+        }
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
@@ -473,13 +481,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     {
                         Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
                         return;
+                    }
 
-                        //App.Current.Dispatcher.BeginInvoke(
-                        //    (Action)(() =>
-                        //    {
-                        //        Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
-                        //    }
-                        //    ));
+                    if (item.SellingPrice == null || item.SellingPrice <= 0)
+                    {
+                        Utility.ShowErrorBox("Selling price can't be empty or zero");
+                        return;
                     }
                     var purchaseDetail = new PurchaseDetail();
                     purchaseDetail.ProductId = item.ProductId;
@@ -566,10 +573,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                         newStock.PriceDetail = priceDetailItem;
                     }
-
-
-
-                    
                     purchaseDetail.PriceId = priceDetailItem.PriceId;
                     purchaseDetail.PriceDetail = priceDetailItem;
                     purchase.PurchaseDetails.Add(purchaseDetail);
@@ -597,6 +600,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     company.DueAmount = company.DueAmount.HasValue ? company.DueAmount.Value + outstandingBalance : outstandingBalance;
                 }
 
+
+                RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                purchase.RunningBillNo = _runningBillNo;
+                
                 var _category = _rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
                 _category.RollingNo = _runningBillNo;
 
