@@ -5,7 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS-MUNCHEE;server=munchee-pc;database=RMS;port=3306</ConnectString>
+        <ConnectString>Dsn=RMS-MUNCHEE;server=woodlandsserver;database=RMS;port=3306</ConnectString>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>50fb778e-6071-4073-903c-7d6406a41e8a</rd:DataSourceID>
@@ -197,7 +197,7 @@ where p.BillId = pd.BillId</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.85938in</Width>
+                  <Width>0.67188in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.71006in</Width>
@@ -206,10 +206,10 @@ where p.BillId = pd.BillId</CommandText>
                   <Width>0.78125in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.76042in</Width>
+                  <Width>0.5625in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.67708in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.92014in</Width>
@@ -239,7 +239,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -274,7 +274,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                             <Paragraph>
@@ -288,7 +288,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -323,7 +323,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -358,7 +358,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                             <Paragraph>
@@ -372,7 +372,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -407,7 +407,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -442,7 +442,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -477,7 +477,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Right</TextAlign>
+                                <TextAlign>Left</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -2288,7 +2288,7 @@ where p.BillId = pd.BillId</CommandText>
                               </TextRun>
                             </TextRuns>
                             <Style>
-                              <TextAlign>Center</TextAlign>
+                              <TextAlign>Left</TextAlign>
                             </Style>
                           </Paragraph>
                         </Paragraphs>
@@ -2609,7 +2609,7 @@ where p.BillId = pd.BillId</CommandText>
             <DataSetName>DataSet1</DataSetName>
             <Top>0.75in</Top>
             <Height>2.90583in</Height>
-            <Width>8.10589in</Width>
+            <Width>7.39755in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2904,7 +2904,7 @@ where p.BillId = pd.BillId</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>8.10589in</Width>
+      <Width>7.39755in</Width>
       <Page>
         <PageHeader>
           <Height>0.26736in</Height>

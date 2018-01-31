@@ -101,7 +101,6 @@
                 <Button x:Name="btnAddCustomer" Content="Supplier Quick Add" 
                     Width="130" Command="{Binding}" Margin="5"/>
             </StackPanel>
-
             <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
             <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="PaymentId"
                       DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" SelectedValue="{Binding SelectedPaymentId}" 
@@ -118,6 +117,7 @@
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="5"
                                       LoadingRow="DataGrid_LoadingRow"
+                                      CanUserSortColumns="False" CanUserReorderColumns="False"
                                        >
                 <toolKit:DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">

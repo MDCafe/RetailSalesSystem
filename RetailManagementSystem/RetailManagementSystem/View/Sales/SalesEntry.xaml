@@ -114,6 +114,7 @@
                                       LoadingRow="DataGrid_LoadingRow"
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
+                                      CanUserSortColumns="False" CanUserReorderColumns="False"
                                        >
                 <toolKit:DataGrid.Resources>
                     <Style TargetType="DataGridRow">

@@ -335,6 +335,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (!returnValue) return;
 
             RMSEntitiesHelper.Instance.RemoveNotifier(this);
+
+            _rmsEntities.Dispose();
             //if (_timer != null)
             //{
             //    _timer.Stop();
@@ -688,11 +690,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             //Check if there are any deletions
             RemoveDeletedItems();
 
+            SaleDetail saleDetail;
+
             foreach (var saleDetailItemExtn in _salesDetailsList)
             {
-                var saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
-                                                                                                    && b.ProductId == saleDetailItemExtn.ProductId
-                                                                                                    );
+               saleDetail = _rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
+                                                                    && b.ProductId == saleDetailItemExtn.ProductId 
+                                                                    && b.PriceId == saleDetailItemExtn.PriceId);
                 var serverDate = RMSEntitiesHelper.GetServerDate();
                 //New item added
                 if (saleDetail == null)
@@ -765,6 +769,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             decimal? oldvalue;
             _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldvalue);
 
+            //foreach (var slLogitem in _rmsEntities.SaleDetails)
+            //{
+            //    _log.Info("Bill Info :"  + slLogitem.BillId + "," + slLogitem.ProductId + "," + slLogitem.Qty + "," + slLogitem.PriceId + "," + slLogitem.SellingPrice);
+            //}
+ 
             _rmsEntities.SaveChanges();
 
             if (parameter == null)
