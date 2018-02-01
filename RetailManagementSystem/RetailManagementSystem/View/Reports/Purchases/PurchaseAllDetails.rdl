@@ -6,6 +6,7 @@
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
         <ConnectString>Dsn=RMS-MUNCHEE;server=woodlandsserver;database=RMS;port=3306</ConnectString>
+        <Prompt>Specify a user name and password for data source DataSource1:</Prompt>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>50fb778e-6071-4073-903c-7d6406a41e8a</rd:DataSourceID>
@@ -206,10 +207,10 @@ where p.BillId = pd.BillId</CommandText>
                   <Width>0.78125in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.5625in</Width>
+                  <Width>0.69792in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.67708in</Width>
+                  <Width>0.78125in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.92014in</Width>
@@ -945,7 +946,7 @@ where p.BillId = pd.BillId</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=sum((Fields!ActualPrice.Value * (Fields!PurchasedQty.Value)) - Fields!ItemDiscount.Value)</Value>
+                                  <Value>=sum((Fields!ActualPrice.Value * (Fields!PurchasedQty.Value - Fields!FreeIssue.Value)) - Fields!ItemDiscount.Value)</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <Format>n2</Format>
@@ -969,6 +970,7 @@ where p.BillId = pd.BillId</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2609,7 +2611,7 @@ where p.BillId = pd.BillId</CommandText>
             <DataSetName>DataSet1</DataSetName>
             <Top>0.75in</Top>
             <Height>2.90583in</Height>
-            <Width>7.39755in</Width>
+            <Width>7.63713in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2904,7 +2906,7 @@ where p.BillId = pd.BillId</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>7.39755in</Width>
+      <Width>7.63713in</Width>
       <Page>
         <PageHeader>
           <Height>0.26736in</Height>
