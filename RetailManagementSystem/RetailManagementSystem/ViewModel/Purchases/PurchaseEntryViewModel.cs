@@ -567,7 +567,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             //PriceId = priceDetailItem.PriceId,
                             ExpiryDate = item.ExpiryDate.Value,
                             Quantity = qty.Value,
-                            ProductId = item.ProductId
+                            ProductId = item.ProductId,
+                            PriceDetail = priceDetailItem
                         };
                         //first time stock for the new price
                         var firstStockTrans = new StockTransaction()
@@ -761,6 +762,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         }
                     }
                 }
+                else
+                {
+                    //priceDetailItem.Stocks.Add(new Stock()
+                    //{
+                    // //   ProductId = purchaseDetailItemExtn.ProductId,
+                    //   // Quantity = purchaseDetailItemExtn.Qty.HasValue ? purchaseDetailItemExtn.Qty: 0.0F,
+                        
+
+                    //});
+                }
             }
 
             if (purchase !=null)
@@ -915,95 +926,103 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         private void OnEditBill(int? billNo)
         {
-            if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
-            var runningBillNo = billNo;
-
-            var purchases = _rmsEntities.Purchases.Where(b => b.RunningBillNo == runningBillNo && b.CompanyId == _purchaseParams.CompanyId).FirstOrDefault();
-            _editBillNo = purchases.BillId;
-            SelectedCompany = purchases.Company;
-            SelectedCompanyText = SelectedCompany.Name;
-            TranscationDate = purchases.AddedOn.Value;
-            SelectedPaymentId = Char.Parse(purchases.PaymentMode);
-            InvoiceNo = purchases.InvoiceNo;
-
-            //only free items without any purchase
-            var freeIssueOnly = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == _editBillNo && p.IsFreeOnly == true).FirstOrDefault();
-
-            if(freeIssueOnly != null && freeIssueOnly.FreeQty !=0)
+            try
             {
-                var purchaseDetailExtn = new PurchaseDetailExtn()
+                if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
+                var runningBillNo = billNo;
+
+                var purchases = _rmsEntities.Purchases.Where(b => b.RunningBillNo == runningBillNo && b.CompanyId == _purchaseParams.CompanyId).FirstOrDefault();
+                _editBillNo = purchases.BillId;
+                SelectedCompany = purchases.Company;
+                SelectedCompanyText = SelectedCompany.Name;
+                TranscationDate = purchases.AddedOn.Value;
+                SelectedPaymentId = Char.Parse(purchases.PaymentMode);
+                InvoiceNo = purchases.InvoiceNo;
+
+                //only free items without any purchase
+                var freeIssueOnly = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == _editBillNo && p.IsFreeOnly == true).FirstOrDefault();
+
+                if (freeIssueOnly != null && freeIssueOnly.FreeQty != 0)
                 {
-                    ProductId = freeIssueOnly.ProductId,
-                    Qty = freeIssueOnly.FreeQty,
-                    //SellingPrice = item.SellingPrice,
-                    BillId = freeIssueOnly.BillId
-                };
+                    var purchaseDetailExtn = new PurchaseDetailExtn()
+                    {
+                        ProductId = freeIssueOnly.ProductId,
+                        Qty = freeIssueOnly.FreeQty,
+                        //SellingPrice = item.SellingPrice,
+                        BillId = freeIssueOnly.BillId
+                    };
 
-                _purchaseDetailsList.Add(purchaseDetailExtn);
+                    _purchaseDetailsList.Add(purchaseDetailExtn);
+                }
+
+                var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purchases.BillId).ToList();
+
+                var tempTotalAmount = 0.0M;
+                foreach (var item in purchaseDetailsForBill.ToList())
+                {
+                    //var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
+
+                    var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
+                    mySQLparam.Value = item.PriceId;
+
+                    var productPrice = _rmsEntities.Database.SqlQuery<ProductPrice>
+                                           ("GetProductPriceForPriceId(@priceId)", mySQLparam).FirstOrDefault();
+
+                    //foreach (var logitem in _productsPriceList)
+                    //{
+                    //    _log.Info(logitem.PriceId + "," + logitem.ProductName + "," + logitem.ProductId + "," + item.Price);
+                    //}
+
+                    var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId
+                                                                          && p.ProductId == item.ProductId).FirstOrDefault();
+                    var freeIssueQty = freeIssue != null ? freeIssue.FreeQty : 0;
+
+                    var purchaseDetailExtn = new PurchaseDetailExtn()
+                    {
+                        Discount = item.Discount,
+                        PriceId = item.PriceId.Value,
+                        ProductId = item.ProductId.Value,
+                        Qty = item.PurchasedQty - freeIssueQty,
+                        OriginalQty = item.PurchasedQty - freeIssueQty,
+                        SellingPrice = productPrice.SellingPrice,
+                        BillId = item.BillId,
+                        CostPrice = productPrice.Price,
+                        AvailableStock = productPrice.Quantity,
+                        Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty)
+                    };
+
+                    _purchaseDetailsList.Add(purchaseDetailExtn);
+                    SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
+                    purchaseDetailExtn.PurchasePrice = item.ActualPrice;
+                    purchaseDetailExtn.DiscountAmount = item.Discount.Value;
+
+                    purchaseDetailExtn.FreeIssue = freeIssueQty;
+
+                    var itemAmount = item.ActualPrice * (item.PurchasedQty - freeIssueQty);
+                    tempTotalAmount += itemAmount.Value;
+                }
+                TotalAmount = tempTotalAmount;
+
+                CoolieCharges = purchases.CoolieCharges;
+                KCoolieCharges = purchases.KCoolieCharges;
+                TransportCharges = purchases.TransportCharges;
+                LocalCoolieCharges = purchases.TransportCharges;
+                SpecialDiscountAmount = purchases.SpecialDiscount;
+                TotalDiscountAmount = purchases.Discount;
+
+                RunningBillNo = runningBillNo.Value;
+                _isEditMode = true;
+
+                if (_deletedItems == null)
+                    _deletedItems = new List<PurchaseDetailExtn>();
+                else
+                    _deletedItems.Clear();
             }
-
-            var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purchases.BillId).ToList();
-
-            var tempTotalAmount = 0.0M;
-            foreach (var item  in purchaseDetailsForBill.ToList())
+            catch (Exception ex)
             {
-                //var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
-
-                var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
-                mySQLparam.Value = item.PriceId;
-
-                var productPrice = _rmsEntities.Database.SqlQuery<ProductPrice>
-                                       ("GetProductPriceForPriceId(@priceId)", mySQLparam).FirstOrDefault();
-
-                //foreach (var logitem in _productsPriceList)
-                //{
-                //    _log.Info(logitem.PriceId + "," + logitem.ProductName + "," + logitem.ProductId + "," + item.Price);
-                //}
-
-                var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId
-                                                                      && p.ProductId == item.ProductId).FirstOrDefault();
-                var freeIssueQty = freeIssue != null ? freeIssue.FreeQty : 0;
-
-                var purchaseDetailExtn = new PurchaseDetailExtn()
-                {
-                    Discount = item.Discount,
-                    PriceId = item.PriceId.Value,
-                    ProductId = item.ProductId.Value,
-                    Qty = item.PurchasedQty - freeIssueQty,
-                    OriginalQty = item.PurchasedQty - freeIssueQty,
-                    SellingPrice = productPrice.SellingPrice,
-                    BillId = item.BillId,
-                    CostPrice = productPrice.Price,
-                    AvailableStock = productPrice.Quantity,
-                    Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty)
-                };
-
-                _purchaseDetailsList.Add(purchaseDetailExtn);
-                SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
-                purchaseDetailExtn.PurchasePrice = item.ActualPrice;
-                purchaseDetailExtn.DiscountAmount = item.Discount.Value;
-
-                purchaseDetailExtn.FreeIssue = freeIssueQty;
-
-                var itemAmount = item.ActualPrice * (item.PurchasedQty - freeIssueQty);
-                tempTotalAmount += itemAmount.Value;
+                _log.Error("Error while getting bill details.", ex);
+                Utility.ShowErrorBox(ex.Message);
             }
-            TotalAmount = tempTotalAmount;
-
-            CoolieCharges = purchases.CoolieCharges;
-            KCoolieCharges = purchases.KCoolieCharges;
-            TransportCharges = purchases.TransportCharges;
-            LocalCoolieCharges = purchases.TransportCharges;
-            SpecialDiscountAmount = purchases.SpecialDiscount;
-            TotalDiscountAmount = purchases.Discount;
-
-            RunningBillNo = runningBillNo.Value;
-            _isEditMode = true;
-
-            if (_deletedItems == null)
-                _deletedItems = new List<PurchaseDetailExtn>();
-            else
-                _deletedItems.Clear();
         }
 
         private void RemoveDeletedItems()

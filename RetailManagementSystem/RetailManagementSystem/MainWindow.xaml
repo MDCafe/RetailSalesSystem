@@ -74,12 +74,12 @@
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
                         <RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
                                        KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
-                        <RibbonButton Label="Purchase Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Purchase Returns"
-                                       KeyTip="R" Command="{Binding OpenReturnPurchaseCommand}"/>
                     </RibbonGroup>
 
                     <!-- Stock Group-->
                     <RibbonGroup x:Name="Stock" Header="Stock Transactions" KeyTip="P">
+                        <RibbonButton Label="Returns" LargeImageSource="Images\Return.png" ToolTipTitle="Marking returns,Purchase returns and Damaged stocks marking"
+                                       KeyTip="R" Command="{Binding OpenReturnPurchaseCommand}"/>
                         <RibbonButton Label="Swaps" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Products swaps with vendors" 
                                       KeyTip="SP" Command="{Binding OpenStockTransactionCommand}"/>
                     </RibbonGroup>

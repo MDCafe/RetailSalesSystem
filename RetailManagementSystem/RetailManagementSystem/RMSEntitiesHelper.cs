@@ -195,6 +195,7 @@
             var serverDateTime = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
             return serverDateTime.FirstOrDefault();
         }
+
     }
 
     public class  CustomerBill

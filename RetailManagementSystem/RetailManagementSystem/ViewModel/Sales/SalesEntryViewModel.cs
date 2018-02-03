@@ -486,8 +486,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                     saleDetail.ModifiedOn = combinedDateTime;
                     _billSales.SaleDetails.Add(saleDetail);
 
-                    var stockToReduceColln = _rmsEntities.Stocks.Where(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId);
-                    var stock = stockToReduceColln.FirstOrDefault();
+                    var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                                                                   && s.Quantity == saleDetailItem.AvailableStock);
+                    //var stock = stockToReduceColln.FirstOrDefault();
 
                     if (stock != null)
                     {
@@ -497,11 +498,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                         {
                             var product = _rmsEntities.Products.Find(saleDetail.ProductId);
                             var productName = "";
-                            if(product != null)
+                            if (product != null)
                             {
                                 productName = product.Name;
                             }
-                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: "  + productName  +
+                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
                                                  "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
                             return;
                         }

@@ -79,5 +79,6 @@ namespace RetailManagementSystem.Model
         public string ProductName { get; set; }
         public decimal ReturnAmount { get; set; }
         public CodeMaster SelectedReturnReason { get; set; }
+        public string Comments { get; set; }
     }
 }
