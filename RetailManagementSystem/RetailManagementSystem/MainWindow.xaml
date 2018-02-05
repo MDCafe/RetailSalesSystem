@@ -64,7 +64,7 @@
                         <RibbonButton Label="Amend/Print Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing sales bills" 
                                        KeyTip="A" Command="{Binding OpenAmendSalesCommand}"/>
 
-                        <RibbonButton Label="Sale Returns" LargeImageSource="Images\ReturnSales.jpeg" ToolTipTitle="Returns"
+                        <RibbonButton Label="Sale Returns" LargeImageSource="Images\Return.png" ToolTipTitle="Returns"
                                        KeyTip="R" Command="{Binding OpenReturnSalesCommand}"/>
                     </RibbonGroup>
 
@@ -86,19 +86,19 @@
 
                     <!-- Reports Group-->
                     <RibbonGroup x:Name="Reports" Header="Reports">
-                        <RibbonMenuButton LargeImageSource="Images\Report.gif" Label="Sales" KeyTip="S">
-                            <RibbonMenuItem ImageSource="Images\Report.gif" Header="Sales Summary" KeyTip="SS" 
+                        <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Sales" KeyTip="S">
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Sales Summary" KeyTip="SS" 
                                             Command="{Binding OpenDailySalesReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Customer Sales" KeyTip="CS"/>
                         </RibbonMenuButton>
 
-                        <RibbonMenuButton LargeImageSource="Images\Report.gif" Label="Purchase" KeyTip="P">
-                            <RibbonMenuItem ImageSource="Images\Report.gif" Header="Purchase Summary" KeyTip="PS" 
+                        <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Purchase" KeyTip="P">
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Purchase Summary" KeyTip="PS" 
                                             Command="{Binding OpenDailyPurchaseReportCommand}"/>
-                            <RibbonMenuItem ImageSource="Images\Report.gif" Header="Supplierwise Purchase" KeyTip="SP"/>
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Supplierwise Purchase" KeyTip="SP"/>
                         </RibbonMenuButton>
-                        <RibbonMenuButton LargeImageSource="Images\Report.gif" Label="Stock" KeyTip="P">
-                            <RibbonMenuItem ImageSource="Images\Report.gif" Header="Stock report" KeyTip="SR" 
+                        <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Stock" KeyTip="P">
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock report" KeyTip="SR" 
                                             Command="{Binding OpenStockReportCommand}"/>
                         </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
@@ -225,7 +225,7 @@
 
                         <pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
                             <DataTemplate>
-                                <PurchaseView:ReturnPurchase/>
+                                <StockView:Returns/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
 

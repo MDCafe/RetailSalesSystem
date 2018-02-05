@@ -13,6 +13,7 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
+using System.Globalization;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -380,26 +381,29 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnBillCancel()
         {
-            var cancelBill = _rmsEntities.Sales.FirstOrDefault(s => s.RunningBillNo == _salesParams.Billno);            
+            using (var rmsEntities = new RMSEntities())
+            {
+                var cancelBill = rmsEntities.Sales.FirstOrDefault(s => s.RunningBillNo == _salesParams.Billno && s.CustomerId == _salesParams.CustomerId);
 
-            var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the bill?");
-            if (msgResult == System.Windows.MessageBoxResult.No || msgResult == System.Windows.MessageBoxResult.Cancel) return;
-            
-            var cancelBillItems = _rmsEntities.SaleDetails.Where(s => s.BillId == cancelBill.BillId);            
-            foreach (var item in cancelBillItems.ToList())
-            {                
-                var stockItem = _rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
-                var stockTrans = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(str => str.StockId == stockItem.Id
-                                                                            && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
-                var saleQty = item.Qty.Value;
-                stockTrans.Outward -= saleQty;
-                stockTrans.ClosingBalance += saleQty;
+                var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the bill?");
+                if (msgResult == System.Windows.MessageBoxResult.No || msgResult == System.Windows.MessageBoxResult.Cancel) return;
 
-                stockItem.Quantity += saleQty;
+                var cancelBillItems = rmsEntities.SaleDetails.Where(s => s.BillId == cancelBill.BillId);
+                foreach (var item in cancelBillItems.ToList())
+                {
+                    var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
+                    var stockTrans = rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(str => str.StockId == stockItem.Id
+                                                                                && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
+                    var saleQty = item.Qty.Value;
+                    stockTrans.Outward -= saleQty;
+                    stockTrans.ClosingBalance += saleQty;
+
+                    stockItem.Quantity += saleQty;
+                }
+
+                cancelBill.IsCancelled = true;
+                rmsEntities.SaveChanges();
             }
-
-            cancelBill.IsCancelled = true;
-            _rmsEntities.SaveChanges();
             OnClose();
         }
         #endregion
@@ -440,6 +444,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
+                //Validate for Errors
+                if (!Validate()) return;
+
                 //RemoveProductWithNullValues();
                 //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
                 //{
@@ -468,13 +475,6 @@ namespace RetailManagementSystem.ViewModel.Sales
                 foreach (var saleDetailItem in _salesDetailsList)
                 {
                     if (saleDetailItem.ProductId == 0) continue;
-                    var saleQty = saleDetailItem.Qty;
-                    if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
-                        && (saleQty > 0))
-                    {
-                        Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
-                        return;
-                    }
                     var saleDetail = _rmsEntities.SaleDetails.Create();
                     saleDetail.Discount = saleDetailItem.Discount;
                     saleDetail.PriceId = saleDetailItem.PriceId;
@@ -486,26 +486,15 @@ namespace RetailManagementSystem.ViewModel.Sales
                     saleDetail.ModifiedOn = combinedDateTime;
                     _billSales.SaleDetails.Add(saleDetail);
 
+                    var expiryDate = saleDetailItem.ExpiryDate;
                     var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                                                   && s.Quantity == saleDetailItem.AvailableStock);
-                    //var stock = stockToReduceColln.FirstOrDefault();
+                                                                   && s.ExpiryDate.Year == expiryDate.Year
+                                                                   && s.ExpiryDate.Month == expiryDate.Month
+                                                                   && s.ExpiryDate.Day == expiryDate.Day
+                                                                   );
 
                     if (stock != null)
                     {
-                        var stkQty = stock.Quantity;
-                        var saleQtyValue = saleDetailItem.Qty.Value;
-                        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
-                        {
-                            var product = _rmsEntities.Products.Find(saleDetail.ProductId);
-                            var productName = "";
-                            if (product != null)
-                            {
-                                productName = product.Name;
-                            }
-                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
-                                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
-                            return;
-                        }
                         stock.Quantity -= saleDetailItem.Qty.Value;
                         SetStockTransaction(saleDetail, stock);
                     }
@@ -593,7 +582,44 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 PanelLoading = false;
             });
-        }       
+        }
+
+        private bool Validate()
+        {
+            foreach (var saleDetailItem in _salesDetailsList)
+            {
+                if (saleDetailItem.ProductId == 0) continue;
+                var saleQty = saleDetailItem.Qty;
+                if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                    && (saleQty > 0))
+                {
+                    Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
+                    return false;
+                }
+
+                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                                                               && s.Quantity == saleDetailItem.AvailableStock);
+
+                if (stock != null)
+                {
+                    var stkQty = stock.Quantity;
+                    var saleQtyValue = saleDetailItem.Qty.Value;
+                    if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
+                    {
+                        var product = _rmsEntities.Products.Find(saleDetailItem.ProductId);
+                        var productName = "";
+                        if (product != null)
+                        {
+                            productName = product.Name;
+                        }
+                        Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
+                                             "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         private void SaveInterim()
         {                                   
@@ -1066,10 +1092,12 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
                 SaleDetailExtn.SerialNo = selectedIndex;
-                //SaleDetailExtn.ProductName = productPrice.ProductName;
+                SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
+            }
+            //SaleDetailExtn.ProductName = productPrice.ProductName;
 
-                //var customerSales = _rmsEntities.Sales.Where(s => s.CustomerId == _selectedCustomer.Id);//.OrderByDescending(d => d.ModifiedOn);
-                var lastSoldPrice = RMSEntitiesHelper.Instance.GetLastSoldPrice(productPrice.ProductId, _selectedCustomer.Id);
+            //var customerSales = _rmsEntities.Sales.Where(s => s.CustomerId == _selectedCustomer.Id);//.OrderByDescending(d => d.ModifiedOn);
+            var lastSoldPrice = RMSEntitiesHelper.Instance.GetLastSoldPrice(productPrice.ProductId, _selectedCustomer.Id);
                 if (lastSoldPrice != null)
                 {
                     //var lastSaleDetail = customerSales. SaleDetails.Where(p => p.ProductId == productPrice.ProductId).OrderByDescending(d => d.ModifiedOn);
@@ -1117,7 +1145,6 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //&& SaleDetailExtn.AvailableStock >
                 //SaleDetailExtn.Qty.Value
                 SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
-            }
         }
 
         private bool CanSaveAs(object parameter)

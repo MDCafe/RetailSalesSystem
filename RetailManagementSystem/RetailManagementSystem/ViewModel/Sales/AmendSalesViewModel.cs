@@ -144,7 +144,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
             {
-                Utility.ShowWarningBox("Bill has been cancelled already");
+                Utility.ShowWarningBox(window,"Bill has been cancelled already");
                 return;
             }
 

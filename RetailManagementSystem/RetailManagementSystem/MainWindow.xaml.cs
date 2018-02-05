@@ -120,8 +120,20 @@ namespace RetailManagementSystem
                         Workspace.This.OpenDailySalesReportCommand.Execute(true);
                         return;
                 }
-            } 
+            }
             #endregion
-        }        
+
+            #region 
+            if (Keyboard.IsKeyDown(Key.T))
+            {
+                switch (e.Key)
+                {
+                    case Key.E:
+                        Workspace.This.OpenReturnPurchaseCommand.Execute(true);
+                        return;
+                }
+            }
+            #endregion
+        }
     }
 }

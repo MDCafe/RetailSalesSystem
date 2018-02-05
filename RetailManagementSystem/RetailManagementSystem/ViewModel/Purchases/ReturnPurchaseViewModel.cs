@@ -65,8 +65,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 returnItem.ReturnAmount = returnItem.ReturnQty * productPrice.Price;
                 returnItem.AvailableStock = productPrice.Quantity;
                 returnItem.ReturnPrice = productPrice.Price;
-                returnItem.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate,"dd/MM/yyyy", CultureInfo.InvariantCulture,
-                                        DateTimeStyles.None);
+                returnItem.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate,"dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
             }
 
             returnItem.PropertyChanged += (sender, e) =>
@@ -410,11 +409,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
              BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedCompany.Id);
 
-            var mysqlParam = new MySql.Data.MySqlClient.MySqlParameter("@companyId", MySql.Data.MySqlClient.MySqlDbType.Int32);
+            var mysqlParam = new MySql.Data.MySqlClient.MySqlParameter("@filterCompanyId", MySql.Data.MySqlClient.MySqlDbType.Int32);
             mysqlParam.Value = SelectedCompany.Id;
 
             var purchaseReturn = _rmsEntities.Database.SqlQuery<PurchaseReturn>
-                                   ("GetPurchaseReturnForCompany(@companyId)", mysqlParam).ToList();
+                                   ("GetPurchaseReturnForCompany(@filterCompanyId)", mysqlParam).ToList();
             foreach (var item in purchaseReturn)
             {
                 var itemPriceDetails = _rmsEntities.PriceDetails.FirstOrDefault(p => p.ProductId == item.ProductId && p.PriceId == item.PriceId);

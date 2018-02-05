@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>17</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -355,8 +355,8 @@
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Purchases\ReturnPurchase.xaml.cs">
-      <DependentUpon>ReturnPurchase.xaml</DependentUpon>
+    <Compile Include="View\Stock\Returns.xaml.cs">
+      <DependentUpon>Returns.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports.xaml.cs">
       <DependentUpon>Reports.xaml</DependentUpon>
@@ -426,7 +426,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Purchases\ReturnPurchase.xaml">
+    <Page Include="View\Stock\Returns.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -481,9 +481,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.Config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -499,6 +496,7 @@
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
     <Resource Include="Images\Return.png" />
+    <Resource Include="Images\Report.png" />
     <Content Include="View\Reports\Stock\StockDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -527,7 +525,6 @@
     <Content Include="View\Reports\Sales\SalesBill.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Images\Report.gif" />
     <Content Include="View\Reports\Purchases\PurchaseAllDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

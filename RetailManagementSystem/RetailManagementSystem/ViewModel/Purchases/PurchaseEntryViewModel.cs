@@ -1085,7 +1085,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         private void OnBillCancel()
         {
-            var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno);
+            var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno && s.CompanyId == _purchaseParams.CompanyId);
 
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
             if (msgResult != System.Windows.MessageBoxResult.OK) return;

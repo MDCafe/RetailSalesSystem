@@ -21,7 +21,6 @@ namespace RetailManagementSystem.Model
         private decimal? _lastSoldPrice;
         private bool _propertyReadOnly;
 
-
         public int SerialNo
         {
             get
@@ -232,6 +231,8 @@ namespace RetailManagementSystem.Model
         public virtual Product Product { get; set; }
 
         public virtual Sale Sale { get; set; }
+
+        public DateTime ExpiryDate { get; set; }
 
         public virtual void OnPropertyChanged(string propertyName)
         {
