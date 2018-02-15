@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>17</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -317,6 +317,7 @@
     <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
+    <Compile Include="ViewModel\Masters\CompanyViewModel.cs" />
     <Compile Include="ViewModel\Masters\ProductsViewModel.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
     <Compile Include="ViewModel\Purchases\AmendPurchasesViewModel.cs" />
@@ -339,6 +340,9 @@
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Masters\Companies.xaml.cs">
+      <DependentUpon>Companies.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Masters\Products.xaml.cs">
       <DependentUpon>Products.xaml</DependentUpon>
@@ -409,6 +413,10 @@
     <Page Include="View\Entitlements\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Masters\Companies.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Masters\Products.xaml">
       <Generator>MSBuild:Compile</Generator>

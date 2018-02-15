@@ -43,7 +43,8 @@ namespace RetailManagementSystem.ViewModel.Reports
             }
         }
 
-        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Summary Report")
+        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers, 
+                                     showRestrictedCustomers ? "Sales Summary Report *" : "Sales Summary Report")
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;

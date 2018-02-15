@@ -8,6 +8,7 @@
     using Model;
     using System.Collections.ObjectModel;
     using System;
+    using System.Windows;
 
     internal class RMSEntitiesHelper
     {
@@ -145,7 +146,7 @@
             return Instance.RMSEntities.Database.SqlQuery<decimal?>(lastSoldPriceSQL).FirstOrDefault();
         }
 
-        public static CustomerBill CheckIfBillExists(int billNo, int categoryId)
+        public static CustomerBill CheckIfBillExists(int billNo, int categoryId,Window window)
         {
             var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales
                             join c in RMSEntitiesHelper.Instance.RMSEntities.Customers
@@ -160,14 +161,18 @@
 
             if (checkBill.FirstOrDefault() == null)
             {
-                Utility.ShowErrorBox("Bill Number doesn't exist");
+                if(window !=null)
+                    Utility.ShowErrorBox(window,"Bill Number doesn't exist");
+                else
+                    Utility.ShowErrorBox("Bill Number doesn't exist");
+
                 return null;
             }
             
             return customerBill;
         }
 
-        public static CompanyBill CheckIfPurchaseBillExists(int billNo, int categoryId)
+        public static CompanyBill CheckIfPurchaseBillExists(int billNo, int categoryId, Window window)
         {
             var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Purchases
                             join c in RMSEntitiesHelper.Instance.RMSEntities.Companies
@@ -182,7 +187,7 @@
 
             if (checkBill.FirstOrDefault() == null)
             {
-                Utility.ShowErrorBox("Bill Number doesn't exist");
+                Utility.ShowErrorBox(window,"Bill Number doesn't exist");
                 return null;
             }
 

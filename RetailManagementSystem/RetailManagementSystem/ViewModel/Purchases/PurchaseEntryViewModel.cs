@@ -9,6 +9,7 @@ using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Reports.Purhcases;
 using log4net;
+using System.Globalization;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
@@ -76,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             get
             {
-                return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId);
+                return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId).OrderBy(s => s.Name);
             }
         }
 
@@ -628,7 +629,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     App.Current.Dispatcher.BeginInvoke((Action) (()=> 
                     {
                         //Call the print on print & save
-                        PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+                        PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, _runningBillNo);
                         psummVM.RunningBillNo = currentRunningBillNo;
                         psummVM.PrintCommand.Execute(null);
                     }));
@@ -647,6 +648,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             //Check if there are any deletions
             RemoveDeletedItems();
+
+            
 
             var purchase = _rmsEntities.Purchases.Where(p => p.BillId == _editBillNo).FirstOrDefault();
 
@@ -711,12 +714,25 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     continue;
                 }
 
-                if (purchaseDetailItemExtn.FreeIssue.HasValue)
+                if (purchaseDetailItemExtn.FreeIssue.HasValue && purchaseDetailItemExtn.FreeIssue.Value > 0)
                 {
                     var freeIssueEdit = _rmsEntities.PurchaseFreeDetails.Where(f => f.BillId == purchaseDetailItemExtn.BillId &&
                                                                                 f.ProductId == purchaseDetailItemExtn.ProductId).FirstOrDefault();
                     if (freeIssueEdit != null)
                         freeIssueEdit.FreeQty = purchaseDetailItemExtn.FreeIssue.Value;
+                    else
+                    //New free item
+                    {
+                        var purchaseFreeItem = new PurchaseFreeDetail()
+                        {
+                            BillId = purchaseDetailItemExtn.BillId,
+                            FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
+                            FreeAmount = purchaseDetailItemExtn.FreeIssue.Value * purchaseDetailItemExtn.SellingPrice,
+                            ProductId = purchaseDetailItemExtn.ProductId
+                        };
+
+                        _rmsEntities.PurchaseFreeDetails.Add(purchaseFreeItem);
+                    }
                 }
 
                 SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
@@ -793,7 +809,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 App.Current.Dispatcher.BeginInvoke((Action)(() =>
                 {
                     //Call the print on print & save
-                    PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+                    PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies,_runningBillNo);
                     psummVM.RunningBillNo = purchase.RunningBillNo;
                     psummVM.PrintCommand.Execute(null);
                 }));
@@ -921,7 +937,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
 
         #endregion
-
+         
         #region GetBill Command       
 
         private void OnEditBill(int? billNo)
@@ -965,15 +981,17 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
                     mySQLparam.Value = item.PriceId;
 
+                    
                     var productPrice = _rmsEntities.Database.SqlQuery<ProductPrice>
                                            ("GetProductPriceForPriceId(@priceId)", mySQLparam).FirstOrDefault();
+
 
                     //foreach (var logitem in _productsPriceList)
                     //{
                     //    _log.Info(logitem.PriceId + "," + logitem.ProductName + "," + logitem.ProductId + "," + item.Price);
                     //}
 
-                    var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId
+                     var freeIssue = _rmsEntities.PurchaseFreeDetails.Where(p => p.BillId == item.BillId
                                                                           && p.ProductId == item.ProductId).FirstOrDefault();
                     var freeIssueQty = freeIssue != null ? freeIssue.FreeQty : 0;
 
@@ -988,7 +1006,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         BillId = item.BillId,
                         CostPrice = productPrice.Price,
                         AvailableStock = productPrice.Quantity,
-                        Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty)
+                        Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty),
+                        ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, 
+                        DateTimeStyles.None),
+                        PropertyReadOnly  = true
                     };
 
                     _purchaseDetailsList.Add(purchaseDetailExtn);

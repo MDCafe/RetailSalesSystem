@@ -112,10 +112,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnPrint(Window window)
         {
-            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer);
+            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId, window);
+            if (customerBill == null) return;
+
+            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer, BillNo);
             salesReportVM.ShowPrintReceiptButton = Visibility.Visible;
             salesReportVM.RunningBillNo = BillNo;
             salesReportVM.PrintCommand.Execute(window);
+            salesReportVM.IsActive = true;
+            salesReportVM.IsSelected = true;
         }
         #endregion
 
@@ -136,7 +141,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId);
+            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId,window);
             if (customerBill == null)
                 return;
 

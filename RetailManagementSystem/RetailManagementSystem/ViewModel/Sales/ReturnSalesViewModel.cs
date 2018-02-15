@@ -301,7 +301,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var GetBillTask = System.Threading.Tasks.Task.Run(() =>
             {
                _returnSalesDetailsList = new ObservableCollection<ReturnSaleDetailExtn>();
-               var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId);
+               var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId,null);
                if (customerBill == null)
                {
                    PanelLoading = false;

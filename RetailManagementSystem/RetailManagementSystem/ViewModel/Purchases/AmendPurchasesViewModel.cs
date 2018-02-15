@@ -110,8 +110,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnPrint(Window window)
         {
-            //Call the print on print & save
-            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies);
+            var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId, window);
+            if (companyBill == null) return;
+
+            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies,BillNo);
             psummVM.RunningBillNo = BillNo;
             psummVM.PrintCommand.Execute(null);
             _closeWindowCommand.Execute(window);
@@ -136,7 +138,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId);
+            var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId,window);
             if (companyBill == null)
                 return;
 

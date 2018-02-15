@@ -5,8 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS-MUNCHEE;server=woodlandsserver;database=RMS;port=3306</ConnectString>
-        <Prompt>Specify a user name and password for data source DataSource1:</Prompt>
+        <ConnectString>Dsn=RMS</ConnectString>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>50fb778e-6071-4073-903c-7d6406a41e8a</rd:DataSourceID>
@@ -38,7 +37,8 @@ p.transportcharges trannsportcharges,
 p.localCoolieCharges localCoolieCharges
 from 
 purchases p, purchasedetails pd
-where p.BillId = pd.BillId</CommandText>
+where p.BillId = pd.BillId
+and p.BillId =248</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -201,7 +201,7 @@ where p.BillId = pd.BillId</CommandText>
                   <Width>0.67188in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.71006in</Width>
+                  <Width>0.47047in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.78125in</Width>
@@ -213,7 +213,7 @@ where p.BillId = pd.BillId</CommandText>
                   <Width>0.78125in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.92014in</Width>
+                  <Width>0.73264in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.22048in</Width>
@@ -240,7 +240,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -260,14 +260,14 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox126">
+                        <Textbox Name="Textbox3">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Free </Value>
+                                  <Value>Free Issue</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontSize>11pt</FontSize>
@@ -275,25 +275,11 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
-                              </Style>
-                            </Paragraph>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>Issue</Value>
-                                  <Style>
-                                    <FontFamily>Tahoma</FontFamily>
-                                    <FontSize>11pt</FontSize>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox126</rd:DefaultName>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -324,7 +310,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -359,7 +345,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                             <Paragraph>
@@ -373,7 +359,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -408,7 +394,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -443,7 +429,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -478,7 +464,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TextRun>
                               </TextRuns>
                               <Style>
-                                <TextAlign>Left</TextAlign>
+                                <TextAlign>Right</TextAlign>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
@@ -538,17 +524,16 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="FreeIssue1">
+                        <Textbox Name="FreeIssue">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!FreeIssue.Value)</Value>
+                                  <Value>=Fields!FreeIssue.Value</Value>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
-                                    <Format>n2</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -557,7 +542,7 @@ where p.BillId = pd.BillId</CommandText>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>FreeIssue1</rd:DefaultName>
+                          <rd:DefaultName>FreeIssue</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -783,7 +768,7 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox9">
+                        <Textbox Name="Textbox20">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -797,7 +782,7 @@ where p.BillId = pd.BillId</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox9</rd:DefaultName>
+                          <rd:DefaultName>Textbox20</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -970,7 +955,6 @@ where p.BillId = pd.BillId</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -1013,7 +997,7 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox31">
+                        <Textbox Name="Textbox15">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -1027,7 +1011,7 @@ where p.BillId = pd.BillId</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox29</rd:DefaultName>
+                          <rd:DefaultName>Textbox15</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -1606,7 +1590,7 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox63">
+                        <Textbox Name="Textbox16">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -1620,7 +1604,7 @@ where p.BillId = pd.BillId</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox61</rd:DefaultName>
+                          <rd:DefaultName>Textbox16</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -1833,7 +1817,7 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox65">
+                        <Textbox Name="Textbox17">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -1847,7 +1831,7 @@ where p.BillId = pd.BillId</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox61</rd:DefaultName>
+                          <rd:DefaultName>Textbox17</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -2060,7 +2044,7 @@ where p.BillId = pd.BillId</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox66">
+                        <Textbox Name="Textbox19">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -2074,7 +2058,7 @@ where p.BillId = pd.BillId</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox61</rd:DefaultName>
+                          <rd:DefaultName>Textbox19</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -2257,11 +2241,7 @@ where p.BillId = pd.BillId</CommandText>
             <TablixColumnHierarchy>
               <TablixMembers>
                 <TablixMember />
-                <TablixMember>
-                  <Visibility>
-                    <Hidden>=Fields!FreeIssue.Value=0</Hidden>
-                  </Visibility>
-                </TablixMember>
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -2273,7 +2253,7 @@ where p.BillId = pd.BillId</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.85416in</Size>
+                    <Size>1.43749in</Size>
                     <CellContents>
                       <Textbox Name="Textbox80">
                         <CanGrow>true</CanGrow>
@@ -2290,7 +2270,7 @@ where p.BillId = pd.BillId</CommandText>
                               </TextRun>
                             </TextRuns>
                             <Style>
-                              <TextAlign>Left</TextAlign>
+                              <TextAlign>Center</TextAlign>
                             </Style>
                           </Paragraph>
                         </Paragraphs>
@@ -2367,7 +2347,7 @@ where p.BillId = pd.BillId</CommandText>
                                     </GroupExpressions>
                                   </Group>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Product">
                                         <CanGrow>true</CanGrow>
@@ -2405,7 +2385,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TablixMember>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox7">
                                         <CanGrow>true</CanGrow>
@@ -2442,7 +2422,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TablixMember>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox25">
                                         <CanGrow>true</CanGrow>
@@ -2482,7 +2462,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TablixMember>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox57">
                                         <CanGrow>true</CanGrow>
@@ -2522,7 +2502,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TablixMember>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox77">
                                         <CanGrow>true</CanGrow>
@@ -2562,7 +2542,7 @@ where p.BillId = pd.BillId</CommandText>
                                 </TablixMember>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.85416in</Size>
+                                    <Size>1.43749in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox64">
                                         <CanGrow>true</CanGrow>
@@ -2611,7 +2591,7 @@ where p.BillId = pd.BillId</CommandText>
             <DataSetName>DataSet1</DataSetName>
             <Top>0.75in</Top>
             <Height>2.90583in</Height>
-            <Width>7.63713in</Width>
+            <Width>6.79338in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2780,7 +2760,7 @@ where p.BillId = pd.BillId</CommandText>
             <Top>0.08333in</Top>
             <Left>5.3368in</Left>
             <Height>0.25in</Height>
-            <Width>1.75868in</Width>
+            <Width>1.45658in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -2886,7 +2866,7 @@ where p.BillId = pd.BillId</CommandText>
             <Top>0.43056in</Top>
             <Left>5.32638in</Left>
             <Height>0.25in</Height>
-            <Width>1.75868in</Width>
+            <Width>1.467in</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border>
@@ -2906,7 +2886,7 @@ where p.BillId = pd.BillId</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>7.63713in</Width>
+      <Width>6.79338in</Width>
       <Page>
         <PageHeader>
           <Height>0.26736in</Height>

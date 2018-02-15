@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows;
+using System.Windows.Input;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.Model;
 
@@ -15,6 +17,34 @@ namespace RetailManagementSystem.View.Purchases
         public PurchaseEntry()
         {
             InitializeComponent();
+
+            RoutedEventHandler handler = null;
+            handler = (object sender, RoutedEventArgs e) =>
+            {
+                if (_purchaseEntryViewModel.IsEditMode)
+                {
+                    PurchaseDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
+                    (ExecutedRoutedEventHandler)((cmdSender, args) =>
+                    {
+                        if (args.Command == Microsoft.Windows.Controls.DataGrid.BeginEditCommand)
+                        {
+                            var dataGrid = (Microsoft.Windows.Controls.DataGrid)cmdSender;
+                            if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
+                            DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
+                            FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
+                            var purchaseDetailExtn = focusedElement.DataContext as PurchaseDetailExtn;
+                            if (purchaseDetailExtn == null) return;
+                            var model = (PurchaseDetailExtn)focusedElement.DataContext;
+                            if (model.PropertyReadOnly)
+                            {
+                                args.Handled = true;
+                            }
+                        }
+                    }));
+                }
+                Loaded -= handler;
+            };
+            Loaded += handler;
 
             DataContextChanged += (sender, eventArgs) =>
             {

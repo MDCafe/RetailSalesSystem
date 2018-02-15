@@ -45,7 +45,8 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
         public int? RunningBillNo { get; set; }
 
-        public PurchaseSummaryViewModel(bool showRestrictedPeople) : base(true, showRestrictedPeople, "Purchase Detail Report")
+        public PurchaseSummaryViewModel(bool showRestrictedPeople,int? billNo) : 
+            base(true, showRestrictedPeople, "Purchase Detail Report - " + billNo)
         {
             FromPurchaseDate = DateTime.Now;
             ToPurchaseDate = DateTime.Now;

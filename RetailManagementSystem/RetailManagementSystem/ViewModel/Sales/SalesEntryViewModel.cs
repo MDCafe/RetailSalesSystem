@@ -2,18 +2,19 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Threading;
-using log4net;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.Entity;
+using System.Globalization;
+using log4net;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
-using System.Globalization;
+
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -445,14 +446,14 @@ namespace RetailManagementSystem.ViewModel.Sales
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
                 //Validate for Errors
-                if (!Validate()) return;
+                if (!_isEditMode && !Validate()) return;
 
                 //RemoveProductWithNullValues();
                 //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
                 //{
                 //    try
                 //    {
-                _log.DebugFormat("Enter save :{0}", _billSales.BillId);
+                _log.DebugFormat("Enter save :{0}", _billSales.RunningBillNo);
                 _billSales.CustomerId = _selectedCustomer.Id;
                 _billSales.CustomerOrderNo = OrderNo;
                 _billSales.RunningBillNo = _runningBillNo;
@@ -502,6 +503,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 //_totalAmount = _extensions.Calculate(_totalAmount.Value);
 
+                CalculateTotalAmount();
+
                 _billSales.TotalAmount = _totalAmount;
                 _billSales.Discount = GetDiscountValue();
                 decimal? oldValue;
@@ -550,7 +553,6 @@ namespace RetailManagementSystem.ViewModel.Sales
                             custPaymentDetail
                         );
 
-
                     //_billSales.PaymentDetails.Add(custPaymentDetail);
                     var customer = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
                     customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
@@ -559,7 +561,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _rmsEntities.SaveChanges();
             //dbTrans.Commit();
             //Monitor.Exit(rootLock);
-            _log.DebugFormat("Exit save :{0}", _guid);
+            _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
 
             if (parameter == null)
                 _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
@@ -890,14 +892,18 @@ namespace RetailManagementSystem.ViewModel.Sales
             var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);            
 
             var tempTotalAmount = 0.0M;
-            var priceIdParam = new MySql.Data.MySqlClient.MySqlParameter("priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
+            //var priceIdParam = new MySql.Data.MySqlClient.MySqlParameter("priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
             foreach (var saleDetailItem in saleDetailsForBill.ToList())
             {
-                priceIdParam.Value = saleDetailItem.PriceId;
-                //var productPrice = _rmsEntities.Database.SqlQuery<ProductPrice>
-                //                       ("CALL GetProductPriceForPriceId(@priceId)", priceIdParam).FirstOrDefault();
+              //  priceIdParam.Value = saleDetailItem.PriceId;
 
-                var productPrice = _productsPriceList.FirstOrDefault(p => p.PriceId == saleDetailItem.PriceId);
+                var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
+                mySQLparam.Value = saleDetailItem.PriceId;
+
+                var productPrice = _rmsEntities.Database.SqlQuery<ProductPrice>
+                                       ("CALL GetProductPriceForPriceId(@priceId)", mySQLparam).FirstOrDefault();
+
+                //var productPrice = _productsPriceList.FirstOrDefault(p => p.PriceId == saleDetailItem.PriceId);
                 var discount = saleDetailItem.Discount.HasValue ? saleDetailItem.Discount.Value : 0.00M;
 
                 var saleDetailExtn = new SaleDetailExtn()

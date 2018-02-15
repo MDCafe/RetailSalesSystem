@@ -1,13 +1,12 @@
-﻿using Microsoft.Reporting.WinForms;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Windows;
+using System.Windows.Input;
+using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Windows;
-using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Reports.Sales
 {
@@ -18,9 +17,10 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         public int? RunningBillNo { get; set; }
         
 
-        public SalesBillDetailsViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Sales Bill Report")
+        public SalesBillDetailsViewModel(bool showRestrictedCustomers,int? runningNo) : 
+            base(false,showRestrictedCustomers,"Sales Bill Report - " + runningNo)
         {
-
+            
             _showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesBill.rdl";
