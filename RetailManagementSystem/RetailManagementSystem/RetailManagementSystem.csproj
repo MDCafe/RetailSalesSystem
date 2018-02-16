@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>18</ApplicationRevision>
+    <ApplicationRevision>19</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -326,6 +326,7 @@
     <Compile Include="ViewModel\Purchases\ReturnPurchaseViewModel.cs" />
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Sales\CustomerWiseSalesViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Stock\StockReportViewModel.cs" />
     <Compile Include="ViewModel\ReportViewModel.cs" />
@@ -358,6 +359,9 @@
     </Compile>
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Sales\Customers\CustomerWiseSales.xaml.cs">
+      <DependentUpon>CustomerWiseSales.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Stock\Returns.xaml.cs">
       <DependentUpon>Returns.xaml</DependentUpon>
@@ -431,6 +435,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Purchases\PurchaseEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Reports\Sales\Customers\CustomerWiseSales.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -539,6 +547,9 @@
     <AdditionalFiles Include="View\Reports\Purchases\PurchaseDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
+    <None Include="View\Reports\Sales\Customers\CustomerWiseSales.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="View\Reports\Purchases\PurchasesSummary.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -117,7 +117,10 @@ namespace RetailManagementSystem
                         Workspace.This.OpenDailyPurchaseReportCommand.Execute(true);
                         return;
                     case Key.S:
-                        Workspace.This.OpenDailySalesReportCommand.Execute(true);
+                        Workspace.This. OpenDailySalesReportCommand.Execute(true);
+                        return;
+                    case Key.C:
+                        Workspace.This.OpenCustomerWiseSalesReportCommand.Execute(true);
                         return;
                 }
             }

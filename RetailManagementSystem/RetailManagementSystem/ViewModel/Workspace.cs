@@ -14,6 +14,7 @@ using RetailManagementSystem.View.Reports.Sales;
 using RetailManagementSystem.View.Reports.Purchases;
 using RetailManagementSystem.View.Reports.Stock;
 using RetailManagementSystem.ViewModel.Stocks;
+using RetailManagementSystem.View.Reports.Sales.Customers;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -448,6 +449,46 @@ namespace RetailManagementSystem.ViewModel
 
                 SalesSummary salesSummary = new SalesSummary(showRestrictedCustomers);
                 salesSummary.ShowDialog();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #region OpenDailySalesReportCommand
+        RelayCommand<object> _openCustomerWiseSalesReportCommand = null;
+        public ICommand OpenCustomerWiseSalesReportCommand
+        {
+            get
+            {
+                if (_openCustomerWiseSalesReportCommand == null)
+                {
+                    _openCustomerWiseSalesReportCommand = new RelayCommand<object>((p) => OnOpenCustomerWiseSalesReportCommand(p));
+                }
+
+                return _openCustomerWiseSalesReportCommand;
+            }
+        }
+
+        private void OnOpenCustomerWiseSalesReportCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
+
+                CustomerWiseSales customerWiseSales = new CustomerWiseSales(showRestrictedCustomers);
+                customerWiseSales.ShowDialog();
 
             }
             catch (Exceptions.RMSException ex)
