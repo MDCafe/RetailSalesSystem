@@ -1,0 +1,36 @@
+var stockTrans = _rmsEntities.StockTransactions.Where(s => s.StockId == st.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
+
+                        //stock transaction not available for this product. Add them 
+                        if(stockTrans == null)
+                        {
+                            var firstStockTrans = new StockTransaction()
+                            {
+                                OpeningBalance = item.Qty,
+                                Inward = item.Qty,
+                                ClosingBalance = item.Qty,
+                                StockId = st.Id
+                            };
+
+                            _rmsEntities.StockTransactions.Add(firstStockTrans);
+                        }
+                        //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
+                        else
+                        {
+                            var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
+                            if (dateDiff == 0)
+                            {
+                                stockTrans.Inward += item.Qty;
+                                stockTrans.ClosingBalance += item.Qty;
+                            }
+                            else
+                            {
+                                var newStockTrans = new StockTransaction()
+                                {
+                                    OpeningBalance = stockTrans.ClosingBalance,
+                                    Inward = item.Qty,
+                                    ClosingBalance = item.Qty + stockTrans.ClosingBalance,
+                                    StockId = st.Id
+                                };
+                                _rmsEntities.StockTransactions.Add(newStockTrans);
+                            }
+                        }

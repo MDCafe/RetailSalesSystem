@@ -1,0 +1,30 @@
+1. last sold price not working
+2. Amend a item not working right
+3. Products expires
+4. Purchase - selling price to be mandatory
+5. Stock report needs attention
+6. Add Cheque customer 
+7. bill no 52 has got incorrect calculation for Rs 1
+8. Sales bill report - check the items in alphabatical order
+9. print sales bill .25 should be .250
+10. customer selection after printing 
+11. Bill date doesn't change
+12. BILL NO 65 : yoga sivalingam has total amount issues
+13. Amount paid should be deducted for TC bill in the summary report
+14. Free issues not displaying in the report
+15. Super cream cracker didn't get deducted on billing
+17. Remove sorting from sales grid
+18. remove decimal values for packeted items
+19. Remove Sorting Order for sale entry
+
+
+G.R.NO - 54 for purchase
+
+
+
+
+
+
+
+
+
