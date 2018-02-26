@@ -116,9 +116,8 @@
                                        KeyTip="C" Command="{Binding OpenCustomerCommand}" CommandParameter="false"></RibbonButton>
                         <RibbonButton Label="Products" LargeImageSource="Images\Products.png" ToolTipTitle="Add/Edit Products" 
                                        KeyTip="P" Command="{Binding OpenProductCommand}" CommandParameter="false"></RibbonButton>
-                        <!--<RibbonButton Label="Amend Bill" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Sales Entry" 
-                                      ToolTipDescription="Sales Entry" KeyTip="A" Command="{Binding OpenAmendSalesCommand}"></RibbonButton>
-                        <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Edit Sales" KeyTip="S"/>-->
+                        <RibbonButton Label="Companies" LargeImageSource="Images\Companies.png" ToolTipTitle="Add/Edit Companies" 
+                                      ToolTipDescription="Sales Entry" KeyTip="C" Command="{Binding OpenCompaniesCommand}"></RibbonButton>
                     </RibbonGroup>
 
                 </RibbonTab>

@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:RetailManagementSystem.View.Masters"
         xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
         mc:Ignorable="d"
-        Name="CustomerWindow"
-        Title="Maintenance - Customer" Height="675" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" >
+        Name="CompaniesWindow"
+        Title="Maintenance - Companies" Height="675" Width="802" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="61*"/>
@@ -22,7 +22,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="35"/>
             <RowDefinition Height="200"/>
             <RowDefinition Height="40"/>
@@ -43,8 +43,8 @@
         <Label  Content="Mobile No"  Margin="5,5,5,0" Grid.Row="3" VerticalAlignment="Top" Height="26"/>
         <Label  Content="City"  Margin="5,5,5,0" Grid.Row="2" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
 
-        <toolKit:DataGrid Name="CustomersGrid" IsSynchronizedWithCurrentItem="True" 
-                                      ItemsSource="{Binding CustomersList}"  
+        <toolKit:DataGrid Name="CompaniesGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding CompanyList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="8"
                                       SelectionMode="Single" Grid.ColumnSpan="4"
@@ -63,9 +63,7 @@
                 <toolKit:DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="200" />
                 <toolKit:DataGridTextColumn Header="City" Binding="{Binding City}" />
                 <toolKit:DataGridTextColumn Header="Mobile No" Binding="{Binding MobileNo}" />
-                <toolKit:DataGridTextColumn Header="Balance Due" Binding="{Binding BalanceDue}" />
-                <toolKit:DataGridTextColumn Header="Credit Limit" Binding="{Binding CreditLimit}" />
-                <toolKit:DataGridTextColumn Header="Credit Days" Binding="{Binding CreditDays}" />
+                <toolKit:DataGridTextColumn Header="Balance Due" Binding="{Binding DueAmount}" />
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
         <TextBox Grid.Column="1" Margin="5" Grid.Row="1" Height="23" TextWrapping="Wrap" Text="{Binding SelectedCompany.Name}" Width="217" HorizontalAlignment="Left"/>
@@ -79,10 +77,12 @@
                   />
         <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCompany.DueAmount}" VerticalAlignment="Top" Width="217"/>
         <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" Text="{Binding SelectedCompany.VatNo}" VerticalAlignment="Top" Width="175"/>
-        <Label Content="Search on Customer Name" Grid.Row="7" Grid.Column="0" FontWeight="Bold" FontStyle="Italic" ></Label>
-
+        <CheckBox x:Name="chkIsSupplier" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="6" IsChecked="{Binding SelectedCompany.IsSupplier,Mode=TwoWay}"/>
+        <Label Content="Search on Company Name" Grid.Row="7" Grid.Column="0" FontWeight="Bold" FontStyle="Italic" ></Label>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3">
-            <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5"  TextWrapping="Wrap" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Name="txtSearch"  HorizontalAlignment="Left" Height="23" Margin="5" TextWrapping="Wrap" 
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                       Width="217">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}"></KeyBinding>
@@ -100,8 +100,8 @@
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
-                CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
+                CommandParameter="{Binding ElementName=CompaniesWindow}" Margin="5" IsCancel="True"/>
         </StackPanel>
-        <CheckBox x:Name="chkIsSupplier" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="6" IsChecked="{Binding isSupplier,Mode=TwoWay}"/>
+        
     </Grid>
 </Window>

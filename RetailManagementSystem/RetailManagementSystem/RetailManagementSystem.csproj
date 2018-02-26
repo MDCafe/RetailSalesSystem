@@ -520,6 +520,7 @@
     </None>
     <Resource Include="Images\Return.png" />
     <Resource Include="Images\Report.png" />
+    <Resource Include="Images\companies.png" />
     <Content Include="View\Reports\Stock\StockDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

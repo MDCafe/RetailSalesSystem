@@ -15,6 +15,7 @@ using RetailManagementSystem.View.Reports.Purchases;
 using RetailManagementSystem.View.Reports.Stock;
 using RetailManagementSystem.ViewModel.Stocks;
 using RetailManagementSystem.View.Reports.Sales.Customers;
+using RetailManagementSystem.View.Masters;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -341,6 +342,41 @@ namespace RetailManagementSystem.ViewModel
         }
 
         #endregion
+
+        #region OpenCompaniesCommand
+        RelayCommand<object> _openCompaniesCommand = null;
+        public ICommand OpenCompaniesCommand
+        {
+            get
+            {
+                if (_openCompaniesCommand == null)
+                {
+                    _openCompaniesCommand = new RelayCommand<object>((p) => OnOpenCompaniesCommand());
+                }
+
+                return _openCompaniesCommand;
+            }
+        }
+
+        private void OnOpenCompaniesCommand()
+        {
+            try
+            {
+                var companiesView = new Companies();
+                companiesView.ShowDialog();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+# endregion
 
         #region OpenProductCommand
         RelayCommand<object> _openProductCommand = null;

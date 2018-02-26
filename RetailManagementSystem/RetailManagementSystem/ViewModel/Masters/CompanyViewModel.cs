@@ -62,7 +62,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public string SearchText { get; set; }
 
-        public IEnumerable<Category> CompnayCategory
+        public IEnumerable<Category> CompanyCategory
         {
             get
             {
