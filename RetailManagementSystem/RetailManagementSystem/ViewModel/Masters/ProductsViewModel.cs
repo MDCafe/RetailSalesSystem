@@ -287,6 +287,15 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
 
             _rmsEntities.Products.Remove(cust);
+            _rmsEntities.PriceDetails.RemoveRange(_priceDetailsList);
+            foreach (var item in _priceDetailsList)
+            {
+                var stkToRemove = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId &&
+                                                                     s.PriceId == item.PriceId);
+                if(stkToRemove !=null)
+                    _rmsEntities.Stocks.Remove(stkToRemove);
+            }
+            
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
             RaisePropertyChanged("ProductsList");         

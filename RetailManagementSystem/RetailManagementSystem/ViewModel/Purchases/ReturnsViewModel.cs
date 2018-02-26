@@ -2,16 +2,17 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
+using System;
+using System.Globalization;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Utilities;
-using System;
-using System.Globalization;
+using RetailManagementSystem.ViewModel.Reports.Purhcases;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
-    class ReturnPurchaseViewModel : PurchaseViewModelbase
+    class ReturnsViewModel : PurchaseViewModelbase
     {
         RMSEntities _rmsEntities;
         ObservableCollection<ReturnPurchaseDetailExtn> _returnPurchaseDetailsList;
@@ -46,7 +47,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 _billList = value;
                 //NotifyPropertyChanged(() => this._selectedCustomer);
                 RaisePropertyChanged("BillList");
-                if (_billList.Count() != 0)
+                if (_billList != null && _billList.Count() != 0)
                     ReadOnly = true;
                 else
                     ReadOnly = false;
@@ -79,9 +80,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         }
 
                     case Constants.RETURN_QTY:
+                    case "ReturnPrice":
                         {
                             TotalAmount = _returnPurchaseDetailsList.Sum(a => a.Amount);
-                            returnItem.Amount = returnItem.ReturnQty * returnItem.CostPrice;
+                            returnItem.Amount = returnItem.ReturnQty * returnItem.ReturnPrice;
                             break;
                         }
                 }
@@ -120,7 +122,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         public IEnumerable<CodeMaster> ReturnReasons
         { get { return _rmsEntities.CodeMasters.Local.Where(r => r.Code == "RTN"); } }
 
-        public ReturnPurchaseViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
+        public ReturnsViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
         {            
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
             _returnPurchaseDetailsList.CollectionChanged += (s, e) =>
@@ -204,44 +206,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             };
         }
 
-        private void SetReturnSalePrice(Product productPrice)
-        {            
-            //if (SaleDetailExtn != null)
-            //{            
-            //    SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
-            //    SaleDetailExtn.CostPrice = productPrice.Price;
-            //    SaleDetailExtn.PriceId = productPrice.PriceId;
-            //    SaleDetailExtn.AvailableStock = productPrice.Quantity;
-            //    SaleDetailExtn.SerialNo = selectedIndex;
-
-            //    SaleDetailExtn.PropertyChanged += (sender, e) =>
-            //    {
-            //        var prop = e.PropertyName;
-            //        if (prop == Constants.AMOUNT)
-            //        {
-            //            TotalAmount = SaleDetailList.Sum(a => a.Amount);
-            //            return;
-            //        }
-            //        var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
-            //        var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
-            //                             amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
-            //                             SaleDetailExtn.DiscountAmount != 0 ?
-            //                             amount - SaleDetailExtn.DiscountAmount :
-            //                             0;
-
-            //        if (discountAmount != 0)
-            //        {
-            //            SaleDetailExtn.Amount = discountAmount;
-            //            SaleDetailExtn.Discount = discountAmount;
-            //            return;
-            //        }
-
-            //        SaleDetailExtn.Amount = amount;
-            //        SaleDetailExtn.Discount = 0;
-            //    };
-            //}
-        }
-
         #region CloseCommand
         RelayCommand<object> _closeCommand = null;
         override public ICommand CloseCommand
@@ -299,7 +263,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     Utility.ShowErrorBox("Quantity can't be 0 or negative number");
                     return;
                 }
-
+                 
                 if (item.ExpiryDate == null)
                 {
                     Utility.ShowErrorBox("Expiry date can't empty");
@@ -316,14 +280,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         PriceId = item.PriceId,
                         ProductId = item.ProductId,
                         Quantity = item.ReturnQty,
-                        BillId = itemSelected ? item.BillId : 0,
+                        BillId = SelectedPurchase == null? 0 : SelectedPurchase.BillId,
                         ReturnReasonCode = item.SelectedReturnReason.Id,
                         MarkedForReturn = item.Selected,
                         comments = item.Comments,
-                        ExpiryDate = item.ExpiryDate
+                        ExpiryDate = item.ExpiryDate,
+                        ReturnPrice  = item.ReturnPrice
                     });
-
-
 
                     var itemDate = item.ExpiryDate.Value;
                     var stock = _rmsEntities.Stocks.Where(s => s.PriceId == item.PriceId && s.ProductId == item.ProductId
@@ -350,7 +313,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
 
             _rmsEntities.SaveChanges();
-            Clear();   
+
+            if(parameter != null && parameter.ToString() =="Print" && SelectedPurchase !=null)
+            {
+                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchase.RunningBillNo);
+                psummVM.RunningBillNo = SelectedPurchase.RunningBillNo;
+                psummVM.PrintCommand.Execute(null);
+            }
+            Clear();
         }
         #endregion
 
@@ -377,6 +347,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             RaisePropertyChanged("ReturnPurchaseDetailList");            
             TotalAmount = null;
             SelectedCompany = null;
+            BillList = null;
         }
 
         #endregion

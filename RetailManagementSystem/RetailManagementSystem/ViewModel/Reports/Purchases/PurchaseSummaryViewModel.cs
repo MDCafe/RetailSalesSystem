@@ -3,9 +3,9 @@ using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using MySql.Data.MySqlClient;
+using Microsoft.Reporting.WinForms;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
-using Microsoft.Reporting.WinForms;
 
 namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 {
@@ -54,6 +54,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             _showRestrictedCustomers = showRestrictedPeople;
 
              ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
+
+            //override base array
+            _rptDataSource = new ReportDataSource[3];
         }
 
         #region Print Command
@@ -76,8 +79,21 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             _rptDataSource[0] = new ReportDataSource();
             _rptDataSource[0].Name = "DataSet1";
 
-            var query = "GetPurchases";
+            _rptDataSource[2] = new ReportDataSource();
+            _rptDataSource[2].Name = "DataSet3";
 
+            var query = "GetPurchases";
+            var returnQuery = "GetReturnsForBillid";
+
+            SetReportDataSource(query, _rptDataSource[0]);
+            SetReportDataSource(returnQuery, _rptDataSource[2]);
+
+            Workspace.This.OpenReport(this);
+            CloseWindow(window);
+        }
+
+        private void SetReportDataSource(string query, ReportDataSource rptDatasource)
+        {
             using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -93,18 +109,16 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
                     categorySqlParam.Value = _categoryId;
                     cmd.Parameters.Add(categorySqlParam);
 
-                    DataTable dt = new DataTable();
-                    using (MySqlDataAdapter adpt = new MySqlDataAdapter(cmd))
+                    using (DataTable dt = new DataTable())
                     {
-                        adpt.Fill(dt);
+                        using (MySqlDataAdapter adpt = new MySqlDataAdapter(cmd))
+                        {
+                            adpt.Fill(dt);
+                        }
+                        rptDatasource.Value = dt;
                     }
-
-                    _rptDataSource[0].Value = dt;
                 }
             }
-
-            Workspace.This.OpenReport(this);
-            CloseWindow(window);
         }
         #endregion
 

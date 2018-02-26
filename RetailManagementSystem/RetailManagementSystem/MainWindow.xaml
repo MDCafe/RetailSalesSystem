@@ -90,7 +90,7 @@
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Sales Summary" KeyTip="SS" 
                                             Command="{Binding OpenDailySalesReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Customer Sales" KeyTip="CS"
-                                            Command="{Binding OpenCustomerWiseSalesReportCommand}"/>/>
+                                            Command="{Binding OpenCustomerWiseSalesReportCommand}"/>
                         </RibbonMenuButton>
 
                         <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Purchase" KeyTip="P">

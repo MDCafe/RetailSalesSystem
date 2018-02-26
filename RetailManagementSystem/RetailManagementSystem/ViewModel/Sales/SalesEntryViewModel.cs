@@ -446,7 +446,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
                 //Validate for Errors
-                if (!_isEditMode && !Validate()) return;
+                //if (!_isEditMode && !Validate()) return;
 
                 //RemoveProductWithNullValues();
                 //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
@@ -855,6 +855,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if(_isEditMode)
                     _deletedItems.Add(SaleDetailExtn);
                 TotalAmount -= SaleDetailExtn.Amount;
+                var i = 0;
+                foreach (var item in _salesDetailsList)
+                {
+                    item.SerialNo = ++i;
+                }
             }            
         }
 
@@ -1097,7 +1102,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.CostPrice = productPrice.Price;
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
-                SaleDetailExtn.SerialNo = selectedIndex;
+                SaleDetailExtn.SerialNo = ++selectedIndex;
                 SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
             }
             //SaleDetailExtn.ProductName = productPrice.ProductName;

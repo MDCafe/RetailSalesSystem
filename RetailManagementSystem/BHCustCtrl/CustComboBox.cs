@@ -75,7 +75,7 @@ namespace BHCustCtrl
                     //Add event handler for DataGrid popup
                     popupDataGrid.MouseDown += new MouseButtonEventHandler(popupDataGrid_MouseDown);
                     popupDataGrid.SelectionChanged += new SelectionChangedEventHandler(popupDataGrid_SelectionChanged);
-
+                    popupDataGrid.EnableRowVirtualization = true;
                 }
             }
             //Call base class method

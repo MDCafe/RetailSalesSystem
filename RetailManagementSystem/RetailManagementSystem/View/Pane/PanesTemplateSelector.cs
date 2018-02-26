@@ -93,7 +93,7 @@ namespace RetailManagementSystem.View.Pane
             
             if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
 
-            if (item is ReturnPurchaseViewModel) return ReturnPurchaseViewTemplate;
+            if (item is ReturnsViewModel) return ReturnPurchaseViewTemplate;
 
             if (item is ReportViewModel) return ReportViewTemplate;
 

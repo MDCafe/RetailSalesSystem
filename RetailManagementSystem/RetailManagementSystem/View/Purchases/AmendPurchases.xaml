@@ -84,7 +84,7 @@
 
         <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Grid.Column="2">
             <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>
-            <Button x:Name="btnAmend" Content="Amend"  Width="60" Command="{Binding AmendCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>
+            <!--<Button x:Name="btnAmend" Content="Amend"  Width="60" Command="{Binding AmendCommand}" CommandParameter="{Binding ElementName=SalesAmendParamWindow}"  Margin="5"/>-->
             <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
             <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
                 CommandParameter="{Binding ElementName=SalesAmendParamWindow}" Margin="5" IsCancel="True"/>

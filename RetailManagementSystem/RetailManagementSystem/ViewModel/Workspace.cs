@@ -289,7 +289,7 @@ namespace RetailManagementSystem.ViewModel
                 var showRestrictedCustomers = false;
                 if (showAll != null)
                     showRestrictedCustomers = bool.Parse(showAll.ToString());
-                _documentViewModels.Add(new ReturnPurchaseViewModel(showRestrictedCustomers));
+                _documentViewModels.Add(new ReturnsViewModel(showRestrictedCustomers));
                 ActiveDocument = _documentViewModels.Last();
             }
             catch (Exceptions.RMSException ex)

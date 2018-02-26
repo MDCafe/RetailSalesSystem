@@ -336,17 +336,17 @@ namespace RetailManagementSystem.ViewModel.Purchases
             if (productPrice == null) return;
             //var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            //var selRowSaleDetailExtn = _purchaseDetailsList[selectedIndex];
+            //var saleItem = _purchaseDetailsList[selectedIndex];
             //if (saleItem != null)
             //{
             //    Utility.ShowWarningBox("Item is already added");
             //    selRowSaleDetailExtn.ProductId = 0;
             //    return;
             //}
-            SetPurchaseDetailExtn(productPrice, saleItem);
+            SetPurchaseDetailExtn(productPrice, saleItem,selectedIndex);
         }
 
-        private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn)
+        private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn, int selectedIndex)
         {
             if (purchaseDetailExtn != null)
             {
@@ -358,6 +358,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.AvailableStock = productPrice.Quantity;
                 //purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
+                purchaseDetailExtn.SerialNo = ++selectedIndex;
 
                 //var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
                 //if (stock != null)
@@ -649,8 +650,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             //Check if there are any deletions
             RemoveDeletedItems();
 
-            
-
             var purchase = _rmsEntities.Purchases.Where(p => p.BillId == _editBillNo).FirstOrDefault();
 
             foreach (var purchaseDetailItemExtn in _purchaseDetailsList)
@@ -676,7 +675,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                 ProductId = purchaseDetailItemExtn.ProductId,
                                 FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
                                 FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
-                                BillId = _editBillNo.Value
+                                BillId = _editBillNo.Value,
+                                IsFreeOnly = purchaseDetailItemExtn.Qty.HasValue ? true : false
                             });
 
                         //Continue only if free item is added
@@ -686,7 +686,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             var stockLastAddedItem = _rmsEntities.Stocks.FirstOrDefault(m => m.PriceId == maxPriceId);
                                                                         //.Aggregate((agg,next) => next.PriceId > agg.PriceId ? next : agg);
                             stockLastAddedItem.Quantity += purchaseDetailItemExtn.FreeIssue.Value;
-                            SetStockTransaction(purchaseDetail, stockLastAddedItem);
+
+                            //This object is created only for free items only
+                            var purchaseFreeItemOnly = new PurchaseDetail()
+                            {
+                                PurchasedQty = purchaseDetailItemExtn.FreeIssue.Value,
+                                ProductId = purchaseDetailItemExtn.ProductId,
+                                BillId = _editBillNo.Value
+                            };
+
+                            SetStockTransaction(purchaseFreeItemOnly, stockLastAddedItem);
                             
                             continue;
                         }
@@ -963,7 +972,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     var purchaseDetailExtn = new PurchaseDetailExtn()
                     {
                         ProductId = freeIssueOnly.ProductId,
-                        Qty = freeIssueOnly.FreeQty,
+                        FreeIssue = freeIssueOnly.FreeQty,
+                        Qty = 0,
                         //SellingPrice = item.SellingPrice,
                         BillId = freeIssueOnly.BillId
                     };
@@ -974,6 +984,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 var purchaseDetailsForBill = _rmsEntities.PurchaseDetails.Where(b => b.BillId == purchases.BillId).ToList();
 
                 var tempTotalAmount = 0.0M;
+                var i = 0;
                 foreach (var item in purchaseDetailsForBill.ToList())
                 {
                     //var productPrice = _productsPriceList.Where(p => p.PriceId == item.PriceId).FirstOrDefault();
@@ -1013,7 +1024,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     };
 
                     _purchaseDetailsList.Add(purchaseDetailExtn);
-                    SetPurchaseDetailExtn(productPrice, purchaseDetailExtn);
+                    SetPurchaseDetailExtn(productPrice, purchaseDetailExtn,i);
                     purchaseDetailExtn.PurchasePrice = item.ActualPrice;
                     purchaseDetailExtn.DiscountAmount = item.Discount.Value;
 
@@ -1077,6 +1088,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 {
                     _deletedItems.Add(purchaseDetailExtn);
                     TotalAmount -= purchaseDetailExtn.Amount;
+                }
+                var i = 0;
+                foreach (var item in _purchaseDetailsList)
+                {
+                    item.SerialNo = ++i;
                 }
             }
         }

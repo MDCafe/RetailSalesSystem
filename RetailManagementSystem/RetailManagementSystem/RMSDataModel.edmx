@@ -187,6 +187,7 @@
           <Property Name="BillId" Type="int" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="ReturnPrice" Type="decimal" Precision="10" Scale="2" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="ReturnReasonCode" Type="int" />
           <Property Name="MarkedForReturn" Type="bit" />
@@ -940,6 +941,7 @@
           <NavigationProperty Name="Product" Relationship="Self.FK_ProductId_PR" FromRole="PurchaseReturn" ToRole="Products" />
           <Property Name="MarkedForReturn" Type="Boolean" />
           <Property Name="ExpiryDate" Type="DateTime" />
+          <Property Name="ReturnPrice" Type="Decimal" />
         </EntityType>
         <EntityType Name="Purchase">
           <Key>
@@ -1735,6 +1737,7 @@
           <EntitySetMapping Name="PurchaseReturns">
             <EntityTypeMapping TypeName="RMSEntities.PurchaseReturn">
               <MappingFragment StoreEntitySet="PurchaseReturn">
+                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="MarkedForReturn" ColumnName="MarkedForReturn" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

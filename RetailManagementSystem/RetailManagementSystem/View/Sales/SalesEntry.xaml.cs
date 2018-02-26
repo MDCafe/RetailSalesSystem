@@ -165,12 +165,13 @@ namespace RetailManagementSystem.View.Sales
             custComboBoxCol.comboBox.SelectedIndex = -1;
             custComboBoxCol.ClearSelection();
             custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
-
+            //var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
+            //SalesDataGrid.SelectedIndex
         }
 
         private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+            //e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
     }
 }

@@ -138,18 +138,20 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <!--<Converter:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
-                <Style x:Key="CellStyle" TargetType="DataGridCell">
-                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
-                </Style>-->
-                    <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
-                   Color="LightBlue"/>-->
-
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+                    
                 </toolKit:DataGrid.Resources>
+                <toolKit:DataGrid.RowHeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Item.SerialNo, 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type toolKit:DataGridRow}}}"/>
+                        
+                    </DataTemplate>
+                </toolKit:DataGrid.RowHeaderTemplate>
+
                 <toolKit:DataGrid.Columns>
                     <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding ProductsPriceList}"                                                                  
@@ -181,9 +183,9 @@
                     <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
                         <toolKit:DataGridTextColumn.Binding>
                             <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
+                                <!--<Binding.ValidationRules>
                                     <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
-                                </Binding.ValidationRules>
+                                </Binding.ValidationRules>-->
                             </Binding>
                         </toolKit:DataGridTextColumn.Binding>
                     </toolKit:DataGridTextColumn>

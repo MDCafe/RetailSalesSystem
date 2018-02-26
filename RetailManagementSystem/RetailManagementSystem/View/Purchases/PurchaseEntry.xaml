@@ -135,6 +135,13 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
                 </toolKit:DataGrid.Resources>
+                <toolKit:DataGrid.RowHeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Item.SerialNo, 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type toolKit:DataGridRow}}}"/>
+
+                    </DataTemplate>
+                </toolKit:DataGrid.RowHeaderTemplate>
                 <toolKit:DataGrid.Columns>
                     <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding DataContext.ProductsPriceList,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"                                                                        
