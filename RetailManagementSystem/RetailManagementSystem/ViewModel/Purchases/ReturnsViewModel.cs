@@ -303,14 +303,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
             }
 
-            if (_selectedPurchase !=null && _selectedPurchase.BillId !=0)
-            {
-                var purchase = _rmsEntities.Purchases.FirstOrDefault(p => p.BillId == _selectedPurchase.BillId);
-                if (purchase != null)
-                {
-                    purchase.TotalBillAmount -= _returnPurchaseDetailsList.Where(r => r.Selected == false).Sum(a => a.Amount);
-                }
-            }
+            //if (_selectedPurchase !=null && _selectedPurchase.BillId !=0)
+            //{
+            //    var purchase = _rmsEntities.Purchases.FirstOrDefault(p => p.BillId == _selectedPurchase.BillId);
+            //    if (purchase != null)
+            //    {
+            //        purchase.TotalBillAmount -= _returnPurchaseDetailsList.Where(r => r.Selected == false).Sum(a => a.Amount);
+            //    }
+            //}
 
             _rmsEntities.SaveChanges();
 

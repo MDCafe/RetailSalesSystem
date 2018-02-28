@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
 using Microsoft.Windows.Controls.Primitives;
+using log4net;
 
 namespace BHCustCtrl
 {
@@ -38,6 +39,8 @@ namespace BHCustCtrl
         private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
         //Attached DataGrid control
         private Microsoft.Windows.Controls.DataGrid popupDataGrid;
+
+        static readonly ILog _log = LogManager.GetLogger(typeof(CustComboBox));
 
         static CustComboBox()
         {
@@ -74,8 +77,7 @@ namespace BHCustCtrl
                     
                     //Add event handler for DataGrid popup
                     popupDataGrid.MouseDown += new MouseButtonEventHandler(popupDataGrid_MouseDown);
-                    popupDataGrid.SelectionChanged += new SelectionChangedEventHandler(popupDataGrid_SelectionChanged);
-                    popupDataGrid.EnableRowVirtualization = true;
+                    //popupDataGrid.SelectionChanged += new SelectionChangedEventHandler(popupDataGrid_SelectionChanged);
                 }
             }
             //Call base class method
@@ -91,6 +93,7 @@ namespace BHCustCtrl
                 Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
                 if (dg != null)
                 {
+                    _log.Debug("dg.SelectedIndex :" + dg.SelectedIndex);
                     SelectedItem = dg.SelectedItem;
                     SelectedValue = dg.SelectedValue;
                     SelectedIndex = dg.SelectedIndex;
@@ -130,7 +133,8 @@ namespace BHCustCtrl
             }
         }
 
-        //When selection changed in combobox (pressing  arrow key down or up) must be synchronized with opened Microsoft.Windows.Controls.DataGrid popup
+        //When selection changed in combobox (pressing  arrow key down or up) must be synchronized with 
+        //opened Microsoft.Windows.Controls.DataGrid popup
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)
         {
             base.OnSelectionChanged(e);

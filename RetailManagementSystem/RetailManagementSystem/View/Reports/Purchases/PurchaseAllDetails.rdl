@@ -5,7 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS</ConnectString>
+        <ConnectString>Dsn=RMS-Server</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>
@@ -39,7 +39,7 @@ p.localCoolieCharges localCoolieCharges
 from 
 purchases p, purchasedetails pd
 where p.BillId = pd.BillId
-and p.BillId =266</CommandText>
+and p.BillId =415</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -197,7 +197,7 @@ and p.BillId =266</CommandText>
 from purchasereturn pr, products p,PriceDetails pd, CodeMaster cm
 where pr.productid = p.id
 and pd.PriceId = pr.PriceId
-and cm.code = "RTN" and pr.billId = 266
+and cm.code = "RTN" and pr.billId = 1
 and cm.Id = pr.ReturnReasonCode</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -502,7 +502,6 @@ and cm.Id = pr.ReturnReasonCode</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2059,7 +2058,7 @@ and cm.Id = pr.ReturnReasonCode</CommandText>
                                   </TablixCell>
                                   <TablixCell>
                                     <CellContents>
-                                      <Textbox Name="Textbox56">
+                                      <Textbox Name="txtTotalExp">
                                         <CanGrow>true</CanGrow>
                                         <KeepTogether>true</KeepTogether>
                                         <Paragraphs>
@@ -2078,7 +2077,6 @@ and cm.Id = pr.ReturnReasonCode</CommandText>
                                             </Style>
                                           </Paragraph>
                                         </Paragraphs>
-                                        <rd:DefaultName>Textbox56</rd:DefaultName>
                                         <Style>
                                           <Border>
                                             <Style>None</Style>
@@ -3413,6 +3411,9 @@ and cm.Id = pr.ReturnReasonCode</CommandText>
                                       </Textbox>
                                     </CellContents>
                                   </TablixHeader>
+                                  <Visibility>
+                                    <Hidden>=IIF((Fields!cooliecharges.Value  + Fields!KcoolieCharges.Value + Fields!trannsportcharges.Value + Fields!localCoolieCharges.Value)=0 And (Fields!Discount.Value = 0) And (Fields!SpecialDiscount.Value) = 0,True,False)</Hidden>
+                                  </Visibility>
                                   <KeepWithGroup>Before</KeepWithGroup>
                                 </TablixMember>
                               </TablixMembers>
