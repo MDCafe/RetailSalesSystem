@@ -18,8 +18,8 @@ namespace RetailManagementSystem
         public PriceDetail()
         {
             this.SaleDetails = new HashSet<SaleDetail>();
-            this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.Stocks = new HashSet<Stock>();
+            this.PurchaseDetails = new HashSet<PurchaseDetail>();
         }
     
         public int PriceId { get; set; }
@@ -33,10 +33,10 @@ namespace RetailManagementSystem
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual Product Product { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Stock> Stocks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
     }
 }

@@ -397,7 +397,7 @@ namespace RetailManagementSystem.ViewModel
         {
             try
             {
-                View.Masters.Products productView = new View.Masters.Products();
+                Products productView = new Products();
                 productView.ShowDialog();
             }
             catch (Exceptions.RMSException ex)
@@ -603,6 +603,42 @@ namespace RetailManagementSystem.ViewModel
 
                 var stockReport = new StockReport(showRestrictedCustomers);
                 stockReport.ShowDialog();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+
+        #region OpenStockBalanceReportCommand
+        RelayCommand<object> _openStockBalanceReportCommand = null;
+        public ICommand OpenStockBalanceReportCommand
+        {
+            get
+            {
+                if (_openStockBalanceReportCommand == null)
+                {
+                    _openStockBalanceReportCommand = new RelayCommand<object>((p) => OnOpenStockBalanceReportCommand(p));
+                }
+
+                return _openStockBalanceReportCommand;
+            }
+        }
+        private void OnOpenStockBalanceReportCommand(object showAll)
+        {
+            try
+            {
+                var stockBalanceReport = new StockBalanceReport(false);
+                stockBalanceReport.ShowDialog();
 
             }
             catch (Exceptions.RMSException ex)

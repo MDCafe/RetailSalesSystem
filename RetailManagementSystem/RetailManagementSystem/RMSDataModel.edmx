@@ -131,6 +131,7 @@
           <Property Name="CategoryId" Type="mediumint" />
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
           <Property Name="ReorderPoint" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="SupportsMultiPrice" Type="bit" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -147,8 +148,8 @@
           <Property Name="ActualPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Tax" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
         <EntityType Name="PurchaseFreeDetails">
@@ -161,8 +162,8 @@
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="FreeQty" Type="decimal" Precision="10" Scale="2" />
           <Property Name="FreeAmount" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" />
           <Property Name="UpdatedBy" Type="mediumint" />
           <Property Name="BillId" Type="mediumint" Nullable="false" />
           <Property Name="IsFreeOnly" Type="bit" />
@@ -214,8 +215,8 @@
           <Property Name="KCoolieCharges" Type="decimal" Precision="10" Scale="2" />
           <Property Name="LocalCoolieCharges" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IsCancelled" Type="bit" />
-          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
         <EntityType Name="ReturnDamagedStocks">
@@ -263,6 +264,7 @@
           <Property Name="CustomerId" Type="mediumint" Nullable="false" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TotalAmount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IsCancelled" Type="bit" />
           <Property Name="CustomerOrderNo" Type="varchar" MaxLength="30" />
@@ -836,8 +838,8 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Products" Relationship="Self.FK_Company" FromRole="Companies" ToRole="Products" />
-          <NavigationProperty Name="Purchases" Relationship="Self.FK_CompanyId" FromRole="Companies" ToRole="Purchases" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_compId" FromRole="Companies" ToRole="PurchasePaymentDetails" />
+          <NavigationProperty Name="Purchases" Relationship="RMSEntities.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
         </EntityType>
         <EntityType Name="MeasuringUnit">
           <Key>
@@ -861,9 +863,9 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="SaleDetails" Relationship="Self.FK_price_id" FromRole="PriceDetails" ToRole="SaleDetails" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_price_purchase" FromRole="PriceDetails" ToRole="PurchaseDetails" />
           <NavigationProperty Name="Product" Relationship="Self.FK_Product" FromRole="PriceDetails" ToRole="Products" />
           <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_priceId" FromRole="PriceDetail" ToRole="Stock" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_price_purchase" FromRole="PriceDetail" ToRole="PurchaseDetail" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -885,30 +887,12 @@
           <NavigationProperty Name="MeasuringUnit" Relationship="Self.FK_MOU" FromRole="Products" ToRole="MeasuringUnits" />
           <NavigationProperty Name="PriceDetails" Relationship="Self.FK_Product" FromRole="Products" ToRole="PriceDetails" />
           <NavigationProperty Name="SaleDetails" Relationship="Self.FK_ProdId" FromRole="Products" ToRole="SaleDetails" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_ProductId" FromRole="Products" ToRole="PurchaseDetails" />
           <NavigationProperty Name="PurchaseReturns" Relationship="Self.FK_ProductId_PR" FromRole="Products" ToRole="PurchaseReturn" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_ProductId_RD" FromRole="Products" ToRole="ReturnDamagedStocks" />
           <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_PrdId" FromRole="Product" ToRole="Stock" />
           <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
-        </EntityType>
-        <EntityType Name="PurchaseDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="PriceId" Type="Int32" />
-          <Property Name="PurchasedQty" Type="Decimal" />
-          <Property Name="ActualPrice" Type="Decimal" Nullable="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="Tax" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PriceDetail" Relationship="Self.FK_price_purchase" FromRole="PurchaseDetails" ToRole="PriceDetails" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProductId" FromRole="PurchaseDetails" ToRole="Products" />
-          <NavigationProperty Name="Purchase" Relationship="Self.FK_PurchaseBillId" FromRole="PurchaseDetails" ToRole="Purchases" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
+          <Property Name="SupportsMultiPrice" Type="Boolean" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetail">
           <Key>
@@ -922,7 +906,7 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Company" Relationship="Self.FK_compId" FromRole="PurchasePaymentDetails" ToRole="Companies" />
-          <NavigationProperty Name="Purchase" Relationship="Self.FK_purchaseId" FromRole="PurchasePaymentDetails" ToRole="Purchases" />
+          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_purchaseId" FromRole="PurchasePaymentDetail" ToRole="Purchase" />
         </EntityType>
         <EntityType Name="PurchaseReturn">
           <Key>
@@ -942,32 +926,6 @@
           <Property Name="MarkedForReturn" Type="Boolean" />
           <Property Name="ExpiryDate" Type="DateTime" />
           <Property Name="ReturnPrice" Type="Decimal" />
-        </EntityType>
-        <EntityType Name="Purchase">
-          <Key>
-            <PropertyRef Name="BillId" />
-          </Key>
-          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RunningBillNo" Type="Int32" />
-          <Property Name="CompanyId" Type="Int32" Nullable="false" />
-          <Property Name="InvoiceNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="SpecialDiscount" Type="Decimal" />
-          <Property Name="TotalBillAmount" Type="Decimal" />
-          <Property Name="Tax" Type="Decimal" />
-          <Property Name="PaymentMode" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="TransportCharges" Type="Decimal" />
-          <Property Name="CoolieCharges" Type="Decimal" />
-          <Property Name="KCoolieCharges" Type="Decimal" />
-          <Property Name="LocalCoolieCharges" Type="Decimal" />
-          <Property Name="IsCancelled" Type="Boolean" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_CompanyId" FromRole="Purchases" ToRole="Companies" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK_PurchaseBillId" FromRole="Purchases" ToRole="PurchaseDetails" />
-          <NavigationProperty Name="PurchasePaymentDetails" Relationship="Self.FK_purchaseId" FromRole="Purchases" ToRole="PurchasePaymentDetails" />
-          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_pdt_bill" FromRole="Purchase" ToRole="PurchaseFreeDetail" />
         </EntityType>
         <EntityType Name="ReturnDamagedStock">
           <Key>
@@ -1031,6 +989,7 @@
           <NavigationProperty Name="SaleDetails" Relationship="Self.Fk_sale_bill" FromRole="Sales" ToRole="SaleDetails" />
           <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.Fk_sale_pay" FromRole="Sale" ToRole="PaymentDetail" />
           <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
+          <Property Name="AmountPaid" Type="Decimal" />
         </EntityType>
         <EntityType Name="SaleTemp">
           <Key>
@@ -1129,18 +1088,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CompanyId">
-          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Purchases">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_compId">
           <End Role="Companies" Type="Self.Company" Multiplicity="1" />
           <End Role="PurchasePaymentDetails" Type="Self.PurchasePaymentDetail" Multiplicity="*" />
@@ -1177,18 +1124,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_price_purchase">
-          <End Role="PriceDetails" Type="Self.PriceDetail" Multiplicity="0..1" />
-          <End Role="PurchaseDetails" Type="Self.PurchaseDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriceDetails">
-              <PropertyRef Name="PriceId" />
-            </Principal>
-            <Dependent Role="PurchaseDetails">
-              <PropertyRef Name="PriceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Product">
           <End Role="Products" Type="Self.Product" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1215,18 +1150,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProductId">
-          <End Role="Products" Type="Self.Product" Multiplicity="0..1" />
-          <End Role="PurchaseDetails" Type="Self.PurchaseDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseDetails">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ProductId_PR">
           <End Role="Products" Type="Self.Product" Multiplicity="1" />
           <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="*" />
@@ -1248,30 +1171,6 @@
             </Principal>
             <Dependent Role="ReturnDamagedStocks">
               <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PurchaseBillId">
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
-          <End Role="PurchaseDetails" Type="Self.PurchaseDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Purchases">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PurchaseDetails">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_purchaseId">
-          <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
-          <End Role="PurchasePaymentDetails" Type="Self.PurchasePaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Purchases">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PurchasePaymentDetails">
-              <PropertyRef Name="PurchaseBillId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1307,10 +1206,8 @@
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnit" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetail" />
           <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetail" />
           <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetail" />
           <EntitySet Name="PurchaseReturns" EntityType="Self.PurchaseReturn" />
-          <EntitySet Name="Purchases" EntityType="Self.Purchase" />
           <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStock" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetail" />
@@ -1334,10 +1231,6 @@
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Products" EntitySet="Products" />
           </AssociationSet>
-          <AssociationSet Name="FK_CompanyId" Association="Self.FK_CompanyId">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Purchases" EntitySet="Purchases" />
-          </AssociationSet>
           <AssociationSet Name="FK_compId" Association="Self.FK_compId">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
@@ -1350,10 +1243,6 @@
             <End Role="PriceDetails" EntitySet="PriceDetails" />
             <End Role="SaleDetails" EntitySet="SaleDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_price_purchase" Association="Self.FK_price_purchase">
-            <End Role="PriceDetails" EntitySet="PriceDetails" />
-            <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_Product" Association="Self.FK_Product">
             <End Role="Products" EntitySet="Products" />
             <End Role="PriceDetails" EntitySet="PriceDetails" />
@@ -1362,10 +1251,6 @@
             <End Role="Products" EntitySet="Products" />
             <End Role="SaleDetails" EntitySet="SaleDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProductId" Association="Self.FK_ProductId">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_ProductId_PR" Association="Self.FK_ProductId_PR">
             <End Role="Products" EntitySet="Products" />
             <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
@@ -1373,14 +1258,6 @@
           <AssociationSet Name="FK_ProductId_RD" Association="Self.FK_ProductId_RD">
             <End Role="Products" EntitySet="Products" />
             <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseBillId" Association="Self.FK_PurchaseBillId">
-            <End Role="Purchases" EntitySet="Purchases" />
-            <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_purchaseId" Association="Self.FK_purchaseId">
-            <End Role="Purchases" EntitySet="Purchases" />
-            <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
           <AssociationSet Name="fk_role" Association="Self.fk_role">
             <End Role="Roles" EntitySet="Roles" />
@@ -1417,16 +1294,38 @@
             <End Role="Stock" EntitySet="Stocks" />
             <End Role="StockTransaction" EntitySet="StockTransactions" />
           </AssociationSet>
+          <EntitySet Name="PurchaseDetails" EntityType="RMSEntities.PurchaseDetail" />
           <EntitySet Name="PurchaseFreeDetails" EntityType="RMSEntities.PurchaseFreeDetail" />
+          <EntitySet Name="Purchases" EntityType="RMSEntities.Purchase" />
+          <AssociationSet Name="FK_CompanyId" Association="RMSEntities.FK_CompanyId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Purchase" EntitySet="Purchases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_price_purchase" Association="RMSEntities.FK_price_purchase">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_ProductFree" Association="RMSEntities.FK_ProductFree">
             <End Role="Product" EntitySet="Products" />
             <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductId" Association="RMSEntities.FK_ProductId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseBillId" Association="RMSEntities.FK_PurchaseBillId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_pdt_bill" Association="RMSEntities.FK_pdt_bill">
             <End Role="Purchase" EntitySet="Purchases" />
             <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
           </AssociationSet>
-        </EntityContainer>
+          <AssociationSet Name="FK_purchaseId" Association="RMSEntities.FK_purchaseId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="PaymentDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -1557,6 +1456,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PurchaseDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="PriceId" Type="Int32" />
+          <Property Name="PurchasedQty" Type="Decimal" />
+          <Property Name="ActualPrice" Type="Decimal" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="Tax" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_price_purchase" FromRole="PurchaseDetail" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductId" FromRole="PurchaseDetail" ToRole="Product" />
+          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="PurchaseDetail" ToRole="Purchase" />
+        </EntityType>
         <EntityType Name="PurchaseFreeDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -1567,14 +1485,64 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="FreeQty" Type="Decimal" />
           <Property Name="FreeAmount" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="BillId" Type="Int32" Nullable="false" />
           <Property Name="IsFreeOnly" Type="Boolean" />
           <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductFree" FromRole="PurchaseFreeDetail" ToRole="Product" />
           <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_pdt_bill" FromRole="PurchaseFreeDetail" ToRole="Purchase" />
         </EntityType>
+        <EntityType Name="Purchase">
+          <Key>
+            <PropertyRef Name="BillId" />
+          </Key>
+          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RunningBillNo" Type="Int32" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="SpecialDiscount" Type="Decimal" />
+          <Property Name="TotalBillAmount" Type="Decimal" />
+          <Property Name="Tax" Type="Decimal" />
+          <Property Name="PaymentMode" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="TransportCharges" Type="Decimal" />
+          <Property Name="CoolieCharges" Type="Decimal" />
+          <Property Name="KCoolieCharges" Type="Decimal" />
+          <Property Name="LocalCoolieCharges" Type="Decimal" />
+          <Property Name="IsCancelled" Type="Boolean" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="Company" Relationship="RMSEntities.FK_CompanyId" FromRole="Purchase" ToRole="Company" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="Purchase" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_pdt_bill" FromRole="Purchase" ToRole="PurchaseFreeDetail" />
+          <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSEntities.FK_purchaseId" FromRole="Purchase" ToRole="PurchasePaymentDetail" />
+        </EntityType>
+        <Association Name="FK_CompanyId">
+          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Purchase">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_price_purchase">
+          <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="0..1" />
+          <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceDetail">
+              <PropertyRef Name="PriceId" />
+            </Principal>
+            <Dependent Role="PurchaseDetail">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProductFree">
           <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
           <End Type="RMSEntities.PurchaseFreeDetail" Role="PurchaseFreeDetail" Multiplicity="*" />
@@ -1584,6 +1552,30 @@
             </Principal>
             <Dependent Role="PurchaseFreeDetail">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductId">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="0..1" />
+          <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseDetail">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseBillId">
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchaseDetail">
+              <PropertyRef Name="BillId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1599,7 +1591,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <Association Name="FK_purchaseId">
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSEntities.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchasePaymentDetail">
+              <PropertyRef Name="PurchaseBillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1690,6 +1694,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="RMSEntities.Product">
               <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="SupportsMultiPrice" ColumnName="SupportsMultiPrice" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1698,23 +1703,6 @@
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="ReorderPoint" ColumnName="ReorderPoint" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PurchaseDetail">
-              <MappingFragment StoreEntitySet="PurchaseDetails">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="PurchasedQty" ColumnName="PurchasedQty" />
-                <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
@@ -1749,29 +1737,6 @@
                 <ScalarProperty Name="comments" ColumnName="comments" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Purchases">
-            <EntityTypeMapping TypeName="RMSEntities.Purchase">
-              <MappingFragment StoreEntitySet="Purchases">
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
-                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="SpecialDiscount" ColumnName="SpecialDiscount" />
-                <ScalarProperty Name="TotalBillAmount" ColumnName="TotalBillAmount" />
-                <ScalarProperty Name="Tax" ColumnName="Tax" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
-                <ScalarProperty Name="CoolieCharges" ColumnName="CoolieCharges" />
-                <ScalarProperty Name="KCoolieCharges" ColumnName="KCoolieCharges" />
-                <ScalarProperty Name="LocalCoolieCharges" ColumnName="LocalCoolieCharges" />
-                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1818,6 +1783,7 @@
           <EntitySetMapping Name="Sales">
             <EntityTypeMapping TypeName="RMSEntities.Sale">
               <MappingFragment StoreEntitySet="Sales">
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
@@ -1934,6 +1900,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PurchaseDetail">
+              <MappingFragment StoreEntitySet="PurchaseDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
+                <ScalarProperty Name="PurchasedQty" ColumnName="PurchasedQty" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PurchaseFreeDetails">
             <EntityTypeMapping TypeName="RMSEntities.PurchaseFreeDetail">
               <MappingFragment StoreEntitySet="PurchaseFreeDetails">
@@ -1946,6 +1929,29 @@
                 <ScalarProperty Name="FreeQty" ColumnName="FreeQty" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Purchases">
+            <EntityTypeMapping TypeName="RMSEntities.Purchase">
+              <MappingFragment StoreEntitySet="Purchases">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
+                <ScalarProperty Name="LocalCoolieCharges" ColumnName="LocalCoolieCharges" />
+                <ScalarProperty Name="KCoolieCharges" ColumnName="KCoolieCharges" />
+                <ScalarProperty Name="CoolieCharges" ColumnName="CoolieCharges" />
+                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="TotalBillAmount" ColumnName="TotalBillAmount" />
+                <ScalarProperty Name="SpecialDiscount" ColumnName="SpecialDiscount" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

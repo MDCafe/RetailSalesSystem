@@ -1,3 +1,8 @@
+USE `rms`;
+DROP procedure IF EXISTS `GetSales`;
+
+DELIMITER $$
+USE `rms`$$
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date,IN categoryId int)
 BEGIN
 select s.BillId,s.AddedOn,C.Name as Customer,CustomerOrderNo,
@@ -13,11 +18,16 @@ RunningBillNo,s.addedOn,
 sum(sd.Discount) + if(isnull(s.discount),0,s.discount) Discount,
 (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges TotalAmount,
 CASE
-        WHEN s.PaymentMode = '0' THEN (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges
-        ELSE NULL
+        WHEN s.PaymentMode = '0' AND isnull(s.AmountPaid) = 1 THEN 
+					(sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount)))
+					+ s.TransportCharges
+        ELSE 
+			s.AmountPaid
     END AS 'Cash Sales',
     CASE
-        WHEN PaymentMode = '1'  THEN (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges 
+        WHEN PaymentMode = '1'  THEN 
+				(sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) 
+                -(if(isnull(s.AmountPaid),0,s.AmountPaid)) + s.TransportCharges 
         ELSE NULL
     END AS 'Credit Sales'
 from sales s,Customers c, SaleDetails sd
@@ -36,4 +46,7 @@ select ModifiedOn, (select Name as 'Name' from customers where Id = (select cust
 -rs.Quantity * (select sellingPrice from PriceDetails where PriceId = rs.PriceId) TotalAmount
 from ReturnDamagedStocks rs 
 where Date(rs.ModifiedOn) >= fromSalesDate and Date(rs.ModifiedOn) <= toSalesDate*/ ;
-END
+END$$
+
+DELIMITER ;
+

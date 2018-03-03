@@ -18,8 +18,8 @@ namespace RetailManagementSystem
         public Purchase()
         {
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
-            this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
             this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
+            this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
         }
     
         public int BillId { get; set; }
@@ -44,8 +44,8 @@ namespace RetailManagementSystem
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
     }
 }

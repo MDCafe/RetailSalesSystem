@@ -13,6 +13,7 @@ namespace RetailManagementSystem
         public App()
         {
             DispatcherUnhandledException += App_DispatcherUnhandledException;
+            //ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

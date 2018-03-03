@@ -15,10 +15,6 @@
         >
     <Window.Resources>
         <conv:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
-        <!--<avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/-->
-        <!--<DataTemplate x:Name="SalesDataTemplate" DataType="{x:Type  SalesViewModel:SalesEntryViewModel}">
-            <SalesView:SalesEntry/>
-        </DataTemplate>-->
     </Window.Resources>
     <Grid>
         <DockPanel>
@@ -99,8 +95,10 @@
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Supplierwise Purchase" KeyTip="SP"/>
                         </RibbonMenuButton>
                         <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Stock" KeyTip="P">
-                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock report" KeyTip="SR" 
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Report" KeyTip="SR" 
                                             Command="{Binding OpenStockReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Balance Report" KeyTip="SR" 
+                                            Command="{Binding OpenStockBalanceReportCommand}"/>
                         </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
 

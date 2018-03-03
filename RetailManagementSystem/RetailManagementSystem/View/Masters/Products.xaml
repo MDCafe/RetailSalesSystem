@@ -120,6 +120,8 @@
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
         <Label Content="Price Details" Grid.Row="6" Grid.Column="0" Margin="0,0,0,10" FontWeight="Bold" FontStyle="Italic" />
+        <Label  Content="Multi Price"  Margin="5,10,5,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+        <CheckBox x:Name="chkMultiSupplier" Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,15,0,5" Grid.Row="1" IsChecked="{Binding SelectedProduct.SupportsMultiPrice, Mode=TwoWay}"/>
 
 
     </Grid>

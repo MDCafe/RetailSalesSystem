@@ -20,6 +20,25 @@ namespace RetailManagementSystem.Model
         private int _serialNo;
         private decimal? _lastSoldPrice;
         private bool _propertyReadOnly;
+        private bool _supportsMultiplePrice;
+
+        public bool SupportsMultiplePrice
+        {
+            get
+            {
+                return _supportsMultiplePrice;
+            }
+
+            set
+            {
+                if (_supportsMultiplePrice == value)
+                {
+                    return;
+                }
+                _supportsMultiplePrice = value;
+                OnPropertyChanged("SupportsMultiplePrice");
+            }
+        }
 
         public int SerialNo
         {

@@ -2,11 +2,11 @@
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Collections.ObjectModel;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
-using System.Windows;
 using RetailManagementSystem.Utilities;
-using System.Collections.ObjectModel;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -24,6 +24,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         public ProductsViewModel()
         {
             _product = new Product();
+            _product.SupportsMultiPrice = false;
             _rmsEntities = new RMSEntities();
             var cnt = _rmsEntities.Categories.Count();
 
@@ -166,6 +167,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                         (p) =>
                         {
                             _product = new Product();
+                            _product.SupportsMultiPrice = false;
                             RaisePropertyChanged("SelectedProduct");
                             _priceDetailsList.Clear();
                             _priceDetailsList.Add(new PriceDetail());
@@ -249,7 +251,6 @@ namespace RetailManagementSystem.ViewModel.Masters
         }
 
         #endregion
-
 
         #region DeleteCommand
         RelayCommand<object> _deleteCommand = null;

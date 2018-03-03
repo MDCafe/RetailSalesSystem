@@ -19,11 +19,11 @@ namespace RetailManagementSystem
         {
             this.PriceDetails = new HashSet<PriceDetail>();
             this.SaleDetails = new HashSet<SaleDetail>();
-            this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.PurchaseReturns = new HashSet<PurchaseReturn>();
             this.ReturnDamagedStocks = new HashSet<ReturnDamagedStock>();
             this.Stocks = new HashSet<Stock>();
             this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
+            this.PurchaseDetails = new HashSet<PurchaseDetail>();
         }
     
         public int Id { get; set; }
@@ -37,6 +37,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<bool> SupportsMultiPrice { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual Company Company { get; set; }
@@ -46,8 +47,6 @@ namespace RetailManagementSystem
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SaleDetail> SaleDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseReturn> PurchaseReturns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
@@ -55,5 +54,7 @@ namespace RetailManagementSystem
         public virtual ICollection<Stock> Stocks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
     }
 }

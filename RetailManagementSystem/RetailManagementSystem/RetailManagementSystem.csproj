@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>25</ApplicationRevision>
+    <ApplicationRevision>30</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -332,6 +332,7 @@
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\CustomerWiseSalesViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Stock\StockBalanceReportViewModel.cs" />
     <Compile Include="ViewModel\Reports\Stock\StockReportViewModel.cs" />
     <Compile Include="ViewModel\ReportViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
@@ -366,6 +367,9 @@
     </Compile>
     <Compile Include="View\Reports\Sales\Customers\CustomerWiseSales.xaml.cs">
       <DependentUpon>CustomerWiseSales.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Stock\StockBalanceReport.xaml.cs">
+      <DependentUpon>StockBalanceReport.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Stock\Returns.xaml.cs">
       <DependentUpon>Returns.xaml</DependentUpon>
@@ -446,6 +450,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Reports\Stock\StockBalanceReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Stock\Returns.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -517,6 +525,9 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
+    <Content Include="View\Reports\Stock\StockBalance.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\Return.png" />
     <Resource Include="Images\Report.png" />
     <Resource Include="Images\companies.png" />
