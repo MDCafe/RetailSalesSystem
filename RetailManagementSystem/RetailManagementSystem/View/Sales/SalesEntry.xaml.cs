@@ -168,10 +168,5 @@ namespace RetailManagementSystem.View.Sales
             //var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
             //SalesDataGrid.SelectedIndex
         }
-
-        private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
-        {
-            //e.Row.Header = (e.Row.GetIndex() + 1).ToString();
-        }
     }
 }

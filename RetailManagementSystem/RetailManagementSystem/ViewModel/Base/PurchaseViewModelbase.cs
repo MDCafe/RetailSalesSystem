@@ -1,6 +1,4 @@
-﻿using System;
-using RetailManagementSystem.Utilities;
-using RetailManagementSystem.Interfaces;
+﻿using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Base
 {

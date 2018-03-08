@@ -18,7 +18,7 @@ RunningBillNo,s.addedOn,
 sum(sd.Discount) + if(isnull(s.discount),0,s.discount) Discount,
 (sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount))) + s.TransportCharges TotalAmount,
 CASE
-        WHEN s.PaymentMode = '0' AND isnull(s.AmountPaid) = 1 THEN 
+        WHEN s.PaymentMode = '0' AND (isnull(s.AmountPaid) = 1 OR s.AmountPaid = 0) THEN 
 					(sum(sd.sellingprice *sd.qty) - sum(if(isnull(sd.discount),0,sd.discount)))
 					+ s.TransportCharges
         ELSE 

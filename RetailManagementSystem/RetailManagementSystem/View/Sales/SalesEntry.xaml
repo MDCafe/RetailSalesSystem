@@ -111,7 +111,6 @@
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
                                       SelectionMode="Single" Grid.ColumnSpan="5"
-                                      LoadingRow="DataGrid_LoadingRow"
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
                                       CanUserSortColumns="False" CanUserReorderColumns="False"

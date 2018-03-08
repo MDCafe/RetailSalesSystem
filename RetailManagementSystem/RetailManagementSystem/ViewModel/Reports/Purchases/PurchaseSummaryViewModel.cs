@@ -56,7 +56,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
              ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
 
             //override base array
-            _rptDataSource = new ReportDataSource[3];
+            _rptDataSource = new ReportDataSource[4];
         }
 
         #region Print Command
@@ -82,12 +82,18 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             _rptDataSource[2] = new ReportDataSource();
             _rptDataSource[2].Name = "DataSet3";
 
-            var query = "GetPurchases";
+            _rptDataSource[3] = new ReportDataSource();
+            _rptDataSource[3].Name = "DataSet4";
+
+            var purchaseQuery = "GetPurchases";
+            var purchaseDetailsQuery = "GetPurchaseDetails";
+
             var returnQuery = "GetReturnsForBillid";
-
-            SetReportDataSource(query, _rptDataSource[0]);
+            
+            SetReportDataSource(purchaseQuery, _rptDataSource[0]);
+            SetReportDataSource(purchaseDetailsQuery, _rptDataSource[3]);
             SetReportDataSource(returnQuery, _rptDataSource[2]);
-
+      
             Workspace.This.OpenReport(this);
             CloseWindow(window);
         }

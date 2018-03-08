@@ -16,6 +16,7 @@ using RetailManagementSystem.View.Reports.Stock;
 using RetailManagementSystem.ViewModel.Stocks;
 using RetailManagementSystem.View.Reports.Sales.Customers;
 using RetailManagementSystem.View.Masters;
+using RetailManagementSystem.ViewModel.Accounts;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -435,6 +436,30 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenCustomerBillPaymentsCommand
+        RelayCommand<object> _openCustomerBillPaymentsCommand = null;
+        public ICommand OpenCustomerBillPaymentsCommand
+        {
+            get
+            {
+                if (_openCustomerBillPaymentsCommand == null)
+                {
+                    _openCustomerBillPaymentsCommand = new RelayCommand<object>((p) => OnOpenCustomerBillPaymentsCommand(p));
+                }
+                return _openCustomerBillPaymentsCommand;
+            }
+        }
+
+        private void OnOpenCustomerBillPaymentsCommand(object paramValue)   
+        {
+            _documentViewModels.Add(new CustomerBillPaymentsViewModel(false) );
+            ActiveDocument = _documentViewModels.Last();
+        }
+
+        #endregion
+
+        
+
         #region ActiveDocument
 
         private DocumentViewModel _activeDocument = null;
@@ -690,79 +715,5 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        /// <summary>
-        /// Bind a window to some commands to be executed by the viewmodel.
-        /// </summary>
-        /// <param name="win"></param>
-        public void InitCommandBinding(Window win)
-        {
-            win.CommandBindings.Add(new CommandBinding(OpenSalesEntryCommand,
-            (s, e) =>
-            {
-                this.OnOpenSalesEntryCommand(false);
-            }));
-
-            win.CommandBindings.Add(new CommandBinding(OpenCustomerCommand,
-            (s, e) =>
-            {
-                this.OnOpenCustomerCommand();
-            }));
-        }
-
-            //  win.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open,
-            //  (s, e) =>
-            //  {
-            //    this.OnOpen(null);
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.LoadFile,
-            //  (s, e) =>
-            //  {
-            //    if (e == null)
-            //      return;
-
-            //    string filename = e.Parameter as string;
-
-            //    if (filename == null)
-            //      return;
-
-            //    this.Open(filename);
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.PinUnpin,
-            //  (s, e) =>
-            //  {
-            //    this.PinCommand_Executed(e.Parameter, e);
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.RemoveMruEntry,
-            //  (s, e) =>
-            //  {
-            //    this.RemoveMRUEntry_Executed(e.Parameter, e);
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.AddMruEntry,
-            //  (s, e) =>
-            //  {
-            //    this.AddMRUEntry_Executed(e.Parameter, e);
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.BrowseURL,
-            //  (s, e) =>
-            //  {
-            //    Process.Start(new ProcessStartInfo("http://Edi.codeplex.com"));
-            //  }));
-
-            //  win.CommandBindings.Add(new CommandBinding(AppCommand.ShowStartPage,
-            //  (s, e) =>
-            //  {
-            //    StartPageViewModel spage = this.GetStartPage(true);
-
-            //    if (spage != null)
-            //    {
-            //      this.ActiveDocument = spage;
-            //    }
-            //  }));
-            //}
-        }
+     }
 }

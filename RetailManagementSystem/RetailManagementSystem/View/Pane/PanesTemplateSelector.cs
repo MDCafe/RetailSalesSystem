@@ -6,6 +6,7 @@ using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel;
 using RetailManagementSystem.ViewModel.Stocks;
+using RetailManagementSystem.ViewModel.Accounts;
 
 namespace RetailManagementSystem.View.Pane
 {
@@ -77,6 +78,12 @@ namespace RetailManagementSystem.View.Pane
             set;
         }
 
+        public DataTemplate CustomerBillPaymentsTemplate
+        {
+            get;
+            set;
+        }
+
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -100,6 +107,8 @@ namespace RetailManagementSystem.View.Pane
             if (item is ProductsViewModel) return ProductsDataTemplate;
 
             if (item is SwapsViewModel) return StockTansactionViewTemplate;
+
+            if (item is CustomerBillPaymentsViewModel) return CustomerBillPaymentsTemplate;
 
             return base.SelectTemplate(item, container);
         }

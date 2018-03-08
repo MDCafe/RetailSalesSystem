@@ -4,7 +4,6 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:s="clr-namespace:System;assembly=mscorlib"        
-         WindowStartupLocation="CenterScreen" WindowState="Maximized"
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
         xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane" 
         xmlns:report="clr-namespace:RetailManagementSystem.View"
@@ -12,6 +11,8 @@
         xmlns:PurchaseView="clr-namespace:RetailManagementSystem.View.Purchases"
         xmlns:MastersView="clr-namespace:RetailManagementSystem.View.Masters"
         xmlns:StockView ="clr-namespace:RetailManagementSystem.View.Stock"
+        xmlns:AccountsView ="clr-namespace:RetailManagementSystem.View.Accounts"   
+        WindowStartupLocation="CenterScreen" WindowState="Maximized"
         >
     <Window.Resources>
         <conv:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
@@ -21,9 +22,9 @@
             <Ribbon  SelectedIndex="0" DockPanel.Dock="Top">
 
                 <!-- Help Pane, located at the right-hand side -->
-                <Ribbon.HelpPaneContent>
+                <!--<Ribbon.HelpPaneContent>
                     <RibbonButton SmallImageSource="Images\Users.jpg" />
-                </Ribbon.HelpPaneContent>
+                </Ribbon.HelpPaneContent>-->
 
                 <!-- Quick Access Toolbar - located at the upper-left corner -->
                 <!--<Ribbon.QuickAccessToolBar>
@@ -119,9 +120,12 @@
                     </RibbonGroup>
 
                 </RibbonTab>
-                <!--<RibbonTab Header="PageLayout" KeyTip="L">
-                    --><!-- Launch/Applications group--><!--
-                </RibbonTab>-->
+                <RibbonTab Header="Accounts" KeyTip="M">
+                    <RibbonGroup x:Name="Accounts" Header="Accounts">
+                        <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
+                                       KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
+                    </RibbonGroup>
+                </RibbonTab>
             </Ribbon>
             <!--<Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Sales">
@@ -250,6 +254,12 @@
                                 <StockView:Swaps/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.StockTansactionViewTemplate>
+
+                        <pane:PanesTemplateSelector.CustomerBillPaymentsTemplate>
+                            <DataTemplate>
+                                <AccountsView:CustomerBillPayments/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.CustomerBillPaymentsTemplate>
 
                     </pane:PanesTemplateSelector>
                 </xcad:DockingManager.LayoutItemTemplateSelector>
