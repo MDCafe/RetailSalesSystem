@@ -114,21 +114,8 @@ namespace RetailManagementSystem.ViewModel.Reports
        
 
         #region Clear Command
-        RelayCommand<object> _clearCommand = null;
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => OnClear());
-                }
 
-                return _clearCommand;
-            }
-        }
-
-        private void OnClear()
+        override internal void Clear()
         {
             ToSalesDate = DateTime.Now;
             FromSalesDate = DateTime.Now;

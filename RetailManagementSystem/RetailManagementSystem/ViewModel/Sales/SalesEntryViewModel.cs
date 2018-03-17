@@ -303,26 +303,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
        
         #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
-
-                return _closeCommand;
-            }
-        }
-
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        private new void  OnClose()
+      
+        override protected void  OnClose()
         {
             //Clear all the data if cancel is pressed
             if (_salesParams.GetTemproaryData)
@@ -393,8 +375,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                 foreach (var item in cancelBillItems.ToList())
                 {
                     var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
-                    var stockTrans = rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(str => str.StockId == stockItem.Id
-                                                                                && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
+                    StockTransaction stockTrans = null;
+                    if (item.Product.SupportsMultiPrice.HasValue && item.Product.SupportsMultiPrice.Value)
+                        stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id
+                                                                               && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
+                    else
+                        stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id);
+
                     var saleQty = item.Qty.Value;
                     stockTrans.Outward -= saleQty;
                     stockTrans.ClosingBalance += saleQty;
@@ -490,9 +477,9 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                         var expiryDate = saleDetailItem.ExpiryDate;
                         var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                                                       && s.ExpiryDate.Year == expiryDate.Year
-                                                                       && s.ExpiryDate.Month == expiryDate.Month
-                                                                       && s.ExpiryDate.Day == expiryDate.Day
+                                                                       && s.ExpiryDate.Year == expiryDate.Value.Year
+                                                                       && s.ExpiryDate.Month == expiryDate.Value.Month
+                                                                       && s.ExpiryDate.Day == expiryDate.Value.Day
                                                                        );
 
                         if (stock != null)
@@ -571,7 +558,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                     if (_salesParams.GetTemproaryData)
-                        _closeCommand.Execute(null);
+                        CloseCommand.Execute(null);
                     Clear();
 
                 }
@@ -743,11 +730,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                     if (stockNewItem != null)
                     {
                         var stkQty = stockNewItem.Quantity;
-                        if ((stkQty - saleDetail.Qty.Value) < 0)
-                        {
-                            Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetail.Qty.Value);
-                            return;
-                        }
+                        //if ((stkQty - saleDetail.Qty.Value) < 0)
+                        //{
+                        //    Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetail.Qty.Value);
+                        //    return;
+                        //}
                         stockNewItem.Quantity -= saleDetail.Qty.Value;
                         SetStockTransaction(saleDetail, stockNewItem);
                     }
@@ -762,8 +749,14 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 if (stock != null)
                 {
-                    var stockTransExisting = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(st => st.StockId == stock.Id
+                    var prd = _rmsEntities.Products.Find(new object[1] {saleDetailItemExtn.ProductId});
+                    var multiPriceSupport = prd.SupportsMultiPrice;
+                    StockTransaction stockTransExisting = null;
+                    if (multiPriceSupport.HasValue && multiPriceSupport.Value)
+                        stockTransExisting = _rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id
                                                && st.AddedOn.Value.Date == saleDetail.AddedOn.Value.Date);
+                    else
+                        stockTransExisting = _rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id);
 
                     if (saleDetailItemExtn.OriginalQty.Value > saleDetail.Qty.Value)
                     {
@@ -810,7 +803,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
             Clear();
-            _closeCommand.Execute(null);
+            CloseCommand.Execute(null);
         }
 
         private void RemoveDeletedItems()
@@ -945,22 +938,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Clear Command
-        RelayCommand<object> _clearCommand = null;
 
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => Clear());
-                }
-
-                return _clearCommand;
-            }
-        }
-
-        private void Clear()
+        override internal void Clear()
         {
             _rmsEntities = new RMSEntities(); 
             RefreshProductList();
@@ -1013,9 +992,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
         {
             if (productPrice == null) return;
-            var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
+            //var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             try
             {
+                if (selectedIndex == -1 || selectedIndex > SaleDetailList.Count - 1) return;
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
                 //if (saleItem !=null)
                 //{
@@ -1028,6 +1008,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             catch (Exception ex)
             {
                 _log.Error("Error on SetProductDetails", ex);
+                _log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}",selectedIndex,productPrice.ProductId,productPrice.PriceId);
             }
         }
 

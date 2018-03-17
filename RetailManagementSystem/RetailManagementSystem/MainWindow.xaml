@@ -120,7 +120,7 @@
                     </RibbonGroup>
 
                 </RibbonTab>
-                <RibbonTab Header="Accounts" KeyTip="M">
+                <RibbonTab Header="Accounts" KeyTip="A">
                     <RibbonGroup x:Name="Accounts" Header="Accounts">
                         <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
                                        KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"></RibbonButton>

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using RetailManagementSystem.Command;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
- 
-  /// <summary>
-  /// Base class that shares common properties, methods, and intefaces
-  /// among viewmodels that represent documents in Edi
-  /// (text file edits, Start Page, Prgram Settings).
-  /// </summary>
-  internal abstract class DocumentViewModel : PaneViewModel
+
+    /// <summary>
+    /// Base class that shares common properties, methods, and intefaces
+    /// among viewmodels that represent documents in Edi
+    /// (text file edits, Start Page, Prgram Settings).
+    /// </summary>
+    internal abstract class DocumentViewModel : PaneViewModel
   {
         #region Fields
         private string _windowTitle;
@@ -52,25 +49,57 @@ namespace RetailManagementSystem.ViewModel.Base
         }
 
         #region CloseCommand
-        /// <summary>
-        /// This command closes a single file. The binding for this is in the AvalonDock LayoutPanel Style.
-        /// </summary>
-        abstract public ICommand CloseCommand
+        RelayCommand<object> _closeCommand = null;
+        public
+            ICommand CloseCommand
         {
-            get;
+            get
+            {
+                if (_closeCommand == null)
+                {
+                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
+                }
+
+                return _closeCommand;
+            }
         }
 
-        //abstract public ICommand GetBillCommand
-        //{
-        //  get;
-        //}
+        protected virtual bool CanClose()
+        {
+            return true;
+        }
+
+        protected virtual void OnClose()
+        {
+            Workspace.This.Close(this);
+        }
+
+        #endregion
+
+        #region Clear Command
+        RelayCommand<object> _clearCommand = null;
+
+        public ICommand ClearCommand
+        {
+            get
+            {
+                if (_clearCommand == null)
+                {
+                    _clearCommand = new RelayCommand<object>((p) => Clear());
+                }
+
+                return _clearCommand;
+            }
+        }
+
+        virtual internal void Clear()
+        {
+
+        }
+
         #endregion
 
         #endregion properties
-
-        public DocumentViewModel()
-        {
-
-        }
+        
   }
 }

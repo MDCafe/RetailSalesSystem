@@ -113,19 +113,27 @@
                                       SelectionMode="Single" Grid.ColumnSpan="5"
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
-                                      CanUserSortColumns="False" CanUserReorderColumns="False"
-                                       >
+                                      CanUserSortColumns="False" CanUserReorderColumns="False">
+               
                 <toolKit:DataGrid.Resources>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="LightYellow"/>
                     </Style>
                     <Style TargetType="DataGridCell">
-                        <Setter Property="IsEnabled" Value="{Binding PropertyReadOnly}" />
+                        <!--<EventSetter Event="PreviewKeyDown" Handler="Cell_PreviewKeyDown"/>
+                        <EventSetter Event="GotFocus" Handler="Cell_GotFocus"/>-->
+                        <!--<Setter />-->
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="true">
                                 <Setter Property="Background" Value="#6F0090FF"/>
                             </Trigger>
                         </Style.Triggers>
+                        <Style.Setters>
+                            <EventSetter Event="PreviewKeyDown" Handler="Cell_PreviewKeyDown"/>
+                            <EventSetter Event="GotFocus" Handler="Cell_GotFocus"/>
+                            <Setter Property="IsEnabled" Value="{Binding PropertyReadOnly}" />
+                        </Style.Setters>
+                   
                     </Style>
 
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">

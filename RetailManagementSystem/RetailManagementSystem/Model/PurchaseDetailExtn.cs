@@ -6,7 +6,7 @@ namespace RetailManagementSystem.Model
     {
         private decimal? _purchasePrice;
         private decimal? _freeIssue;
-        private DateTime? _expiryDate;
+       
 
         public decimal? PurchasePrice
         {
@@ -48,27 +48,7 @@ namespace RetailManagementSystem.Model
         public decimal? OldSellingPrice { get; set; }
         public decimal? Tax { get; set; }
 
-        public DateTime? ExpiryDate
-        {
-            get
-            {
-                if (_expiryDate == null)
-                {
-                    return _expiryDate;// = DateTime.Now.AddMonths(1);
-                }
-                return _expiryDate;
-            }
-
-            set
-            {   
-                //if (Nullable.Equals(_expiryDate, value))
-                //{
-                //    //_expiryDate = DateTime.Now.AddMonths(1);
-                //}
-                _expiryDate = value;
-                this.OnPropertyChanged("ExpiryDate");
-            }
-        }
+       
     }
 
     class ReturnPurchaseDetailExtn : PurchaseDetailExtn

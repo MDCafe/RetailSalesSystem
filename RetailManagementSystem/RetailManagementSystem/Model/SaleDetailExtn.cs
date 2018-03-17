@@ -3,9 +3,8 @@ using System.ComponentModel;
 
 namespace RetailManagementSystem.Model
 {    
-    public class SaleDetailExtn : INotifyPropertyChanged
+    public class SaleDetailExtn : BaseModel
     {       
-        public event PropertyChangedEventHandler PropertyChanged;
         private int _billId;
         private int _productId;
         private int _priceId;
@@ -21,6 +20,7 @@ namespace RetailManagementSystem.Model
         private decimal? _lastSoldPrice;
         private bool _propertyReadOnly;
         private bool _supportsMultiplePrice;
+        private DateTime? _expiryDate;
 
         public bool SupportsMultiplePrice
         {
@@ -251,17 +251,29 @@ namespace RetailManagementSystem.Model
 
         public virtual Sale Sale { get; set; }
 
-        public DateTime ExpiryDate { get; set; }
-
-        public virtual void OnPropertyChanged(string propertyName)
+        public DateTime? ExpiryDate
         {
-            PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            bool flag = propertyChanged != null;
-            if (flag)
+            get
             {
-                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                if (_expiryDate == null)
+                {
+                    return _expiryDate;// = DateTime.Now.AddMonths(1);
+                }
+                return _expiryDate;
+            }
+
+            set
+            {
+                //if (Nullable.Equals(_expiryDate, value))
+                //{
+                //    //_expiryDate = DateTime.Now.AddMonths(1);
+                //}
+                _expiryDate = value;
+                this.OnPropertyChanged("ExpiryDate");
             }
         }
+
+      
 
         public decimal CostPrice { get; set; }
         public decimal? Amount { get; set; }

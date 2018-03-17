@@ -183,29 +183,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             //}
         }
          
-        #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
-
-                return _closeCommand;
-            }
-        }
-
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        #endregion
-
-       
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
@@ -374,23 +351,8 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Clear Command
-        RelayCommand<object> _clearCommand = null;
-        
 
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => Clear());
-                }
-
-                return _clearCommand;
-            }
-        }
-
-        private void Clear()
+        override internal void Clear()
         {
             _returnSalesDetailsList = new ObservableCollection<ReturnSaleDetailExtn>();
             RaisePropertyChanged("ReturnSaleDetailList");

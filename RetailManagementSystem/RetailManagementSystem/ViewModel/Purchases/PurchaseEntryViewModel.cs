@@ -676,185 +676,193 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         private void SaveOnEdit(object parameter)
         {
-            //Check if there are any deletions
-            RemoveDeletedItems();
-
-            var purchase = _rmsEntities.Purchases.Where(p => p.BillId == _editBillNo).FirstOrDefault();
-
-            foreach (var purchaseDetailItemExtn in _purchaseDetailsList)
+            try
             {
-                var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(b => b.BillId == purchaseDetailItemExtn.BillId
-                                                                                 && b.ProductId == purchaseDetailItemExtn.ProductId);
+                //Check if there are any deletions
+                RemoveDeletedItems();
 
-                var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == purchaseDetailItemExtn.ProductId
-                                                                        && pr.Price == purchaseDetailItemExtn.PurchasePrice
-                                                                        && pr.SellingPrice == purchaseDetailItemExtn.SellingPrice);
-                var priceId = 0;
-                PriceDetail priceDetailItem = null;
-                priceDetailItem = GetPriceDetails(purchaseDetailItemExtn, priceDetails, ref priceId);
+                var purchase = _rmsEntities.Purchases.Where(p => p.BillId == _editBillNo).FirstOrDefault();
 
-                //New Item added on edit
-                if (purchaseDetail == null)
+                foreach (var purchaseDetailItemExtn in _purchaseDetailsList)
                 {
-                    if (purchaseDetailItemExtn.FreeIssue.HasValue)
+                    var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(b => b.BillId == purchaseDetailItemExtn.BillId
+                                                                                     && b.ProductId == purchaseDetailItemExtn.ProductId);
+
+                    var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == purchaseDetailItemExtn.ProductId
+                                                                            && pr.Price == purchaseDetailItemExtn.PurchasePrice
+                                                                            && pr.SellingPrice == purchaseDetailItemExtn.SellingPrice);
+                    var priceId = 0;
+                    PriceDetail priceDetailItem = null;
+                    priceDetailItem = GetPriceDetails(purchaseDetailItemExtn, priceDetails, ref priceId);
+
+                    //New Item added on edit
+                    if (purchaseDetail == null)
                     {
-                        _rmsEntities.PurchaseFreeDetails.Add(
-                            new PurchaseFreeDetail()
-                            {
-                                ProductId = purchaseDetailItemExtn.ProductId,
-                                FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
-                                FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
-                                BillId = _editBillNo.Value,
-                                IsFreeOnly = purchaseDetailItemExtn.Qty.HasValue ? true : false
-                            });
-
-                        //Continue only if free item is added
-                        if (purchaseDetailItemExtn.Qty == 0 || purchaseDetailItemExtn.Qty == null)
+                        if (purchaseDetailItemExtn.FreeIssue.HasValue)
                         {
-                            var maxPriceId = _rmsEntities.Stocks.Where(s => s.ProductId == purchaseDetailItemExtn.ProductId).Max(i => i.PriceId);
-                            var stockLastAddedItem = _rmsEntities.Stocks.FirstOrDefault(m => m.PriceId == maxPriceId);
-                                                                        //.Aggregate((agg,next) => next.PriceId > agg.PriceId ? next : agg);
-                            stockLastAddedItem.Quantity += purchaseDetailItemExtn.FreeIssue.Value;
+                            _rmsEntities.PurchaseFreeDetails.Add(
+                                new PurchaseFreeDetail()
+                                {
+                                    ProductId = purchaseDetailItemExtn.ProductId,
+                                    FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
+                                    FreeAmount = purchaseDetailItemExtn.PurchasePrice * purchaseDetailItemExtn.FreeIssue.Value,
+                                    BillId = _editBillNo.Value,
+                                    IsFreeOnly = purchaseDetailItemExtn.Qty.HasValue ? true : false
+                                });
 
-                            //This object is created only for free items only
-                            var purchaseFreeItemOnly = new PurchaseDetail()
+                            //Continue only if free item is added
+                            if (purchaseDetailItemExtn.Qty == 0 || purchaseDetailItemExtn.Qty == null)
                             {
-                                PurchasedQty = purchaseDetailItemExtn.FreeIssue.Value,
-                                ProductId = purchaseDetailItemExtn.ProductId,
-                                BillId = _editBillNo.Value
-                            };
+                                var maxPriceId = _rmsEntities.Stocks.Where(s => s.ProductId == purchaseDetailItemExtn.ProductId).Max(i => i.PriceId);
+                                var stockLastAddedItem = _rmsEntities.Stocks.FirstOrDefault(m => m.PriceId == maxPriceId);
+                                //.Aggregate((agg,next) => next.PriceId > agg.PriceId ? next : agg);
+                                stockLastAddedItem.Quantity += purchaseDetailItemExtn.FreeIssue.Value;
 
-                            SetStockTransaction(purchaseFreeItemOnly, stockLastAddedItem);
-                            
-                            continue;
+                                //This object is created only for free items only
+                                var purchaseFreeItemOnly = new PurchaseDetail()
+                                {
+                                    PurchasedQty = purchaseDetailItemExtn.FreeIssue.Value,
+                                    ProductId = purchaseDetailItemExtn.ProductId,
+                                    BillId = _editBillNo.Value
+                                };
+
+                                SetStockTransaction(purchaseFreeItemOnly, stockLastAddedItem);
+
+                                continue;
+                            }
                         }
+
+                        var serverDate = RMSEntitiesHelper.GetServerDate();
+                        purchaseDetail = _rmsEntities.PurchaseDetails.Create();
+                        purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
+                        purchaseDetail.PriceId = priceDetailItem.PriceId;
+                        purchaseDetail.AddedOn = serverDate;
+                        purchaseDetail.ModifiedOn = serverDate;
+                        //purchaseDetail. = purchaseDetailItemExtn.Qty;
+                        _rmsEntities.PurchaseDetails.Add(purchaseDetail);
+
+                        SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
+
+                        var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
+                                                                              && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
+                        if (stockNewItem != null)
+                        {
+                            stockNewItem.Quantity += purchaseDetail.PurchasedQty.Value;
+                            SetStockTransaction(purchaseDetail, stockNewItem);
+                        }
+
+                        continue;
                     }
 
-                    var serverDate = RMSEntitiesHelper.GetServerDate();
-                    purchaseDetail = _rmsEntities.PurchaseDetails.Create();
-                    purchaseDetailItemExtn.OriginalQty = purchaseDetailItemExtn.Qty;
-                    purchaseDetail.PriceId = priceDetailItem.PriceId;
-                    purchaseDetail.AddedOn = serverDate;
-                    purchaseDetail.ModifiedOn = serverDate;
-                    //purchaseDetail. = purchaseDetailItemExtn.Qty;
-                    _rmsEntities.PurchaseDetails.Add(purchaseDetail);
+                    if (purchaseDetailItemExtn.FreeIssue.HasValue && purchaseDetailItemExtn.FreeIssue.Value > 0)
+                    {
+                        var freeIssueEdit = _rmsEntities.PurchaseFreeDetails.Where(f => f.BillId == purchaseDetailItemExtn.BillId &&
+                                                                                    f.ProductId == purchaseDetailItemExtn.ProductId).FirstOrDefault();
+                        if (freeIssueEdit != null)
+                            freeIssueEdit.FreeQty = purchaseDetailItemExtn.FreeIssue.Value;
+                        else
+                        //New free item
+                        {
+                            var purchaseFreeItem = new PurchaseFreeDetail()
+                            {
+                                BillId = purchaseDetailItemExtn.BillId,
+                                FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
+                                FreeAmount = purchaseDetailItemExtn.FreeIssue.Value * purchaseDetailItemExtn.SellingPrice,
+                                ProductId = purchaseDetailItemExtn.ProductId
+                            };
+
+                            _rmsEntities.PurchaseFreeDetails.Add(purchaseFreeItem);
+                        }
+                    }
 
                     SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
 
-                    var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == purchaseDetail.PriceId
-                                                                          && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
-                    if (stockNewItem != null)
-                    {
-                        stockNewItem.Quantity += purchaseDetail.PurchasedQty.Value;
-                        SetStockTransaction(purchaseDetail, stockNewItem);
-                    }
-
-                    continue;
-                }
-
-                if (purchaseDetailItemExtn.FreeIssue.HasValue && purchaseDetailItemExtn.FreeIssue.Value > 0)
-                {
-                    var freeIssueEdit = _rmsEntities.PurchaseFreeDetails.Where(f => f.BillId == purchaseDetailItemExtn.BillId &&
-                                                                                f.ProductId == purchaseDetailItemExtn.ProductId).FirstOrDefault();
-                    if (freeIssueEdit != null)
-                        freeIssueEdit.FreeQty = purchaseDetailItemExtn.FreeIssue.Value;
-                    else
-                    //New free item
-                    {
-                        var purchaseFreeItem = new PurchaseFreeDetail()
-                        {
-                            BillId = purchaseDetailItemExtn.BillId,
-                            FreeQty = purchaseDetailItemExtn.FreeIssue.Value,
-                            FreeAmount = purchaseDetailItemExtn.FreeIssue.Value * purchaseDetailItemExtn.SellingPrice,
-                            ProductId = purchaseDetailItemExtn.ProductId
-                        };
-
-                        _rmsEntities.PurchaseFreeDetails.Add(purchaseFreeItem);
-                    }
-                }
-
-                SetPurchaseDetailItem(purchaseDetailItemExtn, purchaseDetail);
-
-                var oldPriceId = purchaseDetail.PriceId;
-                //New  Price
-                if (priceDetailItem.PriceId ==0)
-                    purchaseDetail.PriceDetail = priceDetailItem;
-                else
-                    purchaseDetail.PriceId = priceDetailItem.PriceId;
-
-                var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == oldPriceId
-                                                                && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
-
-                if (stock != null)
-                {
-                    var stockTransExisting = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(st => st.StockId == stock.Id 
-                                                && st.AddedOn.Value.Date == purchaseDetail.AddedOn.Value.Date);
-
-                    var purchaseQty = purchaseDetail.PurchasedQty.Value;
+                    var oldPriceId = purchaseDetail.PriceId;
+                    //New  Price
                     if (priceDetailItem.PriceId == 0)
-                        stock.PriceDetail = priceDetailItem;
+                        purchaseDetail.PriceDetail = priceDetailItem;
                     else
-                        stock.PriceId = priceDetailItem.PriceId;
-                    if (purchaseDetailItemExtn.OriginalQty.Value > purchaseDetail.PurchasedQty.Value)
+                        purchaseDetail.PriceId = priceDetailItem.PriceId;
+
+                    var stock = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == purchaseDetail.ProductId && s.PriceId == oldPriceId
+                                                                    && s.ExpiryDate == purchaseDetailItemExtn.ExpiryDate);
+
+                    if (stock != null)
                     {
-                        var qty = purchaseDetailItemExtn.OriginalQty.Value - purchaseQty;
-                        stock.Quantity -= qty;
-                        if(stockTransExisting !=null)
+                        var stockTransExisting = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(st => st.StockId == stock.Id
+                                                    && st.AddedOn.Value.Date == purchaseDetail.AddedOn.Value.Date);
+
+                        var purchaseQty = purchaseDetail.PurchasedQty.Value;
+                        if (priceDetailItem.PriceId == 0)
+                            stock.PriceDetail = priceDetailItem;
+                        else
+                            stock.PriceId = priceDetailItem.PriceId;
+                        if (purchaseDetailItemExtn.OriginalQty.Value > purchaseDetail.PurchasedQty.Value)
                         {
-                            stockTransExisting.Inward -= qty;
-                            stockTransExisting.ClosingBalance -= qty;
+                            var qty = purchaseDetailItemExtn.OriginalQty.Value - purchaseQty;
+                            stock.Quantity -= qty;
+                            if (stockTransExisting != null)
+                            {
+                                stockTransExisting.Inward -= qty;
+                                stockTransExisting.ClosingBalance -= qty;
+                            }
+                        }
+                        else if (purchaseDetailItemExtn.OriginalQty.Value < purchaseDetail.PurchasedQty.Value)
+                        {
+                            var qtySmall = purchaseQty - purchaseDetailItemExtn.OriginalQty.Value;
+                            stock.Quantity += qtySmall;
+                            if (stockTransExisting != null)
+                            {
+                                stockTransExisting.Inward += qtySmall;
+                                stockTransExisting.ClosingBalance += qtySmall;
+                            }
                         }
                     }
-                    else if(purchaseDetailItemExtn.OriginalQty.Value < purchaseDetail.PurchasedQty.Value)
+                    else
                     {
-                        var qtySmall = purchaseQty - purchaseDetailItemExtn.OriginalQty.Value;
-                        stock.Quantity += qtySmall;
-                        if (stockTransExisting != null)
-                        {
-                            stockTransExisting.Inward += qtySmall;
-                            stockTransExisting.ClosingBalance += qtySmall;
-                        }
+                        //priceDetailItem.Stocks.Add(new Stock()
+                        //{
+                        // //   ProductId = purchaseDetailItemExtn.ProductId,
+                        //   // Quantity = purchaseDetailItemExtn.Qty.HasValue ? purchaseDetailItemExtn.Qty: 0.0F,
+
+
+                        //});
                     }
                 }
-                else
-                {
-                    //priceDetailItem.Stocks.Add(new Stock()
-                    //{
-                    // //   ProductId = purchaseDetailItemExtn.ProductId,
-                    //   // Quantity = purchaseDetailItemExtn.Qty.HasValue ? purchaseDetailItemExtn.Qty: 0.0F,
-                        
 
-                    //});
+                if (purchase != null)
+                {
+                    purchase.Discount = GetDiscount();
+                    purchase.CoolieCharges = CoolieCharges;
+                    purchase.KCoolieCharges = KCoolieCharges;
+                    purchase.TransportCharges = TransportCharges;
+                    purchase.LocalCoolieCharges = LocalCoolieCharges;
+                    purchase.TotalBillAmount = TotalAmount;
+                    purchase.Tax = TotalTax;
+                    purchase.SpecialDiscount = SpecialDiscountAmount;
+                    //purchase.ModifiedOn = RMSEntitiesHelper.GetServerDate();
                 }
-            }
+                _rmsEntities.SaveChanges();
 
-            if (purchase !=null)
-            {
-                purchase.Discount = GetDiscount();
-                purchase.CoolieCharges = CoolieCharges;
-                purchase.KCoolieCharges = KCoolieCharges;
-                purchase.TransportCharges = TransportCharges;
-                purchase.LocalCoolieCharges = LocalCoolieCharges;
-                purchase.TotalBillAmount = TotalAmount;
-                purchase.Tax = TotalTax;
-                purchase.SpecialDiscount = SpecialDiscountAmount;
-                //purchase.ModifiedOn = RMSEntitiesHelper.GetServerDate();
-            }
-            _rmsEntities.SaveChanges();
-
-            if (parameter.ToString() == "PrintSave")
-            {
-                App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                if (parameter.ToString() == "PrintSave")
                 {
+                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                    {
                     //Call the print on print & save
-                    PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies,_runningBillNo);
-                    psummVM.RunningBillNo = purchase.RunningBillNo;
-                    psummVM.PrintCommand.Execute(null);
-                }));
-            }
+                    PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, _runningBillNo);
+                        psummVM.RunningBillNo = purchase.RunningBillNo;
+                        psummVM.PrintCommand.Execute(null);
+                    }));
+                }
 
-            Clear();
-            CloseCommand.Execute(null);
+                Clear();
+                CloseCommand.Execute(null);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                Utility.ShowErrorBox(ex.Message);
+            }
         }
 
         private void SetStockTransaction(PurchaseDetail purchaseDetail, Stock stockNewItem)
@@ -880,7 +888,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
                 if (dateDiff == 0)
                 {
-                    stockTrans.Inward += purchaseDetail.PurchasedQty;
+                    stockTrans.Inward = stockTrans.Inward.HasValue ? stockTrans.Inward + purchaseDetail.PurchasedQty : purchaseDetail.PurchasedQty;
                     stockTrans.ClosingBalance += purchaseDetail.PurchasedQty;
                 }
                 else
@@ -939,22 +947,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
         #endregion
 
         #region Clear Command
-        RelayCommand<object> _clearCommand = null;
 
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => Clear());
-                }
-
-                return _clearCommand;
-            }
-        }
-
-        private void Clear()
+        override internal void Clear()
         {
             PurchaseDetailList = new ObservableCollection<PurchaseDetailExtn>();
             TotalAmount = null;
@@ -1098,6 +1092,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 if (stockNewItem != null)
                 {
                     var stockTrans = _rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
+
+                    //if(stockTrans == null)
+                    //{
+                    //    SetStockTransaction(purchaseDetail, stockNewItem);
+                    //}
                     var qty = item.Qty.Value;
                     stockTrans.Inward -= qty;
                     stockTrans.ClosingBalance -= qty;
@@ -1154,7 +1153,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno && s.CompanyId == _purchaseParams.CompanyId);
 
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
-            if (msgResult != System.Windows.MessageBoxResult.OK) return;
+            if (msgResult != System.Windows.MessageBoxResult.Yes) return;
 
             var cancelBillItems = _rmsEntities.PurchaseDetails.Where(s => s.BillId == cancelBill.BillId);
             foreach (var item in cancelBillItems.ToList())

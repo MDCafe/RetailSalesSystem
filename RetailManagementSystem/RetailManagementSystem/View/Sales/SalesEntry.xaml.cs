@@ -5,13 +5,14 @@ using System;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.Model;
+using System.Windows.Media;
 
 namespace RetailManagementSystem.View.Sales
 {
     public partial class SalesEntry : UserControl
     {
         SalesEntryViewModel _salesViewModel;
-       
+
         public SalesEntry()
         {
             InitializeComponent();
@@ -65,8 +66,21 @@ namespace RetailManagementSystem.View.Sales
                 };
             };
 
+            
+
+            //SalesDataGrid.SelectedCellsChanged += (g, ev) =>
+            // {
+            //     if (ev.AddedCells[0].Column.Header.ToString() != "Products") return; 
+            //     var grid = g as DataGrid;
+            //     grid.BeginEdit();
+            // };
+
             SalesDataGrid.PreviewKeyUp += (s, e) =>
             {
+
+                var isNumber = e.Key >= Key.D0 && e.Key <= Key.D9;
+                var isLetter = e.Key >= Key.A && e.Key <= Key.Z;
+
                 if ((e.Key == Key.Enter) || (e.Key == Key.Return))
                 {
                     var grid = s as Microsoft.Windows.Controls.DataGrid;
@@ -115,44 +129,20 @@ namespace RetailManagementSystem.View.Sales
                     e.Handled = true;
                     //}
                 }
+                else if(isLetter || isNumber)
+                {
+                    if (!custComboBoxCol.comboBox.IsDropDownOpen && e.Key != Key.Tab)
+                    {
+                        var grid = s as Microsoft.Windows.Controls.DataGrid;
+                        grid.BeginEdit();
+                        custComboBoxCol.comboBox.IsDropDownOpen = true;
+                        //custComboBoxCol.comboBox.Text = e.Key.ToString();
+                        TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, custComboBoxCol.comboBox, e.Key.ToString()));
+                    }
+                }
 
-                };
-
-            //custComboBoxCol.comboBox.PreviewTextInput += ComboBox_PreviewTextInput;
-            //custComboBoxCol.OnComboLoadedEvent += (txt) =>
-            //{
-            //    custComboBoxCol._cboTextBox.PreviewKeyUp += (s, e) =>
-            //    {
-            //        if (e.Key == System.Windows.Input.Key.Back && string.IsNullOrWhiteSpace(custComboBoxCol.comboBox.Text))
-            //        {                        
-            //            custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
-            //        }
-            //    };
-            //};
+            };
         }        
-
-        //private void ComboBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        //{             
-        //    ComboBox cmb = (ComboBox)sender;
-
-        //    cmb.IsDropDownOpen = true;
-
-        //    if (!string.IsNullOrEmpty(cmb.Text))
-        //    {
-        //        string fullText = cmb.Text +  e.Text;
-        //        cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(fullText, StringComparison.InvariantCultureIgnoreCase)).ToList();
-        //        return;
-        //    }
-        //    //else if (!string.IsNullOrEmpty(e.Text))
-        //    if (!string.IsNullOrEmpty(e.Text))
-        //    {
-        //        cmb.ItemsSource = _salesViewModel.ProductsPriceList.Where(s => s.ProductName.StartsWith(cmb.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
-        //    }
-        //    else
-        //    {
-        //        cmb.ItemsSource = _salesViewModel.ProductsPriceList;
-        //    }        
-        //}
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
@@ -167,6 +157,66 @@ namespace RetailManagementSystem.View.Sales
             custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
             //var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
             //SalesDataGrid.SelectedIndex
+        }
+
+        void Cell_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.OriginalSource is DataGridCell)
+            {
+                DataGridCell cell = (sender as DataGridCell);
+                Control elem = FindChild<Control>(cell, null);
+                elem.Focus();
+            }
+        }
+
+        void Cell_GotFocus(object sender, RoutedEventArgs e)
+        {
+            DataGridCell cell = (sender as DataGridCell);
+            cell.IsEditing = true;
+        }
+
+        public static T FindChild<T>(DependencyObject parent, string childName)
+        where T : DependencyObject
+        {
+            // Confirm parent and childName are valid. 
+            if (parent == null) return null;
+
+            T foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                // If the child is not of the request child type child
+                T childType = child as T;
+                if (childType == null)
+                {
+                    // recursively drill down the tree
+                    foundChild = FindChild<T>(child, childName);
+
+                    // If the child is found, break so we do not overwrite the found child. 
+                    if (foundChild != null) break;
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    // If the child's name is set for search
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        // if the child's name is of the request name
+                        foundChild = (T)child;
+                        break;
+                    }
+                }
+                else
+                {
+                    // child element found.
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+
+            return foundChild;
         }
     }
 }

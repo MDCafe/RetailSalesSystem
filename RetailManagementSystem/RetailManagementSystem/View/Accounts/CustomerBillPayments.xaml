@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RetailManagementSystem.View.Accounts"
         xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
         mc:Ignorable="d">
     <Grid Margin="0,0,0,8">
         <Grid.ColumnDefinitions>
@@ -16,13 +17,13 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="300"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Label x:Name="label" Content="Customers" HorizontalAlignment="Left" Margin="5,5,0,5" Grid.Row="0" Grid.Column="0" />
         <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" SelectedValuePath=""
-                      ItemsSource="{Binding CustomersList}"  IsEditable="True"                                  
-                        HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="5" Height="25" Width="190" >
+                      ItemsSource="{Binding CustomersList}"  IsEditable="True"  SelectedItem="{Binding SelectedCustomer}"                                
+                      HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="5" Height="25" Width="190" >
             <ComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
                     <Setter Property="ContentTemplate">
@@ -31,11 +32,9 @@
                                 <Grid Height="30" Width="Auto">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="200"/>
-                                        <!--<ColumnDefinition Width="10*"/>-->
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                    <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
                                     <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue,StringFormat=N2}" HorizontalAlignment="Right"/>
                                 </Grid>
                             </DataTemplate>
@@ -47,14 +46,14 @@
                 <Binding Path="SelectedCustomerText"/>
             </ComboBox.Text>
         </ComboBox>
-        <Button x:Name="button" Content="Get Bills" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" Margin="5,5,0,5" Width="75" Height="30"/>
+        <Button x:Name="button" Content="Get Bills" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" Margin="5,5,0,5" Width="75" Height="30"
+                Command="{Binding GetBillsCommand}"/>
         <!--DataGrid-->
         <toolKit:DataGrid Name="CustomerBillsDataGrid" IsSynchronizedWithCurrentItem="True" 
-                                      ItemsSource="{Binding PaymentDetailList}"  
+                                      ItemsSource="{Binding CustomerPaymentDetailsList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="3"
                                       SelectionMode="Single" Grid.ColumnSpan="4"
-                                     
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
                                       CanUserSortColumns="False" CanUserReorderColumns="False" Margin="0,10">
@@ -95,12 +94,13 @@
             </toolKit:DataGrid.RowHeaderTemplate>
 
             <toolKit:DataGrid.Columns>
-                <toolKit:DataGridTextColumn Width="150"  Header="Bill Id" Binding="{Binding RunningBillNo}" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="InternalBillId" Binding="{Binding BillId}"/>
-                <toolKit:DataGridTextColumn Header="Bill Amount" Binding="{Binding TotalAmount,StringFormat=N2}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
-                <toolKit:DataGridTextColumn Header="Bill Cancelled" Binding="{Binding IsCancelled}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                <toolKit:DataGridTextColumn Header="Bill Dated" Binding="{Binding AddedOn}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Bill Id" Binding="{Binding RunningBillNo}" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Internal BillId" Binding="{Binding BillId,StringFormat=N2}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
+                <toolKit:DataGridTextColumn Width="150" Header="Bill Amount" Binding="{Binding TotalAmount,StringFormat=N2}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
+                <toolKit:DataGridTextColumn Width="150" Header="Bill Dated" Binding="{Binding AddedOn,StringFormat='dd/MM/yyyy'}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <toolKit:DataGridTextColumn Width="150" Header="Amount Paid" Binding="{Binding AmountPaid}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Amount Paying" Binding="{Binding CurrentAmountPaid}"  ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Balance Amount" Binding="{Binding BalanceAmount}"  ElementStyle="{StaticResource DataGridCellRightAlign}"/>
             </toolKit:DataGrid.Columns>
             <toolKit:DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
@@ -111,13 +111,14 @@
         </toolKit:DataGrid>
         <!--DataGrid-->
         <CheckBox x:Name="checkBox" Content="Auto Allocate" HorizontalAlignment="Left" Margin="5" Grid.Row="1"  VerticalAlignment="Center"/>
-        <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="2" TextWrapping="Wrap" Text="" Width="190"/>
-        <Button x:Name="button_Copy" Content="Allocate" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="5" Width="75" Height="30"/>
-        <Label x:Name="label_Copy" Content="Amount Paid" HorizontalAlignment="Left" Margin="5,5,0,5" Grid.Row="2" Grid.Column="0" />
+        <TextBox x:Name="txtAllocationAmount" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="2" TextWrapping="Wrap" Text="{Binding AllocationAmount}" Width="190" Height="25"/>
+        <Button x:Name="btnAllocate" Content="Allocate" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" Margin="5" Width="75" Height="30"
+                Command="{Binding AllocateCommand}" CommandParameter="{Binding ElementName=txtAllocationAmount}"/>
+        <Label Content="Amount Paid" HorizontalAlignment="Left" Margin="5,5,0,5" Grid.Row="2" Grid.Column="0" />
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5">
+        <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="3">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" CommandParameter="SaveOnly"/>
-            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" IsEnabled="{Binding NegateIsEditMode}"/>
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" />
             <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
         </StackPanel>
     </Grid>

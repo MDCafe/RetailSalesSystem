@@ -206,28 +206,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             };
         }
 
-        #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
-
-                return _closeCommand;
-            }
-        }
-
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        #endregion
-
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
         public ICommand SaveCommand

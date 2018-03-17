@@ -177,32 +177,5 @@ namespace RetailManagementSystem.ViewModel.Stocks
         //    }
         //}
 
-
-        #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
-
-                return _closeCommand;
-            }
-        }
-
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        protected void OnClose()
-        {
-            Workspace.This.Close(this);
-        }
-
-        #endregion
     }
 }

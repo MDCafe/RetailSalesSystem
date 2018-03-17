@@ -189,27 +189,8 @@ namespace RetailManagementSystem.ViewModel.Base
             notifierCollectionChangedEvent?.Invoke();
         }
 
-        #region CloseCommand
-        RelayCommand<object> _closeCommand = null;
-        override public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand<object>((p) => OnClose(), (p) => CanClose());
-                }
-
-                return _closeCommand;
-            }
-        }
-
-        private bool CanClose()
-        {
-            return true;
-        }
-
-        protected void OnClose()
+        #region CloseCommand                
+        override protected void OnClose()
         {
             var returnValue = Workspace.This.Close(this);
             if (!returnValue) return;

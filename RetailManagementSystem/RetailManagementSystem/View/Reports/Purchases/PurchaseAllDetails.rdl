@@ -36,7 +36,7 @@
     END AS 'RunningBillNo'
 from Purchases p, companies c
 where p.CompanyId = c.Id
-and p.RunningBillNo = 248</CommandText>
+and p.RunningBillNo = 251</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -252,7 +252,7 @@ FROM purchasedetails purchdet Join PriceDetails pr on purchdet.PriceId = pr.Pric
 							  Join Products prod on  purchdet.ProductId = prod.Id
                               left join PurchaseFreeDetails pfd on purchdet.BillId = pfd.BillId and pfd.ProductId = prod.Id
 WHERE
-	purchdet.BillId = 452
+	purchdet.BillId = 461
 	order by purchdet.Id asc</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -808,7 +808,7 @@ WHERE
                   <Width>0.73264in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.94965in</Width>
+                  <Width>1.0703in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1687,7 +1687,7 @@ WHERE
             <Top>0.75in</Top>
             <Left>0.01909in</Left>
             <Height>0.65625in</Height>
-            <Width>6.49565in</Width>
+            <Width>6.6163in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -1843,7 +1843,7 @@ WHERE
                     <Value>=First(Fields!addedon.Value, "DataSet1")</Value>
                     <Style>
                       <FontFamily>Tahoma</FontFamily>
-                      <Format>dd/MM/yyyy HH:mm</Format>
+                      <Format>dd/MM/yyyy</Format>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -2030,7 +2030,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox22</rd:DefaultName>
             <Top>3.76347in</Top>
-            <Left>4.16092in</Left>
+            <Left>4.26944in</Left>
             <Height>0.21875in</Height>
             <Width>1.15972in</Width>
             <ZIndex>11</ZIndex>
@@ -2068,7 +2068,7 @@ WHERE
               </Paragraph>
             </Paragraphs>
             <Top>3.74958in</Top>
-            <Left>5.34199in</Left>
+            <Left>5.45051in</Left>
             <Height>0.21875in</Height>
             <Width>1.17275in</Width>
             <ZIndex>12</ZIndex>
@@ -2107,7 +2107,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox22</rd:DefaultName>
             <Top>3.95791in</Top>
-            <Left>4.16092in</Left>
+            <Left>4.26944in</Left>
             <Height>0.21875in</Height>
             <Width>1.15972in</Width>
             <ZIndex>13</ZIndex>
@@ -2145,7 +2145,7 @@ WHERE
               </Paragraph>
             </Paragraphs>
             <Top>3.98222in</Top>
-            <Left>5.34199in</Left>
+            <Left>5.45051in</Left>
             <Height>0.19444in</Height>
             <Width>1.18923in</Width>
             <ZIndex>14</ZIndex>
@@ -2165,7 +2165,7 @@ WHERE
           </Textbox>
           <Line Name="Line1">
             <Top>4.25222in</Top>
-            <Left>5.34199in</Left>
+            <Left>5.45051in</Left>
             <Height>0in</Height>
             <Width>1.22048in</Width>
             <ZIndex>15</ZIndex>
@@ -2198,7 +2198,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox88</rd:DefaultName>
             <Top>4.31472in</Top>
-            <Left>5.36333in</Left>
+            <Left>5.47185in</Left>
             <Height>0.19875in</Height>
             <Width>1.17831in</Width>
             <ZIndex>16</ZIndex>
@@ -2219,7 +2219,7 @@ WHERE
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.62066in</Width>
+                  <Width>0.72483in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.59982in</Width>
@@ -2617,10 +2617,10 @@ WHERE
             <Top>1.4375in</Top>
             <Left>5.31074in</Left>
             <Height>1.37458in</Height>
-            <Width>1.22048in</Width>
+            <Width>1.32465in</Width>
             <ZIndex>17</ZIndex>
             <Visibility>
-              <Hidden>=Fields!cooliecharges.Value = "" AND Fields!KcoolieCharges.Value = "" AND Fields!trannsportcharges.Value = "" AND Fields!localCoolieCharges.Value =""</Hidden>
+              <Hidden>=Fields!cooliecharges.Value = 0 AND Fields!KcoolieCharges.Value = 0 AND Fields!trannsportcharges.Value = 0 AND Fields!localCoolieCharges.Value = 0</Hidden>
             </Visibility>
             <Style>
               <Border>
@@ -2648,7 +2648,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox85</rd:DefaultName>
             <Top>2.90257in</Top>
-            <Left>4.40537in</Left>
+            <Left>4.53037in</Left>
             <Height>0.21875in</Height>
             <Width>0.88889in</Width>
             <ZIndex>18</ZIndex>
@@ -2687,7 +2687,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>SpecialDiscount</rd:DefaultName>
             <Top>2.90257in</Top>
-            <Left>5.29426in</Left>
+            <Left>5.41926in</Left>
             <Height>0.21875in</Height>
             <Width>1.22048in</Width>
             <ZIndex>19</ZIndex>
@@ -2725,7 +2725,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox85</rd:DefaultName>
             <Top>3.12132in</Top>
-            <Left>4.40537in</Left>
+            <Left>4.53037in</Left>
             <Height>0.21875in</Height>
             <Width>0.88889in</Width>
             <ZIndex>20</ZIndex>
@@ -2764,7 +2764,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Discount1</rd:DefaultName>
             <Top>3.12132in</Top>
-            <Left>5.29426in</Left>
+            <Left>5.41926in</Left>
             <Height>0.21875in</Height>
             <Width>1.22048in</Width>
             <ZIndex>21</ZIndex>
@@ -2803,7 +2803,7 @@ WHERE
             </Paragraphs>
             <rd:DefaultName>Textbox22</rd:DefaultName>
             <Top>3.30882in</Top>
-            <Left>4.56162in</Left>
+            <Left>4.68662in</Left>
             <Height>0.21875in</Height>
             <Width>0.73264in</Width>
             <ZIndex>22</ZIndex>
@@ -2840,7 +2840,7 @@ WHERE
               </Paragraph>
             </Paragraphs>
             <Top>3.30882in</Top>
-            <Left>5.29426in</Left>
+            <Left>5.41926in</Left>
             <Height>0.21875in</Height>
             <Width>1.22048in</Width>
             <ZIndex>23</ZIndex>
@@ -2863,7 +2863,7 @@ WHERE
           </Border>
         </Style>
       </Body>
-      <Width>6.56247in</Width>
+      <Width>6.67099in</Width>
       <Page>
         <PageHeader>
           <Height>0.26736in</Height>
