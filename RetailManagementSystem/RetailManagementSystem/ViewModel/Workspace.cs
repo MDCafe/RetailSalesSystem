@@ -452,7 +452,13 @@ namespace RetailManagementSystem.ViewModel
 
         private void OnOpenCustomerBillPaymentsCommand(object paramValue)   
         {
-            _documentViewModels.Add(new CustomerBillPaymentsViewModel(false) );
+            bool showAll = false;
+            if (paramValue !=null)
+            {
+                showAll = bool.Parse(paramValue.ToString());
+            }
+
+            _documentViewModels.Add(new CustomerBillPaymentsViewModel(showAll));
             ActiveDocument = _documentViewModels.Last();
         }
 

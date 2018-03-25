@@ -203,6 +203,9 @@
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ChequePaymentDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CodeMaster.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>

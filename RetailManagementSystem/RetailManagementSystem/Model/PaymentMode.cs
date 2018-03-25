@@ -12,7 +12,8 @@
             get
             {                
                 _paymentModes[0] = new PaymentMode { PaymentId = '0', PaymentName = "Cash" };
-                _paymentModes[1] = new PaymentMode { PaymentId = '1', PaymentName = "Credit" };             
+                _paymentModes[1] = new PaymentMode { PaymentId = '1', PaymentName = "Credit" };
+                _paymentModes[2] = new PaymentMode { PaymentId = '2', PaymentName = "Cheque" };
                 return _paymentModes;
             }
 
@@ -20,7 +21,7 @@
 
         public PaymentMode()
         {
-            _paymentModes = new PaymentMode[2];
+            _paymentModes = new PaymentMode[3];
         }
 
         public string GetPaymentString(string paymentId)

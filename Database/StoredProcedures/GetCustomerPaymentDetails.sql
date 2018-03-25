@@ -5,16 +5,26 @@ DELIMITER $$
 USE `rms`$$
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetCustomerPaymentDetails`(in customerId int)
 BEGIN
-select s.billid,s.RunningBillNo,sum(pd.AmountPaid) AmountPaid,s.TotalAmount,s.AddedOn,s.PaymentMode 
-from rms.PaymentDetails pd, sales s
-where s.BillId = pd.BillId
-and s.customerId = pd.customerid
-and pd.customerId = customerId
-and ifnull(s.IsCancelled,0) = 0
-and s.PaymentMode = 1
-group by s.RunningBillNo
-having AmountPaid != s.TotalAmount
-order by s.RunningBillNo;
+SELECT 
+    s.billid,
+    s.RunningBillNo,
+    SUM(pd.AmountPaid) AmountPaid,
+    (s.TotalAmount - SUM(pd.AmountPaid)) BalanceAmount,
+    s.TotalAmount,
+    s.AddedOn,
+    s.PaymentMode
+FROM
+    rms.PaymentDetails pd,
+    sales s
+WHERE
+    s.BillId = pd.BillId
+        AND s.customerId = pd.customerid
+        AND pd.customerId = customerId
+        AND IFNULL(s.IsCancelled, 0) = 0
+        AND s.PaymentMode = 1
+GROUP BY s.RunningBillNo
+HAVING AmountPaid != s.TotalAmount
+ORDER BY s.RunningBillNo;
 END$$
 
 DELIMITER ;

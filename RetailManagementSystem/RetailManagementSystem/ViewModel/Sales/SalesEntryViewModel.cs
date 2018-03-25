@@ -376,12 +376,23 @@ namespace RetailManagementSystem.ViewModel.Sales
                 {
                     var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
                     StockTransaction stockTrans = null;
-                    if (item.Product.SupportsMultiPrice.HasValue && item.Product.SupportsMultiPrice.Value)
-                        stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id
-                                                                               && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
-                    else
-                        stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id);
+                    //if (item.Product.SupportsMultiPrice.HasValue && item.Product.SupportsMultiPrice.Value)
+                    var stockTransList = rmsEntities.StockTransactions.Where(str => str.StockId == stockItem.Id);
+                    foreach (var stkTrnsItem in stockTransList)
+                    {
+                        if(stkTrnsItem.AddedOn.Value.Subtract(cancelBill.AddedOn.Value).Days == 0)
+                        {
+                            stockTrans = stkTrnsItem;
+                            break;
+                        }
+                    }
+                    //else
+                    //  stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id);
 
+
+                     //&& str.AddedOn.Value.Date.Month == cancelBill.AddedOn.Value.Date.Month
+                     //                                                          && str.AddedOn.Value.Date.Day == cancelBill.AddedOn.Value.Date.Day
+                     //                                                          && str.AddedOn.Value.Date.Year == cancelBill.AddedOn.Value.Date.Year
                     var saleQty = item.Qty.Value;
                     stockTrans.Outward -= saleQty;
                     stockTrans.ClosingBalance += saleQty;
@@ -535,8 +546,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             CustomerId = SelectedCustomer.Id,
                             //BillId = _billSales.BillId,
                             //Customer = SelectedCustomer,
-                            Sale = _billSales,
-                            PaymentMode = "Cash"
+                            Sale = _billSales
                         };
 
                         _rmsEntities.PaymentDetails.Add

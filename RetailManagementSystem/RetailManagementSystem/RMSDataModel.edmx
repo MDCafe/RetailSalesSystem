@@ -33,6 +33,20 @@
           <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="RollingNo" Type="mediumint" />
         </EntityType>
+        <EntityType Name="ChequePaymentDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="PaymentId" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentId" Type="mediumint" Nullable="false" />
+          <Property Name="ChequeNo" Type="int" />
+          <Property Name="ChequeDate" Type="date" />
+          <Property Name="IsChequeRealised" Type="bit" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="mediumint" />
+        </EntityType>
         <EntityType Name="CodeMaster">
           <Key>
             <PropertyRef Name="Id" />
@@ -94,14 +108,12 @@
         <EntityType Name="PaymentDetails">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="BillId" />
-            <PropertyRef Name="CustomerId" />
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BillId" Type="mediumint" Nullable="false" />
-          <Property Name="CustomerId" Type="mediumint" Nullable="false" />
+          <Property Name="CustomerId" Type="mediumint" />
           <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="PaymentMode" Type="varchar" MaxLength="6" />
+          <Property Name="PaymentMode" Type="mediumint" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -346,6 +358,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CHQ_paymentDetails">
+          <End Role="PaymentDetails" Type="Self.PaymentDetails" Multiplicity="1" />
+          <End Role="ChequePaymentDetails" Type="Self.ChequePaymentDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChequePaymentDetails">
+              <PropertyRef Name="PaymentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Company">
           <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
           <End Role="Products" Type="Self.Products" Multiplicity="*" />
@@ -383,7 +407,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_cust_pay">
-          <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
           <End Role="PaymentDetails" Type="Self.PaymentDetails" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Customers">
@@ -651,6 +675,7 @@
         <EntityContainer Name="RMSEntitiesStoreContainer">
           <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="ChequePaymentDetails" EntityType="Self.ChequePaymentDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
@@ -674,6 +699,10 @@
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHQ_paymentDetails" Association="Self.FK_CHQ_paymentDetails">
+            <End Role="PaymentDetails" EntitySet="PaymentDetails" />
+            <End Role="ChequePaymentDetails" EntitySet="ChequePaymentDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_Company" Association="Self.FK_Company">
             <End Role="Companies" EntitySet="Companies" />
@@ -987,9 +1016,9 @@
           <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
           <Property Name="PaymentMode" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="SaleDetails" Relationship="Self.Fk_sale_bill" FromRole="Sales" ToRole="SaleDetails" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.Fk_sale_pay" FromRole="Sale" ToRole="PaymentDetail" />
           <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
           <Property Name="AmountPaid" Type="Decimal" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.Fk_sale_pay" FromRole="Sale" ToRole="PaymentDetail" />
         </EntityType>
         <EntityType Name="SaleTemp">
           <Key>
@@ -1267,16 +1296,7 @@
             <End Role="Sales" EntitySet="Sales" />
             <End Role="SaleDetails" EntitySet="SaleDetails" />
           </AssociationSet>
-          <EntitySet Name="PaymentDetails" EntityType="RMSEntities.PaymentDetail" />
-          <AssociationSet Name="Fk_sale_pay" Association="RMSEntities.Fk_sale_pay">
-            <End Role="Sale" EntitySet="Sales" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
           <EntitySet Name="Customers" EntityType="RMSEntities.Customer" />
-          <AssociationSet Name="FK_cust_pay" Association="RMSEntities.FK_cust_pay">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_Sales_Cust" Association="RMSEntities.FK_Sales_Cust">
             <End Role="Customer" EntitySet="Customers" />
             <End Role="Sale" EntitySet="Sales" />
@@ -1325,36 +1345,21 @@
             <End Role="Purchase" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
+          <EntitySet Name="ChequePaymentDetails" EntityType="RMSEntities.ChequePaymentDetail" />
+          <EntitySet Name="PaymentDetails" EntityType="RMSEntities.PaymentDetail" />
+          <AssociationSet Name="FK_CHQ_paymentDetails" Association="RMSEntities.FK_CHQ_paymentDetails">
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+            <End Role="ChequePaymentDetail" EntitySet="ChequePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_cust_pay" Association="RMSEntities.FK_cust_pay">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_sale_pay" Association="RMSEntities.Fk_sale_pay">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
           </EntityContainer>
-        <EntityType Name="PaymentDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="BillId" />
-            <PropertyRef Name="CustomerId" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="CustomerId" Type="Int32" Nullable="false" />
-          <Property Name="AmountPaid" Type="Decimal" />
-          <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_pay" FromRole="PaymentDetail" ToRole="Sale" />
-          <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_cust_pay" FromRole="PaymentDetail" ToRole="Customer" />
-        </EntityType>
-        <Association Name="Fk_sale_pay">
-          <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="1" />
-          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sale">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PaymentDetail">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
@@ -1377,21 +1382,9 @@
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.FK_cust_pay" FromRole="Customer" ToRole="PaymentDetail" />
           <NavigationProperty Name="Sales" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.FK_cust_pay" FromRole="Customer" ToRole="PaymentDetail" />
         </EntityType>
-        <Association Name="FK_cust_pay">
-          <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentDetail">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Sales_Cust">
           <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="1" />
           <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="*" />
@@ -1600,6 +1593,73 @@
             </Principal>
             <Dependent Role="PurchasePaymentDetail">
               <PropertyRef Name="PurchaseBillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ChequePaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="PaymentId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentId" Type="Int32" Nullable="false" />
+          <Property Name="ChequeNo" Type="Int32" />
+          <Property Name="ChequeDate" Type="DateTime" />
+          <Property Name="IsChequeRealised" Type="Boolean" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PaymentDetail" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="ChequePaymentDetail" ToRole="PaymentDetail" />
+        </EntityType>
+        <EntityType Name="PaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="AmountPaid" Type="Decimal" />
+          <Property Name="PaymentMode" Type="Int32" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="ChequePaymentDetails" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="PaymentDetail" ToRole="ChequePaymentDetail" />
+          <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_cust_pay" FromRole="PaymentDetail" ToRole="Customer" />
+          <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_pay" FromRole="PaymentDetail" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_CHQ_paymentDetails">
+          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="1" />
+          <End Type="RMSEntities.ChequePaymentDetail" Role="ChequePaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChequePaymentDetail">
+              <PropertyRef Name="PaymentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_cust_pay">
+          <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_sale_pay">
+          <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="BillId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1848,20 +1908,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PaymentDetail">
-              <MappingFragment StoreEntitySet="PaymentDetails">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="RMSEntities.Customer">
               <MappingFragment StoreEntitySet="Customers">
@@ -1952,6 +1998,34 @@
                 <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChequePaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.ChequePaymentDetail">
+              <MappingFragment StoreEntitySet="ChequePaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="IsChequeRealised" ColumnName="IsChequeRealised" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
+                <ScalarProperty Name="PaymentId" ColumnName="PaymentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PaymentDetail">
+              <MappingFragment StoreEntitySet="PaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

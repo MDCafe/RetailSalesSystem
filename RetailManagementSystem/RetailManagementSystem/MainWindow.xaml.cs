@@ -126,6 +126,18 @@ namespace RetailManagementSystem
             }
             #endregion
 
+            #region Accounts
+            if (Keyboard.IsKeyDown(Key.A))
+            {
+                switch (e.Key)
+                {
+                    case Key.P:
+                        Workspace.This.OpenCustomerBillPaymentsCommand.Execute(true);
+                        return;
+                }
+            }
+            #endregion
+
             #region 
             if (Keyboard.IsKeyDown(Key.T))
             {

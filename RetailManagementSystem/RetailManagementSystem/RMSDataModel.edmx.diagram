@@ -34,10 +34,7 @@
         <AssociationConnector Association="RMSEntities.FK_ProductId_RD" ManuallyRouted="false" />
         <AssociationConnector Association="RMSEntities.fk_role" ManuallyRouted="false" />
         <AssociationConnector Association="RMSEntities.Fk_sale_bill" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="RMSEntities.PaymentDetail" Width="1.5" PointX="7.5" PointY="28.625" />
-        <AssociationConnector Association="RMSEntities.Fk_sale_pay" />
         <EntityTypeShape EntityType="RMSEntities.Customer" Width="1.5" PointX="3" PointY="26.625" />
-        <AssociationConnector Association="RMSEntities.FK_cust_pay" />
         <AssociationConnector Association="RMSEntities.FK_Sales_Cust" />
         <EntityTypeShape EntityType="RMSEntities.Stock" Width="1.5" PointX="10.5" PointY="18.5" />
         <AssociationConnector Association="RMSEntities.FK_priceId" />
@@ -53,7 +50,12 @@
         <AssociationConnector Association="RMSEntities.FK_PurchaseBillId" />
         <AssociationConnector Association="RMSEntities.FK_pdt_bill" />
         <AssociationConnector Association="RMSEntities.FK_purchaseId" />
-      </Diagram>
+        <EntityTypeShape EntityType="RMSEntities.ChequePaymentDetail" Width="1.5" PointX="9.75" PointY="28.625" />
+        <EntityTypeShape EntityType="RMSEntities.PaymentDetail" Width="1.5" PointX="7.5" PointY="28.5" />
+        <AssociationConnector Association="RMSEntities.FK_CHQ_paymentDetails" />
+        <AssociationConnector Association="RMSEntities.FK_cust_pay" />
+        <AssociationConnector Association="RMSEntities.Fk_sale_pay" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
