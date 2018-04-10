@@ -125,6 +125,10 @@
                         <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
                                        KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
                     </RibbonGroup>
+                    <RibbonGroup x:Name="AcctReports" Header="Reports">
+                        <RibbonButton Label="Credit Customers" LargeImageSource="Images\Accounts.jpg" ToolTipTitle=" Credit Customer payment detail report" 
+                                       KeyTip="RC" Command="{Binding OpenCustomerBillPaymentsReportCommand}" CommandParameter="false"></RibbonButton>
+                    </RibbonGroup>
                 </RibbonTab>
             </Ribbon>
             <!--<Menu DockPanel.Dock="Top">

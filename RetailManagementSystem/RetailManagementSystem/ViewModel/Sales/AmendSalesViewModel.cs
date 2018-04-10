@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Collections.Generic;
+using RetailManagementSystem.ViewModel.Reports.Sales;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
-using System.Collections.Generic;
-using RetailManagementSystem.ViewModel.Reports.Sales;
+
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -25,9 +26,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             get
             {               
                 if (_showRestrictedCustomers)
-                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
+                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name);
 
-                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
+                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name);
             }
         }
 
@@ -213,7 +214,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if(BillList == null)
                 _rmsEntities.Sales.ToList();
 
-            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id);                       
+            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id).OrderBy(o => o.ModifiedOn );                       
         }
 
 

@@ -17,6 +17,7 @@ using RetailManagementSystem.ViewModel.Stocks;
 using RetailManagementSystem.View.Reports.Sales.Customers;
 using RetailManagementSystem.View.Masters;
 using RetailManagementSystem.ViewModel.Accounts;
+using RetailManagementSystem.View.Reports.Accounts;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -464,7 +465,46 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        
+
+        #region OpenCustomerBillPaymentsReportCommand
+        RelayCommand<object> _openCustomerBillPaymentsReportCommand = null;
+        public ICommand OpenCustomerBillPaymentsReportCommand
+        {
+            get
+            {
+                if (_openCustomerBillPaymentsReportCommand == null)
+                {
+                    _openCustomerBillPaymentsReportCommand = new RelayCommand<object>((p) => OnOpenCustomerBillPaymentsReportCommand(p));
+                }
+                return _openCustomerBillPaymentsReportCommand;
+            }
+        }
+
+        private void OnOpenCustomerBillPaymentsReportCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
+
+                CustomerPaymentDetailsReport custPayReport = new CustomerPaymentDetailsReport(showRestrictedCustomers);
+                custPayReport.ShowDialog();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
 
         #region ActiveDocument
 

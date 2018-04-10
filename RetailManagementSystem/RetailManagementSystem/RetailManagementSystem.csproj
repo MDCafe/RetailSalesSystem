@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>33</ApplicationRevision>
+    <ApplicationRevision>37</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -334,6 +334,7 @@
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseParams.cs" />
     <Compile Include="ViewModel\Purchases\ReturnsViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Accounts\CustomerPaymentDetailsRptViewModel.cs" />
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\CustomerWiseSalesViewModel.cs" />
@@ -373,6 +374,9 @@
     </Compile>
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Accounts\CustomerPaymentDetails.xaml.cs">
+      <DependentUpon>CustomerPaymentDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports\Sales\Customers\CustomerWiseSales.xaml.cs">
       <DependentUpon>CustomerWiseSales.xaml</DependentUpon>
@@ -456,6 +460,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Purchases\PurchaseEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Reports\Accounts\CustomerPaymentDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -580,6 +588,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
     <Content Include="View\Reports\Sales\Customers\CustomerWiseSales.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\Reports\Accounts\CustomerPaymentDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="View\Reports\Purchases\PurchasesSummary.rdl">

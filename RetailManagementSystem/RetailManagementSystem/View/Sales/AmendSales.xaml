@@ -75,7 +75,7 @@
                                       IsReadOnly="True" Margin="5">
             <toolKit:DataGrid.Columns>
                 <toolKit:DataGridTextColumn Header="Bill No" Binding="{Binding RunningBillNo}" Width="120" />
-                <toolKit:DataGridTextColumn Header="Billing Date" Binding="{Binding ModifiedOn}" Width="200" />
+                <toolKit:DataGridTextColumn Header="Billing Date" Binding="{Binding ModifiedOn,StringFormat='dd/MM/yyyy'}" Width="200" />
                 <toolKit:DataGridTextColumn Header="Billing Amount" Binding="{Binding TotalAmount}" />
             </toolKit:DataGrid.Columns>
 

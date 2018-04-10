@@ -356,10 +356,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.CostPrice = productPrice.Price;
                 purchaseDetailExtn.PriceId = productPrice.PriceId;
                 purchaseDetailExtn.AvailableStock = productPrice.Quantity;
-                //purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
+                purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.SerialNo = ++selectedIndex;
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
+                purchaseDetailExtn.ExpiryDate = DateTime.Now.AddMonths(9).AddDays(5);
 
                 //var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
                 //if (stock != null)

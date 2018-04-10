@@ -3,18 +3,21 @@ DROP procedure IF EXISTS `GetCustomerPaymentDetailsReport`;
 
 DELIMITER $$
 USE `rms`$$
-CREATE PROCEDURE `GetCustomerPaymentDetailsReport` (in customerId int)
+CREATE PROCEDURE `GetCustomerPaymentDetailsReport` (in fromDate datetime,in toDate datetime,in customerId int)
 BEGIN
 SELECT 
     s.RunningBillNo,
+    pd.BillId,
     s.AddedOn BillDate,
     s.TotalAmount,
     pd.AmountPaid,
-    (s.TotalAmount - SUM(pd.AmountPaid)) BalanceAmount,
-	cm.Description,
+    (s.TotalAmount - pd.AmountPaid) BalanceAmount,
+    pd.AddedOn PaymentDate,
+	/*case when cm.Id = 7 then 'Ca'
+		when  cm.Id = 9 then 'Ch' end 'Description',*/
     cpd.ChequeNo,
     cpd.ChequeDate,
-    case when cpd.IsChequeRealised != null and cpd.IsChequeRealised = 1 then 'Realised' end 'Chq.Realised'
+    case when ifnull(IsChequeRealised,0) != 0 and cpd.IsChequeRealised = 1 then 'Y' end 'Chq.Realised'
 FROM
     rms.PaymentDetails pd  Join sales s on s.BillId = pd.BillId AND s.customerId = pd.customerid
 						   left Join CodeMaster cm on pd.PaymentMode = cm.Id 
@@ -22,9 +25,10 @@ FROM
 WHERE
         pd.customerId = customerId
         AND IFNULL(s.IsCancelled, 0) = 0
-GROUP BY s.RunningBillNo
+        AND date(s.AddedOn) >= fromDate
+        AND date(s.AddedOn) <= toDate
+/*GROUP BY s.RunningBillNo*/
 ORDER BY s.RunningBillNo;
 END$$
 
 DELIMITER ;
-

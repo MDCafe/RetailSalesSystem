@@ -215,20 +215,19 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     Utility.ShowErrorBox("Balance Amount can't be less than zero");
                     return false;
                 }
-                if (item.PaymentMode == null)
+                if (item.CurrentAmountPaid > 0 && item.PaymentMode == null)
                 {
                     Utility.ShowErrorBox("Choose payment mode as Cash/Cheque");
                     return false;
                 }
-
-                if (item.PaymentMode.Description == "Cheque")
+                if (item.PaymentMode != null && item.PaymentMode.Description == "Cheque")
                 {
                     if (!item.ChequeNo.HasValue)
                     {
                         Utility.ShowErrorBox("Cheque No can't be blank");
                         return false;
                     }
-                    if (item.ChequeDate.HasValue)
+                    if (!item.ChequeDate.HasValue)
                     {
                         Utility.ShowErrorBox("Cheque date can't be blank");
                         return false;

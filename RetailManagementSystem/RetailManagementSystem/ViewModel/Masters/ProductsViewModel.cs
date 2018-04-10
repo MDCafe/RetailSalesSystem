@@ -196,11 +196,9 @@ namespace RetailManagementSystem.ViewModel.Masters
                 {
                     _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
                 }
-
                 return _saveCommand;
             }
         }        
-
 
         public bool CanSave(object parameter)
         {
@@ -209,8 +207,8 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         private void OnSave(object parameter)
         {
-            if (!string.IsNullOrWhiteSpace(SelectedProduct.Name))
-            {
+            if (!Validate()) return;
+            
                 if (_isEditMode)
                 {
                     var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
@@ -242,14 +240,32 @@ namespace RetailManagementSystem.ViewModel.Masters
                     _rmsEntities.PriceDetails.Add(priceDetailNew);
                 }
 
+                _product.Name = _product.Name.Trim();
                 _rmsEntities.SaveChanges();
                 ClearCommand.Execute(null);
                 RaisePropertyChanged("ProductsList");
-            }
-            else
-                Utilities.Utility.ShowErrorBox("Product Name can't be empty");
         }
 
+        private bool Validate()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedProduct.Name))
+            {
+                Utility.ShowErrorBox("Product Name can't be empty");
+                return false;
+            }
+
+            if(!_product.CategoryId.HasValue)
+            {
+                Utility.ShowErrorBox(" Category can't be empty");
+                return false;
+            }
+            if (!_product.UnitOfMeasure.HasValue)
+            {
+                Utility.ShowErrorBox("Unit of measure can't be empty");
+                return false;
+            }
+            return true;
+        }
         #endregion
 
         #region DeleteCommand
