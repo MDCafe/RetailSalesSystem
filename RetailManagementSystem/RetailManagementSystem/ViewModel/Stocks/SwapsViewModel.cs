@@ -90,7 +90,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
             _swapsDetailsList = new ObservableCollection<SaleDetailExtn>();
         }
 
-        private void Clear()
+        internal override void Clear()
         {
             _rmsEntities = new RMSEntities();
             RefreshProductList();

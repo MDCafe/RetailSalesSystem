@@ -24,12 +24,6 @@
                 <AdornedElementPlaceholder/>
             </DockPanel>
         </ControlTemplate>
-
-        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="HorizontalAlignment" Value="Right" />
-            </Style.Setters>
-        </Style>
         
     </UserControl.Resources>
     <xctk:BusyIndicator IsBusy="{Binding DataContext.PanelLoading, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">

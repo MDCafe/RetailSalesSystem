@@ -303,23 +303,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
         #endregion
 
         #region Clear Command
-        RelayCommand<object> _clearCommand = null;
-        
 
-        public ICommand ClearCommand
-        {
-            get
-            {
-                if (_clearCommand == null)
-                {
-                    _clearCommand = new RelayCommand<object>((p) => Clear());
-                }
-
-                return _clearCommand;
-            }
-        }
-
-        private void Clear()
+        internal override void Clear()
         {
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
             RaisePropertyChanged("ReturnPurchaseDetailList");            

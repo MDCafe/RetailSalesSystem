@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>37</ApplicationRevision>
+    <ApplicationRevision>40</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -330,6 +330,7 @@
     <Compile Include="ViewModel\Masters\CompanyViewModel.cs" />
     <Compile Include="ViewModel\Masters\ProductsViewModel.cs" />
     <Compile Include="ViewModel\Masters\CustomerViewModel.cs" />
+    <Compile Include="ViewModel\Misc\PriceListViewModel.cs" />
     <Compile Include="ViewModel\Purchases\AmendPurchasesViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseEntryViewModel.cs" />
     <Compile Include="ViewModel\Purchases\PurchaseParams.cs" />
@@ -365,6 +366,9 @@
     </Compile>
     <Compile Include="View\Masters\Customer.xaml.cs">
       <DependentUpon>Customer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Misc\PriceList.xaml.cs">
+      <DependentUpon>PriceList.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Pane\LayoutInitializer.cs" />
     <Compile Include="View\Pane\PanesStyleSelector.cs" />
@@ -454,6 +458,10 @@
     <Page Include="View\Masters\Customer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Misc\PriceList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Purchases\AmendPurchases.xaml">
       <Generator>MSBuild:Compile</Generator>

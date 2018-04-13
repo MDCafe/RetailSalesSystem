@@ -15,12 +15,6 @@
              FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"          
              >
     <UserControl.Resources>
-        <Style x:Key="DataGridCellRightAlign" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="HorizontalAlignment" Value="Right" />
-            </Style.Setters>
-        </Style>
-
         <conv:ComboBoxConverter x:Key="cmbConverter"/>
         <conv:ProductValueConverter x:Key="ProductValueConverter"/>
         <conv:PriceValueConverter x:Key="PriceValueConverter"/>
