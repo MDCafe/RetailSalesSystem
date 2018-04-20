@@ -258,7 +258,7 @@ namespace BHCustCtrl
 
             foreach (var item in ItemsSource)
             {
-                if(item.GetType().GetProperty(searchPropertName).GetValue(item, null).ToString().StartsWith(searchStr, StringComparison.InvariantCultureIgnoreCase))
+                if(item.GetType().GetProperty(searchPropertName).GetValue(item, null).ToString().ToUpper().Contains(searchStr.ToUpper()))
                 {
                     filteredList.Add(item);
                 }

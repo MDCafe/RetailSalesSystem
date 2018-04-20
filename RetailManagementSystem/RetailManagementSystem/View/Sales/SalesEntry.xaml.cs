@@ -140,7 +140,6 @@ namespace RetailManagementSystem.View.Sales
                         TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, custComboBoxCol.comboBox, e.Key.ToString()));
                     }
                 }
-
             };
         }        
 

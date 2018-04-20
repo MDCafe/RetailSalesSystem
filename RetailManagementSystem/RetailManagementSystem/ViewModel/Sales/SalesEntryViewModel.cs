@@ -15,7 +15,6 @@ using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
 
-
 namespace RetailManagementSystem.ViewModel.Sales
 {
     class SalesEntryViewModel : SalesViewModelbase
@@ -30,7 +29,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         string _guid;
         SalesParams _salesParams;
         List<Customer> _customerList;
-        //AutoResetEvent _autoResetEvent;
+        AutoResetEvent _autoResetEvent;
 
         ObservableCollection<SaleDetailExtn> _salesDetailsList;        
         List<SaleDetailExtn> _deletedItems;
@@ -54,6 +53,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _billSales = _rmsEntities.Sales.Create();
             _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
             _salesDetailsList.CollectionChanged += OnSalesDetailsListCollectionChanged;
+            _autoResetEvent = new AutoResetEvent(false);
 
             //SelectedCustomer = DefaultCustomer;
 
@@ -306,6 +306,16 @@ namespace RetailManagementSystem.ViewModel.Sales
       
         override protected void  OnClose()
         {
+            if(_salesDetailsList.Count() > 0)
+            {
+                var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?",System.Windows.MessageBoxButton.YesNo);
+                if (options == System.Windows.MessageBoxResult.Yes)
+                {
+                    OnSave(null);
+                    _autoResetEvent.WaitOne();
+                }
+            }
+            
             //Clear all the data if cancel is pressed
             if (_salesParams.GetTemproaryData)
             {
@@ -333,11 +343,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             //    _autoTimer.Stop();
             //    _autoTimer.Close();
             //    _autoTimer.Dispose();
-            //    if (_autoResetEvent != null)
-            //    {
-            //        _autoResetEvent.Close();
-            //        _autoResetEvent.Dispose();
-            //    }
+            if (_autoResetEvent != null)
+            {
+                _autoResetEvent.Close();
+                _autoResetEvent.Dispose();
+            }
             //}
         }
         #endregion
@@ -444,7 +454,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
                 //Validate for Errors
-                //if (!_isEditMode && !Validate()) return;
+                if (!_isEditMode && !Validate()) return;
 
                 //RemoveProductWithNullValues();
                 //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
@@ -581,6 +591,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             (t) =>
             {
                 PanelLoading = false;
+                _autoResetEvent.Set();
             });
         }
 
@@ -589,6 +600,15 @@ namespace RetailManagementSystem.ViewModel.Sales
             foreach (var saleDetailItem in _salesDetailsList)
             {
                 if (saleDetailItem.ProductId == 0) continue;
+
+                if(!saleDetailItem.Qty.HasValue || !saleDetailItem.Amount.HasValue )
+                {
+                    Utility.ShowErrorBox("Product Quantity or Amount can't be null");
+                    return false;
+                }
+
+                return true;
+
                 var saleQty = saleDetailItem.Qty;
                 if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
                     && (saleQty > 0))
@@ -858,7 +878,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                 var SaleDetailExtn = e.OldItems[0] as SaleDetailExtn;
                 if(_isEditMode)
                     _deletedItems.Add(SaleDetailExtn);
-                TotalAmount -= SaleDetailExtn.Amount;
+                _totalAmount -= SaleDetailExtn.Amount;
+                RaisePropertyChanged("TotalAmount");
+
                 var i = 0;
                 foreach (var item in _salesDetailsList)
                 {
@@ -1005,8 +1027,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             //var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             try
             {
+                _log.Info("SetProductDetails:SelIndex:" + selectedIndex);
                 if (selectedIndex == -1 || selectedIndex > SaleDetailList.Count - 1) return;
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
+                selRowSaleDetailExtn.Clear();
+                //selRowSaleDetailExtn
+
                 //if (saleItem !=null)
                 //{
                 //    Utility.ShowWarningBox("Item is already added");
@@ -1038,6 +1064,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return new Uri("pack://application:,,,/Edi;component/Images/document.png", UriKind.RelativeOrAbsolute);
             }
         }
+
         #endregion
 
         #region Private Methods

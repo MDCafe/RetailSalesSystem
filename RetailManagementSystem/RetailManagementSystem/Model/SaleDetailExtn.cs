@@ -1,8 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace RetailManagementSystem.Model
-{    
+{
     public class SaleDetailExtn : BaseModel
     {       
         private int _billId;
@@ -273,8 +272,6 @@ namespace RetailManagementSystem.Model
             }
         }
 
-      
-
         public decimal CostPrice { get; set; }
         public decimal? Amount { get; set; }
         public decimal DiscountPercentage { get; set; }
@@ -304,6 +301,21 @@ namespace RetailManagementSystem.Model
                 _propertyReadOnly = value;
                 OnPropertyChanged("PropertyReadOnly");
             }
+        }
+
+        public void Clear()
+        {
+            //this.ProductId = -1;
+            //this.PriceId = -1;
+            this.Amount = null;
+            this.AvailableStock = 0;
+            this.CostPrice = 0;
+            this.SellingPrice = null;
+            this.Discount = null;
+            this.DiscountAmount = 0;
+            this.DiscountPercentage = 0;
+            this.LastSoldPrice = null;
+            this.Qty = null;
         }
     }
 

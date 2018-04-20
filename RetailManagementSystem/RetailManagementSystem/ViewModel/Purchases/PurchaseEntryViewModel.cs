@@ -10,6 +10,7 @@ using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Reports.Purhcases;
 using log4net;
 using System.Globalization;
+using System.Threading;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
@@ -28,6 +29,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private decimal? _localCoolieCharges;
         private int? _editBillNo;
         PurchaseParams _purchaseParams;
+        private AutoResetEvent _autoResetEvent;
 
         static readonly ILog _log = LogManager.GetLogger(typeof(PurchaseEntryViewModel));
 
@@ -39,6 +41,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 Title = "Purchase Entry";
 
             _rmsEntities = new RMSEntities();
+            _autoResetEvent = new AutoResetEvent(false);
 
             var count = _rmsEntities.Companies.ToList();
             _purchaseDetailsList = new ObservableCollection<PurchaseDetailExtn>();
@@ -356,11 +359,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.CostPrice = productPrice.Price;
                 purchaseDetailExtn.PriceId = productPrice.PriceId;
                 purchaseDetailExtn.AvailableStock = productPrice.Quantity;
-                purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
+                //purchaseDetailExtn.SellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.SerialNo = ++selectedIndex;
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
-                purchaseDetailExtn.ExpiryDate = DateTime.Now.AddMonths(9).AddDays(5);
+                //purchaseDetailExtn.ExpiryDate = DateTime.Now.AddMonths(9).AddDays(5);
 
                 //var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
                 //if (stock != null)
@@ -459,6 +462,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 return;
             }
 
+            if (!Validate())
+            {
+                return;
+            }
+
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
@@ -486,23 +494,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                     foreach (var item in _purchaseDetailsList)
                     {
-                        if ((item.Qty == null || item.Qty <= 0) && (!item.FreeIssue.HasValue))
-                        {
-                            Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
-                            return;
-                        }
-
-                        if (item.SellingPrice == null || item.SellingPrice <= 0)
-                        {
-                            Utility.ShowErrorBox("Selling price can't be empty or zero");
-                            return;
-                        }
-                        if (item.ExpiryDate == null || item.ExpiryDate <= DateTime.Now)
-                        {
-                            Utility.ShowErrorBox("Expiry Date can't be empty or less than today's date");
-                            return;
-                        }
-
                         var purchaseDetail = new PurchaseDetail();
                         purchaseDetail.ProductId = item.ProductId;
                         purchaseDetail.Discount = item.Discount;
@@ -586,7 +577,52 @@ namespace RetailManagementSystem.ViewModel.Purchases
             (t) =>
             {
                 PanelLoading = false;
+                _autoResetEvent.Set();
             });
+        }
+
+        private bool Validate()
+        {
+            foreach (var item in _purchaseDetailsList)
+            {
+
+                if ((item.Qty == null || item.Qty <= 0) && (!item.FreeIssue.HasValue))
+                {
+                    Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
+                    return false;
+                }
+
+                if (item.SellingPrice == null || item.SellingPrice <= 0)
+                {
+                    Utility.ShowErrorBox("Selling price can't be empty or zero");
+                    return false;
+                }
+                if (item.ExpiryDate == null || item.ExpiryDate <= DateTime.Now)
+                {
+                    Utility.ShowErrorBox("Expiry Date can't be empty or less than today's date");
+                    return false;
+                }
+
+                if (item.CostPrice < 0)
+                {
+                    Utility.ShowErrorBox("Cost Price can't be less than zero");
+                    return false;
+                }
+
+                if (item.CostPrice > item.SellingPrice)
+                {
+                    Utility.ShowErrorBox("Cost Price can't be greater than Selling Price");
+                    return false;
+                }
+            }
+
+            if(_selectedCompany == null)
+            {
+                Utility.ShowMessageBox("Select a supplier");
+                return false;
+            }
+
+            return true;
         }
 
         private void SetStockDetails(RMSEntities rmsEntities, PurchaseDetailExtn item, PurchaseDetail purchaseDetail, int priceId, PriceDetail priceDetailItem, decimal? qty,
@@ -1130,6 +1166,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         #region CancelPurchaseCommand
         RelayCommand<object> _cancelPurchaseCommand = null;
+        
         public ICommand CancelPurchaseCommand
         {
             get
@@ -1175,5 +1212,20 @@ namespace RetailManagementSystem.ViewModel.Purchases
         }
         #endregion
 
+
+        override protected void OnClose()
+        {
+            if (_purchaseDetailsList.Count() > 0)
+            {
+                var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?", System.Windows.MessageBoxButton.YesNo);
+                if (options == System.Windows.MessageBoxResult.Yes)
+                {
+                    if (!Validate()) return;
+                    OnSave("PrintSave");
+                    _autoResetEvent.WaitOne();
+                }
+            }
+            base.OnClose();
+        }
     }
 }

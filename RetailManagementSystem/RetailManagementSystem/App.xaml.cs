@@ -26,6 +26,7 @@ namespace RetailManagementSystem
 
             MessageBox.Show(e.Exception.ToString());
             _log.Debug("Application Error", e.Exception);
+            e.Handled = true;
         }
     }
 }

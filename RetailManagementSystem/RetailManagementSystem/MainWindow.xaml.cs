@@ -22,11 +22,12 @@ namespace RetailManagementSystem
         {
             InitializeComponent();
             this.DataContext = Workspace.This;
+            this.Closing += MainWindow_Closing;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 
             try
             {
-                this.Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
+                Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
                "Retail Management System";
             }
             catch (System.Data.DataException entityEx)
@@ -37,9 +38,13 @@ namespace RetailManagementSystem
             }
        }
 
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+        }
+
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
-
             if (((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift)))
             {
                 #region Sales

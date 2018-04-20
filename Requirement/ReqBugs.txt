@@ -5,7 +5,7 @@
 5. Stock report needs attention
 6. Add Cheque customer 
 7. bill no 52 has got incorrect calculation for Rs 1
-8. Sales bill report - check the items in alphabatical order
+8. Sales bill report - check the items in alphabetical order
 9. print sales bill .25 should be .250
 10. customer selection after printing 
 11. Bill date doesn't change
