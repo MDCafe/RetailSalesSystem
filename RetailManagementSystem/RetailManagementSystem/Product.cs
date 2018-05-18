@@ -38,6 +38,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
         public Nullable<bool> SupportsMultiPrice { get; set; }
+        public string BarcodeNo { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual Company Company { get; set; }

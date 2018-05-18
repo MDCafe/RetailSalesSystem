@@ -12,7 +12,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Windows.Input;
 using System.Collections.Generic;
-using System;
+using log4net;
 
 namespace BHCustCtrl
 {
@@ -56,6 +56,8 @@ namespace BHCustCtrl
         public static readonly DependencyProperty CustComboBoxSelectedPathProperty = DependencyProperty.Register("CustComboBoxSelectedPathProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
         public static readonly DependencyProperty CustComboBoxSelectedValueProperty = DependencyProperty.Register("CustComboBoxSelectedValueProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
 
+        static readonly ILog _log = LogManager.GetLogger(typeof(CustComboBox));
+
         public string CustComboBoxSelectedPath
         {
             get { return (string)GetValue(CustComboBoxSelectedPathProperty); }
@@ -92,7 +94,7 @@ namespace BHCustCtrl
 
         private void _cboTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Back && string.IsNullOrEmpty(_cboTextBox.Text))
+            if (e.Key == Key.Back && string.IsNullOrEmpty(_cboTextBox.Text.Trim()))
             {
                 comboBox.ItemsSource = ItemsSource;
             }
@@ -175,15 +177,15 @@ namespace BHCustCtrl
 
         protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
         {
-            if (editingEventArgs == null) return null;
-            Microsoft.Windows.Controls.DataGridCell cell = editingEventArgs.Source as Microsoft.Windows.Controls.DataGridCell;
-            if (cell != null)
-            {
+            //if (editingEventArgs == null) return null;
+            //Microsoft.Windows.Controls.DataGridCell cell = editingEventArgs.Source as Microsoft.Windows.Controls.DataGridCell;
+            //if (cell != null)
+            //{
                 // Changed to support EF POCOs
                 PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
                 object obj = info.GetValue(editingElement.DataContext, null);
                 comboBox.SelectedValue = obj;
-            }
+            //}
             return comboBox.SelectedItem;
 
         }
@@ -207,6 +209,10 @@ namespace BHCustCtrl
             PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
             info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
             //var grid =FindMyParentHelper<DataGrid>.FindAncestor(editingElement);
+
+
+            _log.Info("comboBox.SelectedValue:" + comboBox.SelectedValue); 
+            _log.Info(comboBox.SelectedItem);
 
             //grid.CommitEdit();
             ComboBoxSelectedEvent?.Invoke(comboBox.SelectedItem);
@@ -265,6 +271,7 @@ namespace BHCustCtrl
             }
 
             comboBox.ItemsSource = filteredList;// result.Where(s => s.GetType().GetProperty(searchPropertName).GetValue(s, null).ToString().StartsWith(searchStr, StringComparison.InvariantCultureIgnoreCase)).ToList();            
+            //comboBox.Text = searchStr;
         }
 
         private void ComboBoxPreviewTextInput(object sender, TextCompositionEventArgs e)

@@ -40,7 +40,12 @@ namespace RetailManagementSystem
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
+            foreach (var docView in Workspace.This.DocumentViews.ToList())
+            {
+                docView.CloseCommand.Execute(null);
+            }
+            
+            //e.Cancel = true;
         }
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)

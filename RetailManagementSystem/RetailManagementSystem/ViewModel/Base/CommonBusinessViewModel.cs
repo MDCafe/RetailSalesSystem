@@ -174,9 +174,9 @@ namespace RetailManagementSystem.ViewModel.Base
 
         protected decimal? GetDiscountValue()
         {
-            if (_totalDiscountAmount.HasValue)
+            if (_totalDiscountAmount.HasValue && _totalDiscountAmount.Value > 0)
                 return _totalDiscountAmount;
-            if (_totalDiscountPercent.HasValue)
+            if (_totalDiscountPercent.HasValue && _totalDiscountPercent.Value > 0)
                 return _totalAmount * (_totalDiscountPercent / 100);
             return null;
         }
@@ -190,12 +190,13 @@ namespace RetailManagementSystem.ViewModel.Base
         }
 
         #region CloseCommand                
-        override protected void OnClose()
+        override protected bool OnClose()
         {
             var returnValue = Workspace.This.Close(this);
-            if (!returnValue) return;
+            if (!returnValue) return returnValue;
 
             RMSEntitiesHelper.Instance.RemovePurchaseNotifier(this);
+            return true;
         }
 
         #endregion

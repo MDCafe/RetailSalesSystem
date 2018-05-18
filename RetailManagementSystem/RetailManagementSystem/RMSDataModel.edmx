@@ -144,6 +144,7 @@
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
           <Property Name="ReorderPoint" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="SupportsMultiPrice" Type="bit" />
+          <Property Name="BarcodeNo" Type="char" MaxLength="13" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -922,6 +923,7 @@
           <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
           <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
           <Property Name="SupportsMultiPrice" Type="Boolean" />
+          <Property Name="BarcodeNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetail">
           <Key>
@@ -1754,6 +1756,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="RMSEntities.Product">
               <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="BarcodeNo" ColumnName="BarcodeNo" />
                 <ScalarProperty Name="SupportsMultiPrice" ColumnName="SupportsMultiPrice" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Code" ColumnName="Code" />

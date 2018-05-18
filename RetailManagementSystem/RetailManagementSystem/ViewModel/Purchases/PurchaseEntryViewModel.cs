@@ -629,6 +629,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                     bool supportsMultiplePrice)
         {
             IEnumerable<Stock> stock = null;
+            
 
             if(supportsMultiplePrice)
                 stock = rmsEntities.Stocks.Where(s => s.ProductId == item.ProductId
@@ -662,7 +663,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 {
                     OpeningBalance = item.Qty,
                     Inward = item.Qty,
-                    ClosingBalance = item.Qty
+                    ClosingBalance = item.Qty,
+                    AddedOn = _transcationDate
                 };
                 firstStockTrans.Stock = newStock;
 
@@ -914,7 +916,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     OpeningBalance = stockNewItem.Quantity -  purchaseDetail.PurchasedQty, //Opening balance will be the one from stock table 
                     Inward = purchaseDetail.PurchasedQty,
                     ClosingBalance = stockNewItem.Quantity,
-                    StockId = stockNewItem.Id
+                    StockId = stockNewItem.Id,
+                    AddedOn = _transcationDate
                 };
 
                 rmsEntities.StockTransactions.Add(firstStockTrans);
@@ -935,7 +938,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         OpeningBalance = stockTrans.ClosingBalance,
                         Inward = purchaseDetail.PurchasedQty,
                         ClosingBalance = purchaseDetail.PurchasedQty + stockTrans.ClosingBalance,
-                        StockId = stockNewItem.Id
+                        StockId = stockNewItem.Id,
+                        AddedOn = _transcationDate
                     };
                     rmsEntities.StockTransactions.Add(newStockTrans);
                 }
@@ -1201,31 +1205,35 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                                                                && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
 
                 var purchaseQty = item.PurchasedQty.Value;
-                stockTrans.Inward -= purchaseQty;
-                stockTrans.ClosingBalance -= purchaseQty;
+                if (stockTrans != null)
+                {
+                    stockTrans.Inward -= purchaseQty;
+                    stockTrans.ClosingBalance -= purchaseQty;
+                }
                 stockItem.Quantity -= purchaseQty;
             }
 
             cancelBill.IsCancelled = true;
             _rmsEntities.SaveChanges();
-            OnClose();
+            base.OnClose();
         }
         #endregion
 
 
-        override protected void OnClose()
+        override protected bool OnClose()
         {
             if (_purchaseDetailsList.Count() > 0)
             {
                 var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?", System.Windows.MessageBoxButton.YesNo);
                 if (options == System.Windows.MessageBoxResult.Yes)
                 {
-                    if (!Validate()) return;
+                    if (!Validate()) return false;
                     OnSave("PrintSave");
                     _autoResetEvent.WaitOne();
                 }
             }
             base.OnClose();
+            return true;
         }
     }
 }

@@ -112,7 +112,7 @@
             string productsSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                   " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                   " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                  " p.SupportsMultiPrice AS 'SupportsMultiplePrice'" + 
+                                  " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" + 
                                   " from Products p, PriceDetails pd, Stocks st " +
                                   "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                   " and st.Quantity != 0 " +
@@ -120,7 +120,7 @@
                                     "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
                                     "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                     " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                    " p.SupportsMultiPrice AS 'SupportsMultiplePrice'" +
+                                    " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
                                     " from Products p, PriceDetails pd, Stocks st " +
                                     " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                     " and st.Quantity = 0 " +

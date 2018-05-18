@@ -15,6 +15,6 @@ namespace RetailManagementSystem.Model
         public CodeMaster PaymentMode { get; set; }
         public int? ChequeNo { get; set; }
         public DateTime? ChequeDate { get; set; }
-        public bool IsChequeRealised { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

@@ -126,6 +126,7 @@ namespace RetailManagementSystem.View.Sales
                         }
                     }
                     //grid.BeginEdit();
+                    //custComboBoxCol_ComboBoxSelectedEvent(null);
                     e.Handled = true;
                     //}
                 }
@@ -135,9 +136,11 @@ namespace RetailManagementSystem.View.Sales
                     {
                         var grid = s as Microsoft.Windows.Controls.DataGrid;
                         grid.BeginEdit();
-                        custComboBoxCol.comboBox.IsDropDownOpen = true;
+                        //custComboBoxCol.comboBox.IsDropDownOpen = true;
                         //custComboBoxCol.comboBox.Text = e.Key.ToString();
                         TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, custComboBoxCol.comboBox, e.Key.ToString()));
+                        custComboBoxCol.comboBox.Text = e.Key.ToString();
+                        //custComboBoxCol.comboBox.ClearSelection();
                     }
                 }
             };
@@ -145,17 +148,20 @@ namespace RetailManagementSystem.View.Sales
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
+            var barcodeNo = custComboBoxCol._cboTextBox.Text;          
             var productPrice = selectedItem as ProductPrice;
          
-            _salesViewModel.SetProductDetails(productPrice,SalesDataGrid.SelectedIndex);
-            custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
+            _salesViewModel.SetProductDetails(barcodeNo, productPrice,SalesDataGrid.SelectedIndex);
+            //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
 
             custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
-            custComboBoxCol.comboBox.SelectedIndex = -1;
-            custComboBoxCol.ClearSelection();
-            custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
+            //custComboBoxCol.comboBox.SelectedIndex = -1;
+            //custComboBoxCol.ClearSelection();
+            //custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
             //var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
             //SalesDataGrid.SelectedIndex
+
+            //custComboBoxCol._cboTextBox.Text = "";
         }
 
         void Cell_PreviewKeyDown(object sender, KeyEventArgs e)

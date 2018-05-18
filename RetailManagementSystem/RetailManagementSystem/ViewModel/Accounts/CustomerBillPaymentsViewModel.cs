@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System;
+
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Model;
 using log4net;
-using System;
 
 namespace RetailManagementSystem.ViewModel.Accounts
 {
@@ -32,6 +33,11 @@ namespace RetailManagementSystem.ViewModel.Accounts
         }
 
         public decimal? AllocationAmount { get; set; }
+
+        public decimal? ChequeAllocationAmount { get; set; }
+        public int ChequeNo { get; set; }
+        public DateTime ChequeDate { get; set; }
+
 
         public IEnumerable<Customer> CustomersList
         {

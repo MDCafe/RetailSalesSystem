@@ -33,7 +33,7 @@ namespace RetailManagementSystem.ViewModel.Base
             }
         }
 
-        //abstract public bool IsDirty { get; set; }
+        public bool IsDirty { get; set; }
 
         public bool PanelLoading
         {
@@ -50,8 +50,7 @@ namespace RetailManagementSystem.ViewModel.Base
 
         #region CloseCommand
         RelayCommand<object> _closeCommand = null;
-        public
-            ICommand CloseCommand
+        public ICommand CloseCommand
         {
             get
             {
@@ -69,9 +68,9 @@ namespace RetailManagementSystem.ViewModel.Base
             return true;
         }
 
-        protected virtual void OnClose()
+        protected virtual bool OnClose()
         {
-            Workspace.This.Close(this);
+            return Workspace.This.Close(this);
         }
 
         #endregion

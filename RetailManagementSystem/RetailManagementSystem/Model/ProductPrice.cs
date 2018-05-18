@@ -10,5 +10,6 @@
         public int PriceId { get; set; }
         public string ExpiryDate { get; set; }
         public bool SupportsMultiplePrice { get; set; }
+        public string BarCodeNo { get; set; }
     }
 }
