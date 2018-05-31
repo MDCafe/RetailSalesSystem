@@ -19,7 +19,6 @@
         <EntityTypeShape EntityType="RMSEntities.SaleDetail" Width="1.5" PointX="7.5" PointY="18.25" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSEntities.Sale" Width="1.5" PointX="5.25" PointY="27.125" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSEntities.SaleTemp" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="RMSEntities.StockTransaction" Width="1.5" PointX="12.75" PointY="18.625" IsExpanded="true" />
         <EntityTypeShape EntityType="RMSEntities.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="RMSEntities.FK_Category" ManuallyRouted="false" />
         <AssociationConnector Association="RMSEntities.FK_returnCode" ManuallyRouted="false" />
@@ -39,7 +38,6 @@
         <EntityTypeShape EntityType="RMSEntities.Stock" Width="1.5" PointX="10.5" PointY="18.5" />
         <AssociationConnector Association="RMSEntities.FK_priceId" />
         <AssociationConnector Association="RMSEntities.FK_PrdId" />
-        <AssociationConnector Association="RMSEntities.fk_stockId" />
         <EntityTypeShape EntityType="RMSEntities.PurchaseDetail" Width="1.5" PointX="7.5" PointY="23.125" />
         <EntityTypeShape EntityType="RMSEntities.PurchaseFreeDetail" Width="1.5" PointX="10.25" PointY="22.5" />
         <EntityTypeShape EntityType="RMSEntities.Purchase" Width="1.5" PointX="3" PointY="20.5" />
@@ -55,6 +53,9 @@
         <AssociationConnector Association="RMSEntities.FK_CHQ_paymentDetails" />
         <AssociationConnector Association="RMSEntities.FK_cust_pay" />
         <AssociationConnector Association="RMSEntities.Fk_sale_pay" />
+        <EntityTypeShape EntityType="RMSEntities.StockTransaction" Width="1.5" PointX="12.75" PointY="18.625" />
+        <AssociationConnector Association="RMSEntities.fk_stockId" />
+        <EntityTypeShape EntityType="RMSEntities.DirectPaymentDetail" Width="1.5" PointX="5.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

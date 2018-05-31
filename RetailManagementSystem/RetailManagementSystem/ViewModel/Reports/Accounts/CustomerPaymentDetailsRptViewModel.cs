@@ -78,7 +78,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
             _showRestrictedCustomers = showRestrictedCustomers;
-            _rptDataSource = new ReportDataSource[3];
+            _rptDataSource = new ReportDataSource[4];
 
             ReportPath = @"View\Reports\Accounts\CustomerPaymentDetails.rdl";
         }
@@ -100,70 +100,75 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
 
         private void OnPrint(Window window)
         {
-            _rptDataSource[0] = new ReportDataSource();
-            _rptDataSource[0].Name = "DataSet1";
-            _rptDataSource[2] = new ReportDataSource();
-            _rptDataSource[2].Name = "DataSet3";
+            _rptDataSource[0] = new ReportDataSource
+            {
+                Name = "DataSet1"
+            };
+            _rptDataSource[2] = new ReportDataSource
+            {
+                Name = "DataSet3"
+            };
+            _rptDataSource[3] = new ReportDataSource
+            {
+                Name = "DataSet4"
+            };
 
             var query = "GetCustomerPaymentDetailsReport";
 
-            using (var conn = MySQLDataAccess.GetConnection())
+            var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
+            fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
+            var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
+            toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
+            var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
             {
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.CommandText = query;
-                    cmd.Connection = conn;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
-                    fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
-                    cmd.Parameters.Add(fromSqlParam);
+                Value = _customerId
+            };
+            _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[] { fromSqlParam,toSqlParam,categoryIdSqlParam }, CommandType.StoredProcedure);                    
 
-                    var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
-                    toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
-                    cmd.Parameters.Add(toSqlParam);
+            var queryCustomer = "Select Name,OldBalanceDue from customers where Id=@customerId";
+            var customerIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
+            {
+                Value = _customerId
+            };
+            _rptDataSource[2].Value = GetDataTable(queryCustomer, new MySqlParameter[1] { customerIdSqlParam }, CommandType.Text);
 
-                    var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32);
-                    categoryIdSqlParam.Value = _customerId;
-                    cmd.Parameters.Add(categoryIdSqlParam);
 
-                    DataTable dt = new DataTable();
-                    MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
+            var queryDirectPayment = "Select * from DirectPaymentDetails where CustomerId=@customerId";
+            var customerIdDirectPaySqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
+            {
+                Value = _customerId
+            };
+            _rptDataSource[3].Value = GetDataTable(queryDirectPayment, new MySqlParameter[1] { customerIdDirectPaySqlParam }, CommandType.Text);
 
-                    adpt.Fill(dt);
+            Workspace.This.OpenReport(this);
+            CloseWindow(window);
+        }
 
-                    _rptDataSource[0].Value = dt;
-                }
-            }
-
-            var queryCustomer = "Select Name from customers where Id=@customerId";
-
+        private DataTable GetDataTable(string queryCustomer, MySqlParameter[] sqlParameter, CommandType commandType)
+        {
             using (var conn = MySQLDataAccess.GetConnection())
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     cmd.CommandText = queryCustomer;
                     cmd.Connection = conn;
-                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = commandType;
+                    cmd.Parameters.AddRange(sqlParameter);
 
-                    var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32);
-                    categoryIdSqlParam.Value = _customerId;
-                    cmd.Parameters.Add(categoryIdSqlParam);
 
                     DataTable dt = new DataTable();
                     MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
 
                     adpt.Fill(dt);
 
-                    _rptDataSource[2].Value = dt;
+                    return dt;
                 }
             }
-            Workspace.This.OpenReport(this);
-            CloseWindow(window);
         }
         #endregion
 
         #region Clear Command
-        
+
         internal override void Clear()
         {
             ToSalesDate = DateTime.Now;

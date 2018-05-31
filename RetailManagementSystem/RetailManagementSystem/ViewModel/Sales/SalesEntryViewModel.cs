@@ -14,7 +14,6 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
-using System.Data.Entity.Core.Objects;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -584,7 +583,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
 
                         if (parameter == null)
-                            _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                            _salesBillPrint.Print(SelectedCustomer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                         if (_salesParams.GetTemproaryData)
                             CloseCommand.Execute(null);
@@ -594,7 +593,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 catch (Exception ex)
                 {
                     Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
-                    _log.Error(ex.Message, ex);
+                    _log.Error("Error while saving..!!", ex);
                 }
             }).ContinueWith(
             (t) =>

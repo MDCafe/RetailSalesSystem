@@ -983,8 +983,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             purchaseDetail.BillId = _editBillNo.Value;
             purchaseDetail.Tax = purchaseDetailExtn.Tax;
         }
-
-
+ 
         #endregion
 
         #region Clear Command
@@ -1192,29 +1191,52 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         private void OnBillCancel()
         {
-            var cancelBill = _rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno && s.CompanyId == _purchaseParams.CompanyId);
-
-            var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
-            if (msgResult != System.Windows.MessageBoxResult.Yes) return;
-
-            var cancelBillItems = _rmsEntities.PurchaseDetails.Where(s => s.BillId == cancelBill.BillId);
-            foreach (var item in cancelBillItems.ToList())
+            using (var rmsEntities = new RMSEntities())
             {
-                var stockItem = _rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
-                var stockTrans = _rmsEntities.StockTransactions.AsEnumerable().FirstOrDefault(str => str.StockId == stockItem.Id
-                                                                               && str.AddedOn.Value.Date == cancelBill.AddedOn.Value.Date);
+                var cancelBill = rmsEntities.Purchases.FirstOrDefault(s => s.RunningBillNo == _purchaseParams.Billno && s.CompanyId == _purchaseParams.CompanyId);
 
-                var purchaseQty = item.PurchasedQty.Value;
-                if (stockTrans != null)
+                var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to cancel the Purchase?");
+                if (msgResult != System.Windows.MessageBoxResult.Yes) return;
+
+                var cancelBillItems = rmsEntities.PurchaseDetails.Where(s => s.BillId == cancelBill.BillId);
+                foreach (var item in cancelBillItems.ToList())
                 {
-                    stockTrans.Inward -= purchaseQty;
-                    stockTrans.ClosingBalance -= purchaseQty;
-                }
-                stockItem.Quantity -= purchaseQty;
-            }
+                    var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
+                    var stockTrans = rmsEntities.StockTransactions.Where(str => str.StockId == stockItem.Id).OrderByDescending(d => d.AddedOn).FirstOrDefault();
 
-            cancelBill.IsCancelled = true;
-            _rmsEntities.SaveChanges();
+                    var purchaseQty = item.PurchasedQty.Value;
+                    var  purchaseFreeDetail = rmsEntities.PurchaseFreeDetails.FirstOrDefault(pf => pf.BillId == item.BillId && pf.ProductId == item.ProductId);
+                    if (purchaseFreeDetail != null && purchaseFreeDetail.FreeQty.HasValue)
+                    {
+                        rmsEntities.PurchaseFreeDetails.Remove(purchaseFreeDetail);
+                    }
+
+                    //var stockTransaction = new StockTransaction();
+                    ////No entry in stock transaction table use stock item details
+                    //if (stockTrans == null)
+                    //{
+                    //    stockTransaction.SalesPurchaseCancelQty = purchaseQty * -1;
+                    //    stockTransaction.ClosingBalance = stockItem.ClosingBalance - purchaseQty;
+                    //    stockTransaction.StockId = stockTrans.StockId;
+                    //    stockTransaction.OpeningBalance = stockTrans.ClosingBalance;
+                    //}
+                    //else
+                    //{
+                    //Due to cancel of purchase make a new entry in StockTransaction table
+                    var stockTransaction = new StockTransaction()
+                        {
+                            SalesPurchaseCancelQty = purchaseQty * -1,
+                            ClosingBalance = stockTrans.ClosingBalance - purchaseQty,
+                            StockId = stockTrans.StockId,
+                            OpeningBalance = stockTrans.ClosingBalance
+                        };
+                    //}
+                    rmsEntities.StockTransactions.Add(stockTransaction);
+                    stockItem.Quantity -= purchaseQty;
+                }
+                cancelBill.IsCancelled = true;
+                rmsEntities.SaveChanges();
+            }
             base.OnClose();
         }
         #endregion
@@ -1222,6 +1244,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         override protected bool OnClose()
         {
+            if (_isEditMode)
+            {
+                base.OnClose();
+                return true;
+            }
             if (_purchaseDetailsList.Count() > 0)
             {
                 var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?", System.Windows.MessageBoxButton.YesNo);

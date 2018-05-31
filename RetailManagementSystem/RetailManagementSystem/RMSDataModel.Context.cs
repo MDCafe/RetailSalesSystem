@@ -39,7 +39,6 @@ namespace RetailManagementSystem
         public virtual DbSet<SaleDetail> SaleDetails { get; set; }
         public virtual DbSet<Sale> Sales { get; set; }
         public virtual DbSet<SaleTemp> SaleTemps { get; set; }
-        public virtual DbSet<StockTransaction> StockTransactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Stock> Stocks { get; set; }
@@ -48,5 +47,7 @@ namespace RetailManagementSystem
         public virtual DbSet<Purchase> Purchases { get; set; }
         public virtual DbSet<ChequePaymentDetail> ChequePaymentDetails { get; set; }
         public virtual DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public virtual DbSet<StockTransaction> StockTransactions { get; set; }
+        public virtual DbSet<DirectPaymentDetail> DirectPaymentDetails { get; set; }
     }
 }

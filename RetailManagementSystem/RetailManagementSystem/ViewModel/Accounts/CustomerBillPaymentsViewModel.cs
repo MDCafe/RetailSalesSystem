@@ -33,10 +33,13 @@ namespace RetailManagementSystem.ViewModel.Accounts
         }
 
         public decimal? AllocationAmount { get; set; }
+        public decimal? TotalPendingAmount { get; set; }
+        public decimal? OldPendingAmount { get; set; }
 
         public decimal? ChequeAllocationAmount { get; set; }
-        public int ChequeNo { get; set; }
+        public int? ChequeNo { get; set; }
         public DateTime ChequeDate { get; set; }
+        public DateTime PaymentDate { get; set; }
 
 
         public IEnumerable<Customer> CustomersList
@@ -84,6 +87,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
                 //}
                 _paymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id !=8).ToList();
             }
+            ChequeDate = DateTime.Now;
+            PaymentDate = DateTime.Now;
         }
 
         #region GetBillsCommand
@@ -115,6 +120,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
                 mySQLparam.Value = SelectedCustomer.Id;
                 var custPayDetails = rmsEntities.Database.SqlQuery<CustomerPaymentDetails>
                                                                     ("CALL GetCustomerPaymentDetails(@customerId)", mySQLparam);
+
+                TotalPendingAmount = _selectedCustomer.BalanceDue;
+                OldPendingAmount = _selectedCustomer.OldBalanceDue;
                 var i = 0;
                 foreach (var item in custPayDetails)
                 {
@@ -177,6 +185,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                                 paymentDetails.AmountPaid = item.CurrentAmountPaid;
                                 var payment = item.PaymentMode;
                                 paymentDetails.PaymentMode = payment.Id;
+                                paymentDetails.PaymentDate = PaymentDate;
                                 if (payment.Description == "Cheque")
                                 {
                                     AddChequePayment(item, paymentDetails);
@@ -191,7 +200,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
                             AmountPaid = item.CurrentAmountPaid,
                             BillId = item.BillId,
                             CustomerId = _selectedCustomer.Id,
-                            PaymentMode = item.PaymentMode.Id
+                            PaymentMode = item.PaymentMode.Id,
+                            PaymentDate = PaymentDate
                         };
                         if (item.PaymentMode.Description == "Cheque")
                         {
@@ -205,7 +215,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     Clear();
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _log.Error("Error on saving payments for customer:" + _selectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
@@ -243,14 +253,15 @@ namespace RetailManagementSystem.ViewModel.Accounts
             return true;
         }
 
-        private static void AddChequePayment(CustomerPaymentDetails item, PaymentDetail paymentDetails)
+        private void AddChequePayment(CustomerPaymentDetails item, PaymentDetail paymentDetails)
         {
             var chqPaymentDetails =
                                     new ChequePaymentDetail()
                                     {
                                         ChequeDate = item.ChequeDate,
                                         ChequeNo = item.ChequeNo,
-                                        IsChequeRealised = false
+                                        IsChequeRealised = false,
+                                        PaymentDate = PaymentDate
                                     };
             paymentDetails.ChequePaymentDetails.Add(chqPaymentDetails);
         }
@@ -283,6 +294,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
         {
             try
             {
+                var payMode = _paymentModes.FirstOrDefault(p => p.Description == "Cash");
                 var decreasingAllocationAmount = AllocationAmount.Value; 
                 foreach (var item in _customerPaymentDetailsList)
                 {
@@ -290,6 +302,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     if((item.TotalAmount - item.AmountPaid) !=0)
                     {
                         var balanceAmtToBePaid = item.TotalAmount - item.AmountPaid;
+                        item.PaymentMode = payMode;
                         if (balanceAmtToBePaid < decreasingAllocationAmount)
                         {
                             item.CurrentAmountPaid = balanceAmtToBePaid;
@@ -303,7 +316,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     }
                 }                 
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _log.Error("Error on allocation:" + _selectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
@@ -312,6 +325,116 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         #endregion
 
+        #region AllocateChequeCommand
+        RelayCommand<object> _allocateChequeCommand = null;
+        public ICommand AllocateChequeCommand
+        {
+            get
+            {
+                if (_allocateChequeCommand == null)
+                {
+                    _allocateChequeCommand = new RelayCommand<object>((p) => OnAllocateCheque(), (p) => CanAllocateCheque(p));
+                }
+
+                return _allocateChequeCommand;
+            }
+        }
+
+        private bool CanAllocateCheque(object p)
+        {
+            if (!ChequeAllocationAmount.HasValue) return false;
+            var sender = p as System.Windows.DependencyObject;
+            return IsValid(sender);
+        }
+
+        protected void OnAllocateCheque()
+        {
+            try
+            {
+                var payMode = _paymentModes.FirstOrDefault(p=>p.Description =="Cheque");
+                var decreasingAllocationAmount = ChequeAllocationAmount.Value;
+                foreach (var item in _customerPaymentDetailsList)
+                {
+                    if (!item.IsSelected  || decreasingAllocationAmount <= 0) continue;
+                    if ((item.TotalAmount - item.AmountPaid) != 0)
+                    {
+                        item.ChequeNo = ChequeNo;
+                        item.ChequeDate = ChequeDate;
+                        item.PaymentMode = payMode;
+                        var balanceAmtToBePaid = item.TotalAmount - item.AmountPaid;
+                        if (balanceAmtToBePaid < decreasingAllocationAmount)
+                        {
+                            item.CurrentAmountPaid = balanceAmtToBePaid;
+                            decreasingAllocationAmount -= balanceAmtToBePaid;
+                        }
+                        else
+                        {
+                            item.CurrentAmountPaid = decreasingAllocationAmount;
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error on allocation:" + _selectedCustomer.Name, ex);
+                Utility.ShowErrorBox(ex.Message);
+            }
+        }
+        #endregion
+
+        #region DirectPaymentCommand
+        RelayCommand<object> _directPaymentCommand = null;
+        public ICommand DirectPaymentCommand
+        {
+            get
+            {
+                if (_directPaymentCommand == null)
+                {
+                    _directPaymentCommand = new RelayCommand<object>((p) => OnDirectPayment(), (p) => CanDirectPayment(p));
+                }
+                return _directPaymentCommand;
+            }
+        }
+
+        private bool CanDirectPayment(object p)
+        {
+            if (!AllocationAmount.HasValue || !OldPendingAmount.HasValue) return false;
+            var sender = p as System.Windows.DependencyObject;
+            return IsValid(sender);
+        }
+
+        protected void OnDirectPayment()
+        {
+            try
+            {
+                var message = Utility.ShowMessageBoxWithOptions("Do you want to pay the old balance?", System.Windows.MessageBoxButton.YesNo);
+                if (message == System.Windows.MessageBoxResult.No) return;
+                using (var RMSEntities = new RMSEntities())
+                {
+                    RMSEntities.DirectPaymentDetails.Add
+                        (
+                            new DirectPaymentDetail()
+                            {
+                                 CustomerId = _selectedCustomer.Id,
+                                 PaidAmount = AllocationAmount,
+                                 PaymentDate = PaymentDate
+                            }
+                        );
+
+                    var cust = RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                    cust.OldBalanceDue -= AllocationAmount;
+                    RMSEntities.SaveChanges();
+                }
+                Clear();
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error on OnDirectPayment:" + _selectedCustomer.Name, ex);
+                Utility.ShowErrorBox(ex.Message);
+            }
+        }
+        #endregion
 
         private bool IsValid(System.Windows.DependencyObject obj)
         {
@@ -328,6 +451,12 @@ namespace RetailManagementSystem.ViewModel.Accounts
             _customerPaymentDetailsList.Clear();
             SelectedCustomer = null;
             AllocationAmount = null;
+            ChequeAllocationAmount = null;
+            ChequeNo = null;
+            ChequeDate = DateTime.Now;
+            PaymentDate = DateTime.Now;
+            TotalPendingAmount = null;
+            OldPendingAmount = null;
         }
     }
 }

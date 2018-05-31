@@ -22,6 +22,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<System.DateTime> PaymentDate { get; set; }
     
         public virtual PaymentDetail PaymentDetail { get; set; }
     }

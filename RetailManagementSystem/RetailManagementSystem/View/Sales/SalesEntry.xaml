@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
              xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl"    

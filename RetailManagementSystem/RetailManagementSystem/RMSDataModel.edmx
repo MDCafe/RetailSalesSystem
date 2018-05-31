@@ -43,6 +43,7 @@
           <Property Name="ChequeNo" Type="int" />
           <Property Name="ChequeDate" Type="date" />
           <Property Name="IsChequeRealised" Type="bit" />
+          <Property Name="PaymentDate" Type="datetime" Precision="0" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -89,6 +90,7 @@
           <Property Name="Email" Type="varchar" MaxLength="45" />
           <Property Name="CustomerTypeId" Type="mediumint" />
           <Property Name="BalanceDue" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="OldBalanceDue" Type="decimal" Precision="10" Scale="2" />
           <Property Name="CreditLimit" Type="decimal" Precision="10" Scale="0" />
           <Property Name="CreditDays" Type="int" Nullable="false" />
           <Property Name="ContactPerson" Type="varchar" MaxLength="100" />
@@ -96,6 +98,18 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
+        </EntityType>
+        <EntityType Name="DirectPaymentDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="mediumint" />
+          <Property Name="PaidAmount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="mediumint" />
+          <Property Name="PaymentDate" Type="datetime" Precision="0" />
         </EntityType>
         <EntityType Name="MeasuringUnits">
           <Key>
@@ -114,6 +128,7 @@
           <Property Name="CustomerId" Type="mediumint" />
           <Property Name="AmountPaid" Type="decimal" Precision="10" Scale="2" />
           <Property Name="PaymentMode" Type="mediumint" />
+          <Property Name="PaymentDate" Type="datetime" Precision="0" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -331,7 +346,7 @@
           <Property Name="Outward" Type="decimal" Precision="10" Scale="2" />
           <Property Name="OpeningBalance" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="BalanceQty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="SalesPurchaseCancelQty" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -680,6 +695,7 @@
           <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="DirectPaymentDetails" EntityType="Self.DirectPaymentDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="rms" store:Type="Tables" />
@@ -1043,21 +1059,6 @@
           <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
-        <EntityType Name="StockTransaction">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockId" Type="Int32" />
-          <Property Name="Inward" Type="Decimal" />
-          <Property Name="Outward" Type="Decimal" />
-          <Property Name="OpeningBalance" Type="Decimal" />
-          <Property Name="ClosingBalance" Type="Decimal" />
-          <Property Name="BalanceQty" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Stock" Relationship="RMSEntities.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
@@ -1244,7 +1245,6 @@
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetail" />
           <EntitySet Name="Sales" EntityType="Self.Sale" />
           <EntitySet Name="SaleTemps" EntityType="Self.SaleTemp" />
-          <EntitySet Name="StockTransactions" EntityType="Self.StockTransaction" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Categories" />
@@ -1312,10 +1312,6 @@
             <End Role="Product" EntitySet="Products" />
             <End Role="Stock" EntitySet="Stocks" />
           </AssociationSet>
-          <AssociationSet Name="fk_stockId" Association="RMSEntities.fk_stockId">
-            <End Role="Stock" EntitySet="Stocks" />
-            <End Role="StockTransaction" EntitySet="StockTransactions" />
-          </AssociationSet>
           <EntitySet Name="PurchaseDetails" EntityType="RMSEntities.PurchaseDetail" />
           <EntitySet Name="PurchaseFreeDetails" EntityType="RMSEntities.PurchaseFreeDetail" />
           <EntitySet Name="Purchases" EntityType="RMSEntities.Purchase" />
@@ -1361,6 +1357,12 @@
             <End Role="Sale" EntitySet="Sales" />
             <End Role="PaymentDetail" EntitySet="PaymentDetails" />
           </AssociationSet>
+          <EntitySet Name="StockTransactions" EntityType="RMSEntities.StockTransaction" />
+          <AssociationSet Name="fk_stockId" Association="RMSEntities.fk_stockId">
+            <End Role="Stock" EntitySet="Stocks" />
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
+          </AssociationSet>
+          <EntitySet Name="DirectPaymentDetails" EntityType="RMSEntities.DirectPaymentDetail" />
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1386,6 +1388,7 @@
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Sales" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
           <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.FK_cust_pay" FromRole="Customer" ToRole="PaymentDetail" />
+          <Property Name="OldBalanceDue" Type="Decimal" />
         </EntityType>
         <Association Name="FK_Sales_Cust">
           <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="1" />
@@ -1436,18 +1439,6 @@
             </Principal>
             <Dependent Role="Stock">
               <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_stockId">
-          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="0..1" />
-          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Stock">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="StockTransaction">
-              <PropertyRef Name="StockId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1612,6 +1603,7 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="PaymentDetail" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="ChequePaymentDetail" ToRole="PaymentDetail" />
+          <Property Name="PaymentDate" Type="DateTime" />
         </EntityType>
         <EntityType Name="PaymentDetail">
           <Key>
@@ -1628,6 +1620,7 @@
           <NavigationProperty Name="ChequePaymentDetails" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="PaymentDetail" ToRole="ChequePaymentDetail" />
           <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_cust_pay" FromRole="PaymentDetail" ToRole="Customer" />
           <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_pay" FromRole="PaymentDetail" ToRole="Sale" />
+          <Property Name="PaymentDate" Type="DateTime" />
         </EntityType>
         <Association Name="FK_CHQ_paymentDetails">
           <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="1" />
@@ -1665,6 +1658,45 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="StockTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="Inward" Type="Decimal" />
+          <Property Name="Outward" Type="Decimal" />
+          <Property Name="OpeningBalance" Type="Decimal" />
+          <Property Name="ClosingBalance" Type="Decimal" />
+          <Property Name="SalesPurchaseCancelQty" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Stock" Relationship="RMSEntities.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
+        </EntityType>
+        <Association Name="fk_stockId">
+          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="0..1" />
+          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockTransaction">
+              <PropertyRef Name="StockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DirectPaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="PaidAmount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <Property Name="PaymentDate" Type="DateTime" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1883,21 +1915,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockTransactions">
-            <EntityTypeMapping TypeName="RMSEntities.StockTransaction">
-              <MappingFragment StoreEntitySet="StockTransaction">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="StockId" ColumnName="StockId" />
-                <ScalarProperty Name="Inward" ColumnName="Inward" />
-                <ScalarProperty Name="Outward" ColumnName="Outward" />
-                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
-                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
-                <ScalarProperty Name="BalanceQty" ColumnName="BalanceQty" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="RMSEntities.User">
               <MappingFragment StoreEntitySet="Users">
@@ -1914,6 +1931,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="RMSEntities.Customer">
               <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="OldBalanceDue" ColumnName="OldBalanceDue" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -2007,6 +2025,7 @@
           <EntitySetMapping Name="ChequePaymentDetails">
             <EntityTypeMapping TypeName="RMSEntities.ChequePaymentDetail">
               <MappingFragment StoreEntitySet="ChequePaymentDetails">
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -2021,6 +2040,7 @@
           <EntitySetMapping Name="PaymentDetails">
             <EntityTypeMapping TypeName="RMSEntities.PaymentDetail">
               <MappingFragment StoreEntitySet="PaymentDetails">
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -2028,6 +2048,34 @@
                 <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockTransactions">
+            <EntityTypeMapping TypeName="RMSEntities.StockTransaction">
+              <MappingFragment StoreEntitySet="StockTransaction">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="SalesPurchaseCancelQty" ColumnName="SalesPurchaseCancelQty" />
+                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
+                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+                <ScalarProperty Name="Outward" ColumnName="Outward" />
+                <ScalarProperty Name="Inward" ColumnName="Inward" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DirectPaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.DirectPaymentDetail">
+              <MappingFragment StoreEntitySet="DirectPaymentDetails">
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
