@@ -18,6 +18,7 @@ using RetailManagementSystem.View.Reports.Sales.Customers;
 using RetailManagementSystem.View.Masters;
 using RetailManagementSystem.ViewModel.Accounts;
 using RetailManagementSystem.View.Reports.Accounts;
+using RetailManagementSystem.ViewModel.Reports.Accounts;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -571,7 +572,7 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        #region OpenDailySalesReportCommand
+        #region OpenCustomerWiseSalesReportCommand
         RelayCommand<object> _openCustomerWiseSalesReportCommand = null;
         public ICommand OpenCustomerWiseSalesReportCommand
         {
@@ -689,7 +690,6 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-
         #region OpenStockBalanceReportCommand
         RelayCommand<object> _openStockBalanceReportCommand = null;
         public ICommand OpenStockBalanceReportCommand
@@ -711,6 +711,40 @@ namespace RetailManagementSystem.ViewModel
                 var stockBalanceReport = new StockBalanceReport(false);
                 stockBalanceReport.ShowDialog();
 
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
+        #region  OpenAllPendingCreditReportCommand
+        RelayCommand<object> _openAllPendingCreditReportCommand = null;
+        public ICommand OpenAllPendingCreditReportCommand
+        {
+            get
+            {
+                if (_openAllPendingCreditReportCommand == null)
+                {
+                    _openAllPendingCreditReportCommand = new RelayCommand<object>((p) => OnOpenAllPendingCreditReportCommand(p));
+                }
+
+                return _openAllPendingCreditReportCommand;
+            }
+        }
+        private void OnOpenAllPendingCreditReportCommand(object showAll)
+        {
+            try
+            {
+                var showAllCustomers = bool.Parse(showAll.ToString());
+                var allPendingCreditReportViewModel = new AllPendingCreditReportViewModel(showAllCustomers);
             }
             catch (Exceptions.RMSException ex)
             {

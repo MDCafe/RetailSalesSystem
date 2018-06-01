@@ -18,6 +18,10 @@
 19. Remove Sorting Order for sale entry
 
 
+20. Remove credit amount from customers when the bill is canceled
+21. Avendra customer bill issues
+22.
+
 G.R.NO - 54 for purchase
 
 

@@ -143,20 +143,12 @@ namespace RetailManagementSystem
                 {
                     switch (e.Key)
                     {
-                        case Key.P:
+                        case Key.C:
                             Workspace.This.OpenCustomerBillPaymentsCommand.Execute(true);
                             return;
-                    }
-                }
-                #endregion
-
-                #region 
-                if (Keyboard.IsKeyDown(Key.T))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.E:
-                            Workspace.This.OpenReturnPurchaseCommand.Execute(true);
+               
+                        case Key.A:
+                            Workspace.This.OpenAllPendingCreditReportCommand.Execute(true);
                             return;
                     }
                 }

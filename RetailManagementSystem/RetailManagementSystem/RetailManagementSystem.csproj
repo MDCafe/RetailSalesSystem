@@ -322,6 +322,7 @@
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
     <Compile Include="ViewModel\Accounts\CustomerBillPaymentsViewModel.cs" />
+    <Compile Include="ViewModel\Accounts\AllPendingCreditReportViewModel.cs" />
     <Compile Include="ViewModel\Base\CommonBusinessViewModel.cs" />
     <Compile Include="ViewModel\Base\DocumentViewModel.cs" />
     <Compile Include="ViewModel\Base\PurchaseViewModelbase.cs" />
@@ -541,7 +542,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.Config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -603,6 +603,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\Reports\Accounts\CustomerPaymentDetails.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\Reports\Accounts\AllPendingCredits.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="View\Reports\Purchases\PurchasesSummary.rdl">

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
-using RetailManagementSystem.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -143,28 +142,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             Workspace.This.OpenReport(this);
             CloseWindow(window);
         }
-
-        private DataTable GetDataTable(string queryCustomer, MySqlParameter[] sqlParameter, CommandType commandType)
-        {
-            using (var conn = MySQLDataAccess.GetConnection())
-            {
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.CommandText = queryCustomer;
-                    cmd.Connection = conn;
-                    cmd.CommandType = commandType;
-                    cmd.Parameters.AddRange(sqlParameter);
-
-
-                    DataTable dt = new DataTable();
-                    MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
-
-                    adpt.Fill(dt);
-
-                    return dt;
-                }
-            }
-        }
+        
         #endregion
 
         #region Clear Command

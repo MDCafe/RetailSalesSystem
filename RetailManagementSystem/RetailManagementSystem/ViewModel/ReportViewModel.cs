@@ -95,6 +95,28 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
+        protected DataTable GetDataTable(string queryCustomer, MySqlParameter[] sqlParameter, CommandType commandType)
+        {
+            using (var conn = MySQLDataAccess.GetConnection())
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.CommandText = queryCustomer;
+                    cmd.Connection = conn;
+                    cmd.CommandType = commandType;
+                    cmd.Parameters.AddRange(sqlParameter);
+
+
+                    DataTable dt = new DataTable();
+                    MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
+
+                    adpt.Fill(dt);
+
+                    return dt;
+                }
+            }
+        }
+
         #region CloseWindow Command
         public RelayCommand<Window> _closeWindowCommand { get; private set; }
 
