@@ -19,7 +19,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         IEnumerable<PriceDetail> _returnPriceList;                
         new decimal? _totalAmount;
         Company _selectedCompany;
-        Purchase _selectedPurchase;
+        Purchase _selectedPurchaseBillNo;
         IEnumerable<Purchase> _billList;
 
         public bool ReadOnly { get; set; }
@@ -105,16 +105,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
         }
 
-        public Purchase SelectedPurchase
+        public Purchase SelectedPurchaseBillNo
         {
             get
             {
-                return _selectedPurchase;
+                return _selectedPurchaseBillNo;
             }
 
             set
             {
-                _selectedPurchase = value;
+                _selectedPurchaseBillNo = value;
                 RaisePropertyChanged("SelectedPurchase");
             }
         }
@@ -258,7 +258,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         PriceId = item.PriceId,
                         ProductId = item.ProductId,
                         Quantity = item.ReturnQty,
-                        BillId = SelectedPurchase == null? 0 : SelectedPurchase.BillId,
+                        BillId = SelectedPurchaseBillNo == null? 0 : SelectedPurchaseBillNo.BillId,
                         ReturnReasonCode = item.SelectedReturnReason.Id,
                         MarkedForReturn = item.Selected,
                         comments = item.Comments,
@@ -279,6 +279,20 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                     stock.Quantity -= item.ReturnQty;
                 }
+                //Item is unselected for returning
+                if(!item.Selected)
+                {
+                    if (_selectedPurchaseBillNo == null)
+                    {
+                        Utility.ShowErrorBox("Choose a bill for which retun needs to be marked");
+                        return;
+                    }
+                    var purchaseRtn = _rmsEntities.PurchaseReturns.FirstOrDefault(r => r.ProductId == item.ProductId && r.PriceId == item.PriceId 
+                                                                && r.Quantity == item.ReturnQty);
+                    purchaseRtn.BillId = _selectedPurchaseBillNo.BillId;
+                    purchaseRtn.MarkedForReturn = false;
+                    _rmsEntities.Entry<PurchaseReturn>(purchaseRtn).State = System.Data.Entity.EntityState.Modified;
+                }
             }
 
             //if (_selectedPurchase !=null && _selectedPurchase.BillId !=0)
@@ -292,10 +306,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
             _rmsEntities.SaveChanges();
 
-            if(parameter != null && parameter.ToString() =="Print" && SelectedPurchase !=null)
+            if(parameter != null && parameter.ToString() =="Print" && SelectedPurchaseBillNo != null)
             {
-                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchase.RunningBillNo);
-                psummVM.RunningBillNo = SelectedPurchase.RunningBillNo;
+                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchaseBillNo.RunningBillNo);
+                psummVM.RunningBillNo = SelectedPurchaseBillNo.RunningBillNo;
                 psummVM.PrintCommand.Execute(null);
             }
             Clear();

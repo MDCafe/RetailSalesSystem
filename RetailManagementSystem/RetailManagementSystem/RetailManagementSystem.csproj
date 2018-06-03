@@ -216,7 +216,6 @@
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Converter\ActiveDocumentConverter.cs" />
     <Compile Include="Converter\ComboBoxConverter.cs" />
-    <Compile Include="Converter\CustomBooleanValueConverter.cs" />
     <Compile Include="Converter\GridCellValueColorConverter.cs" />
     <Compile Include="Converter\StringToDateConverter.cs" />
     <Compile Include="Converter\ZeroToVisibilityConverter.cs" />

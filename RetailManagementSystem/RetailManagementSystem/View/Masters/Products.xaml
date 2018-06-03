@@ -13,7 +13,6 @@
         <conv:UOMCodeConverter x:Key="uomCodeConverter"/>
         <conv:CompanyCodeConverter x:Key="companyCodeConverter"/>
         <conv:CategoryCodeConverter x:Key="categoryCodeConverter"/>
-        <conv:CustomBooleanValueConverter x:Key="customBooleanValueConverter" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
