@@ -160,7 +160,7 @@
                                                                     CustComboBoxSelectedPath ="ProductId"
                                                                     CustComboBoxSelectedValue ="ProductId"
                                                                     SelectedValueBinding="{Binding ProductId}" 
-                                                                    ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
+                                                                    ComboBoxSelectedEvent="CustComboBoxColComboBoxSelectedEvent"                                                        
                                  IsReadOnly="{Binding NegateIsEditMode}" >
                         <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
                         <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>

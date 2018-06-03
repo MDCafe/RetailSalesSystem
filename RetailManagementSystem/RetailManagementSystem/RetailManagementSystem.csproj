@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>45</ApplicationRevision>
+    <ApplicationRevision>47</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -216,6 +216,7 @@
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Converter\ActiveDocumentConverter.cs" />
     <Compile Include="Converter\ComboBoxConverter.cs" />
+    <Compile Include="Converter\CustomBooleanValueConverter.cs" />
     <Compile Include="Converter\GridCellValueColorConverter.cs" />
     <Compile Include="Converter\StringToDateConverter.cs" />
     <Compile Include="Converter\ZeroToVisibilityConverter.cs" />

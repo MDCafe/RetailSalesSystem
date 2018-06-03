@@ -33,6 +33,8 @@ namespace RetailManagementSystem.ViewModel.Masters
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
             _priceDetailsList = new ObservableCollection<PriceDetail>();
             _priceDetailsList.Add(new PriceDetail());
+
+            ProductActiveValues = new BooleanValue().BooleanValues;
         }
 
         #region Public Variables
@@ -93,6 +95,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                 RaisePropertyChanged("SelectedProduct");
             }
         }
+
+        public List<KeyValuePair<bool, string>> ProductActiveValues { get; set; }
 
         public Product DblClickSelectedProduct
         {
@@ -371,10 +375,6 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return _searchCommand;
             }
         }
-
-       
-
-
 
         #endregion
     }

@@ -416,6 +416,14 @@ namespace RetailManagementSystem.ViewModel.Sales
                     stockItem.Quantity += saleQty;
                 }
 
+                //Remove the amount from customer balance due and from pending amounts
+                var pendingPayments = rmsEntities.PaymentDetails.FirstOrDefault(p => p.BillId == cancelBill.BillId && p.CustomerId == _salesParams.CustomerId);
+                if (pendingPayments != null)
+                {
+                    rmsEntities.PaymentDetails.Remove(pendingPayments);
+                    var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == _salesParams.CustomerId);
+                    customer.BalanceDue -= cancelBill.TotalAmount;
+                }
                 cancelBill.IsCancelled = true;
                 rmsEntities.SaveChanges();
             }
@@ -748,13 +756,12 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void SaveOnEdit(object parameter)
         {
-            //Check if there are any deletions
-            RemoveDeletedItems();
-
             SaleDetail saleDetail;
 
             using (var rmsEntities = new RMSEntities())
             {
+                //Check if there are any deletions
+                RemoveDeletedItems(rmsEntities);
                 foreach (var saleDetailItemExtn in _salesDetailsList)
                 {
                     saleDetail = rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
@@ -882,29 +889,26 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void RemoveDeletedItems()
+        private void RemoveDeletedItems(RMSEntities rmsEntities)
         {
-            using (var rmsEntities = new RMSEntities())
+            foreach (var saleDetailExtn in _deletedItems)
             {
-                foreach (var saleDetailExtn in _deletedItems)
+                //New item added and removed
+                if (saleDetailExtn.BillId == 0) continue;
+                var saleDetail = rmsEntities.SaleDetails.FirstOrDefault(s => s.BillId == saleDetailExtn.BillId && s.ProductId == saleDetailExtn.ProductId);
+
+                var stockNewItem = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+                if (stockNewItem != null)
                 {
-                    //New item added and removed
-                    if (saleDetailExtn.BillId == 0) continue;
-                    var saleDetail = rmsEntities.SaleDetails.FirstOrDefault(s => s.BillId == saleDetailExtn.BillId && s.ProductId == saleDetailExtn.ProductId);
+                    var qty = saleDetail.Qty.Value;
+                    var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
 
-                    var stockNewItem = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
-                    if (stockNewItem != null)
-                    {
-                        var qty = saleDetail.Qty.Value;
-                        var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
+                    stockTrans.Outward -= qty;
+                    stockTrans.ClosingBalance += qty;
 
-                        stockTrans.Outward -= qty;
-                        stockTrans.ClosingBalance += qty;
-
-                        stockNewItem.Quantity += qty;
-                    }
-                    rmsEntities.SaleDetails.Remove(saleDetail);
+                    stockNewItem.Quantity += qty;
                 }
+                rmsEntities.SaleDetails.Remove(saleDetail);
             }
         }
 

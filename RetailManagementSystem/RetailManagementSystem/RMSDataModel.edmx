@@ -106,10 +106,10 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CustomerId" Type="mediumint" />
           <Property Name="PaidAmount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="PaymentDate" Type="datetime" Precision="0" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
-          <Property Name="PaymentDate" Type="datetime" Precision="0" />
         </EntityType>
         <EntityType Name="MeasuringUnits">
           <Key>
@@ -163,6 +163,7 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="PurchaseDetails">
           <Key>
@@ -940,6 +941,7 @@
           <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
           <Property Name="SupportsMultiPrice" Type="Boolean" />
           <Property Name="BarcodeNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="PurchasePaymentDetail">
           <Key>
@@ -1788,6 +1790,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="RMSEntities.Product">
               <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="BarcodeNo" ColumnName="BarcodeNo" />
                 <ScalarProperty Name="SupportsMultiPrice" ColumnName="SupportsMultiPrice" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

@@ -39,6 +39,7 @@ namespace RetailManagementSystem
         public Nullable<int> UpdatedBy { get; set; }
         public Nullable<bool> SupportsMultiPrice { get; set; }
         public string BarcodeNo { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual Company Company { get; set; }

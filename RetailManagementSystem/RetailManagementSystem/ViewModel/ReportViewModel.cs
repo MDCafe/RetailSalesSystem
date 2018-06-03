@@ -1,13 +1,13 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
+using System;
 using System.Data;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
-using System;
-using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel
 {

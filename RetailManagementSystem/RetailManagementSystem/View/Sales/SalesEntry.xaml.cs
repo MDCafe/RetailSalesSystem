@@ -146,7 +146,7 @@ namespace RetailManagementSystem.View.Sales
             };
         }        
 
-        private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
+        private void CustComboBoxColComboBoxSelectedEvent(object selectedItem)
         {
             var barcodeNo = custComboBoxCol._cboTextBox.Text;          
             var productPrice = selectedItem as ProductPrice;

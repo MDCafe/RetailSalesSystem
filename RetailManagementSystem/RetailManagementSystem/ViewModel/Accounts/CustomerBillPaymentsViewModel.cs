@@ -51,6 +51,10 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == _categoryId).OrderBy(a => a.Name);
                 }
             }
+            private set
+            {
+
+            }
         }
 
         public IEnumerable<CodeMaster> PaymentModes
@@ -210,7 +214,10 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
                         rmsEntities.PaymentDetails.Add(newPaymentDetail);
                     }
-
+                    //Reduce the customer balance
+                    var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == SelectedCustomer.Id);
+                    var totalAmountPaid = _customerPaymentDetailsList.Sum(c => c.CurrentAmountPaid);
+                    customer.BalanceDue -= totalAmountPaid;
                     rmsEntities.SaveChanges();
                     Clear();
                 }
@@ -450,6 +457,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
         {
             _customerPaymentDetailsList.Clear();
             SelectedCustomer = null;
+            CustomersList = null;
             AllocationAmount = null;
             ChequeAllocationAmount = null;
             ChequeNo = null;

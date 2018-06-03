@@ -1,15 +1,15 @@
-﻿namespace RetailManagementSystem
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using Utilities;
-    using Interfaces;
-    using Model;
-    using System.Collections.ObjectModel;
-    using System;
-    using System.Windows;
+﻿using RetailManagementSystem.Interfaces;
+using RetailManagementSystem.Model;
+using RetailManagementSystem.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Windows;
 
+namespace RetailManagementSystem
+{
     internal class RMSEntitiesHelper
     {
         RMSEntities _rmsEntities;
@@ -17,10 +17,31 @@
         static object _syncRoot = new object();        
         List<INotifier> _salesNotifierList = new List<INotifier>();
         List<INotifier> _purchaseNotifierList = new List<INotifier>();
+        static string productsPriceSQL;
 
         private RMSEntitiesHelper()
         {
             _rmsEntities = new RMSEntities();
+
+            productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
+                                 " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                 " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                 " from Products p, PriceDetails pd, Stocks st " +
+                                 "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                 " and st.Quantity != 0 and p.Isactive = true" +
+                                 " union " +
+                                   "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
+                                   "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                   " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                   " from Products p, PriceDetails pd, Stocks st " +
+                                   " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                   " and st.Quantity = 0 and p.Isactive = true " +
+                                   " and St.ModifiedOn = " +
+                                   " (select max(ModifiedOn) from Stocks s " +
+                                    "   where s.ProductId = st.ProductId) " +
+                                   " order by ProductName ";
         }
 
         public static RMSEntitiesHelper Instance
@@ -109,27 +130,7 @@
 
         public ObservableCollection<ProductPrice> GetProductPriceList()
         {
-            string productsSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
-                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                  " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                  " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" + 
-                                  " from Products p, PriceDetails pd, Stocks st " +
-                                  "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                  " and st.Quantity != 0 " +
-                                  " union " +
-                                    "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
-                                    "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                    " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                    " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
-                                    " from Products p, PriceDetails pd, Stocks st " +
-                                    " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                    " and st.Quantity = 0 " +
-                                    " and St.ModifiedOn = " +
-                                    " (select max(ModifiedOn) from Stocks s " +
-                                     "   where s.ProductId = st.ProductId) " +
-                                    " order by ProductName ";
-
-            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsSQL));
+            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQL));
             //foreach (var item in productList)
             //{
             //    productPriceList.Add(item);

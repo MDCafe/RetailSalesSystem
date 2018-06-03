@@ -93,7 +93,7 @@ namespace RetailManagementSystem
                     switch (e.Key)
                     {
                         case Key.R:
-                            Workspace.This.OpenReturnSalesCommand.Execute(true);
+                            Workspace.This.OpenReturnPurchaseCommand.Execute(true);
                             return;
                         case Key.A:
                             try

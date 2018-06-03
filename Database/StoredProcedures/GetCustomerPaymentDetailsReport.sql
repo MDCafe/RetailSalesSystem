@@ -12,7 +12,7 @@ SELECT
     s.TotalAmount,
     pd.AmountPaid,
     (s.TotalAmount - pd.AmountPaid) BalanceAmount,
-    pd.AddedOn PaymentDate,
+    pd.PaymentDate PaymentDate,
 	/*case when cm.Id = 7 then 'Ca'
 		when  cm.Id = 9 then 'Ch' end 'Description',*/
     cpd.ChequeNo,

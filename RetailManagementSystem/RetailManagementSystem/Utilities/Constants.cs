@@ -1,4 +1,7 @@
-﻿namespace RetailManagementSystem.Utilities
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+
+namespace RetailManagementSystem.Utilities
 {
     static class Constants
     {
@@ -13,5 +16,21 @@
         public const string PURCHASE_PRICE = "PurchasePrice";
         //public const string DISCOUNT_PERCENT = "DiscountPercentage";
         //public const string DISCOUNT_AMT = "DiscountAmount";
-    }    
+    }
+
+    class BooleanValue
+    {
+        public List<KeyValuePair<bool, string>> BooleanValues { get; private set; }
+        
+
+
+        public BooleanValue()
+        {
+            BooleanValues = new List<KeyValuePair<bool, string>>()
+            {
+                new KeyValuePair<bool, string>(true,"Yes"),
+                new KeyValuePair<bool, string>(false,"No")
+            };
+        }
+    }  
 }
