@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Input;
+﻿using RetailManagementSystem.Interfaces;
 using RetailManagementSystem.Model;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace RetailManagementSystem.ViewModel.Base
@@ -11,7 +9,7 @@ namespace RetailManagementSystem.ViewModel.Base
     internal class CommonBusinessViewModel : DocumentViewModel, INotifier
     {
         public delegate void INotifierCollectionChanged();
-        public event INotifierCollectionChanged notifierCollectionChangedEvent;
+        public event INotifierCollectionChanged NotifierCollectionChangedEvent;
 
         protected IEnumerable<PaymentMode> _paymentModes;
         protected ObservableCollection<ProductPrice> _productsPriceList;
@@ -186,7 +184,7 @@ namespace RetailManagementSystem.ViewModel.Base
         { 
             _productsPriceList =  RMSEntitiesHelper.Instance.GetProductPriceList();
             RaisePropertyChanged("ProductsPriceList");
-            notifierCollectionChangedEvent?.Invoke();
+            NotifierCollectionChangedEvent?.Invoke();
         }
 
         #region CloseCommand                

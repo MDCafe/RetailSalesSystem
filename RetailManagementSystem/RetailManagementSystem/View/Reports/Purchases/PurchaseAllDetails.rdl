@@ -687,7 +687,7 @@ WHERE
                 <TablixMember>
                   <Group Name="ProductId">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!ProductId.Value</GroupExpression>
+                      <GroupExpression>=Fields!Id.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
@@ -728,6 +728,7 @@ WHERE
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
+                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>

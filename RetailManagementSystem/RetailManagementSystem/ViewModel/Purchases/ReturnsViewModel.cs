@@ -12,17 +12,33 @@ using RetailManagementSystem.ViewModel.Reports.Purhcases;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
-    class ReturnsViewModel : PurchaseViewModelbase
+    class ReturnsViewModel : DocumentViewModel
     {
         RMSEntities _rmsEntities;
         ObservableCollection<ReturnPurchaseDetailExtn> _returnPurchaseDetailsList;
         IEnumerable<PriceDetail> _returnPriceList;                
-        new decimal? _totalAmount;
+        decimal? _totalAmount;
         Company _selectedCompany;
         Purchase _selectedPurchaseBillNo;
         IEnumerable<Purchase> _billList;
+        int _categoryId;
+        ObservableCollection<ProductPrice> _productsPriceList;        
+        public event CommonBusinessViewModel.INotifierCollectionChanged NotifierCollectionChangedEvent;
+        bool _showRestrictedCompanies;
+
+        public ObservableCollection<ProductPrice> ProductsPriceList
+        {
+            get { return _productsPriceList; }
+            set
+            {
+                _productsPriceList = value;
+                RaisePropertyChanged("ProductsPriceList");
+            }
+        }
 
         public bool ReadOnly { get; set; }
+
+        public bool IsGridEnabled { get; set; }
 
         public decimal? TotalAmount
         {
@@ -57,8 +73,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
         public void SetProductDetails(ProductPrice productPrice, int selectedIndex)
         {
             if (productPrice == null) return;
-            var returnItem = _returnPurchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-       
+            var returnItem = _returnPurchaseDetailsList[selectedIndex];//.Where(s => s.ProductId == productPrice.ProductId);
+            //var returnItem = returnItemList.ElementAt(selectedIndex);
+
             if (returnItem != null)
             {
                 returnItem.CostPrice = productPrice.Price;
@@ -73,17 +90,17 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 switch (e.PropertyName)
                 {
-                    case Constants.AMOUNT:
+                    case "ReturnAmount":
                         {
-                            TotalAmount = _returnPurchaseDetailsList.Sum(a => a.Amount);
+                            TotalAmount = _returnPurchaseDetailsList.Sum(a => a.ReturnAmount);
                             break;
                         }
 
                     case Constants.RETURN_QTY:
                     case "ReturnPrice":
                         {
-                            TotalAmount = _returnPurchaseDetailsList.Sum(a => a.Amount);
-                            returnItem.Amount = returnItem.ReturnQty * returnItem.ReturnPrice;
+                            TotalAmount = _returnPurchaseDetailsList.Sum(a => a.ReturnAmount);
+                            returnItem.ReturnAmount = returnItem.ReturnQty * returnItem.ReturnPrice;
                             break;
                         }
                 }
@@ -122,7 +139,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         public IEnumerable<CodeMaster> ReturnReasons
         { get { return _rmsEntities.CodeMasters.Local.Where(r => r.Code == "RTN"); } }
 
-        public ReturnsViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
+        public ReturnsViewModel(bool showRestrictedCustomers)
         {            
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
             _returnPurchaseDetailsList.CollectionChanged += (s, e) =>
@@ -139,8 +156,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
             var cnt1 = _rmsEntities.CodeMasters.ToList();
             var cnt2 = _rmsEntities.Companies.ToList();
             var cnt3 = _rmsEntities.Purchases.ToList();
+            _showRestrictedCompanies = showRestrictedCustomers;
+
+            if (_showRestrictedCompanies)
+                _categoryId = Constants.COMPANIES_OTHERS;
+            else
+                _categoryId = Constants.COMPANIES_MAIN;
+
             this.Title = "Returns Entry";
             ReadOnly = false;
+            IsGridEnabled = false;
         }
 
         public ObservableCollection<ReturnPurchaseDetailExtn> ReturnPurchaseDetailList
@@ -179,32 +204,32 @@ namespace RetailManagementSystem.ViewModel.Purchases
             }
         }
       
-        public void SetProductPriceDetails(int productId, int selectedIndex)
-        {
-            var product = _rmsEntities.Products.Where(p => p.Id == productId).FirstOrDefault();
-            _returnPurchaseDetailsList[selectedIndex].ProductName = product.Name;
-            //var selectedProduct = _returnSalesDetailsList.Where(s => s.ProductId == product.Id).FirstOrDefault();
-            //selectedProduct.ProductName = product.Name;
-        }
+        //public void SetProductPriceDetails(int productId, int selectedIndex)
+        //{
+        //    var product = _rmsEntities.Products.Where(p => p.Id == productId).FirstOrDefault();
+        //    _returnPurchaseDetailsList[selectedIndex].ProductName = product.Name;
+        //    //var selectedProduct = _returnSalesDetailsList.Where(s => s.ProductId == product.Id).FirstOrDefault();
+        //    //selectedProduct.ProductName = product.Name;
+        //}
 
-        public void SetPriceDetails(int priceId,int selectedIndex)
-        {
-            var returnPrice = _rmsEntities.PriceDetails.Where(pr => pr.PriceId == priceId).FirstOrDefault();
-            var returnStock = _rmsEntities.Stocks.Where(pr => pr.PriceId == priceId).FirstOrDefault();
-            var returnItem = _returnPurchaseDetailsList[selectedIndex];
-            returnItem.ReturnPrice = returnPrice.Price;
-            returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
-            //returnItem.ExpiryDate = 
-            TotalAmount = _returnPurchaseDetailsList.Sum(p => p.Amount);
-            returnItem.PropertyChanged += (s, e) =>
-            {
-                if(e.PropertyName == Constants.RETURN_QTY)
-                {
-                    returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
-                    TotalAmount = _returnPurchaseDetailsList.Sum(p => p.Amount);
-                }
-            };
-        }
+        //public void SetPriceDetails(int priceId,int selectedIndex)
+        //{
+        //    var returnPrice = _rmsEntities.PriceDetails.Where(pr => pr.PriceId == priceId).FirstOrDefault();
+        //    var returnStock = _rmsEntities.Stocks.Where(pr => pr.PriceId == priceId).FirstOrDefault();
+        //    var returnItem = _returnPurchaseDetailsList[selectedIndex];
+        //    returnItem.ReturnPrice = returnPrice.Price;
+        //    returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
+        //    //returnItem.ExpiryDate = 
+        //    TotalAmount = _returnPurchaseDetailsList.Sum(p => p.Amount);
+        //    returnItem.PropertyChanged += (s, e) =>
+        //    {
+        //        if(e.PropertyName == Constants.RETURN_QTY)
+        //        {
+        //            returnItem.Amount = returnItem.ReturnPrice * returnItem.ReturnQty;
+        //            TotalAmount = _returnPurchaseDetailsList.Sum(p => p.Amount);
+        //        }
+        //    };
+        //}
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
@@ -249,6 +274,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
 
                 var itemSelected = item.Selected;
+                if(!itemSelected && _selectedPurchaseBillNo == null)
+                {
+                    Utility.ShowErrorBox("Item as to be marked for return or Bill No has to be choosen");
+                    return;
+                }
 
                 //New item
                 if (item.AddedOn == null)
@@ -280,7 +310,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     stock.Quantity -= item.ReturnQty;
                 }
                 //Item is unselected for returning
-                if(!item.Selected)
+                if(!item.Selected && item.AddedOn !=null)
                 {
                     if (_selectedPurchaseBillNo == null)
                     {
@@ -325,6 +355,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             TotalAmount = null;
             SelectedCompany = null;
             BillList = null;
+            IsGridEnabled = false;
         }
 
         #endregion
@@ -352,6 +383,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private void OnGetBillsItems()
         {
             if (SelectedCompany == null) return;
+
+            IsGridEnabled = true;
+            ProductsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList(_selectedCompany.Id);
+            NotifierCollectionChangedEvent?.Invoke();
 
             _returnPurchaseDetailsList.Clear();
 
@@ -381,23 +416,45 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
 
                 var rtnReason = _rmsEntities.CodeMasters.FirstOrDefault(s => s.Id == item.ReturnReasonCode);
-
-                _returnPurchaseDetailsList.Add(new ReturnPurchaseDetailExtn()
+                var itemPriceValue = item.ReturnPrice.HasValue ? item.ReturnPrice.Value : itemPrice;
+                var returnItem = new ReturnPurchaseDetailExtn()
                 {
                     ProductId = item.ProductId,
                     PriceId = item.PriceId,
                     SelectedReturnReason = rtnReason,
                     ReturnQty = item.Quantity,
-                    ReturnPrice = itemPrice,
-                    Amount = item.Quantity * itemPrice,
+                    ReturnPrice = itemPriceValue,
+                    ReturnAmount = item.Quantity * itemPriceValue,
                     ProductName = itemProductName,
                     Selected = item.MarkedForReturn.HasValue ? item.MarkedForReturn.Value : false,
                     Comments = item.comments,
                     ExpiryDate = item.ExpiryDate,
                     AddedOn = item.CreatedOn
-                    
-                });
+                };
+
+                _returnPurchaseDetailsList.Add(returnItem);
+
+                returnItem.PropertyChanged += (sender, e) =>
+                {
+                    switch (e.PropertyName)
+                    {
+                        case "ReturnAmount":
+                            {
+                                TotalAmount = _returnPurchaseDetailsList.Sum(a => a.ReturnAmount);
+                                break;
+                            }
+
+                        case Constants.RETURN_QTY:
+                        case "ReturnPrice":
+                            {
+                                TotalAmount = _returnPurchaseDetailsList.Sum(a => a.ReturnAmount);
+                                returnItem.ReturnAmount = returnItem.ReturnQty * returnItem.ReturnPrice;
+                                break;
+                            }
+                    }
+                };
             }
+            TotalAmount = _returnPurchaseDetailsList.Sum(a => a.ReturnAmount);
         }
 
         #endregion

@@ -19,7 +19,7 @@ namespace RetailManagementSystem.View.Stock
                 custComboBoxCol.ItemsSource = _swapsViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
 
-                _swapsViewModel.notifierCollectionChangedEvent += () =>
+                _swapsViewModel.NotifierCollectionChangedEvent += () =>
                 {
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {

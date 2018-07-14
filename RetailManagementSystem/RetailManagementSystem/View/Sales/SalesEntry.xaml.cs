@@ -56,7 +56,7 @@ namespace RetailManagementSystem.View.Sales
                 custComboBoxCol.FilterPropertyName = "ProductName";
                 _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
 
-                _salesViewModel.notifierCollectionChangedEvent += () =>
+                _salesViewModel.NotifierCollectionChangedEvent += () =>
                 {
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {
@@ -130,19 +130,19 @@ namespace RetailManagementSystem.View.Sales
                     e.Handled = true;
                     //}
                 }
-                else if(isLetter || isNumber)
-                {
-                    if (!custComboBoxCol.comboBox.IsDropDownOpen && e.Key != Key.Tab)
-                    {
-                        var grid = s as Microsoft.Windows.Controls.DataGrid;
-                        grid.BeginEdit();
-                        //custComboBoxCol.comboBox.IsDropDownOpen = true;
-                        //custComboBoxCol.comboBox.Text = e.Key.ToString();
-                        TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, custComboBoxCol.comboBox, e.Key.ToString()));
-                        custComboBoxCol.comboBox.Text = e.Key.ToString();
-                        //custComboBoxCol.comboBox.ClearSelection();
-                    }
-                }
+                //else if(isLetter || isNumber)
+                //{
+                //    if (!custComboBoxCol.comboBox.IsDropDownOpen && e.Key != Key.Tab)
+                //    {
+                //        var grid = s as Microsoft.Windows.Controls.DataGrid;
+                //        grid.BeginEdit();
+                //        //custComboBoxCol.comboBox.IsDropDownOpen = true;
+                //        //custComboBoxCol.comboBox.Text = e.Key.ToString();
+                //        TextCompositionManager.StartComposition(new TextComposition(InputManager.Current, custComboBoxCol.comboBox, e.Key.ToString()));
+                //        custComboBoxCol.comboBox.Text = e.Key.ToString();
+                //        //custComboBoxCol.comboBox.ClearSelection();
+                //    }
+                //}
             };
         }        
 
@@ -161,7 +161,7 @@ namespace RetailManagementSystem.View.Sales
             //var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
             //SalesDataGrid.SelectedIndex
 
-            //custComboBoxCol._cboTextBox.Text = "";
+            custComboBoxCol._cboTextBox.Text = "";
         }
 
         void Cell_PreviewKeyDown(object sender, KeyEventArgs e)

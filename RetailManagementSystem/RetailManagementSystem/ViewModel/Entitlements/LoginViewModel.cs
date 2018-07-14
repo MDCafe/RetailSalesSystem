@@ -44,26 +44,41 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         void Login(PasswordBox passwordBox)
         {            
             var password = passwordBox.Password;
-            RMSEntities rmsEntities = new RMSEntities();
-            var count = rmsEntities.Users.Local.ToList().Count;           
-
-            //RMSEntitiesHelper.RMSEntities.Configuration.LazyLoadingEnabled = false;
-
-            //Check if the user is admin
-            if (_validateAsAdmin)
+            using (RMSEntities rmsEntities = new RMSEntities())
             {
+                var count = rmsEntities.Users.Local.ToList().Count;
                 var pwdGrid = passwordBox.Parent as Grid;
                 var window = pwdGrid.Parent as Window;
-                if (rmsEntities.Users.Any(u => u.username == UserId && u.password == password && u.RoleId == 1))
-                {                    
+                //Check if the user is admin
+                if (_validateAsAdmin)
+                {
+                    if (ValidateAdminUser(rmsEntities, password))
+                    {
+                        window.DialogResult = true;
+                        window.Close();
+                        return;
+                    }                   
+                }
+
+                if (ValidateUser(rmsEntities, password))
+                {
                     window.DialogResult = true;
                     window.Close();
                     return;
                 }
 
                 Utility.ShowMessageBox(window, "Invalid UserId or Password");
-                //window.DialogResult = false;                
-            }            
+            }
+        }
+
+        bool ValidateAdminUser(RMSEntities rmsEntities,string password)
+        {
+            return rmsEntities.Users.Any(u => u.username == UserId && u.password == password && u.RoleId == 1);
+        }
+
+        bool ValidateUser(RMSEntities rmsEntities, string password)
+        {
+            return rmsEntities.Users.Any(u => u.username == UserId && u.password == password);
         }
 
         #endregion

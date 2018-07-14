@@ -18,17 +18,24 @@ namespace RetailManagementSystem
     public partial class MainWindow : Window
     {
         static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));
-        public MainWindow()
+        
+        public MainWindow(bool isAdmin)
         {
             InitializeComponent();
-            this.DataContext = Workspace.This;
-            this.Closing += MainWindow_Closing;
+            DataContext = Workspace.This;
+            Closing += MainWindow_Closing;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 
             try
             {
                 Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
                "Retail Management System";
+
+                Loaded += (sender, e) =>
+                {
+                    if(!isAdmin)
+                        AdminTab.Visibility = Visibility.Hidden;
+                };
             }
             catch (System.Data.DataException entityEx)
             {
@@ -36,6 +43,7 @@ namespace RetailManagementSystem
                 Utility.ShowErrorBox("Unable to connect to the database");
                 Application.Current.Shutdown();
             }
+
        }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

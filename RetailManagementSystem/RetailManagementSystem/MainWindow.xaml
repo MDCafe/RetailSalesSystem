@@ -1,9 +1,7 @@
 ﻿<Window x:Class="RetailManagementSystem.MainWindow"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                 
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-        xmlns:s="clr-namespace:System;assembly=mscorlib"        
         xmlns:conv="clr-namespace:RetailManagementSystem.Converter"
         xmlns:pane="clr-namespace:RetailManagementSystem.View.Pane" 
         xmlns:report="clr-namespace:RetailManagementSystem.View"
@@ -12,14 +10,14 @@
         xmlns:MastersView="clr-namespace:RetailManagementSystem.View.Masters"
         xmlns:StockView ="clr-namespace:RetailManagementSystem.View.Stock"
         xmlns:AccountsView ="clr-namespace:RetailManagementSystem.View.Accounts"   
-        WindowStartupLocation="CenterScreen" WindowState="Maximized"
-        >
+        xmlns:GraphsView ="clr-namespace:RetailManagementSystem.View.Graphs"   
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" Icon="Images/RMSLogoIcon.jpg">
     <Window.Resources>
         <conv:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
     </Window.Resources>
     <Grid>
         <DockPanel>
-            <Ribbon  SelectedIndex="0" DockPanel.Dock="Top">
+            <Ribbon SelectedIndex="0" DockPanel.Dock="Top">
 
                 <!-- Help Pane, located at the right-hand side -->
                 <!--<Ribbon.HelpPaneContent>
@@ -108,7 +106,7 @@
 
                 </RibbonTab>
 
-                <!-- Ribbon Tab #2: Launch -->
+                <!-- Ribbon Tab #2: Maintenance -->
                 <RibbonTab Header="Maintenance" KeyTip="M">
                     <RibbonGroup x:Name="Maintenance" Header="Maintenance">
                         <RibbonButton Label="Customers" LargeImageSource="Images\Users.jpg" ToolTipTitle="Add/Edit Customers" 
@@ -120,6 +118,8 @@
                     </RibbonGroup>
 
                 </RibbonTab>
+
+                <!-- Ribbon Tab #3: Accounts -->
                 <RibbonTab Header="Accounts" KeyTip="A">
                     <RibbonGroup x:Name="Accounts" Header="Accounts">
                         <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
@@ -130,6 +130,14 @@
                                        KeyTip="RC" Command="{Binding OpenCustomerBillPaymentsReportCommand}" CommandParameter="false"></RibbonButton>
                         <RibbonButton Label="All Pending Credits" LargeImageSource="Images\Accounts.jpg" ToolTipTitle=" Complete pending credit" 
                                        KeyTip="PC" Command="{Binding OpenAllPendingCreditReportCommand}" CommandParameter="false"></RibbonButton>
+                    </RibbonGroup>
+                </RibbonTab>
+
+                <!-- Ribbon Tab #4: Admin -->
+                <RibbonTab Header="Admin" KeyTip="A" x:Name="AdminTab">
+                    <RibbonGroup x:Name="SalesAdmin" Header="Sales">
+                        <RibbonButton Label="Sales Graph" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Sales Graph" 
+                                       KeyTip="SG" Command="{Binding OpenSalesGraphCommand}"></RibbonButton>
                     </RibbonGroup>
                 </RibbonTab>
             </Ribbon>
@@ -242,7 +250,13 @@
                                 <report:ReportsViewer/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.ReportViewTemplate>
-                        
+
+                        <pane:PanesTemplateSelector.GraphViewTemplate>
+                            <DataTemplate>
+                                <GraphsView:Graphs/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.GraphViewTemplate>
+
                         <pane:PanesTemplateSelector.CustomerDataTemplate>
                             <DataTemplate>
                                 <MastersView:Customer/>

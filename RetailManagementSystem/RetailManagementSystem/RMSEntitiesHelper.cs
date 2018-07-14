@@ -137,6 +137,30 @@ namespace RetailManagementSystem
             //}
         }
 
+        public ObservableCollection<ProductPrice> GetProductPriceList(int companyId)
+        {
+            productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
+                                 " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                 " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                 " from Products p, PriceDetails pd, Stocks st " +
+                                 "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                 " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                 " union " +
+                                   "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
+                                   "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                   " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                   " from Products p, PriceDetails pd, Stocks st " +
+                                   " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                   " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                   " and St.ModifiedOn = " +
+                                   " (select max(ModifiedOn) from Stocks s " +
+                                    "   where s.ProductId = st.ProductId) " +
+                                   " order by ProductName ";
+            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQL));
+        }
+
         public decimal? GetLastSoldPrice(int productId,int customerId)
         {
             string lastSoldPriceSQL = "select sd.SellingPrice from sales s, saleDetails sd " +
@@ -202,6 +226,11 @@ namespace RetailManagementSystem
             var sql = "select RMS.GetSysDate()";
             var serverDateTime = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
             return serverDateTime.FirstOrDefault();
+        }
+
+        public bool IsAdmin(string userId)
+        {
+            return _rmsEntities.Users.Any(u => u.username == userId && u.RoleId == Constants.ADMIN);
         }
 
     }

@@ -18,6 +18,7 @@ using RetailManagementSystem.View.Masters;
 using RetailManagementSystem.ViewModel.Accounts;
 using RetailManagementSystem.View.Reports.Accounts;
 using RetailManagementSystem.ViewModel.Reports.Accounts;
+using RetailManagementSystem.ViewModel.Graphs;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -528,7 +529,6 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-
         #region Reports
 
         #region OpenDailySalesReportCommand
@@ -763,6 +763,50 @@ namespace RetailManagementSystem.ViewModel
             _documentViewModels.Add(rptViewModel);
             ActiveDocument = _documentViewModels.Last();
         }
+
+        #endregion
+
+        #region Graphs
+
+        #region OpenDailySalesReportCommand
+        RelayCommand<object> _openSalesGraphCommand = null;
+        public ICommand OpenSalesGraphCommand
+        {
+            get
+            {
+                if (_openSalesGraphCommand == null)
+                {
+                    _openSalesGraphCommand = new RelayCommand<object>((p) => OnOpenSalesGraphCommand(p));
+                }
+
+                return _openSalesGraphCommand;
+            }
+        }
+
+        private void OnOpenSalesGraphCommand(object showAll)
+        {
+            try
+            {
+                var showRestrictedCustomers = false;
+                if (showAll != null)
+                    showRestrictedCustomers = bool.Parse(showAll.ToString());
+
+                SalesGraphViewModel SalesGraphViewModel = new SalesGraphViewModel();
+                _documentViewModels.Add(SalesGraphViewModel);
+                ActiveDocument = _documentViewModels.Last();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
 
         #endregion
 

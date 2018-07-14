@@ -466,6 +466,7 @@ order by sd.id asc</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>#,0.00;(#,0.00)</Format>
                                     <Color>White</Color>
                                   </Style>
                                 </TextRun>
@@ -488,6 +489,7 @@ order by sd.id asc</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -543,6 +545,7 @@ order by sd.id asc</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>#,0.00;(#,0.00)</Format>
                                     <Color>White</Color>
                                   </Style>
                                 </TextRun>
@@ -620,6 +623,7 @@ order by sd.id asc</CommandText>
                                   <Style>
                                     <FontFamily>Tahoma</FontFamily>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>#,0.00;(#,0.00)</Format>
                                     <Color>White</Color>
                                   </Style>
                                 </TextRun>

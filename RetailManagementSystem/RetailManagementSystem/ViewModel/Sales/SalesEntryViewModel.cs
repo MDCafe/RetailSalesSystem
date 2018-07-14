@@ -865,7 +865,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //}
                 decimal? oldvalue;
 
-                _totalAmount = _extensions.Calculate(_totalAmount.Value);
+                //_totalAmount = _extensions.Calculate(_totalAmount.Value);
                 //Find the sale item again as the context is different
                 var sale =  rmsEntities.Sales.Find(_billSales.BillId);
                 //sale = _billSales;

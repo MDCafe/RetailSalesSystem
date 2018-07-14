@@ -51,7 +51,7 @@ namespace RetailManagementSystem.View.Purchases
                 _purchaseEntryViewModel = DataContext as PurchaseEntryViewModel;
                 custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
-                _purchaseEntryViewModel.notifierCollectionChangedEvent +=() =>
+                _purchaseEntryViewModel.NotifierCollectionChangedEvent +=() =>
                 {
                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
                     {

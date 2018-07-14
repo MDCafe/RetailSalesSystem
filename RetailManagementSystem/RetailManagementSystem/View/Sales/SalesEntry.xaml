@@ -106,7 +106,7 @@
                                       SelectionMode="Single" Grid.ColumnSpan="5"
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
-                                      CanUserSortColumns="False" CanUserReorderColumns="False">
+                                      CanUserSortColumns="False" CanUserReorderColumns="False" VirtualizingPanel.IsVirtualizing="True">
                
                 <toolKit:DataGrid.Resources>
                     <Style TargetType="DataGridRow">

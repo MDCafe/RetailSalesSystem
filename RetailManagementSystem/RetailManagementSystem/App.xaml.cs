@@ -1,6 +1,7 @@
 ﻿using log4net;
+using RetailManagementSystem.View.Entitlements;
 using System.Windows;
-
+ 
 namespace RetailManagementSystem
 {
     /// <summary>
@@ -13,7 +14,25 @@ namespace RetailManagementSystem
         public App()
         {
             DispatcherUnhandledException += App_DispatcherUnhandledException;
-            //ShutdownMode = ShutdownMode.OnMainWindowClose;
+        }
+
+        private void ApplicationStart(object sender, StartupEventArgs e)
+        {
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            var login = new Login();
+            var result = login.ShowDialog();
+            if (!result.Value)
+            {
+                this.Shutdown();
+                return;
+            }
+
+            var isAdmin = RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text.Trim());
+
+            var mainWindow = new MainWindow(isAdmin);
+            mainWindow.ShowActivated = true;
+            mainWindow.ShowDialog();
+            this.Shutdown();
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
