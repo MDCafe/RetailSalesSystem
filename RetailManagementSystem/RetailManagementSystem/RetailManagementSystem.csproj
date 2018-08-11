@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>50</ApplicationRevision>
+    <ApplicationRevision>51</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -307,6 +307,9 @@
     <Compile Include="StockTransaction.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SystemData.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="User.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -557,6 +560,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -575,6 +581,7 @@
     </None>
     <Resource Include="Images\Accounts.jpg" />
     <Resource Include="Images\RMSLogoIcon.jpg" />
+    <Resource Include="Images\DateChange.png" />
     <Content Include="View\Reports\Stock\StockBalance.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

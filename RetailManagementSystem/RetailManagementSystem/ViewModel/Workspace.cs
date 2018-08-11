@@ -810,6 +810,49 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region System Operations
+
+        RelayCommand<object> _changeSystemDBDateCommand = null;
+        public ICommand ChangeSystemDBDateCommand
+        {
+            get
+            {
+                if (_changeSystemDBDateCommand == null)
+                {
+                    _changeSystemDBDateCommand = new RelayCommand<object>((p) => OnChangeSystemDBDateCommand(p));
+                }
+
+                return _changeSystemDBDateCommand;
+            }
+        }
+
+        private void OnChangeSystemDBDateCommand(object showAll)
+        {
+            try
+            {
+                if (RMSEntitiesHelper.Instance.CheckSystemDBDate())
+                {
+                    Utility.ShowErrorBox("System Date is already changed to next date");
+                    return;
+                }
+                var result =Utility.ShowMessageBoxWithOptions("Do you want to change the system date to tommorrow's date?", System.Windows.MessageBoxButton.YesNo);
+                if(result ==  System.Windows.MessageBoxResult.No) return;
+
+                RMSEntitiesHelper.Instance.UpdateSystemDBDate();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
+
+        #endregion
+
         internal bool Close(DocumentViewModel doc)
         {
             {

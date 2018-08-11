@@ -56,6 +56,7 @@
         <EntityTypeShape EntityType="RMSEntities.StockTransaction" Width="1.5" PointX="12.75" PointY="18.625" />
         <AssociationConnector Association="RMSEntities.fk_stockId" />
         <EntityTypeShape EntityType="RMSEntities.DirectPaymentDetail" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RMSEntities.SystemData" Width="1.5" PointX="5.375" PointY="4.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

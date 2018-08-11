@@ -100,10 +100,11 @@
                                             Command="{Binding OpenStockBalanceReportCommand}"/>
                         </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
-
                     </RibbonGroup>
-
-
+                    <RibbonGroup x:Name="SystemData" Header="System Data">
+                        <RibbonButton Label="Mark End of Day" LargeImageSource="Images\DateChange.png" 
+                                       Command="{Binding ChangeSystemDBDateCommand}"/>
+                    </RibbonGroup>
                 </RibbonTab>
 
                 <!-- Ribbon Tab #2: Maintenance -->

@@ -44,8 +44,9 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Content="Date :" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"/>
-            <DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
-                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>
+            <TextBlock Text="{Binding TranscationDate, StringFormat='dd/MM/yyyy'}" Grid.Row="0" Grid.Column="1" Margin="5"/>
+            <!--<DatePicker Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday" IsEnabled="False"
+                        SelectedDateFormat="Short" SelectedDate="{Binding TranscationDate}" BorderThickness="0" Grid.Column="1" Margin="0,5,0,0" Height="25"/>-->
             <Label Content="Customer Name :" Grid.Row="0" Grid.Column="2" Margin="0,5,0,0"/>
             <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  HorizontalContentAlignment="Stretch" SelectedValuePath=""
                       ItemsSource="{Binding CustomersList}"  IsEditable="True"                                  

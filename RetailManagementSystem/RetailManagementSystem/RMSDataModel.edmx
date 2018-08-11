@@ -351,6 +351,13 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="SystemData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="SysDate" Type="date" />
+        </EntityType>
         <EntityType Name="Users">
           <Key>
             <PropertyRef Name="Id" />
@@ -713,6 +720,7 @@
           <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
@@ -1365,6 +1373,7 @@
             <End Role="StockTransaction" EntitySet="StockTransactions" />
           </AssociationSet>
           <EntitySet Name="DirectPaymentDetails" EntityType="RMSEntities.DirectPaymentDetail" />
+          <EntitySet Name="SystemDatas" EntityType="RMSEntities.SystemData" />
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1698,6 +1707,13 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="PaymentDate" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="SystemData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="SysDate" Type="DateTime" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2079,6 +2095,14 @@
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemDatas">
+            <EntityTypeMapping TypeName="RMSEntities.SystemData">
+              <MappingFragment StoreEntitySet="SystemData">
+                <ScalarProperty Name="SysDate" ColumnName="SysDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

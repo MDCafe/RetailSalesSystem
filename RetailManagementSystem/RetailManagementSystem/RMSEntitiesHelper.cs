@@ -86,7 +86,6 @@ namespace RetailManagementSystem
             Monitor.Exit(_salesNotifierList);
         }
 
-
         public void AddPurchaseNotifier(INotifier notifier)
         {
             Monitor.Enter(_salesNotifierList);
@@ -233,6 +232,43 @@ namespace RetailManagementSystem
             return _rmsEntities.Users.Any(u => u.username == userId && u.RoleId == Constants.ADMIN);
         }
 
+        public DateTime GetSystemDBDate()
+        {
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {
+                return rmsEntities.SystemDatas.First().SysDate.Value;
+            }
+        }
+
+        public void UpdateSystemDBDate()
+        {
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {
+                var systemDBDate = rmsEntities.SystemDatas.FirstOrDefault();
+                if (systemDBDate == null) return;
+
+                var newDate = systemDBDate.SysDate.Value.AddDays(1);
+                systemDBDate.SysDate = newDate;
+                rmsEntities.Entry<SystemData>(systemDBDate).State = System.Data.Entity.EntityState.Modified;
+                rmsEntities.SaveChanges();
+
+            }
+        }
+
+        public bool CheckSystemDBDate()
+        {
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {
+                var systemDBDate = rmsEntities.SystemDatas.FirstOrDefault();
+                if (systemDBDate == null) return false;
+                
+                var serverDate = GetServerDate().AddDays(1);
+                if (serverDate.Date.Ticks == systemDBDate.SysDate.Value.Ticks)
+                    return true;
+
+                return false;
+            }
+        }
     }
 
     public class  CustomerBill

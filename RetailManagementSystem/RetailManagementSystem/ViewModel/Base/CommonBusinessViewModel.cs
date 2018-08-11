@@ -153,7 +153,7 @@ namespace RetailManagementSystem.ViewModel.Base
             PaymentMode pm = new PaymentMode();
             _paymentModes = pm.PaymentModes;
             //_productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
-            _transcationDate = DateTime.Now;
+            _transcationDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
             SelectedPaymentId = '0';
             RefreshProductList();
         }
