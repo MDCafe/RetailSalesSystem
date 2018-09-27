@@ -73,7 +73,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     
                     //Title = "Sales Entry";
                     RMSEntitiesHelper.Instance.AddNotifier(this);
-                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
                     return;
                 }
 
@@ -96,7 +96,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             
             //Title = "Sales Entry";
             RMSEntitiesHelper.Instance.AddNotifier(this);
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
             //SaveDataTemp();            
         }
        
@@ -541,7 +541,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                         //RemoveTempSalesItemForGUID(_guid);
                         //this is done to get the latest bill no
-                        RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                        RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
                         _billSales.RunningBillNo = _runningBillNo;
 
                         var _category = rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
@@ -1040,7 +1040,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             TotalAmount = null;
             AmountPaid = 0.0M;            
             _extensions.Clear();
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
             _isEditMode = false;
             TotalDiscountAmount = null;
             TotalDiscountPercent = null;

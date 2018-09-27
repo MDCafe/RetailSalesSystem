@@ -100,7 +100,7 @@ namespace RetailManagementSystem
             Monitor.Exit(_salesNotifierList);
         }
 
-        public void SelectRunningBillNo(int categoryId,
+        public void SelectRunningBillNo(int categoryId,bool onload,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
@@ -108,10 +108,12 @@ namespace RetailManagementSystem
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
             var salesNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
 
-            //Purhcase or sales is done, refresh the purchase & sales screens product list
-            _salesNotifierList.ForEach(s => s.NotifyPurchaseUpdate());
-            _purchaseNotifierList.ForEach(p => p.NotifyPurchaseUpdate());
-
+            if (!onload)
+            {
+                //Purhcase or sales is done, refresh the purchase & sales screens product list
+                _salesNotifierList.ForEach(s => s.NotifyPurchaseUpdate());
+                _purchaseNotifierList.ForEach(p => p.NotifyPurchaseUpdate());
+            }
             if (sourceFilePath.Contains("PurchaseEntryViewModel"))
             {
                 foreach (var purchaseNotifyList in _purchaseNotifierList)
@@ -138,26 +140,26 @@ namespace RetailManagementSystem
 
         public ObservableCollection<ProductPrice> GetProductPriceList(int companyId)
         {
-            productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
-                                 " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                 " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
-                                 " from Products p, PriceDetails pd, Stocks st " +
-                                 "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                 " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
-                                 " union " +
-                                   "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
-                                   "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                   " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
-                                   " from Products p, PriceDetails pd, Stocks st " +
-                                   " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                   " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
-                                   " and St.ModifiedOn = " +
-                                   " (select max(ModifiedOn) from Stocks s " +
-                                    "   where s.ProductId = st.ProductId) " +
-                                   " order by ProductName ";
-            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQL));
+           var productsPriceSQLCompany = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
+                                         " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                         " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                         " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                         " from Products p, PriceDetails pd, Stocks st " +
+                                         "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                         " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                         " union " +
+                                           "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
+                                           "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                           " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                           " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                           " from Products p, PriceDetails pd, Stocks st " +
+                                           " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                           " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                           " and St.ModifiedOn = " +
+                                           " (select max(ModifiedOn) from Stocks s " +
+                                            "   where s.ProductId = st.ProductId) " +
+                                           " order by ProductName ";
+            return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQLCompany));
         }
 
         public decimal? GetLastSoldPrice(int productId,int customerId)

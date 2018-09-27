@@ -318,7 +318,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         return;
                     }
                     var purchaseRtn = _rmsEntities.PurchaseReturns.FirstOrDefault(r => r.ProductId == item.ProductId && r.PriceId == item.PriceId 
-                                                                && r.Quantity == item.ReturnQty);
+                                                                && r.Quantity == item.ReturnQty && r.BillId ==0 && r.ReturnPrice == item.ReturnPrice);
+
+                    if (purchaseRtn == null) continue;
                     purchaseRtn.BillId = _selectedPurchaseBillNo.BillId;
                     purchaseRtn.MarkedForReturn = false;
                     _rmsEntities.Entry<PurchaseReturn>(purchaseRtn).State = System.Data.Entity.EntityState.Modified;

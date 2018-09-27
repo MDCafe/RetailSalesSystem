@@ -49,7 +49,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             _purchaseParams = purchaseParams;
 
             RMSEntitiesHelper.Instance.AddPurchaseNotifier(this);
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
             
             if (purchaseParams != null)
             {
@@ -548,7 +548,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     }
 
 
-                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
                     purchase.RunningBillNo = _runningBillNo;
 
                     var _category = rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
@@ -998,7 +998,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             SelectedCompany = null;
             InvoiceNo = null;
             SelectedPaymentId = '0';
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
             RunningBillNo = _runningBillNo;
             CoolieCharges = null;
             KCoolieCharges = null;
