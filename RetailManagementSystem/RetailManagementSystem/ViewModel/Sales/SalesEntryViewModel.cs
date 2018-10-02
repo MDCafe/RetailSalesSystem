@@ -464,10 +464,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSave(object parameter)
         {
-            PanelLoading = true;
             //Validate for Errors
             if (!_isEditMode && !Validate()) return;
 
+            PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
             {
                 //RemoveProductWithNullValues();
@@ -623,6 +623,18 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if(!saleDetailItem.Qty.HasValue || !saleDetailItem.Amount.HasValue )
                 {
                     Utility.ShowErrorBox("Product Quantity or Amount can't be null");
+                    return false;
+                }
+
+                if(saleDetailItem.SellingPrice < ((saleDetailItem.CostPrice * 5/100) + saleDetailItem.CostPrice))
+                {
+                    Utility.ShowErrorBox("Selling Price can't be lower than 5% of cost price");
+                    return false;
+                }
+
+                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 40/100) + saleDetailItem.CostPrice))
+                {
+                    Utility.ShowErrorBox("Selling Price can't be more than 40% of cost price");
                     return false;
                 }
 
@@ -1183,60 +1195,64 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.SerialNo = ++selectedIndex;
                 SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
                 SaleDetailExtn.ProductId = productPrice.ProductId;
-                //if(SaleDetailExtn.Product == null)
-                  //  SaleDetailExtn.Product = new Product() { Name = productPrice.ProductName, Id = productPrice.ProductId, BarcodeNo = productPrice.BarCodeNo };  
+                //SaleDetailExtn.PriceToCalculate = SaleDetailExtn.SellingPrice;
             }
             //SaleDetailExtn.ProductName = productPrice.ProductName;
 
             //var customerSales = _rmsEntities.Sales.Where(s => s.CustomerId == _selectedCustomer.Id);//.OrderByDescending(d => d.ModifiedOn);
             var lastSoldPrice = RMSEntitiesHelper.Instance.GetLastSoldPrice(productPrice.ProductId, _selectedCustomer.Id);
-                if (lastSoldPrice != null)
-                {
-                    //var lastSaleDetail = customerSales. SaleDetails.Where(p => p.ProductId == productPrice.ProductId).OrderByDescending(d => d.ModifiedOn);
-                    //var lastSaleDetail1 = customerSales.SaleDetails.Where(p => p.ProductId == productPrice.ProductId);
-                    ////var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
+            if (lastSoldPrice != null)
+            {
+                //var lastSaleDetail = customerSales. SaleDetails.Where(p => p.ProductId == productPrice.ProductId).OrderByDescending(d => d.ModifiedOn);
+                //var lastSaleDetail1 = customerSales.SaleDetails.Where(p => p.ProductId == productPrice.ProductId);
+                ////var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
 
-                    SaleDetailExtn.LastSoldPrice = lastSoldPrice;
-                }
+                SaleDetailExtn.LastSoldPrice = lastSoldPrice;
+            }
 
-                //if (lastSoldDateByCustomer.Any())
-                //{
-                //    var lastSaleDetail = lastSoldDateByCustomer.FirstOrDefault().SaleDetails.Where(sd => sd.ProductId == productPrice.ProductId).FirstOrDefault();
+            SaleDetailExtn.SubscribeToAmountChange(() =>
+            {
+                TotalAmount = SaleDetailList.Sum(a => a.Amount);
+                //purchaseDetailExtn.CalculateCost(purchaseDetailExtn.FreeIssue);
+            });
+            //if (lastSoldDateByCustomer.Any())
+            //{
+            //    var lastSaleDetail = lastSoldDateByCustomer.FirstOrDefault().SaleDetails.Where(sd => sd.ProductId == productPrice.ProductId).FirstOrDefault();
 
-                //    var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
+            //    var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
 
-                //    SaleDetailExtn.LastSoldPrice = lastSoldPrice;
-                //}
+            //    SaleDetailExtn.LastSoldPrice = lastSoldPrice;
+            //}
 
 
-                SaleDetailExtn.PropertyChanged += (sender, e) =>
-                {
-                    var prop = e.PropertyName;
-                    if (prop == Constants.AMOUNT)
-                    {
-                        TotalAmount = SaleDetailList.Sum(a => a.Amount);
-                        return;
-                    }
-                    var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
-                    var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
-                                         amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
-                                         SaleDetailExtn.DiscountAmount != 0 ?
-                                         amount - SaleDetailExtn.DiscountAmount :
-                                         0;
+            //SaleDetailExtn.PropertyChanged += (sender, e) =>
+            //{
+            //    var prop = e.PropertyName;
+            //    if (prop == Constants.AMOUNT)
+            //    {
+            //        TotalAmount = SaleDetailList.Sum(a => a.Amount);
+            //        return;
+            //    }
+            //    var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
+            //    var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
+            //                         amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
+            //                         SaleDetailExtn.DiscountAmount != 0 ?
+            //                         amount - SaleDetailExtn.DiscountAmount :
+            //                         0;
 
-                    if (discountAmount != 0)
-                    {
-                        SaleDetailExtn.Amount = discountAmount;
-                        SaleDetailExtn.Discount = amount - discountAmount;
-                        return;
-                    }
+            //    if (discountAmount != 0)
+            //    {
+            //        SaleDetailExtn.Amount = discountAmount;
+            //        SaleDetailExtn.Discount = amount - discountAmount;
+            //        return;
+            //    }
 
-                    SaleDetailExtn.Amount = amount;
-                    SaleDetailExtn.Discount = 0;
-                };
-                //&& SaleDetailExtn.AvailableStock >
-                //SaleDetailExtn.Qty.Value
-                SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
+            //    SaleDetailExtn.Amount = amount;
+            //    SaleDetailExtn.Discount = 0;
+            //};
+            //&& SaleDetailExtn.AvailableStock >
+            //SaleDetailExtn.Qty.Value
+            SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
         }
 
         private bool CanSaveAs(object parameter)

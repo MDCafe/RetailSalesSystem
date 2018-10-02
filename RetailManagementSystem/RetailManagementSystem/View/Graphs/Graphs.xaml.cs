@@ -105,7 +105,7 @@ namespace RetailManagementSystem.View.Graphs
             }
 
                 var r = new Random();
-            var trend = 100;
+            //var trend = 100;
             var values = new ChartValues<DateTimePoint>();
 
             //for (var i = 1; i < 10; i++)

@@ -339,21 +339,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
             if (productPrice == null) return;
             //var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            //var saleItem = _purchaseDetailsList[selectedIndex];
-            //if (saleItem != null)
-            //{
-            //    Utility.ShowWarningBox("Item is already added");
-            //    selRowSaleDetailExtn.ProductId = 0;
-            //    return;
-            //}
             SetPurchaseDetailExtn(productPrice, saleItem,selectedIndex);
         }
 
         private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn, int selectedIndex)
         {
             if (purchaseDetailExtn != null)
-            {
-                //selectedRowSaleDetail.Qty = productPrice.Quantity;
+            { 
                 purchaseDetailExtn.PurchasePrice = productPrice.Price;
                 purchaseDetailExtn.OldCostPrice = productPrice.Price;
                 purchaseDetailExtn.CostPrice = productPrice.Price;
@@ -363,64 +355,63 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.SerialNo = ++selectedIndex;
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
-                //purchaseDetailExtn.ExpiryDate = DateTime.Now.AddMonths(9).AddDays(5);
 
-                //var stock = _rmsEntities.Stocks.Where(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId).FirstOrDefault();
-                //if (stock != null)
-                //{
-                //        //purchaseDetailExtn.ExpiryDate = stock.ExpiryDate;
-                //}
-
-                purchaseDetailExtn.PropertyChanged += (sender, e) =>
+                purchaseDetailExtn.SubscribeToAmountChange(() =>
                 {
-                    var prop = e.PropertyName;
-                    var totalQtyWithFreeIssue = 0.0M;
+                    TotalAmount = PurchaseDetailList.Sum(a => a.Amount);
+                    //purchaseDetailExtn.CalculateCost(purchaseDetailExtn.FreeIssue);
+                });
 
-                    if (purchaseDetailExtn.FreeIssue.HasValue)
-                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ?  purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value : 0;
-                    else
-                        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ? purchaseDetailExtn.Qty.Value : 0;
+                //purchaseDetailExtn.PropertyChanged += (sender, e) =>
+                //{
+                //    var prop = e.PropertyName;
+                //    var totalQtyWithFreeIssue = 0.0M;
 
-                    switch (e.PropertyName)
-                    {
-                        case Constants.FREE_ISSUE:
-                            {
-                                if (purchaseDetailExtn.Qty.HasValue && purchaseDetailExtn.FreeIssue.HasValue)
-                                {
-                                    purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
-                                }
-                                break;
-                            }
-                        case Constants.AMOUNT:
-                            {
-                                TotalAmount = _purchaseDetailsList.Sum(a => a.Amount);
-                                if (totalQtyWithFreeIssue == 0) return;
-                                purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
-                                break;
-                            }
-                    }
-                                       
-                    var amount = purchaseDetailExtn.PurchasePrice * purchaseDetailExtn.Qty;
-                    var discountAmount = purchaseDetailExtn.DiscountPercentage != 0 ?
-                                         amount - (amount * (purchaseDetailExtn.DiscountPercentage / 100)) :
-                                         purchaseDetailExtn.DiscountAmount != 0 ?
-                                         amount - purchaseDetailExtn.DiscountAmount :
-                                         0;
+                //    if (purchaseDetailExtn.FreeIssue.HasValue)
+                //        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ?  purchaseDetailExtn.Qty.Value + purchaseDetailExtn.FreeIssue.Value : 0;
+                //    else
+                //        totalQtyWithFreeIssue = purchaseDetailExtn.Qty.HasValue ? purchaseDetailExtn.Qty.Value : 0;
 
-                    if (discountAmount != 0)
-                    {
-                        purchaseDetailExtn.Amount = discountAmount;
-                        purchaseDetailExtn.Discount = amount - discountAmount;
-                        if (purchaseDetailExtn.Qty.HasValue)
-                        {
-                            purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
-                        }
-                        return;
-                    }
+                //    switch (e.PropertyName)
+                //    {
+                //        case Constants.FREE_ISSUE:
+                //            {
+                //                if (purchaseDetailExtn.Qty.HasValue && purchaseDetailExtn.FreeIssue.HasValue)
+                //                {
+                //                    purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
+                //                }
+                //                break;
+                //            }
+                //        case Constants.AMOUNT:
+                //            {
+                //                TotalAmount = _purchaseDetailsList.Sum(a => a.Amount);
+                //                if (totalQtyWithFreeIssue == 0) return;
+                //                purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
+                //                break;
+                //            }
+                //    }
 
-                    purchaseDetailExtn.Amount = amount;
-                    purchaseDetailExtn.Discount = 0;
-                };
+                //    var amount = purchaseDetailExtn.PurchasePrice * purchaseDetailExtn.Qty;
+                //    var discountAmount = purchaseDetailExtn.DiscountPercentage != 0 ?
+                //                         amount - (amount * (purchaseDetailExtn.DiscountPercentage / 100)) :
+                //                         purchaseDetailExtn.DiscountAmount != 0 ?
+                //                         amount - purchaseDetailExtn.DiscountAmount :
+                //                         0;
+
+                //    if (discountAmount != 0)
+                //    {
+                //        purchaseDetailExtn.Amount = discountAmount;
+                //        purchaseDetailExtn.Discount = amount - discountAmount;
+                //        if (purchaseDetailExtn.Qty.HasValue)
+                //        {
+                //            purchaseDetailExtn.CostPrice = purchaseDetailExtn.Amount.Value / totalQtyWithFreeIssue;
+                //        }
+                //        return;
+                //    }
+
+                //    purchaseDetailExtn.Amount = amount;
+                //    purchaseDetailExtn.Discount = 0;
+                //};
             }
         }
 
@@ -501,6 +492,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         purchaseDetail.Tax = item.Tax;
                         purchaseDetail.AddedOn = _transcationDate;
                         purchaseDetail.ModifiedOn = RMSEntitiesHelper.GetServerDate();
+                        purchaseDetail.VATAmount = item.VATAmount;
+                        purchaseDetail.ItemCoolieCharges = item.ItemCoolieCharges;
+                        purchaseDetail.ItemTransportCharges = item.ItemTransportCharges;
 
                         int priceId;
                         PriceDetail priceDetailItem;

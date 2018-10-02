@@ -25,6 +25,9 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
+        public Nullable<decimal> VATAmount { get; set; }
+        public Nullable<decimal> ItemCoolieCharges { get; set; }
+        public Nullable<decimal> ItemTransportCharges { get; set; }
     
         public virtual PriceDetail PriceDetail { get; set; }
         public virtual Product Product { get; set; }
