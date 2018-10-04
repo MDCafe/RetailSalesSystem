@@ -626,15 +626,15 @@ namespace RetailManagementSystem.ViewModel.Sales
                     return false;
                 }
 
-                if(saleDetailItem.SellingPrice < ((saleDetailItem.CostPrice * 5/100) + saleDetailItem.CostPrice))
+                if(saleDetailItem.SellingPrice < ((saleDetailItem.CostPrice * 3/100) + saleDetailItem.CostPrice))
                 {
-                    Utility.ShowErrorBox("Selling Price can't be lower than 5% of cost price");
+                    Utility.ShowErrorBox("Selling Price can't be lower than 3% of cost price");
                     return false;
                 }
 
-                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 40/100) + saleDetailItem.CostPrice))
+                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 150/100) + saleDetailItem.CostPrice))
                 {
-                    Utility.ShowErrorBox("Selling Price can't be more than 40% of cost price");
+                    Utility.ShowErrorBox("Selling Price can't be more than 150% of cost price");
                     return false;
                 }
 

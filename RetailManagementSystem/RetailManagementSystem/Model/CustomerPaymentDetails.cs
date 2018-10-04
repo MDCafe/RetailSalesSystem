@@ -11,7 +11,7 @@ namespace RetailManagementSystem.Model
         public decimal CurrentAmountPaid { get; set; }
         public decimal BalanceAmount { get; set; }
         public decimal TotalAmount { get; set; }
-        public DateTime AddedOn { get; set; }
+        //public DateTime AddedOn { get; set; }
         public CodeMaster PaymentMode { get; set; }
         public int? ChequeNo { get; set; }
         public DateTime? ChequeDate { get; set; }

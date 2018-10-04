@@ -16,17 +16,17 @@ CASE
     END AS 'Cancelled',
 RunningBillNo,s.addedOn,
 sum(sd.Discount) + if(isnull(s.discount),0,s.discount) Discount,
-(sum(sd.sellingprice *sd.qty) - (sum(sd.Discount) + if(isnull(s.discount),0,s.discount))) + s.TransportCharges TotalAmount,
+(sum(sd.sellingprice *sd.qty) - (sum(if(isnull(sd.discount),0,sd.discount)) + if(isnull(s.discount),0,s.discount))) + s.TransportCharges TotalAmount,
 CASE
         WHEN s.PaymentMode = '0' AND (isnull(s.AmountPaid) = 1 OR s.AmountPaid = 0) THEN 
-					(sum(sd.sellingprice *sd.qty) - (sum(sd.Discount) + if(isnull(s.discount),0,s.discount)))
+					(sum(sd.sellingprice *sd.qty) - (sum(if(isnull(sd.discount),0,sd.discount)) + if(isnull(s.discount),0,s.discount)))
 					+ s.TransportCharges
         ELSE 
 			s.AmountPaid
     END AS 'Cash Sales',
     CASE
         WHEN PaymentMode = '1'  THEN 
-				(sum(sd.sellingprice *sd.qty) - (sum(sd.Discount) + if(isnull(s.discount),0,s.discount))) 
+				(sum(sd.sellingprice *sd.qty) - (sum(if(isnull(sd.discount),0,sd.discount)) + if(isnull(s.discount),0,s.discount))) 
                 -(if(isnull(s.AmountPaid),0,s.AmountPaid)) + s.TransportCharges 
         ELSE NULL
     END AS 'Credit Sales'
