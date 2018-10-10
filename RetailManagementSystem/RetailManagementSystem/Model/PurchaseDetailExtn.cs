@@ -61,7 +61,7 @@ namespace RetailManagementSystem.Model
                     CostPrice = PurchasePrice.Value + GetCoolieCharges() + GetTransportCharges();
                     var coolieCharges = _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
                     CalculateAmount();
-                    Amount += coolieCharges;
+                    //Amount += coolieCharges;
                 }
             }
         }
@@ -80,12 +80,14 @@ namespace RetailManagementSystem.Model
 
         private decimal GetCoolieCharges()
         {
+            if (!Qty.HasValue) return 0;
             var coolieCharges = _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
             return coolieCharges / Qty.Value;
         }
 
         private decimal GetTransportCharges()
         {
+            if (!Qty.HasValue) return 0;
             var transportCharges = _itemTransportCharges.HasValue ? _itemTransportCharges.Value : 0;
             return transportCharges / Qty.Value;
         }
@@ -118,7 +120,7 @@ namespace RetailManagementSystem.Model
                 return;
             }
 
-            Amount = amount;
+            Amount = amount + GetCoolieCharges();
         }
     }
 

@@ -1065,7 +1065,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                     var purchaseDetailExtn = new PurchaseDetailExtn()
                     {
-                        Discount = item.Discount,
+                        PurchasePrice = item.ActualPrice,
+                        Discount = item.Discount.HasValue ? item.Discount.Value : 0,
                         PriceId = item.PriceId.Value,
                         ProductId = item.ProductId.Value,
                         Qty = item.PurchasedQty - freeIssueQty,
@@ -1077,13 +1078,15 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         Amount = item.ActualPrice * (item.PurchasedQty - freeIssueQty),
                         ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, 
                         DateTimeStyles.None),
-                        PropertyReadOnly  = true
+                        PropertyReadOnly  = true,
+                        ItemCoolieCharges = item.ItemCoolieCharges,
+                        ItemTransportCharges = item.ItemTransportCharges
                     };
 
                     _purchaseDetailsList.Add(purchaseDetailExtn);
                     SetPurchaseDetailExtn(productPrice, purchaseDetailExtn,i);
                     purchaseDetailExtn.PurchasePrice = item.ActualPrice;
-                    purchaseDetailExtn.DiscountAmount = item.Discount.Value;
+                    purchaseDetailExtn.DiscountAmount = item.Discount.HasValue ? item.Discount.Value : 0;
 
                     purchaseDetailExtn.FreeIssue = freeIssueQty;
 

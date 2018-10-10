@@ -17,7 +17,9 @@ SELECT
     pr.SellingPrice,
     purchdet.PurchasedQty,
     purchdet.ActualPrice,
-    purchdet.Discount ItemDiscount    
+    purchdet.Discount ItemDiscount,
+    purchdet.ItemCoolieCharges Coolie,
+    purchdet.ItemTransportCharges Trans
 FROM purchasedetails purchdet Join PriceDetails pr on purchdet.PriceId = pr.PriceId
 							  Join Products prod on  purchdet.ProductId = prod.Id
                               left join PurchaseFreeDetails pfd on purchdet.BillId = pfd.BillId and pfd.ProductId = prod.Id

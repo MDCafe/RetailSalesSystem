@@ -7,17 +7,17 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 
-
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class AmendSalesViewModel : SalesViewModelbase
+    class AmendSalesViewModel : ViewModelBase
     {
         bool _showRestrictedCustomers;                
         Customer _selectedCustomer;               
         string _selectedCustomerText;
         IEnumerable<Sale> _billList;
         RMSEntities _rmsEntities;
-        
+        int _categoryId;
+
         public int? BillNo { get; set; }
         public string BillNoText { get; set; }
 
@@ -64,17 +64,22 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendSalesViewModel(bool showRestrictedCustomers) : base(showRestrictedCustomers)
+        public AmendSalesViewModel(bool showRestrictedCustomers) 
         {
             _rmsEntities = new RMSEntities();
             _showRestrictedCustomers = showRestrictedCustomers;            
-            _rmsEntities.Customers.ToList();                      
+            _rmsEntities.Customers.ToList();
             
+            if (_showRestrictedCustomers)
+                _categoryId = Constants.CUSTOMERS_OTHERS;
+            else
+                _categoryId = Constants.CUSTOMERS_HOTEL;
+
         }
 
         #region Clear Command
 
-        override internal void Clear()
+        internal void Clear()
         {
             BillNo = null;
             SelectedCustomer = null;
@@ -103,7 +108,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId, window);
             if (customerBill == null) return;
 
-            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomer, BillNo);
+            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomers, BillNo);
             salesReportVM.ShowPrintReceiptButton = Visibility.Visible;
             salesReportVM.RunningBillNo = BillNo;
             salesReportVM.PrintCommand.Execute(window);
@@ -149,7 +154,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId,ShowAllCustomers = _showRestrictedCustomer};
+            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId,ShowAllCustomers = _showRestrictedCustomers};
 
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);
@@ -184,6 +189,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (window != null)
             {
                 window.Close();
+                _rmsEntities.Dispose();
             }
         }
         #endregion

@@ -620,6 +620,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (saleDetailItem.ProductId == 0) continue;
 
+                if (saleDetailItem.Qty < 0 || saleDetailItem.SellingPrice == 0) continue;
+
                 if(!saleDetailItem.Qty.HasValue || !saleDetailItem.Amount.HasValue )
                 {
                     Utility.ShowErrorBox("Product Quantity or Amount can't be null");
@@ -956,7 +958,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void SetSaleDetailItem(SaleDetailExtn saleDetailItemExtn, SaleDetail saleDetail)
         {
-            saleDetail.Discount = saleDetailItemExtn.DiscountAmount;
+            saleDetail.Discount = saleDetailItemExtn.Discount;
             saleDetail.PriceId = saleDetailItemExtn.PriceId;
             saleDetail.ProductId = saleDetailItemExtn.ProductId;
             saleDetail.Qty = saleDetailItemExtn.Qty; 

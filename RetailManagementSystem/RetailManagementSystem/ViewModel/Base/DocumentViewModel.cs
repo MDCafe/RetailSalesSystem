@@ -11,27 +11,15 @@ namespace RetailManagementSystem.ViewModel.Base
     /// </summary>
     internal abstract class DocumentViewModel : PaneViewModel
   {
+
         #region Fields
-        private string _windowTitle;
         bool _panelLoading;
         #endregion Fields
 
         #region properties
 
 
-        public string WindowName
-        {
-            get
-            {
-                //if (_windowTitle == null)
-                //    return "New Window" + (IsDirty ? "*" : "");
-                return _windowTitle;            
-            }
-            set
-            {
-                _windowTitle = value;
-            }
-        }
+        public string WindowName { get; set; }
 
         public bool IsDirty { get; set; }
 

@@ -1,23 +1,24 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Collections.Generic;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel.Base;
-using System.Collections.Generic;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Reports.Purhcases;
+using RetailManagementSystem.ViewModel.Base;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class AmendPurchasesViewModel : PurchaseViewModelbase
+    class AmendPurchasesViewModel : ViewModelBase
     {
         bool _showRestrictedSuppliers;                
         Company _selectedSupplier;               
         string _selectedSupplierText;
         IEnumerable<Purchase> _billList;
         RMSEntities _rmsEntities;
-        
+        protected int _categoryId;
+
         public int? BillNo { get; set; }
         public string BillNoText { get; set; }
 
@@ -63,16 +64,21 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendPurchasesViewModel(bool showRestrictedSuppliers) : base(showRestrictedSuppliers)
+        public AmendPurchasesViewModel(bool showRestrictedSuppliers)
         {
             _showRestrictedSuppliers = showRestrictedSuppliers;
+            if (_showRestrictedSuppliers)
+                _categoryId = Constants.COMPANIES_OTHERS;
+            else
+                _categoryId = Constants.COMPANIES_MAIN;
+
             _rmsEntities = new RMSEntities();          
             _rmsEntities.Companies.ToList();           
         }
 
         #region Clear Command
        
-        override internal void Clear()
+        internal void Clear()
         {
             BillNo = null;
             SelectedSupplier = null;
@@ -100,7 +106,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId, window);
             if (companyBill == null) return;
 
-            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies,BillNo);
+            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedSuppliers,BillNo);
             psummVM.RunningBillNo = BillNo;
             psummVM.PrintCommand.Execute(null);
             _closeWindowCommand.Execute(window);
@@ -144,7 +150,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId,ShowAllCompanies = _showRestrictedCompanies };
+            var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId,ShowAllCompanies = _showRestrictedSuppliers };
 
             Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
             _closeWindowCommand.Execute(window);
@@ -179,6 +185,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (window != null)
             {
                 window.Close();
+                _rmsEntities.Dispose();
             }
         }
         #endregion

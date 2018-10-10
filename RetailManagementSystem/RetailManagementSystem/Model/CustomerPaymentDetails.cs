@@ -4,8 +4,8 @@ namespace RetailManagementSystem.Model
 {
     class CustomerPaymentDetails : BaseModel
     {
-        public int SerialNo { get; set; }
-        public int BillId { get; set; }
+        //public int SerialNo { get; set; }
+        //public int BillId { get; set; }
         public int RunningBillNo { get; set; }
         public decimal AmountPaid { get; set; }
         public decimal CurrentAmountPaid { get; set; }
