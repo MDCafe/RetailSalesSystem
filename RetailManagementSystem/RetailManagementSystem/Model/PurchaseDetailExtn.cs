@@ -4,11 +4,12 @@ namespace RetailManagementSystem.Model
 {
     class PurchaseDetailExtn : BaseModel
     {
-        
+
         private decimal? _freeIssue;
         private decimal? _itemCoolieCharges;
         private decimal? _itemTransportCharges;
         private decimal? _purchasePrice;
+        private decimal? _vATAmount;
 
         public decimal? PurchasePrice
         {
@@ -51,16 +52,21 @@ namespace RetailManagementSystem.Model
         public decimal? OldCostPrice { get; set; }
         public decimal? OldSellingPrice { get; set; }
         public decimal? Tax { get; set; }
-        public decimal? VATAmount { get; set; }
-        public decimal? ItemCoolieCharges { get => _itemCoolieCharges;
+
+        public decimal? VATAmount { get => _vATAmount; set { _vATAmount = value;CalculateAmount(); } }
+
+        public decimal? ItemCoolieCharges
+        {
+            get => _itemCoolieCharges;
             set
             {
                 if (value != _itemCoolieCharges)
                 {
                     _itemCoolieCharges = value;
-                    CostPrice = PurchasePrice.Value + GetCoolieCharges() + GetTransportCharges();
-                    var coolieCharges = _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
+                    //CostPrice = PurchasePrice.Value + GetCoolieCharges() + GetTransportCharges();
+                    //var coolieCharges = _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
                     CalculateAmount();
+                    CalculateCost();
                     //Amount += coolieCharges;
                 }
             }
@@ -73,16 +79,23 @@ namespace RetailManagementSystem.Model
                 if (value != _itemTransportCharges)
                 {
                     _itemTransportCharges = value;
-                    CostPrice = PurchasePrice.Value + GetCoolieCharges() + GetTransportCharges();
+                    //CostPrice = PurchasePrice.Value + GetCoolieCharges() + GetTransportCharges();
+                    CalculateCost();
+                    //CostPrice = +GetTransportCharges();
                 }
             }
+        }
+
+        private decimal GetCoolieChargesPerItem()
+        {
+            if (!Qty.HasValue) return 0;            
+            return GetCoolieCharges() / Qty.Value;
         }
 
         private decimal GetCoolieCharges()
         {
             if (!Qty.HasValue) return 0;
-            var coolieCharges = _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
-            return coolieCharges / Qty.Value;
+            return _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
         }
 
         private decimal GetTransportCharges()
@@ -92,7 +105,7 @@ namespace RetailManagementSystem.Model
             return transportCharges / Qty.Value;
         }
 
-        public void CalculateCost()
+        protected override void CalculateCost()
         {
             if (Qty == null) return;
             var totalQtyWithFreeIssue = 0.0M;
@@ -101,27 +114,36 @@ namespace RetailManagementSystem.Model
             else
                 totalQtyWithFreeIssue = Qty.HasValue ? Qty.Value : 0;
 
-            CostPrice = Amount.Value / totalQtyWithFreeIssue;
+            var amount = PurchasePrice.Value * Qty.Value;
+            decimal calcDiscountAmount = GetDiscountAmount(amount);
+
+            CostPrice = (amount / totalQtyWithFreeIssue) - (calcDiscountAmount != 0 ? calcDiscountAmount : 0m) + GetTransportCharges() + GetCoolieChargesPerItem();
+            //if (_itemTransportCharges.HasValue)
+            //    CostPrice += GetTransportCharges();
+
+            //if (_itemCoolieCharges.HasValue)
+            //    CostPrice += GetCoolieChargesPerItem();
         }
 
         public override void CalculateAmount()
         {
-            var amount = PurchasePrice * Qty;
-            var discountAmount = DiscountPercentage != 0 ?
-                                 amount - (amount * (DiscountPercentage / 100)) :
-                                 DiscountAmount != 0 ?
-                                 amount - DiscountAmount :
-                                 0;
+            if (!PurchasePrice.HasValue || !Qty.HasValue) return;
+            var amount = PurchasePrice.Value * Qty.Value;
+            decimal discountAmount = GetDiscountAmount(amount);
 
             if (discountAmount != 0)
             {
-                Amount = discountAmount;
-                Discount = amount - discountAmount;
+                Amount = (amount + GetCoolieCharges() + GetVatAmount()) - discountAmount;
+                Discount = discountAmount;
                 return;
             }
 
-            Amount = amount + GetCoolieCharges();
+            Amount = (amount + GetCoolieCharges() + GetVatAmount()) - discountAmount;
         }
+
+        
+
+        private decimal GetVatAmount() => VATAmount.HasValue ? VATAmount.Value : 0m;
     }
 
     class ReturnPurchaseDetailExtn : PurchaseDetailExtn

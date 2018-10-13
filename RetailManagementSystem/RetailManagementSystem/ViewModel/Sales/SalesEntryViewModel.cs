@@ -887,10 +887,12 @@ namespace RetailManagementSystem.ViewModel.Sales
                 sale.TotalAmount = _totalAmount;
                 sale.ModifiedOn = _billSales.ModifiedOn;
                 sale.PaymentMode = _billSales.PaymentMode;
-                sale.TransportCharges  = _extensions.GetPropertyValue("TransportCharges", out oldvalue);
+                sale.TransportCharges  = _extensions.GetPropertyValue("TransportCharges", out oldvalue);                
                 sale.CustomerOrderNo = _billSales.CustomerOrderNo;
                 sale.Discount = GetDiscountValue();
-                
+                //This is for printing purpose
+                _billSales.TransportCharges = sale.TransportCharges;
+
                 rmsEntities.Entry(sale).State = EntityState.Modified;
 
                 rmsEntities.SaveChanges();
@@ -1042,7 +1044,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         override internal void Clear()
         {
-            RefreshProductList();
+            //RefreshProductList();
             var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
             SelectedCustomer = _customerList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
             SelectedCustomerText = SelectedCustomer.Name;

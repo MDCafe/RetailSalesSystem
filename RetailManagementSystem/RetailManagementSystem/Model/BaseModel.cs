@@ -159,7 +159,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _discount = value;
-                CalculateAmount();
+                //CalculateAmount();
                 OnPropertyChanged("Discount");
             }
         }
@@ -255,8 +255,8 @@ namespace RetailManagementSystem.Model
 
         public decimal CostPrice { get; set; }
 
-        public decimal DiscountPercentage { get => _discountPercentage; set { _discountPercentage = value; CalculateAmount(); } }
-        public decimal DiscountAmount { get => _discountAmount; set { _discountAmount = value; CalculateAmount(); } }
+        public decimal DiscountPercentage { get => _discountPercentage; set { _discountPercentage = value; CalculateAmount(); CalculateCost(); } }
+        public decimal DiscountAmount { get => _discountAmount; set { _discountAmount = value; CalculateAmount(); CalculateCost(); } }
         public decimal AvailableStock { get; set; }
         public bool PropertyReadOnly
         {
@@ -311,21 +311,20 @@ namespace RetailManagementSystem.Model
 
         public virtual void CalculateAmount()
         {
-            var amount = SellingPrice * Qty;
-            var discountAmount = DiscountPercentage != 0 ?
-                                 amount - (amount * (DiscountPercentage / 100)) :
-                                 DiscountAmount != 0 ?
-                                 amount - DiscountAmount :
-                                 0;
+            if (!SellingPrice.HasValue || !Qty.HasValue) return;
+            var amount = SellingPrice.Value * Qty.Value;
+            decimal discountAmount = GetDiscountAmount(amount);
+            Amount = amount - discountAmount;
+            Discount = discountAmount;
+        }
 
-            if (discountAmount != 0)
-            {
-                Amount = discountAmount;
-                Discount = amount - discountAmount;
-                return;
-            }
+        protected virtual void CalculateCost() { }
 
-            Amount = amount;
+        protected decimal GetDiscountAmount(decimal amount)
+        {
+            var dispercentAmt = DiscountPercentage != 0 ? (amount * (DiscountPercentage / 100)) : 0m;
+            var disAmt = DiscountAmount != 0 ? DiscountAmount : 0m;
+            return dispercentAmt + disAmt;
         }
 
         public virtual void OnPropertyChanged(string propertyName)
@@ -337,6 +336,7 @@ namespace RetailManagementSystem.Model
                 propertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
 
 
         public void SubscribeToAmountChange(AmountChanged amountChangedDelegate)
