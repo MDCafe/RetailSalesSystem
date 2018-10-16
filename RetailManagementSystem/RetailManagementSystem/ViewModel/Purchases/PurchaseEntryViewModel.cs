@@ -124,7 +124,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                  ApplyDiscountToItemCostPrice(_totalDiscountAmount);
                 
 
-                if (_totalDiscountAmount.HasValue)
+                if (_totalDiscountAmount.HasValue && _totalDiscountAmount != 0)
                     DiscountPercentEnabled = false;
                 else
                     DiscountPercentEnabled = true;
@@ -139,12 +139,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
             get { return _totalDiscountPercent; }
             set
             {
-                _totalDiscountPercent = value;
+               _totalDiscountPercent = value;
 
-                var discountValue = _totalAmount * (_totalDiscountPercent / 100);
+                var totalAmount = _purchaseDetailsList.Sum(i => i.Amount);
+
+                var discountValue = totalAmount * (_totalDiscountPercent / 100);
                 ApplyDiscountToItemCostPrice(discountValue);
 
-                if (_totalDiscountPercent.HasValue)
+                if (_totalDiscountPercent.HasValue && _totalDiscountPercent!=0)
                     DiscountEnabled = false;
                 else
                     DiscountEnabled = true;
@@ -304,14 +306,16 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
             var expneses = CalculateExpenses() + CalculateLocalExpenses();
 
-            var amountToReduce = (discountValue.HasValue ? discountValue.Value : 0) - expneses / count;
+            var amountToReduce = ((discountValue.HasValue ? discountValue.Value : 0) - expneses) / count;
             foreach (var item in _purchaseDetailsList)
             {
-                var itemAmt = item.Amount - amountToReduce;
+                //var itemAmt = item.Amount - amountToReduce;
+                
                 var totalQty = item.Qty + (item.FreeIssue.HasValue ? item.FreeIssue.Value : 0);
-                var costPerItem = itemAmt / totalQty;
-                if (costPerItem.HasValue)
-                    item.CostPrice = costPerItem.Value;
+                var amtToReducePerItem = amountToReduce / totalQty;
+                //var costPerItem = itemAmt / totalQty;
+                //if (costPerItem.HasValue)
+                    item.CostPrice = item.PurchasePrice.Value - amtToReducePerItem.Value;
             }
         }
 

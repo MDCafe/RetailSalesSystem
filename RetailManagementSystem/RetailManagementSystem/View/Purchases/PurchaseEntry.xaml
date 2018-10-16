@@ -211,9 +211,9 @@
                 <Label Content="Spl Discount Amt"  Width="120" Margin="5"/>
                 <TextBox Name="txtSpecialDiscount" Width="50"  Height="20" Margin="5" Text="{Binding SpecialDiscountAmount, TargetNullValue={x:Static sys:String.Empty}}"/>
                 <Label Content="Bill Discount Amt"  Width="120" Margin="5"/>
-                <TextBox Name="txtDiscount" Width="50" Height="20" Margin="5" IsEnabled="{Binding DiscountEnabled}" Text="{Binding TotalDiscountAmount, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Static sys:String.Empty}}"/>
+                <TextBox Name="txtDiscount" Width="50" Height="20" Margin="5" IsEnabled="{Binding DiscountEnabled}" Text="{Binding TotalDiscountAmount, UpdateSourceTrigger=LostFocus, TargetNullValue={x:Static sys:String.Empty}}"/>
                 <Label Content="Bill Discount %" Width="120" Margin="5"/>
-                <TextBox Name="txtDiscountPercent" Width="50"  Margin="5" IsEnabled="{Binding DiscountPercentEnabled}" Height="20" Text="{Binding TotalDiscountPercent, UpdateSourceTrigger=PropertyChanged,TargetNullValue={x:Static sys:String.Empty}}"/>
+                <TextBox Name="txtDiscountPercent" Width="50"  Margin="5" IsEnabled="{Binding DiscountPercentEnabled}" Height="20" Text="{Binding TotalDiscountPercent, UpdateSourceTrigger=LostFocus,TargetNullValue={x:Static sys:String.Empty}}"/>
                 <Label Content=" " Width="120" Margin="5"/>
                 <Label Content="" Width="100" Margin="5"/>
             </StackPanel>
