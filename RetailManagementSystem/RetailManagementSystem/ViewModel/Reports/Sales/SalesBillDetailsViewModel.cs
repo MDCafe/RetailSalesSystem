@@ -74,7 +74,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                 );
             }
             UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint();
-            sp.Print(customer, salesDetails, billSales, null, null,_showRestrictedCustomers);
+            sp.Print(customer, salesDetails, billSales, billSales.TotalAmount.Value, null, null,_showRestrictedCustomers);
             
         }
 

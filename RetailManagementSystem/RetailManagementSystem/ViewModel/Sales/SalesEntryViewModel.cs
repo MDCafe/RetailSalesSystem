@@ -591,7 +591,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
 
                         if (parameter == null)
-                            _salesBillPrint.Print(SelectedCustomer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                            _salesBillPrint.Print(SelectedCustomer.Name, _salesDetailsList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                         if (_salesParams.GetTemproaryData)
                             CloseCommand.Execute(null);
@@ -898,7 +898,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 rmsEntities.SaveChanges();
 
                 if (parameter == null)
-                    _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                    _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                 Clear();
                 CloseCommand.Execute(null);

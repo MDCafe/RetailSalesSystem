@@ -154,10 +154,12 @@ namespace RetailManagementSystem
                         case Key.C:
                             Workspace.This.OpenCustomerBillPaymentsCommand.Execute(true);
                             return;
-               
-                        case Key.A:
-                            Workspace.This.OpenAllPendingCreditReportCommand.Execute(true);
+                        case Key.R:
+                            Workspace.This.OpenCustomerBillPaymentsReportCommand.Execute(true);
                             return;
+                        //case Key.A:
+                        //    Workspace.This.OpenAllPendingCreditReportCommand.Execute(true);
+                        //    return;
                     }
                 }
                 #endregion

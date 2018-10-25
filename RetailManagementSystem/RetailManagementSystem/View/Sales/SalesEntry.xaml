@@ -162,7 +162,7 @@
                                                                     CustComboBoxSelectedValue ="ProductId"
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="CustComboBoxColComboBoxSelectedEvent"                                                        
-                                 IsReadOnly="{Binding NegateIsEditMode}" >
+                                  >
                         <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
                         <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                         <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>

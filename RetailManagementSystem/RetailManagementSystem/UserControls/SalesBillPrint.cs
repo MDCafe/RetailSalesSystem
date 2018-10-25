@@ -19,6 +19,7 @@ namespace RetailManagementSystem.UserControls
         IEnumerable<SaleDetailExtn> _saleDetails;
         Sale _billSales;
         decimal? _amountPaid, _balanceAmt;
+        decimal _totalAmount;
         bool _showRestrictedCustomers;
         static readonly ILog _log = LogManager.GetLogger(typeof(SalesBillPrint));
         RMSEntities _rmsEntities;
@@ -66,7 +67,7 @@ namespace RetailManagementSystem.UserControls
 
         }
 
-        public void Print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal? amountPaid,decimal? balanceAmt,
+        public void Print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal totalAmount, decimal? amountPaid,decimal? balanceAmt,
                           bool showRestrictedCustomers)
         {
             try
@@ -77,6 +78,7 @@ namespace RetailManagementSystem.UserControls
                 _amountPaid = amountPaid;
                 _balanceAmt = balanceAmt;
                 _showRestrictedCustomers = showRestrictedCustomers;
+                _totalAmount = totalAmount;
                
                 _pdoc.Print();
             }
@@ -253,7 +255,7 @@ namespace RetailManagementSystem.UserControls
                 {
                     rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
                     e.Graphics.DrawString("Total", itemFont, solidBrush, startX, startY + Offset);
-                    e.Graphics.DrawString(_billSales.TotalAmount.Value.ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
+                    e.Graphics.DrawString(_totalAmount.ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
                     Offset = Offset + 20;
                 }
 
