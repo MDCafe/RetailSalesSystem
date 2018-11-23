@@ -93,8 +93,6 @@
                 <!--<ComboBox ItemsSource="{Binding ProductsPriceList}" DisplayMemberPath="Quantity" Width="127"/>-->
                 <Label Content="G.R.No" Width="55" Margin="15,5,0,0"/>
                 <Label x:Name="txtBillNo" Width="60" Margin="5" Content="{Binding RunningBillNo}"/>
-                <Button x:Name="btnAddCustomer" Content="Supplier Quick Add" 
-                    Width="130" Command="{Binding}" Margin="5"/>
             </StackPanel>
             <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
             <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="PaymentId"
@@ -160,6 +158,7 @@
                     <toolKit:DataGridTextColumn Header="Free Issue" Binding="{Binding FreeIssue}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="VAT %" Binding="{Binding VATPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="VAT Amount" Binding="{Binding VATAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Coolie Charges" Binding="{Binding ItemCoolieCharges}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Transport Charges" Binding="{Binding ItemTransportCharges}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>

@@ -1,24 +1,24 @@
-﻿using System;
+﻿using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.View.Masters;
+using RetailManagementSystem.View.Reports.Accounts;
+using RetailManagementSystem.View.Reports.Purchases;
+using RetailManagementSystem.View.Reports.Sales;
+using RetailManagementSystem.View.Reports.Sales.Customers;
+using RetailManagementSystem.View.Reports.Stock;
+using RetailManagementSystem.View.Sales;
+using RetailManagementSystem.ViewModel.Accounts;
+using RetailManagementSystem.ViewModel.Base;
+using RetailManagementSystem.ViewModel.Graphs;
+using RetailManagementSystem.ViewModel.Purchases;
+using RetailManagementSystem.ViewModel.Reports.Accounts;
+using RetailManagementSystem.ViewModel.Reports.Stock;
+using RetailManagementSystem.ViewModel.Sales;
+using RetailManagementSystem.ViewModel.Stocks;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-
-using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
-using RetailManagementSystem.ViewModel.Sales;
-using RetailManagementSystem.View.Sales;
-using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel.Purchases;
-using RetailManagementSystem.View.Reports.Sales;
-using RetailManagementSystem.View.Reports.Purchases;
-using RetailManagementSystem.View.Reports.Stock;
-using RetailManagementSystem.ViewModel.Stocks;
-using RetailManagementSystem.View.Reports.Sales.Customers;
-using RetailManagementSystem.View.Masters;
-using RetailManagementSystem.ViewModel.Accounts;
-using RetailManagementSystem.View.Reports.Accounts;
-using RetailManagementSystem.ViewModel.Reports.Accounts;
-using RetailManagementSystem.ViewModel.Graphs;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -71,7 +71,11 @@ namespace RetailManagementSystem.ViewModel
 
         private void OnOpenSalesEntryCommand(object paramValue)
         {
-            if(typeof(SalesParams) != paramValue.GetType())
+            //Notification.NotificationViewModel nvm = new Notification.NotificationViewModel();
+            //nvm.ShowNotificationExecute();
+            //return;
+
+            if (typeof(SalesParams) != paramValue.GetType())
             {
                 var salesParam = new SalesParams() { ShowAllCustomers = bool.Parse(paramValue.ToString()) };
                 _documentViewModels.Add(new SalesEntryViewModel(salesParam));                
@@ -379,7 +383,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-# endregion
+        # endregion
 
         #region OpenProductCommand
         RelayCommand<object> _openProductCommand = null;
@@ -721,7 +725,41 @@ namespace RetailManagementSystem.ViewModel
                 //log here
             }
         }
+        #endregion
 
+        #region OpenOrderProductReportCommand
+        RelayCommand<object> _openOrderProductReportCommand = null;
+        public ICommand OpenOrderProductReportCommand
+        {
+            get
+            {
+                if (_openOrderProductReportCommand == null)
+                {
+                    _openOrderProductReportCommand = new RelayCommand<object>((p) => OnOpenOrderProductReportCommand());
+                }
+
+                return _openOrderProductReportCommand;
+            }
+        }
+
+        private void OnOpenOrderProductReportCommand()
+        {
+            try
+            {
+                ProductsOrderReportViewModel proVM = new ProductsOrderReportViewModel(false);
+                proVM.ShowReport();
+
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                //log here
+            }
+        }
         #endregion
 
         #region  OpenAllPendingCreditReportCommand
@@ -768,7 +806,7 @@ namespace RetailManagementSystem.ViewModel
 
         #region Graphs
 
-        #region OpenDailySalesReportCommand
+        #region OpenSalesGraphCommand
         RelayCommand<object> _openSalesGraphCommand = null;
         public ICommand OpenSalesGraphCommand
         {

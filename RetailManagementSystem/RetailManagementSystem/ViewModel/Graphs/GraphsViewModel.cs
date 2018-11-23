@@ -10,10 +10,5 @@ namespace RetailManagementSystem.ViewModel.Graphs
         public string YAxisTitle { get; set; }
         public string XAxisTitle { get; set; }
         public List<string> XAxisLabels { get; set; }
-
-        public GraphsViewModel()
-        {
-           
-        }
     }
 }

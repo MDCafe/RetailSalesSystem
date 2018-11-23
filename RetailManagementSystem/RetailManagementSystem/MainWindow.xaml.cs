@@ -163,6 +163,19 @@ namespace RetailManagementSystem
                     }
                 }
                 #endregion
+
+                #region Graphs
+
+                if (Keyboard.IsKeyDown(Key.G))
+                {
+                    //ViewModel.Notification.NotificationViewModel nvm = new ViewModel.Notification.NotificationViewModel();
+                    //nvm.ShowNotificationExecute();
+
+                    AdminTab.Visibility = Visibility.Visible;
+                }
+
+
+                #endregion
             }
 
            else if ((Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control) && e.Key == Key.P)

@@ -593,8 +593,10 @@ namespace RetailManagementSystem.ViewModel.Sales
                         if (parameter == null)
                             _salesBillPrint.Print(SelectedCustomer.Name, _salesDetailsList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
-                        if (_salesParams.GetTemproaryData)
-                            CloseCommand.Execute(null);
+                        //if (_salesParams.GetTemproaryData)
+                        //    CloseCommand.Execute(null);
+
+                        GetProductsToOrder();
                         Clear();
                     }
                 }
@@ -612,6 +614,58 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _autoResetEvent.Set();
                 }
             });
+        }
+
+        private void GetProductsToOrder()
+        {
+            var query = "GetProductsToOrderForProductIds";
+
+            using (var conn = MySQLDataAccess.GetConnection())
+            {
+                conn.Open();
+                using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.Connection = conn;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //string[] str = new string[3] { "1", "2", "3" };
+                    string str = string.Join(",", _salesDetailsList.Select(s => s.ProductId.ToString()));
+                    var companySqlParam = new MySql.Data.MySqlClient.MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString);
+
+                    companySqlParam.Value = str;
+
+                    cmd.Parameters.Add(companySqlParam);
+
+                    List<ProductOrder> lstProductOrder = new List<ProductOrder>();
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            lstProductOrder.Add(new ProductOrder()
+                            {
+                                ProductName = rdr.GetString(0),
+                                StockQuantity = rdr.GetDecimal(1),
+                                CategoryName = rdr.GetString(2),
+                                ReorderPoint = rdr.GetDecimal(3)
+                            });
+                        }
+                    }
+
+                    string[,] properties = new string[3, 2] {{"Name","ProductName"},
+                                                              {"Stock","StockQuantity"},
+                                                              {"Reorder","ReorderPoint"}};
+
+                    var nvm = new Notification.NotificationViewModel<ProductOrder>(lstProductOrder, properties);                    
+                    nvm.ExecuteShowWindow();
+
+                    //System.Data.DataTable dt = new System.Data.DataTable();
+                    //using (MySql.Data.MySqlClient.MySqlDataAdapter adpt = new MySql.Data.MySqlClient.MySqlDataAdapter(cmd))
+                    //{
+                    //    adpt.Fill(dt);
+                    //}
+                }
+            }
         }
 
         private bool Validate()
@@ -634,9 +688,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                     return false;
                 }
 
-                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 150/100) + saleDetailItem.CostPrice))
+                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 500/100) + saleDetailItem.CostPrice))
                 {
-                    Utility.ShowErrorBox("Selling Price can't be more than 150% of cost price");
+                    Utility.ShowErrorBox("Selling Price can't be more than 500% of cost price");
                     return false;
                 }
 

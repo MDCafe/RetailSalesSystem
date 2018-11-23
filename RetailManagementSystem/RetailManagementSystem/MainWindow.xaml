@@ -65,9 +65,9 @@
 
                     <!-- Purchase Group-->
                     <RibbonGroup x:Name="Purchase" Header="Purchases" KeyTip="P">
-                        <RibbonButton Label="Entry" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Purchase Entry" 
+                        <RibbonButton Label="Entry" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Purchase Entry" 
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
-                        <RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Amend existing purchase bills" 
+                        <RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Amend existing purchase bills" 
                                        KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
                     </RibbonGroup>
 
@@ -98,6 +98,8 @@
                                             Command="{Binding OpenStockReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Balance Report" KeyTip="SR" 
                                             Command="{Binding OpenStockBalanceReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Products to Order" KeyTip="SR" 
+                                            Command="{Binding OpenOrderProductReportCommand}"/>
                         </RibbonMenuButton>
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
                     </RibbonGroup>
@@ -135,9 +137,9 @@
                 </RibbonTab>
 
                 <!-- Ribbon Tab #4: Admin -->
-                <RibbonTab Header="Admin" KeyTip="A" x:Name="AdminTab">
+                <RibbonTab Header="Admin" KeyTip="A" x:Name="AdminTab" Visibility="Hidden">
                     <RibbonGroup x:Name="SalesAdmin" Header="Sales">
-                        <RibbonButton Label="Sales Graph" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Sales Graph" 
+                        <RibbonButton Label="Sales Graph" LargeImageSource="Images\SalesGraph.png" ToolTipTitle="Sales Graph" 
                                        KeyTip="SG" Command="{Binding OpenSalesGraphCommand}"></RibbonButton>
                     </RibbonGroup>
                 </RibbonTab>
