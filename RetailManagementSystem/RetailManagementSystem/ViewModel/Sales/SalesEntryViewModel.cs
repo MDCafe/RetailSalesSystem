@@ -628,8 +628,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    //string[] str = new string[3] { "1", "2", "3" };
+                    
                     string str = string.Join(",", _salesDetailsList.Select(s => s.ProductId.ToString()));
                     var companySqlParam = new MySql.Data.MySqlClient.MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString);
 
@@ -640,6 +639,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     List<ProductOrder> lstProductOrder = new List<ProductOrder>();
                     using (var rdr = cmd.ExecuteReader())
                     {
+                        if (!rdr.HasRows) return;
                         while (rdr.Read())
                         {
                             lstProductOrder.Add(new ProductOrder()
@@ -657,13 +657,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                                               {"Reorder","ReorderPoint"}};
 
                     var nvm = new Notification.NotificationViewModel<ProductOrder>(lstProductOrder, properties);                    
-                    nvm.ExecuteShowWindow();
-
-                    //System.Data.DataTable dt = new System.Data.DataTable();
-                    //using (MySql.Data.MySqlClient.MySqlDataAdapter adpt = new MySql.Data.MySqlClient.MySqlDataAdapter(cmd))
-                    //{
-                    //    adpt.Fill(dt);
-                    //}
+                    nvm.ExecuteShowWindow();                    
                 }
             }
         }

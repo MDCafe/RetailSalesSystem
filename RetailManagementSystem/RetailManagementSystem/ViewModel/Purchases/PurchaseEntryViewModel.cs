@@ -496,7 +496,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         purchaseDetail.Tax = item.Tax;
                         purchaseDetail.AddedOn = _transcationDate;
                         purchaseDetail.ModifiedOn = RMSEntitiesHelper.GetServerDate();
-                        purchaseDetail.VATAmount = item.VATAmount;
+                        purchaseDetail.VATAmount = item.VATPercentage.HasValue && item.VATPercentage.Value !=0 ? 
+                                                    (item.PurchasePrice * (item.VATPercentage/100)) * item.Qty
+                                                    :
+                                                    item.VATAmount;
+                        
+
                         purchaseDetail.ItemCoolieCharges = item.ItemCoolieCharges;
                         purchaseDetail.ItemTransportCharges = item.ItemTransportCharges;
 
