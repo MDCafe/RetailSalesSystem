@@ -31,7 +31,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>68</ApplicationRevision>
+    <ApplicationRevision>69</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -245,6 +245,7 @@
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\CustomerPaymentDetails.cs" />
+    <Compile Include="Model\Graphs\SalesGraphCustomModel.cs" />
     <Compile Include="Model\PaymentMode.cs" />
     <Compile Include="Model\ProductOrder.cs" />
     <Compile Include="Model\ProductPrice.cs" />
@@ -385,6 +386,9 @@
     <Compile Include="View\Graphs\Graphs.xaml.cs">
       <DependentUpon>Graphs.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Graphs\SalesGraphToolTip.xaml.cs">
+      <DependentUpon>SalesGraphToolTip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Masters\Companies.xaml.cs">
       <DependentUpon>Companies.xaml</DependentUpon>
     </Compile>
@@ -479,6 +483,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Graphs\Graphs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Graphs\SalesGraphToolTip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

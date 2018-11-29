@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:local="clr-namespace:RetailManagementSystem.View.Graphs"
              mc:Ignorable="d" 
              xmlns:zoomingAndPanning="clr-namespace:RetailManagementSystem.View.Graphs"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -16,33 +17,19 @@
             <!--<RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>-->
         </Grid.RowDefinitions>
-        <lvc:CartesianChart Series="{Binding GraphSeriesCollection}" LegendLocation="Bottom" Grid.Row="0">
-            <!--<lvc:CartesianChart.Resources>
-                <Style TargetType="lvc:DefaultTooltip">
-                    <Setter Property="Background" Value="DarkOrange"></Setter>
-                    <Setter Property="Foreground" Value="White"></Setter>
-                    <Setter Property="ShowTitle" Value="True"></Setter>
-                    --><!--new property--><!--
-                    <Setter Property="ShowSeries" Value="True"></Setter>
-                    --><!--new property--><!--
-                    <Setter Property="FontSize" Value="16"></Setter>
-                    <Setter Property="FontWeight" Value="Bold"></Setter>
-                    <Setter Property="CornerRadius" Value="20"></Setter>
-                    <Setter Property="Width" Value="40"></Setter>
-                    <Setter Property="Height" Value="40"></Setter>
-                    <Setter Property="BorderThickness" Value="0"></Setter>
-                </Style>
-            </lvc:CartesianChart.Resources>
-            Separator="{x:Static lvc:DefaultAxes.CleanSeparator}"
-            -->
+        <lvc:CartesianChart LegendLocation="Bottom" Grid.Row="0">
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Title="Total Sales" Values="{Binding SalesGraphCustomModels}"></lvc:LineSeries>
+            </lvc:CartesianChart.Series>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Monthly Sales" 
-                          Labels="{Binding Labels}" 
-                           />
+                <lvc:Axis Title="Duration" Labels="{Binding Labels}" Foreground="Black"/>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Amount" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                <lvc:Axis Title="Sales Amount" LabelFormatter="{Binding Formatter}" Foreground="Black"></lvc:Axis>
             </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.DataTooltip>
+                <local:SalesGraphToolTip/>
+            </lvc:CartesianChart.DataTooltip>
         </lvc:CartesianChart>
         <!--<TextBlock Grid.Row="0" TextWrapping="Wrap">
             Use the Chart.Zoom property to enable zooming and panning, you have some options: None, X, Y and XY, click, hold and drag the chart for panning.

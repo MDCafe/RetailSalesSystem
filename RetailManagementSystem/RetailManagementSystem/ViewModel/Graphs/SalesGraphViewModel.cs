@@ -1,7 +1,7 @@
 ﻿using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
+using LiveCharts.Configurations;
 using MySql.Data.MySqlClient;
+using RetailManagementSystem.Model.Graphs;
 using RetailManagementSystem.Utilities;
 using System;
 using System.Collections.Generic;
@@ -14,41 +14,45 @@ namespace RetailManagementSystem.ViewModel.Graphs
         //public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> Formatter { get; set; }
+        public ChartValues<SalesGraphCustomModel> SalesGraphCustomModels { get; set; }
 
         public SalesGraphViewModel()
         {
             Title = "Sales Graph";
 
-            GraphSeriesCollection = new SeriesCollection();
-            var cashQuery = "select sum(totalamount),date_format(addedOn,'%b-%y') SalesMonth from sales  where paymentMode=0 group by year(AddedOn), Month(AddedOn) ";
-            var labelsList = GetSalesData(cashQuery,"Cash");
-            Labels = labelsList.ToArray();
+            var labelsList = GetSalesData("", "Sales");
 
-            var creditQuery = "SELECT " +
-                                        "SUM(totalamount), " +
-                                        "DATE_FORMAT(s.addedOn, '%b-%y') SalesMonth " +
-                                    "FROM " +
-                                        "sales s, Customers c " +
-                                     "WHERE " +
-                                        "paymentMode = 1 " +
-                                        "and s.CustomerId = c.id " +
-                                        "and c.CustomerTypeId != 7 " +
-                                    "GROUP BY YEAR(s.AddedOn) , MONTH(s.AddedOn) ";
-            labelsList = GetSalesData(creditQuery, "Credit");
             Labels = labelsList.ToArray();
+            //GraphSeriesCollection = new SeriesCollection();
+            //var cashQuery = "select sum(totalamount),date_format(addedOn,'%b-%y') SalesMonth from sales  where paymentMode=0 group by year(AddedOn), Month(AddedOn) ";
+            //var labelsList = GetSalesData(cashQuery,"Cash");
+            //Labels = labelsList.ToArray();
 
-            var hotelCustomersQuery =  "SELECT " +
-                                        "SUM(totalamount), " +
-                                        "DATE_FORMAT(s.addedOn, '%b-%y') SalesMonth " +
-                                    "FROM " +
-                                        "sales s, Customers c " +
-                                     "WHERE " +
-                                        "paymentMode = 1 " +
-                                        "and s.CustomerId = c.id " +
-                                        "and c.CustomerTypeId = 7 " +
-                                    "GROUP BY YEAR(s.AddedOn) , MONTH(s.AddedOn) ";
-            
-            GetSalesData(hotelCustomersQuery, "Hotels");
+            //var creditQuery = "SELECT " +
+            //                            "SUM(totalamount), " +
+            //                            "DATE_FORMAT(s.addedOn, '%b-%y') SalesMonth " +
+            //                        "FROM " +
+            //                            "sales s, Customers c " +
+            //                         "WHERE " +
+            //                            "paymentMode = 1 " +
+            //                            "and s.CustomerId = c.id " +
+            //                            "and c.CustomerTypeId != 7 " +
+            //                        "GROUP BY YEAR(s.AddedOn) , MONTH(s.AddedOn) ";
+            //labelsList = GetSalesData(creditQuery, "Credit");
+            //Labels = labelsList.ToArray();
+
+            //var hotelCustomersQuery =  "SELECT " +
+            //                            "SUM(totalamount), " +
+            //                            "DATE_FORMAT(s.addedOn, '%b-%y') SalesMonth " +
+            //                        "FROM " +
+            //                            "sales s, Customers c " +
+            //                         "WHERE " +
+            //                            "paymentMode = 1 " +
+            //                            "and s.CustomerId = c.id " +
+            //                            "and c.CustomerTypeId = 7 " +
+            //                        "GROUP BY YEAR(s.AddedOn) , MONTH(s.AddedOn) ";
+
+            //GetSalesData(hotelCustomersQuery, "Hotels");
 
             //GraphSeriesCollection = new SeriesCollection
             //{
@@ -84,43 +88,75 @@ namespace RetailManagementSystem.ViewModel.Graphs
 
         public List<string> GetSalesData(string query,string seriesTitle)
         {
+            query = "GetSalesGraphReport";
             List<string> lst = new List<string>();
             using (var conn = MySQLDataAccess.GetConnection())
-            {              
-                conn.Open();
+            {                              
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     cmd.CommandText = query;
                     cmd.Connection = conn;
-                    cmd.CommandType = CommandType.Text;                    
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    conn.Open();
                     using (var rdr = cmd.ExecuteReader())
                     {                                                
                         //LineSeries LnSeries = new LineSeries();
-                        var yAxisChartValues = new ChartValues<decimal>();                        
-                        //var xAxisChartValues = new List<DateTimePoint>();
+                        var cashChartValues = new ChartValues<Decimal>();
+                        //var creditChartValues = new ChartValues<Decimal>();
+
+                        SalesGraphCustomModels = new ChartValues<SalesGraphCustomModel>();
+
                         while (rdr.Read())
                         {
-                            //yAxisChartValues.Add();
-                            var dbl = rdr.GetDecimal(0);
-                            yAxisChartValues.Add(dbl);
+                            SalesGraphCustomModels.Add(
+                                new SalesGraphCustomModel()
+                                {
+                                    CashSales = rdr.GetDecimal(0),
+                                    SaleYearMonth = rdr.GetString(1),
+                                    CreditSales = rdr.GetDecimal(2),
+                                    HotelSales = rdr.GetDecimal(3),
+                                    TotalSales = rdr.GetDouble(4)                                    
+                                }
+                            );
+                            //cashChartValues.Add(rdr.GetDecimal(4));
+                            //creditChartValues.Add(rdr.GetDecimal(2));
                             lst.Add(rdr.GetString(1));
                         }
-                        //LnSeries.Values = yAxisChartValues;
 
-                        var stackColSeries = new StackedColumnSeries
-                        {
-                            Values = yAxisChartValues, //new ChartValues<double> { 2, 5, 6, 7 },
-                            StackMode = StackMode.Values,                            
-                            Title = seriesTitle,
-                            DataLabels = true                            
-                        };
-                        GraphSeriesCollection.Add(stackColSeries);
+                        //var cashlineSeries = new LineSeries
+                        //{
+                        //    Values = salesChartValues, //new ChartValues<double> { 2, 5, 6, 7 },
+                        //    //StackMode = StackMode.Values,
+                        //    Title = seriesTitle,
+                        //    DataLabels = true,
+                        //    //LabelPoint = point => point.X + "Total" 
+                        //};
+
+
+                        var customerVmMapper = Mappers.Xy<SalesGraphCustomModel>()
+                        .X((value, index) => index) // lets use the position of the item as X
+                        .Y(value => value.TotalSales);
+
+                       
+                        //var creditlineSeries = new LineSeries
+                        //{
+                        //    Values = creditChartValues, 
+                        //    DataLabels = true,
+                        //    //LabelPoint = point => point.X + "Total" 
+                        //};
+                        //GraphSeriesCollection = new SeriesCollection();
+                        //GraphSeriesCollection.Add(cashlineSeries);
+
+                        //GraphSeriesCollection.Add(creditlineSeries);
+                        Charting.For<SalesGraphCustomModel>(customerVmMapper);
+
                         //XAxisLabels = xAxisChartValues;
                     }
                 }                
             }
             return lst;
         }
+       
     }
 }

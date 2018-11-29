@@ -123,14 +123,15 @@ namespace RetailManagementSystem.Model
             else
                 totalQtyWithFreeIssue = Qty.HasValue ? Qty.Value : 0;
 
-            var amount = PurchasePrice.Value * Qty.Value;
+            var amount = (PurchasePrice.Value * Qty.Value) + (GetVATChargesPerItem() * Qty.Value);
+
             decimal calcDiscountAmount = GetDiscountAmount(amount);
             decimal discountPerItem = calcDiscountAmount / Qty.Value;
 
-            CostPrice = (amount / totalQtyWithFreeIssue) - (discountPerItem != 0 ? discountPerItem : 0m) + 
-                        GetTransportCharges() + 
-                        GetCoolieChargesPerItem() + 
-                        GetVATChargesPerItem();
+            CostPrice = (amount / totalQtyWithFreeIssue) - (discountPerItem != 0 ? discountPerItem : 0m) +
+                        GetTransportCharges() +
+                        GetCoolieChargesPerItem();
+                        
 
             //if (_itemTransportCharges.HasValue)
             //    CostPrice += GetTransportCharges();
