@@ -5,7 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS</ConnectString>
+        <ConnectString>Dsn=RMS-Server</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>
@@ -17,7 +17,7 @@
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
         <CommandType>StoredProcedure</CommandType>
-        <CommandText>call GetCustomerPaymentDetailsReport("2018-01-05","2018-05-30",2)</CommandText>
+        <CommandText>call GetCustomerPaymentDetailsReport("2018-01-05","2018-12-30",25)</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -1136,24 +1136,26 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox10">
+                        <Textbox Name="Textbox2">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=sum(Fields!BalanceAmount.Value)</Value>
+                                  <Value>=Parameters!CustomerBalanceAmount.Value</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox10</rd:DefaultName>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>Solid</Style>
@@ -2057,8 +2059,8 @@
             <DataSetName>DataSet4</DataSetName>
             <Top>1.34375in</Top>
             <Left>2.71875in</Left>
-            <Height>0.95833in</Height>
-            <Width>2.03993in</Width>
+            <Height>0.95834in</Height>
+            <Width>2.03992in</Width>
             <ZIndex>1</ZIndex>
             <Visibility>
               <Hidden>=IIF(First(Fields!OldBalanceDue.Value, "DataSet3") = Nothing,true,false)</Hidden>
@@ -2807,6 +2809,14 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="CustomerBalanceAmount">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>CustomerBalanceAmount</Prompt>
+    </ReportParameter>
+  </ReportParameters>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>0a0eff1e-1f36-47d3-99ae-d1227397fb72</rd:ReportID>
 </Report>

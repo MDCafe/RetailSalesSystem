@@ -1,6 +1,4 @@
-﻿using RetailManagementSystem.Command;
-using RetailManagementSystem.Utilities;
-using System.Windows.Input;
+﻿using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Base
 {

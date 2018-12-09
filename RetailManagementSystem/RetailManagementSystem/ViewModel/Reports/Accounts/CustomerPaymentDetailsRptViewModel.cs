@@ -1,6 +1,7 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -122,7 +123,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             {
                 Value = _customerId
             };
-            _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[] { fromSqlParam,toSqlParam,categoryIdSqlParam }, CommandType.StoredProcedure);                    
+
+            var paramList = new MySqlParameter[] { fromSqlParam, toSqlParam, categoryIdSqlParam };
+            _rptDataSource[0].Value = GetDataTable(query, paramList, CommandType.StoredProcedure);                    
 
             var queryCustomer = "Select Name,OldBalanceDue from customers where Id=@customerId";
             var customerIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
@@ -138,6 +141,10 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
                 Value = _customerId
             };
             _rptDataSource[3].Value = GetDataTable(queryDirectPayment, new MySqlParameter[1] { customerIdDirectPaySqlParam }, CommandType.Text);
+
+            //Get the Balance Amount
+            var balanceAmount = MySQLDataAccess.GetData("GetCustomerBalance", paramList);
+            ReportParameterValue = new ReportParameter("CustomerBalanceAmount", balanceAmount.ToString());
 
             Workspace.This.OpenReport(this);
             CloseWindow(window);

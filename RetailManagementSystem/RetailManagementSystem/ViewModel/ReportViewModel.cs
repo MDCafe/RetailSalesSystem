@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
+using System.Collections.Generic;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -15,19 +16,16 @@ namespace RetailManagementSystem.ViewModel
     {
         private ReportViewer _rptViewer;
         protected ReportDataSource[] _rptDataSource;
-        private string _reportPath;
-        private PageSettings _pageSettings;
-        private bool _showReportPrintButton = true;
-        private Visibility _showPrintReceiptButton = Visibility.Collapsed;
 
-        public bool ShowReportPrintButton
-        {
-            get { return _showReportPrintButton; }
-            set { _showReportPrintButton = value; }
-        }
+        public bool ShowReportPrintButton { get; set; } = true;
+        public Visibility ShowPrintReceiptButton { get; set; } = Visibility.Collapsed;
+        public string ReportPath { get; set; }
+        public PageSettings PageSettings { get; set; }
+        public List<ReportParameter> ReportParameters { get; set; }
+        public ReportParameter ReportParameterValue { get; set; }
 
-        public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title) 
-            : base(isSupplier,showResctricteCustomers)
+        public ReportViewModel(bool isSupplier, bool showResctricteCustomers, string title)
+            : base(isSupplier, showResctricteCustomers)
         {
             this.Title = title;
             _rptDataSource = new ReportDataSource[2];
@@ -44,9 +42,9 @@ namespace RetailManagementSystem.ViewModel
             {
                 _rptViewer = value;
 
-                var pageSettings = _pageSettings;
+                var pageSettings = PageSettings;
 
-                if(_pageSettings == null)
+                if (PageSettings == null)
                 {
                     //default page settings
                     PageSettings ps = new PageSettings();
@@ -64,11 +62,17 @@ namespace RetailManagementSystem.ViewModel
                 {
                     _rptViewer.LocalReport.DataSources.Add(dataSource);
                 }
-                _rptViewer.LocalReport.ReportPath = _reportPath;
+                _rptViewer.LocalReport.ReportPath = ReportPath;
+
+                if (ReportParameters != null && ReportParameters.Count > 0)
+                    RptViewer.LocalReport.SetParameters(ReportParameters);
+                else if (ReportParameterValue != null)
+                {
+                    RptViewer.LocalReport.SetParameters(ReportParameterValue);
+                }
+                RptViewer.ShowParameterPrompts = false;
 
                 _rptViewer.RefreshReport();
-
-                
             }
         }
 
@@ -105,13 +109,13 @@ namespace RetailManagementSystem.ViewModel
                     cmd.Connection = conn;
                     cmd.CommandType = commandType;
                     cmd.Parameters.AddRange(sqlParameter);
-
+                    conn.Open();
 
                     DataTable dt = new DataTable();
-                    MySqlDataAdapter adpt = new MySqlDataAdapter(cmd);
-
-                    adpt.Fill(dt);
-
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        dt.Load(rdr);
+                    }
                     return dt;
                 }
             }
@@ -130,32 +134,6 @@ namespace RetailManagementSystem.ViewModel
                 }
 
                 return _closeWindowCommand;
-            }
-        }
-
-        public string ReportPath
-        {
-            get
-            {
-                return _reportPath;
-            }
-
-            set
-            {
-                _reportPath = value;
-            }
-        }
-
-        public PageSettings PageSettings
-        {
-            get
-            {
-                return _pageSettings;
-            }
-
-            set
-            {
-                _pageSettings = value;
             }
         }
 
@@ -183,18 +161,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        public Visibility ShowPrintReceiptButton
-        {
-            get
-            {
-                return _showPrintReceiptButton;
-            }
 
-            set
-            {
-                _showPrintReceiptButton = value;
-            }
-        }
 
         public virtual void PrintReceipt(object p)
         {
