@@ -873,6 +873,19 @@ namespace RetailManagementSystem.ViewModel
                     Utility.ShowErrorBox("System Date is already changed to next date");
                     return;
                 }
+
+                var login = new View.Entitlements.Login(true);
+                var loginResult = login.ShowDialog();
+                if (!loginResult.Value)
+                {                   
+                    return;
+                }
+
+                if (!RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text))
+                {
+                    Utility.ShowMessageBox("You are not authorized to perform this operation");
+                    return;
+                }
                 var result =Utility.ShowMessageBoxWithOptions("Do you want to change the system date to tommorrow's date?", System.Windows.MessageBoxButton.YesNo);
                 if(result ==  System.Windows.MessageBoxResult.No) return;
 
