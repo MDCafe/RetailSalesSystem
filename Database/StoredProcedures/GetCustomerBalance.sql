@@ -15,8 +15,8 @@ select sum(BalAmount) BalanceAmount from
 	WHERE
 			pd.customerId = customerId
 			AND IFNULL(s.IsCancelled, 0) = 0
-			AND date(s.AddedOn) >= fromDate
-			AND date(s.AddedOn) <= toDate
+			AND ((fromDate is null) or  date(s.AddedOn) >= fromDate)
+			AND ((toDate is null) or  date(s.AddedOn) <= toDate)
 		
 	GROUP BY s.RunningBillNo
 	ORDER BY s.RunningBillNo

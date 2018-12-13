@@ -14,6 +14,7 @@ using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.UserControls;
+using MySql.Data.MySqlClient;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -268,8 +269,45 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             set
             {
-                _selectedCustomer = value;
+                if (_selectedCustomer == value) return;
+
+                _selectedCustomer = value;                
+                CheckIfWithinCreditLimimt();
                 RaisePropertyChanged("SelectedCustomer");
+            }
+        }
+
+        private void CheckIfWithinCreditLimimt()
+        {
+            if (_selectedCustomer !=null && _selectedCustomer.Name != "Cash Customer")
+            {
+                var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);                
+                var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);                
+                var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
+                {
+                    Value = _selectedCustomer.Id
+                };
+
+                var paramList = new MySqlParameter[] { fromSqlParam, toSqlParam, categoryIdSqlParam };
+                var acctBalanceAmount = MySQLDataAccess.GetData("GetCustomerBalance", paramList);
+                var acctBalanceAmountValue = acctBalanceAmount != System.DBNull.Value ? Convert.ToDecimal(acctBalanceAmount) : 0m;
+                if (acctBalanceAmountValue > _selectedCustomer.CreditLimit)
+                {
+                    var msgBuilder = new System.Text.StringBuilder();
+                    msgBuilder.Append("Acct balance\t= ").Append(acctBalanceAmountValue.ToString("N2")).AppendLine();
+                    msgBuilder.Append("Credit limit\t= ").Append(_selectedCustomer.CreditLimit.Value.ToString("N2")).AppendLine();
+                    msgBuilder.Append("Balance     \t= ").Append((_selectedCustomer.CreditLimit - acctBalanceAmountValue).Value.ToString("N2")).AppendLine();
+                    msgBuilder.Append("Do you want to override?");
+                    var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(),System.Windows.MessageBoxButton.YesNoCancel);
+                    if(result == System.Windows.MessageBoxResult.Yes)
+                    {
+                        var login = new View.Entitlements.Login(true);
+                        var loginResult = login.ShowDialog();
+                        if (RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text) && loginResult.Value)
+                            return;
+                    }
+                    CloseCommand.Execute(null);
+                }
             }
         }
 
@@ -1137,6 +1175,29 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         #endregion
+
+        RelayCommand<object> _CustomerChangedCommand = null;
+
+        public ICommand CustomerChangedCommand
+        {
+            get
+            {
+                if (_CustomerChangedCommand == null)
+                {
+                    _CustomerChangedCommand = new RelayCommand<object>((p) => OnCustomerChanged());
+                }
+
+                return _CustomerChangedCommand;
+            }
+        }
+
+        private void OnCustomerChanged()
+        {
+            Workspace.This.OpenCustomerCommand.Execute(null);
+            RaisePropertyChanged("CustomersList");
+        }
+
+        
 
         #region Public Methods
 

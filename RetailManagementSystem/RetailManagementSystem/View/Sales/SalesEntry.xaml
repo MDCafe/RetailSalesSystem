@@ -53,6 +53,11 @@
                         Validation.ErrorTemplate="{StaticResource ValidationTemplate}" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Height="25"
                         IsEnabled="{Binding NegateIsEditMode}"
                   >
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding CustomerChangedCommand}" CommandParameter=""/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>--><!--
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
                         <Setter Property="ContentTemplate">
@@ -61,20 +66,19 @@
                                     <Grid Height="30" Width="Auto">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="200"/>
-                                            <!--<ColumnDefinition Width="10*"/>-->
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Margin="1" Grid.Row="0" Grid.Column="0" Content="{Binding Name}" HorizontalAlignment="Left"/>
-                                        <!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>-->
+                                        --><!--<Label Margin="1" Grid.Row="0" Grid.Column="1" Content="|" HorizontalAlignment="Left"/>--><!--
                                         <Label Margin="1" Grid.Row="0" Grid.Column="2" Content="{Binding BalanceDue}" HorizontalAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ComboBox.ItemContainerStyle>
+                </ComboBox.ItemContainerStyle>-->
                 <ComboBox.SelectedItem>
-                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True">
+                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True" UpdateSourceTrigger="LostFocus">
                         <Binding.ValidationRules>
                             <Validator:ValidateComboRule/>
                         </Binding.ValidationRules>
@@ -87,8 +91,8 @@
             <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal">
                 <Label Content="Bill No" Width="45" Margin="15,5,0,0"></Label>
                 <Label x:Name="txtBillNo" Width="60" Margin="5" Content="{Binding RunningBillNo}"/>
-                <Button x:Name="btnAddCustomer" Content="Customer Quick Add" 
-                    Width="130" Command="{Binding AddCustomerCommand}" Margin="5"/>
+                <!--<Button x:Name="btnAddCustomer" Content="Customer Quick Add" 
+                    Width="130" Command="{Binding AddCustomerCommand}" Margin="5" />-->
             </StackPanel>
 
             <Label Content="Mode Of Payment :" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" ></Label>
