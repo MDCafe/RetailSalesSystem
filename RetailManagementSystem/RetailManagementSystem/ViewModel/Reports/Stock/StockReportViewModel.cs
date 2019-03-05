@@ -20,10 +20,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
         private DateTime _toDate;
         private bool _showRestrictedCustomers;
         RMSEntities _rmsEntities;
-
-        IEnumerable<Category> _productsCategory;
         IEnumerable<Company> _companiesList;
-        IEnumerable<Product> _productList;
 
         public Company SelectedCompany
         {
@@ -110,30 +107,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             }
         }
 
-        public IEnumerable<Category> ProductCategories
-        {
-            get
-            {
-                return _productsCategory;
-            }
+        public IEnumerable<Category> ProductCategories { get; set; }
 
-            set
-            {
-                _productsCategory = value;
-            }
-        }
-
-        public IEnumerable<Product> ProductList
-        {
-            get
-            {
-                return _productList;
-            }
-            set
-            {
-                _productList = value;
-            }
-        }
+        public IEnumerable<Product> ProductList { get; set; }
 
         public StockReportViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Stock Report")
         {
@@ -141,9 +117,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             ReportPath = @"View\Reports\Stock\StockDetails.rdl";
 
             _rmsEntities = new RMSEntities();
-            _productsCategory = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
+            ProductCategories = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
-            _productList = _rmsEntities.Products.ToList().OrderBy(p => p.Name);
+            ProductList = _rmsEntities.Products.ToList().OrderBy(p => p.Name);
             _fromDate = DateTime.Now;
             _toDate = DateTime.Now;
         }

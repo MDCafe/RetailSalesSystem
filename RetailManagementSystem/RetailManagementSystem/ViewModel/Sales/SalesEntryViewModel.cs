@@ -31,8 +31,6 @@ namespace RetailManagementSystem.ViewModel.Sales
         SalesParams _salesParams;
         List<Customer> _customerList;
         AutoResetEvent _autoResetEvent;
-
-        ObservableCollection<SaleDetailExtn> _salesDetailsList;        
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
@@ -52,8 +50,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _salesBillPrint = new SalesBillPrint();
             _billSales = new Sale();//  _rmsEntities.Sales.Create();
-            _salesDetailsList = new ObservableCollection<SaleDetailExtn>();
-            _salesDetailsList.CollectionChanged += OnSalesDetailsListCollectionChanged;
+            SaleDetailList = new ObservableCollection<SaleDetailExtn>();
+            SaleDetailList.CollectionChanged += OnSalesDetailsListCollectionChanged;
             _autoResetEvent = new AutoResetEvent(false);
 
             //SelectedCustomer = DefaultCustomer;
@@ -161,15 +159,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
             }
         }
-         
-        public ObservableCollection<SaleDetailExtn> SaleDetailList
-        {
-            get { return _salesDetailsList; }
-            private set
-            {
-                _salesDetailsList = value;
-            }
-        }                                      
+
+        public ObservableCollection<SaleDetailExtn> SaleDetailList { get; private set; }
 
         public string OrderNo { get; set; }       
 
@@ -185,7 +176,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void CalculateTotalAmount()
         {
-            decimal? tempTotal = _salesDetailsList.Sum(a => a.Amount);
+            decimal? tempTotal = SaleDetailList.Sum(a => a.Amount);
             if (_totalDiscountAmount.HasValue)
             {
                 tempTotal -= _totalDiscountAmount;
@@ -347,7 +338,7 @@ namespace RetailManagementSystem.ViewModel.Sales
       
         override protected bool OnClose()
         {
-            if(_salesDetailsList.Count() > 0)
+            if(SaleDetailList.Count() > 0)
             {
                 var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?",System.Windows.MessageBoxButton.YesNo);
                 if (options == System.Windows.MessageBoxResult.Yes)
@@ -486,8 +477,8 @@ namespace RetailManagementSystem.ViewModel.Sales
        
         public bool CanSave(object parameter)
         {
-            return _selectedCustomer != null && _selectedCustomer.Id != 0 && _salesDetailsList.Count != 0 &&
-                    _salesDetailsList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
+            return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
+                    SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
         }
 
         //private bool IsValid(DependencyObject obj)
@@ -536,7 +527,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             return;
                         }
 
-                        foreach (var saleDetailItem in _salesDetailsList)
+                        foreach (var saleDetailItem in SaleDetailList)
                         {
                             if (saleDetailItem.ProductId == 0) continue;
                             var saleDetail = rmsEntities.SaleDetails.Create();
@@ -629,7 +620,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
 
                         if (parameter == null)
-                            _salesBillPrint.Print(SelectedCustomer.Name, _salesDetailsList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                            _salesBillPrint.Print(SelectedCustomer.Name, SaleDetailList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                         //if (_salesParams.GetTemproaryData)
                         //    CloseCommand.Execute(null);
@@ -667,7 +658,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     cmd.Connection = conn;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     
-                    string str = string.Join(",", _salesDetailsList.Select(s => s.ProductId.ToString()));
+                    string str = string.Join(",", SaleDetailList.Select(s => s.ProductId.ToString()));
                     var companySqlParam = new MySql.Data.MySqlClient.MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString);
 
                     companySqlParam.Value = str;
@@ -702,7 +693,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool Validate()
         {
-            foreach (var saleDetailItem in _salesDetailsList)
+            foreach (var saleDetailItem in SaleDetailList)
             {
                 if (saleDetailItem.ProductId == 0) continue;
 
@@ -862,7 +853,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 //Check if there are any deletions
                 RemoveDeletedItems(rmsEntities);
-                foreach (var saleDetailItemExtn in _salesDetailsList)
+                foreach (var saleDetailItemExtn in SaleDetailList)
                 {
                     saleDetail = rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
                                                                          && b.ProductId == saleDetailItemExtn.ProductId
@@ -984,7 +975,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 rmsEntities.SaveChanges();
 
                 if (parameter == null)
-                    _salesBillPrint.Print(_billSales.Customer.Name, _salesDetailsList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                    _salesBillPrint.Print(_billSales.Customer.Name, SaleDetailList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
 
                 Clear();
                 CloseCommand.Execute(null);
@@ -1018,10 +1009,10 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                foreach (var item in _salesDetailsList.Reverse())
+                foreach (var item in SaleDetailList.Reverse())
                 {
                     if (item.ProductId == 0)
-                        _salesDetailsList.Remove(item);
+                        SaleDetailList.Remove(item);
                 }
             });
         }
@@ -1037,7 +1028,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 RaisePropertyChanged("TotalAmount");
 
                 var i = 0;
-                foreach (var item in _salesDetailsList)
+                foreach (var item in SaleDetailList)
                 {
                     item.SerialNo = ++i;
                 }
@@ -1136,7 +1127,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             SelectedCustomerText = SelectedCustomer.Name;
             SelectedPaymentId = '0';
             OrderNo = "";
-            SaleDetailList = new ObservableCollection<SaleDetailExtn>();
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                SaleDetailList.Clear();
+            });
+            
             _billSales = new Sale();
             _totalAmount = 0;
             TotalAmount = null;
@@ -1237,7 +1232,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         public void SetProductId()
         {
-            foreach (var item in _salesDetailsList)
+            foreach (var item in SaleDetailList)
             {
                 item.OnPropertyChanged("ProductId");
             }

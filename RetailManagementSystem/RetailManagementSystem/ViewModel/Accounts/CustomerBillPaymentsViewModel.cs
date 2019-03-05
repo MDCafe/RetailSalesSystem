@@ -17,14 +17,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
         private bool _showRestrictedCustomer;
         private int _categoryId;
         private Customer _selectedCustomer;
-        private ObservableCollection<CustomerPaymentDetails> _customerPaymentDetailsList;
         private static readonly ILog _log = LogManager.GetLogger(typeof(CustomerBillPaymentsViewModel));
-        private IEnumerable<CodeMaster> _paymentModes;
-        public ObservableCollection<CustomerPaymentDetails> CustomerPaymentDetailsList
-        {
-            get { return _customerPaymentDetailsList; }
-            set { _customerPaymentDetailsList = value; }
-        }
+
+        public ObservableCollection<CustomerPaymentDetails> CustomerPaymentDetailsList { get; set; }
 
         public Customer SelectedCustomer
         {
@@ -57,14 +52,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             }
         }
 
-        public IEnumerable<CodeMaster> PaymentModes
-        {
-            get { return _paymentModes; }
-            set
-            {
-                _paymentModes = value;
-            }
-        }
+        public IEnumerable<CodeMaster> PaymentModes { get; set; }
 
         public CodeMaster SelectedPaymentMode { get; set; }
 
@@ -78,7 +66,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
             Title = "Customer Bill Payment";
 
-            _customerPaymentDetailsList = new ObservableCollection<CustomerPaymentDetails>();
+            CustomerPaymentDetailsList = new ObservableCollection<CustomerPaymentDetails>();
 
             using (var rmsEntities = new RMSEntities())
             {
@@ -89,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                 //{
 
                 //}
-                _paymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id !=8).ToList();
+                PaymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id !=8).ToList();
             }
             ChequeDate = DateTime.Now;
             PaymentDate = DateTime.Now;
@@ -117,7 +105,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         protected void OnGetBills()
         {
-            _customerPaymentDetailsList.Clear();
+            CustomerPaymentDetailsList.Clear();
             using (var rmsEntities = new RMSEntities())
             {
                 var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@customerId", MySql.Data.MySqlClient.MySqlDbType.Int32);
@@ -131,7 +119,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                 foreach (var item in custPayDetails)
                 {
                     item.SerialNo = ++i;
-                    _customerPaymentDetailsList.Add(item);
+                    CustomerPaymentDetailsList.Add(item);
                     item.PropertyChanged += (s, e) =>
                     {
                         switch (e.PropertyName)
@@ -174,7 +162,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             { 
                 using (var rmsEntities = new RMSEntities())
                 {
-                    foreach (var item in _customerPaymentDetailsList)
+                    foreach (var item in CustomerPaymentDetailsList)
                     {
                         if (item.CurrentAmountPaid == 0) continue;
 
@@ -216,7 +204,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     }
                     //Reduce the customer balance
                     var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == SelectedCustomer.Id);
-                    var totalAmountPaid = _customerPaymentDetailsList.Sum(c => c.CurrentAmountPaid);
+                    var totalAmountPaid = CustomerPaymentDetailsList.Sum(c => c.CurrentAmountPaid);
                     customer.BalanceDue -= totalAmountPaid;
                     rmsEntities.SaveChanges();
                     Clear();
@@ -231,7 +219,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         private bool ValidateCustomerPaymentDetails()
         {
-            foreach (var item in _customerPaymentDetailsList)
+            foreach (var item in CustomerPaymentDetailsList)
             {
                 if (item.BalanceAmount < 0)
                 {
@@ -301,9 +289,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
         {
             try
             {
-                var payMode = _paymentModes.FirstOrDefault(p => p.Description == "Cash");
+                var payMode = PaymentModes.FirstOrDefault(p => p.Description == "Cash");
                 var decreasingAllocationAmount = AllocationAmount.Value; 
-                foreach (var item in _customerPaymentDetailsList)
+                foreach (var item in CustomerPaymentDetailsList)
                 {
                     if (decreasingAllocationAmount <= 0) return;
                     if((item.TotalAmount - item.AmountPaid) !=0)
@@ -358,9 +346,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
         {
             try
             {
-                var payMode = _paymentModes.FirstOrDefault(p=>p.Description =="Cheque");
+                var payMode = PaymentModes.FirstOrDefault(p=>p.Description =="Cheque");
                 var decreasingAllocationAmount = ChequeAllocationAmount.Value;
-                foreach (var item in _customerPaymentDetailsList)
+                foreach (var item in CustomerPaymentDetailsList)
                 {
                     if (!item.IsSelected  || decreasingAllocationAmount <= 0) continue;
                     if ((item.TotalAmount - item.AmountPaid) != 0)
@@ -455,7 +443,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         override internal void Clear()
         {
-            _customerPaymentDetailsList.Clear();
+            CustomerPaymentDetailsList.Clear();
             SelectedCustomer = null;
             CustomersList = null;
             AllocationAmount = null;
