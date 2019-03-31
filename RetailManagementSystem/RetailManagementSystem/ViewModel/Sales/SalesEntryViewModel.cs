@@ -263,7 +263,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if (_selectedCustomer == value) return;
 
                 _selectedCustomer = value;                
-                CheckIfWithinCreditLimimt();
+                //CheckIfWithinCreditLimimt();
                 RaisePropertyChanged("SelectedCustomer");
             }
         }
