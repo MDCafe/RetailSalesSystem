@@ -570,31 +570,14 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                         //RemoveTempSalesItemForGUID(_guid);
                         //this is done to get the latest bill no
-                        RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
-                        _billSales.RunningBillNo = _runningBillNo;
-
-                        var _category = rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-                        _category.RollingNo = _runningBillNo;
-
-                        //_rmsEntities.SaveChanges();
+                        //RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
+                        //_billSales.RunningBillNo = _runningBillNo;
+                      
 
                         var outstandingBalance = _totalAmount.Value - AmountPaid;
                         if (outstandingBalance > 0)
-                        {
-                            //var msg = "Outstanding balance Rs " + outstandingBalance.ToString("N2") + ". Do you want to keep as pending balance amount?";
-                            //var result = Utility.ShowMessageBoxWithOptions(msg);
-
-                            //if (result == System.Windows.MessageBoxResult.Cancel) return;
-
-                            //if (result == System.Windows.MessageBoxResult.Yes)
-                            //{
-                            //Customer cust = new Customer();
-                            //cust = SelectedCustomer;
-                            //Sale saleNew = new Sale();
-                            //saleNew = _billSales;
-
+                        {                          
                             _billSales.AmountPaid = _amountPaid;
-
                             var custPaymentDetail = new PaymentDetail
                             {
                                 AmountPaid = AmountPaid,
@@ -605,16 +588,27 @@ namespace RetailManagementSystem.ViewModel.Sales
                             };
 
                             rmsEntities.PaymentDetails.Add
-                                (
-                                    custPaymentDetail
-                                );
+                            (
+                                custPaymentDetail
+                            );
 
                             //_billSales.PaymentDetails.Add(custPaymentDetail);
                             var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
                             customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
                         }
 
-                        rmsEntities.SaveChanges();
+                        //Get the latest runningBill No with exclusive lock
+                        using (DbContextTransaction scope = rmsEntities.Database.BeginTransaction())
+                        {
+                            string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
+                            var salesNo = rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+
+                            var _category = rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
+                            _category.RollingNo = _runningBillNo;
+
+                            rmsEntities.SaveChanges();
+                            scope.Commit();
+                        }
                         //dbTrans.Commit();
                         //Monitor.Exit(rootLock);
                         _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
@@ -693,6 +687,20 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool Validate()
         {
+            var duplicateResult = SaleDetailList.GroupBy(x => x.ProductId)
+              .Where(g => g.Count() > 1)
+              .ToList();
+
+            if (duplicateResult != null && duplicateResult.Count() > 0)
+            {
+                var duplicateSaleItem = duplicateResult.First().First();
+                var duplicateItemIndex = SaleDetailList.IndexOf(duplicateSaleItem);
+                var duplicateProduct = ProductsPriceList.FirstOrDefault(p => p.ProductId == duplicateSaleItem.ProductId);
+
+                Utility.ShowErrorBox("'" + duplicateProduct.ProductName +  "' Product appears more than Once at location " + duplicateItemIndex + 1 + ".Please check");
+                return false;
+            }
+
             foreach (var saleDetailItem in SaleDetailList)
             {
                 if (saleDetailItem.ProductId == 0) continue;

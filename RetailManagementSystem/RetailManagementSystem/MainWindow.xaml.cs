@@ -23,6 +23,7 @@ namespace RetailManagementSystem
         {
             InitializeComponent();
             DataContext = Workspace.This;
+            Workspace.This.MainDockingWindow = this;
             Closing += MainWindow_Closing;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 
