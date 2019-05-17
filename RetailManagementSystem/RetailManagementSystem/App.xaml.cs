@@ -43,7 +43,7 @@ namespace RetailManagementSystem
                 Utilities.Utility.ShowErrorBox("Database Exception" + e.Exception.ToString());
             }
 
-            MessageBox.Show(e.Exception.ToString());
+            Utilities.Utility.ShowErrorBox(e.Exception.ToString());
             _log.Debug("Application Error", e.Exception);
             e.Handled = true;
         }

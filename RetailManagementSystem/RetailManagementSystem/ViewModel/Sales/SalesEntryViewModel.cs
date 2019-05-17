@@ -26,7 +26,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         
         IExtensions _extensions;   
         //System.Timers.Timer _timer,_autoTimer;
-        static object rootLock = new object();
+        //static object rootLock = new object();
         //string _guid;
         SalesParams _salesParams;
         List<Customer> _customerList;
@@ -35,8 +35,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         Customer _selectedCustomer;
         string _selectedCustomerText;
 
-        SalesBillPrint _salesBillPrint;
-        //RMSEntities _rmsEntities;
+        SalesBillPrint _salesBillPrint;       
         #endregion
 
         #region Constructor
@@ -49,7 +48,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //var cnt1 = _rmsEntities.Products.ToList();
 
             _salesBillPrint = new SalesBillPrint();
-            _billSales = new Sale();//  _rmsEntities.Sales.Create();
+            _billSales = new Sale();
             SaleDetailList = new ObservableCollection<SaleDetailExtn>();
             SaleDetailList.CollectionChanged += OnSalesDetailsListCollectionChanged;
             _autoResetEvent = new AutoResetEvent(false);
@@ -498,20 +497,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
-            {
-                //RemoveProductWithNullValues();
-                //using (var dbTrans = _rmsEntities.Database.BeginTransaction())
-                //{
+            {                
                 try
                 {
                     using (var rmsEntities = new RMSEntities())
                     {
                         _log.DebugFormat("Enter save :{0}", _billSales.RunningBillNo);
                         _billSales.CustomerId = _selectedCustomer.Id;
-                        _billSales.CustomerOrderNo = OrderNo;
-                        _billSales.RunningBillNo = _runningBillNo;
+                        _billSales.CustomerOrderNo = OrderNo;                        
                         _billSales.PaymentMode = SelectedPaymentId.ToString();
-
 
                         //Get the current time since it takes the window open time
                         DateTime date = _transcationDate.Date;
@@ -530,28 +524,32 @@ namespace RetailManagementSystem.ViewModel.Sales
                         foreach (var saleDetailItem in SaleDetailList)
                         {
                             if (saleDetailItem.ProductId == 0) continue;
-                            var saleDetail = rmsEntities.SaleDetails.Create();
-                            saleDetail.Discount = saleDetailItem.Discount;
-                            saleDetail.PriceId = saleDetailItem.PriceId;
-                            saleDetail.ProductId = saleDetailItem.ProductId;
-                            saleDetail.Qty = saleDetailItem.Qty;
-                            saleDetail.SellingPrice = saleDetailItem.SellingPrice;
-                            saleDetail.BillId = _billSales.BillId;
-                            saleDetail.AddedOn = combinedDateTime;
-                            saleDetail.ModifiedOn = combinedDateTime;
+                            var saleDetail = new SaleDetail
+                            {
+                                Discount = saleDetailItem.Discount,
+                                PriceId = saleDetailItem.PriceId,
+                                ProductId = saleDetailItem.ProductId,
+                                Qty = saleDetailItem.Qty,
+                                SellingPrice = saleDetailItem.SellingPrice,
+                                BillId = _billSales.BillId,
+                                AddedOn = combinedDateTime,
+                                ModifiedOn = combinedDateTime
+                            };
                             _billSales.SaleDetails.Add(saleDetail);
 
                             var expiryDate = saleDetailItem.ExpiryDate;
-                            var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                                                           && s.ExpiryDate.Year == expiryDate.Value.Year
-                                                                           && s.ExpiryDate.Month == expiryDate.Value.Month
-                                                                           && s.ExpiryDate.Day == expiryDate.Value.Day
-                                                                           );
+                            //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                            //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
+                            //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
+                            //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
+                            //                                               );
 
+                            var stock = GetStockDetails(saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
                             if (stock != null)
                             {
-                                stock.Quantity -= saleDetailItem.Qty.Value;
-                                SetStockTransaction(rmsEntities,saleDetail, stock);
+                                var actualStockEntity =  rmsEntities.Stocks.First(s=> s.Id == stock.Id);
+                                actualStockEntity.Quantity -= saleDetailItem.Qty.Value;
+                                SetStockTransaction(rmsEntities,saleDetail, actualStockEntity);
                             }
                         }
 
@@ -564,9 +562,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                         decimal? oldValue;
                         _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
 
-                        rmsEntities.Entry(_billSales).State = EntityState.Added;
+                        //rmsEntities.Entry(_billSales).State = EntityState.Added;
 
-                        //_rmsEntities.Sales.Add(_billSales);
+                        rmsEntities.Sales.Add(_billSales);
 
                         //RemoveTempSalesItemForGUID(_guid);
                         //this is done to get the latest bill no
@@ -597,14 +595,17 @@ namespace RetailManagementSystem.ViewModel.Sales
                             customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
                         }
 
-                        //Get the latest runningBill No with exclusive lock
+                        //Get the latest runningBill number with exclusive lock
                         using (DbContextTransaction scope = rmsEntities.Database.BeginTransaction())
                         {
                             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
-                            var salesNo = rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+                            var nextRunningNo = rmsEntities.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
+
+                            _runningBillNo = nextRunningNo;
+                            _billSales.RunningBillNo = nextRunningNo;
 
                             var _category = rmsEntities.Categories.FirstOrDefault(c => c.Id == _categoryId);
-                            _category.RollingNo = _runningBillNo;
+                            _category.RollingNo = nextRunningNo;
 
                             rmsEntities.SaveChanges();
                             scope.Commit();
@@ -639,6 +640,15 @@ namespace RetailManagementSystem.ViewModel.Sales
             });
         }
 
+        private Stock GetStockDetails(int productId,int priceId, DateTime dateToCompare)
+        {
+            var query = "select * from stocks where ProductId = " + productId +
+                        " and PriceId =" + priceId +
+                        " and date(ExpiryDate) = '" + dateToCompare.ToString("yyyy-MM-dd") + "'";
+
+            return  RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<Stock>(query).FirstOrDefault();
+        }
+
         private void GetProductsToOrder()
         {
             var query = "GetProductsToOrderForProductIds";
@@ -646,7 +656,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             using (var conn = MySQLDataAccess.GetConnection())
             {
                 conn.Open();
-                using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand())
+                using (MySqlCommand cmd = new MySqlCommand())
                 {
                     cmd.CommandText = query;
                     cmd.Connection = conn;
@@ -1271,7 +1281,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                     OpeningBalance = stockNewItem.Quantity - saleDetail.Qty, //Opening balance will be the one from stock table 
                     Outward = saleDetail.Qty,
                     ClosingBalance = stockNewItem.Quantity,
-                    StockId = stockNewItem.Id
+                    StockId = stockNewItem.Id,
+                    AddedOn = _transcationDate
                 };
                 //_rmsEntities.StockTransactions.Add(firstStockTrans);
                 stockNewItem.StockTransactions.Add(firstStockTrans);
@@ -1292,7 +1303,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                         OpeningBalance = stockTrans.ClosingBalance,
                         Outward = saleDetail.Qty,
                         ClosingBalance = stockTrans.ClosingBalance - saleDetail.Qty,
-                        StockId = stockNewItem.Id
+                        StockId = stockNewItem.Id,
+                        AddedOn = _transcationDate
                     };
                     //rmsEntities.StockTransactions.Add(newStockTrans);
                     stockNewItem.StockTransactions.Add(newStockTrans);

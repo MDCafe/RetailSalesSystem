@@ -93,7 +93,7 @@ namespace BHCustCtrl
                 Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
                 if (dg != null)
                 {
-                    _log.Debug("dg.SelectedIndex :" + dg.SelectedIndex);
+                    //_log.Debug("dg.SelectedIndex :" + dg.SelectedIndex);
                     SelectedItem = dg.SelectedItem;
                     SelectedValue = dg.SelectedValue;
                     SelectedIndex = dg.SelectedIndex;
