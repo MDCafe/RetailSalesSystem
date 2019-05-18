@@ -544,7 +544,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
                             //                                               );
 
-                            var stock = GetStockDetails(saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
+                            var stock = GetStockDetails(rmsEntities, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
                             if (stock != null)
                             {
                                 var actualStockEntity =  rmsEntities.Stocks.First(s=> s.Id == stock.Id);
@@ -640,13 +640,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             });
         }
 
-        private Stock GetStockDetails(int productId,int priceId, DateTime dateToCompare)
+        private Stock GetStockDetails(RMSEntities rmsEntities, int productId,int priceId, DateTime dateToCompare)
         {
             var query = "select * from stocks where ProductId = " + productId +
                         " and PriceId =" + priceId +
                         " and date(ExpiryDate) = '" + dateToCompare.ToString("yyyy-MM-dd") + "'";
 
-            return  RMSEntitiesHelper.Instance.RMSEntities.Database.SqlQuery<Stock>(query).FirstOrDefault();
+            return rmsEntities.Database.SqlQuery<Stock>(query).FirstOrDefault();
         }
 
         private void GetProductsToOrder()
