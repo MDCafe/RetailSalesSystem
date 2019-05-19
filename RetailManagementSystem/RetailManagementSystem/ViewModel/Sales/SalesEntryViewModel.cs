@@ -189,8 +189,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             if (_extensions != null)
             {
-                decimal? oldTransportValue = 0.0M;
-                var transportCharges = _extensions.GetPropertyValue("TransportCharges", out oldTransportValue);
+                var transportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldTransportValue);
                 tempTotal = tempTotal + (transportCharges);
             }
 
@@ -337,7 +336,7 @@ namespace RetailManagementSystem.ViewModel.Sales
       
         override protected bool OnClose()
         {
-            if(SaleDetailList.Count() > 0)
+            if(SaleDetailList.Count() > 0 && !IsEditMode)
             {
                 var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?",System.Windows.MessageBoxButton.YesNo);
                 if (options == System.Windows.MessageBoxResult.Yes)
@@ -419,17 +418,17 @@ namespace RetailManagementSystem.ViewModel.Sales
                 foreach (var item in cancelBillItems.ToList())
                 {
                     var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
-                    StockTransaction stockTrans = null;
+                    var stockTrans = GetStockTransation(rmsEntities,stockItem, cancelBill.AddedOn.Value);
                     //if (item.Product.SupportsMultiPrice.HasValue && item.Product.SupportsMultiPrice.Value)
-                    var stockTransList = rmsEntities.StockTransactions.Where(str => str.StockId == stockItem.Id);
-                    foreach (var stkTrnsItem in stockTransList)
-                    {
-                        if(stkTrnsItem.AddedOn.Value.Subtract(cancelBill.AddedOn.Value).Days == 0)
-                        {
-                            stockTrans = stkTrnsItem;
-                            break;
-                        }
-                    }
+                    //var stockTransList = rmsEntities.StockTransactions.Where(str => str.StockId == stockItem.Id);
+                    //foreach (var stkTrnsItem in stockTransList)
+                    //{
+                    //    if(stkTrnsItem.AddedOn.Value.Subtract(cancelBill.AddedOn.Value).Days == 0)
+                    //    {
+                    //        stockTrans = stkTrnsItem;
+                    //        break;
+                    //    }
+                    //}
                     //else
                     //  stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id);
 
@@ -438,9 +437,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                      //                                                          && str.AddedOn.Value.Date.Day == cancelBill.AddedOn.Value.Date.Day
                      //                                                          && str.AddedOn.Value.Date.Year == cancelBill.AddedOn.Value.Date.Year
                     var saleQty = item.Qty.Value;
-                    stockTrans.Outward -= saleQty;
-                    stockTrans.ClosingBalance += saleQty;
-
+                    if (stockTrans != null)
+                    {
+                        var actualStockTrans = rmsEntities.StockTransactions.FirstOrDefault(st => st.Id == stockTrans.Id);
+                        if (actualStockTrans != null)
+                        {
+                            actualStockTrans.Outward -= saleQty;
+                            actualStockTrans.ClosingBalance += saleQty;
+                            actualStockTrans.SalesPurchaseCancelQty = saleQty;
+                        }
+                    }
                     stockItem.Quantity += saleQty;
                 }
 
@@ -457,6 +463,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             OnClose();
         }
+
+        private StockTransaction GetStockTransation(RMSEntities rmsEntities, Stock stock,DateTime transDateTime)
+        {
+            var query = "Select * from stockTransaction where StockId =  " + stock.Id + " and Date(addedon) ='" + transDateTime.ToString("yyyy-MM-dd") + "'";
+            return rmsEntities.Database.SqlQuery<StockTransaction>(query).FirstOrDefault();
+        }
+
         #endregion
 
         #region SaveCommand
@@ -559,8 +572,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                         _billSales.TotalAmount = _totalAmount;
                         _billSales.Discount = GetDiscountValue();
-                        decimal? oldValue;
-                        _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out oldValue);
+                        _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
 
                         //rmsEntities.Entry(_billSales).State = EntityState.Added;
 
@@ -663,9 +675,10 @@ namespace RetailManagementSystem.ViewModel.Sales
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     
                     string str = string.Join(",", SaleDetailList.Select(s => s.ProductId.ToString()));
-                    var companySqlParam = new MySql.Data.MySqlClient.MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString);
-
-                    companySqlParam.Value = str;
+                    var companySqlParam = new MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString)
+                    {
+                        Value = str
+                    };
 
                     cmd.Parameters.Add(companySqlParam);
 
@@ -972,17 +985,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //{
                 //    _log.Info("Bill Info :"  + slLogitem.BillId + "," + slLogitem.ProductId + "," + slLogitem.Qty + "," + slLogitem.PriceId + "," + slLogitem.SellingPrice);
                 //}
-                decimal? oldvalue;
 
                 //_totalAmount = _extensions.Calculate(_totalAmount.Value);
                 //Find the sale item again as the context is different
-                var sale =  rmsEntities.Sales.Find(_billSales.BillId);
+                var sale = rmsEntities.Sales.Find(_billSales.BillId);
                 //sale = _billSales;
 
                 sale.TotalAmount = _totalAmount;
                 sale.ModifiedOn = _billSales.ModifiedOn;
                 sale.PaymentMode = _billSales.PaymentMode;
-                sale.TransportCharges  = _extensions.GetPropertyValue("TransportCharges", out oldvalue);                
+                sale.TransportCharges  = _extensions.GetPropertyValue("TransportCharges", out decimal? oldvalue);                
                 sale.CustomerOrderNo = _billSales.CustomerOrderNo;
                 sale.Discount = GetDiscountValue();
                 //This is for printing purpose
@@ -1093,14 +1105,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                 {
                     //  priceIdParam.Value = saleDetailItem.PriceId;
 
-                    var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
-                    mySQLparam.Value = saleDetailItem.PriceId;
+                    var mySQLparam = new MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32)
+                    {
+                        Value = saleDetailItem.PriceId
+                    };
 
                     var productPrice = rmsEntities.Database.SqlQuery<ProductPrice>
                                            ("CALL GetProductPriceForPriceId(@priceId)", mySQLparam).FirstOrDefault();
 
                     //var productPrice = _productsPriceList.FirstOrDefault(p => p.PriceId == saleDetailItem.PriceId);
-                    var discount = saleDetailItem.Discount.HasValue ? saleDetailItem.Discount.Value : 0.00M;
+                    var discount = saleDetailItem.Discount ?? 0.00M;
 
                     var saleDetailExtn = new SaleDetailExtn()
                     {
@@ -1293,7 +1307,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
                 if (dateDiff == 0)
                 {
-                    stockTrans.Outward = saleDetail.Qty.Value + (stockTrans.Outward.HasValue ? stockTrans.Outward.Value : 0);
+                    stockTrans.Outward = saleDetail.Qty.Value + (stockTrans.Outward ?? 0);
                     stockTrans.ClosingBalance -= saleDetail.Qty;
                 }
                 else
@@ -1380,7 +1394,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //};
             //&& SaleDetailExtn.AvailableStock >
             //SaleDetailExtn.Qty.Value
-            SaleDetailExtn.Qty = SaleDetailExtn.Qty.HasValue ? SaleDetailExtn.Qty.Value : 1;
+            SaleDetailExtn.Qty = SaleDetailExtn.Qty ?? 1;
         }
 
         private bool CanSaveAs(object parameter)
