@@ -99,8 +99,10 @@ namespace RetailManagementSystem.ViewModel.Reports
 
         private void OnPrint(Window window)
         {
-            _rptDataSource[0] = new ReportDataSource();
-            _rptDataSource[0].Name = "DataSet1";
+            _rptDataSource[0] = new ReportDataSource
+            {
+                Name = "DataSet1"
+            };
 
             var query = "GetCustomerWiseSales";
 

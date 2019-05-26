@@ -750,37 +750,37 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 return true;
 
-                var saleQty = saleDetailItem.Qty;
-                if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
-                    && (saleQty > 0))
-                {
-                    Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
-                    return false;
-                }
+                //var saleQty = saleDetailItem.Qty;
+                //if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                //    && (saleQty > 0))
+                //{
+                //    Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
+                //    return false;
+                //}
 
-                using (var rmsEntities = new RMSEntities())
-                {
-                    var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                                                   && s.Quantity == saleDetailItem.AvailableStock);
+                //using (var rmsEntities = new RMSEntities())
+                //{
+                //    var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                //                                                   && s.Quantity == saleDetailItem.AvailableStock);
 
-                    if (stock != null)
-                    {
-                        var stkQty = stock.Quantity;
-                        var saleQtyValue = saleDetailItem.Qty.Value;
-                        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
-                        {
-                            var product = rmsEntities.Products.Find(saleDetailItem.ProductId);
-                            var productName = "";
-                            if (product != null)
-                            {
-                                productName = product.Name;
-                            }
-                            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
-                                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
-                            return false;
-                        }
-                    }
-                }
+                //    if (stock != null)
+                //    {
+                //        var stkQty = stock.Quantity;
+                //        var saleQtyValue = saleDetailItem.Qty.Value;
+                //        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
+                //        {
+                //            var product = rmsEntities.Products.Find(saleDetailItem.ProductId);
+                //            var productName = "";
+                //            if (product != null)
+                //            {
+                //                productName = product.Name;
+                //            }
+                //            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
+                //                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
+                //            return false;
+                //        }
+                //    }
+                //}
             }
             return true;
         }
@@ -1052,6 +1052,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 var SaleDetailExtn = e.OldItems[0] as SaleDetailExtn;
+                if (SaleDetailExtn == null || SaleDetailExtn.ProductId <= 0) return;
                 if(_isEditMode)
                     _deletedItems.Add(SaleDetailExtn);
                 _totalAmount -= SaleDetailExtn.Amount;
@@ -1237,7 +1238,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                 productPrice = productPriceForBarCode;
                 
             }
-            if (productPrice == null) return;
+            if (productPrice == null)
+            {
+                _log.Debug("SetProductDetails(); Product Price is null");
+                return;
+            }
             //var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             try
             {

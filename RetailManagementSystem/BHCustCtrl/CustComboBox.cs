@@ -44,8 +44,7 @@ namespace BHCustCtrl
 
         static CustComboBox()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustComboBox), new FrameworkPropertyMetadata(typeof(CustComboBox)));
-                        
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustComboBox), new FrameworkPropertyMetadata(typeof(CustComboBox)));                        
         }
 
         //The property is default and Content property for CustComboBox

@@ -106,8 +106,10 @@ namespace RetailManagementSystem.ViewModel.Sales
             var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId, window);
             if (companyBill == null) return;
 
-            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedSuppliers,BillNo);
-            psummVM.RunningBillNo = BillNo;
+            PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedSuppliers, BillNo)
+            {
+                RunningBillNo = BillNo
+            };
             psummVM.PrintCommand.Execute(null);
             _closeWindowCommand.Execute(window);
         }

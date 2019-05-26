@@ -38,6 +38,8 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
+        public Xceed.Wpf.AvalonDock.Layout.LayoutDocumentPane LayoutDocPane { get; set; }
+
         public Window MainDockingWindow;
 
         protected Workspace()
@@ -45,12 +47,7 @@ namespace RetailManagementSystem.ViewModel
             _documentViewModels = new ObservableCollection<DocumentViewModel>();
         }
 
-        static Workspace _this = new Workspace();
-
-        public static Workspace This
-        {
-          get { return _this; }
-        }
+        public static Workspace This { get; } = new Workspace();
 
 
         private void ShowWindowDialog(Window dialogWindow)
@@ -94,6 +91,21 @@ namespace RetailManagementSystem.ViewModel
                 _documentViewModels.Add(new SalesEntryViewModel(paramValue as SalesParams));
 
             ActiveDocument = _documentViewModels.Last();
+            //ActiveDocument.IsSelected = true;
+            //ActiveDocument.IsActive = true;
+            //MakeActiveLayout(ActiveDocument.Title);
+
+        }
+
+        public void MakeActiveLayout(String layoutTitle)
+        {
+            foreach (Xceed.Wpf.AvalonDock.Layout.LayoutDocument child in LayoutDocPane.Children)
+            {
+                if (child.Title == layoutTitle)
+                {
+                    child.IsSelected = true;
+                }
+            }
         }
 
         #endregion
@@ -519,9 +531,8 @@ namespace RetailManagementSystem.ViewModel
             {
               _activeDocument = value;
               RaisePropertyChanged("ActiveDocument");
-              if (ActiveDocumentChanged != null)
-                ActiveDocumentChanged(this, EventArgs.Empty);
-            }
+                    ActiveDocumentChanged?.Invoke(this, EventArgs.Empty);
+                }
           }
         }
 
@@ -874,7 +885,7 @@ namespace RetailManagementSystem.ViewModel
                     return;
                 }
                 var result =Utility.ShowMessageBoxWithOptions("Do you want to change the system date to tommorrow's date?", System.Windows.MessageBoxButton.YesNo);
-                if(result ==  System.Windows.MessageBoxResult.No) return;
+                if(result == MessageBoxResult.No) return;
 
                 RMSEntitiesHelper.Instance.UpdateSystemDBDate();
             }
@@ -894,7 +905,7 @@ namespace RetailManagementSystem.ViewModel
         internal bool Close(DocumentViewModel doc)
         {
             {
-                DocumentViewModel docToClose = doc as DocumentViewModel;
+                var docToClose = doc as DocumentViewModel;
 
                 if (docToClose != null)
                 {

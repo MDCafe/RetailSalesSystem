@@ -12,16 +12,15 @@ namespace RetailManagementSystem
 {
     internal class RMSEntitiesHelper
     {
-        RMSEntities _rmsEntities;
         static RMSEntitiesHelper _rMSEntitiesHelper;
-        static object _syncRoot = new object();        
+        static readonly object _syncRoot = new object();        
         List<INotifier> _salesNotifierList = new List<INotifier>();
         List<INotifier> _purchaseNotifierList = new List<INotifier>();
         static string productsPriceSQL;
 
         private RMSEntitiesHelper()
         {
-            _rmsEntities = new RMSEntities();
+            RMSEntities = new RMSEntities();
 
             productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
@@ -59,13 +58,7 @@ namespace RetailManagementSystem
             }            
         }
 
-        public RMSEntities RMSEntities
-        {
-            get
-            {                
-                    return _rmsEntities;
-            }
-        }
+        public RMSEntities RMSEntities { get; }
 
         public RMSEntities GetNewInstanceOfRMSEntities()
         {
@@ -106,7 +99,7 @@ namespace RetailManagementSystem
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
-            var salesNo = _rmsEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
+            var salesNo = RMSEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
 
             if (!onload)
             {
@@ -231,7 +224,7 @@ namespace RetailManagementSystem
 
         public bool IsAdmin(string userId)
         {
-            return _rmsEntities.Users.Any(u => u.username == userId && u.RoleId == Constants.ADMIN);
+            return RMSEntities.Users.Any(u => u.username == userId && u.RoleId == Constants.ADMIN);
         }
 
         public DateTime GetSystemDBDate()

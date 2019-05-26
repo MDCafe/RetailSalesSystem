@@ -21,10 +21,11 @@ namespace RetailManagementSystem.ViewModel.Purchases
         Company _selectedCompany;
         Purchase _selectedPurchaseBillNo;
         IEnumerable<Purchase> _billList;
-        int _categoryId;
+        readonly int _categoryId;
         ObservableCollection<ProductPrice> _productsPriceList;        
         public event CommonBusinessViewModel.INotifierCollectionChanged NotifierCollectionChangedEvent;
-        bool _showRestrictedCompanies;
+
+        readonly bool _showRestrictedCompanies;
 
         public ObservableCollection<ProductPrice> ProductsPriceList
         {
@@ -340,8 +341,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
             if(parameter != null && parameter.ToString() =="Print" && SelectedPurchaseBillNo != null)
             {
-                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchaseBillNo.RunningBillNo);
-                psummVM.RunningBillNo = SelectedPurchaseBillNo.RunningBillNo;
+                PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchaseBillNo.RunningBillNo)
+                {
+                    RunningBillNo = SelectedPurchaseBillNo.RunningBillNo
+                };
                 psummVM.PrintCommand.Execute(null);
             }
             Clear();
@@ -394,8 +397,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
              BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedCompany.Id);
 
-            var mysqlParam = new MySql.Data.MySqlClient.MySqlParameter("@filterCompanyId", MySql.Data.MySqlClient.MySqlDbType.Int32);
-            mysqlParam.Value = SelectedCompany.Id;
+            var mysqlParam = new MySql.Data.MySqlClient.MySqlParameter("@filterCompanyId", MySql.Data.MySqlClient.MySqlDbType.Int32)
+            {
+                Value = SelectedCompany.Id
+            };
 
             var purchaseReturn = _rmsEntities.Database.SqlQuery<PurchaseReturn>
                                    ("GetPurchaseReturnForCompany(@filterCompanyId)", mysqlParam).ToList();
@@ -418,7 +423,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
 
                 var rtnReason = _rmsEntities.CodeMasters.FirstOrDefault(s => s.Id == item.ReturnReasonCode);
-                var itemPriceValue = item.ReturnPrice.HasValue ? item.ReturnPrice.Value : itemPrice;
+                var itemPriceValue = item.ReturnPrice ?? itemPrice;
                 var returnItem = new ReturnPurchaseDetailExtn()
                 {
                     ProductId = item.ProductId,
@@ -428,7 +433,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     ReturnPrice = itemPriceValue,
                     ReturnAmount = item.Quantity * itemPriceValue,
                     ProductName = itemProductName,
-                    Selected = item.MarkedForReturn.HasValue ? item.MarkedForReturn.Value : false,
+                    Selected = item.MarkedForReturn ?? false,
                     Comments = item.comments,
                     ExpiryDate = item.ExpiryDate,
                     AddedOn = item.CreatedOn

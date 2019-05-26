@@ -85,8 +85,10 @@ namespace BHCustCtrl
 
         public CustDataGridComboBoxColumn()
         {
-            comboBox = new CustComboBox();
-            comboBox.IsEditable = true;
+            comboBox = new CustComboBox
+            {
+                IsEditable = true
+            };
             //comboBox.PreviewKeyDown += ComboBox_PreviewKeyDown;
             comboBox.PreviewTextInput += ComboBoxPreviewTextInput;
             comboBox.Loaded += ComboBox_Loaded;            
@@ -192,13 +194,13 @@ namespace BHCustCtrl
 
         protected override bool CommitCellEdit(FrameworkElement editingElement)
         {
-            //((DataRowView)editingElement.DataContext).Row[this.SelectedValuePath] = comboBox.SelectedValue;
-            //BindingExpression binding = editingElement.GetBindingExpression(ComboBox.SelectedValueProperty);
+            //((System.Data.DataRowView)editingElement.DataContext).Row[this.SelectedValuePath] = comboBox.SelectedValue;
+            //System.Windows.Data.BindingExpression binding = editingElement.GetBindingExpression(ComboBox.SelectedValueProperty);
             //if (binding != null) binding.UpdateSource();
             //editingElement.SetValue(ComboBox.SelectedItemProperty, comboBox.SelectedItem);
             //var propInfo = editingElement.DataContext.GetType().GetProperty(this.SelectedValuePath);
-            ////propInfo.SetValue(editingElement.Parent, comboBox.SelectedValue, new object[] { });
-            ////((Microsoft.Windows.Controls.DataGridCell)editingElement.Parent).SetValue(DataGridCell.ContentProperty, comboBox.SelectedValue);
+            //propInfo.SetValue(editingElement.Parent, comboBox.SelectedValue, new object[] { });
+            //((Microsoft.Windows.Controls.DataGridCell)editingElement.Parent).SetValue(DataGridCell.ContentProperty, comboBox.SelectedValue);
 
             ////return true;// base.CommitCellEdit(editingElement);
             //editingElement.DataContext = comboBox.SelectedItem;
@@ -206,8 +208,9 @@ namespace BHCustCtrl
             //return true;
 
             // Dynamically set the item on our POCO (the DataContext).
-            PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
-            info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
+            //_log.Info("CustComboBoxSelectedValue:" + CustComboBoxSelectedValue);
+            //PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
+            //info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
             //var grid =FindMyParentHelper<DataGrid>.FindAncestor(editingElement);
 
 

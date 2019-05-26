@@ -14,18 +14,13 @@ namespace RetailManagementSystem.ViewModel.Accounts
 {
     class CustomerBillPaymentsViewModel : DocumentViewModel
     {
-        private bool _showRestrictedCustomer;
-        private int _categoryId;
-        private Customer _selectedCustomer;
+        private readonly bool _showRestrictedCustomer;
+        private readonly int _categoryId;
         private static readonly ILog _log = LogManager.GetLogger(typeof(CustomerBillPaymentsViewModel));
 
         public ObservableCollection<CustomerPaymentDetails> CustomerPaymentDetailsList { get; set; }
 
-        public Customer SelectedCustomer
-        {
-            get { return _selectedCustomer; }
-            set { _selectedCustomer = value; }
-        }
+        public Customer SelectedCustomer { get; set; }
 
         public decimal? AllocationAmount { get; set; }
         public decimal? TotalPendingAmount { get; set; }
@@ -91,49 +86,47 @@ namespace RetailManagementSystem.ViewModel.Accounts
             {
                 if (_getBillsCommand == null)
                 {
-                    _getBillsCommand = new RelayCommand<object>((p) => OnGetBills(), (p) => CanGetBills());
+                    _getBillsCommand = new RelayCommand<object>((p) =>
+                    {
+                        CustomerPaymentDetailsList.Clear();
+                        using (var rmsEntities = new RMSEntities())
+                        {
+                            var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@customerId", MySql.Data.MySqlClient.MySqlDbType.Int32)
+                            {
+                                Value = SelectedCustomer.Id
+                            };
+                            var custPayDetails = rmsEntities.Database.SqlQuery<CustomerPaymentDetails>
+                                                                                ("CALL GetCustomerPaymentDetails(@customerId)", mySQLparam);
+
+                            TotalPendingAmount = SelectedCustomer.BalanceDue;
+                            OldPendingAmount = SelectedCustomer.OldBalanceDue;
+                            var i = 0;
+                            foreach (var item in custPayDetails)
+                            {
+                                item.SerialNo = ++i;
+                                CustomerPaymentDetailsList.Add(item);
+                                item.PropertyChanged += (s, e) =>
+                                {
+                                    switch (e.PropertyName)
+                                    {
+                                        case "AmountPaid":
+                                        case "CurrentAmountPaid":
+                                            item.BalanceAmount = item.TotalAmount - (item.AmountPaid + item.CurrentAmountPaid);
+                                            break;
+                                    }
+                                };
+                            }
+                        }
+                    }, (p) =>
+                    {
+                        return SelectedCustomer != null;
+                    });
                 }
 
                 return _getBillsCommand;
             }
         }
-
-        private bool CanGetBills()
-        {
-            return _selectedCustomer != null;
-        }
-
-        protected void OnGetBills()
-        {
-            CustomerPaymentDetailsList.Clear();
-            using (var rmsEntities = new RMSEntities())
-            {
-                var mySQLparam = new MySql.Data.MySqlClient.MySqlParameter("@customerId", MySql.Data.MySqlClient.MySqlDbType.Int32);
-                mySQLparam.Value = SelectedCustomer.Id;
-                var custPayDetails = rmsEntities.Database.SqlQuery<CustomerPaymentDetails>
-                                                                    ("CALL GetCustomerPaymentDetails(@customerId)", mySQLparam);
-
-                TotalPendingAmount = _selectedCustomer.BalanceDue;
-                OldPendingAmount = _selectedCustomer.OldBalanceDue;
-                var i = 0;
-                foreach (var item in custPayDetails)
-                {
-                    item.SerialNo = ++i;
-                    CustomerPaymentDetailsList.Add(item);
-                    item.PropertyChanged += (s, e) =>
-                    {
-                        switch (e.PropertyName)
-                        {
-                            case "AmountPaid":
-                            case "CurrentAmountPaid":
-                                item.BalanceAmount = item.TotalAmount - (item.AmountPaid + item.CurrentAmountPaid);
-                                break;
-                        }
-                    };
-                }
-            }
-        }
-
+        
         #endregion
 
         #region SaveCommand
@@ -153,7 +146,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         private bool CanSave()
         {
-            return _selectedCustomer != null;
+            return SelectedCustomer != null;
         }
 
         protected void OnSave()
@@ -191,7 +184,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                         {
                             AmountPaid = item.CurrentAmountPaid,
                             BillId = item.BillId,
-                            CustomerId = _selectedCustomer.Id,
+                            CustomerId = SelectedCustomer.Id,
                             PaymentMode = item.PaymentMode.Id,
                             PaymentDate = PaymentDate
                         };
@@ -212,7 +205,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             }
             catch (Exception ex)
             {
-                _log.Error("Error on saving payments for customer:" + _selectedCustomer.Name, ex);
+                _log.Error("Error on saving payments for customer:" + SelectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
             }
         }
@@ -313,7 +306,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             }
             catch (Exception ex)
             {
-                _log.Error("Error on allocation:" + _selectedCustomer.Name, ex);
+                _log.Error("Error on allocation:" + SelectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
             }
         }
@@ -372,7 +365,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             }
             catch (Exception ex)
             {
-                _log.Error("Error on allocation:" + _selectedCustomer.Name, ex);
+                _log.Error("Error on allocation:" + SelectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
             }
         }
@@ -411,13 +404,13 @@ namespace RetailManagementSystem.ViewModel.Accounts
                         (
                             new DirectPaymentDetail()
                             {
-                                 CustomerId = _selectedCustomer.Id,
+                                 CustomerId = SelectedCustomer.Id,
                                  PaidAmount = AllocationAmount,
                                  PaymentDate = PaymentDate
                             }
                         );
 
-                    var cust = RMSEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                    var cust = RMSEntities.Customers.FirstOrDefault(c => c.Id == SelectedCustomer.Id);
                     cust.OldBalanceDue -= AllocationAmount;
                     RMSEntities.SaveChanges();
                 }
@@ -425,7 +418,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             }
             catch (Exception ex)
             {
-                _log.Error("Error on OnDirectPayment:" + _selectedCustomer.Name, ex);
+                _log.Error("Error on OnDirectPayment:" + SelectedCustomer.Name, ex);
                 Utility.ShowErrorBox(ex.Message);
             }
         }

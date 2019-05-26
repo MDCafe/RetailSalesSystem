@@ -24,6 +24,7 @@ namespace RetailManagementSystem
             InitializeComponent();
             DataContext = Workspace.This;
             Workspace.This.MainDockingWindow = this;
+            //Workspace.This.LayoutDocPane = LayoutDocPane;
             Closing += MainWindow_Closing;
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 
@@ -186,5 +187,16 @@ namespace RetailManagementSystem
                 return;
             }
         }
+
+        //public void MakeActiveLayout(String layoutTitle)
+        //{
+        //    foreach (Xceed.Wpf.AvalonDock.Layout.LayoutDocument child in LayoutDocPane.Children)
+        //    {
+        //        if (child.Title == layoutTitle)
+        //        {
+        //            child.IsSelected = true;                    
+        //        }
+        //    }
+        //}
     }
 }

@@ -6,12 +6,14 @@ using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.Model;
 using System.Windows.Media;
+using log4net;
 
 namespace RetailManagementSystem.View.Sales
 {
     public partial class SalesEntry : UserControl
     {
         SalesEntryViewModel _salesViewModel;
+        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntry));
 
         public SalesEntry()
         {
@@ -150,9 +152,11 @@ namespace RetailManagementSystem.View.Sales
         {
             var barcodeNo = custComboBoxCol._cboTextBox.Text;          
             var productPrice = selectedItem as ProductPrice;
-         
+
+            _log.Debug("Before SetProductDetails:" + productPrice);
             _salesViewModel.SetProductDetails(barcodeNo, productPrice,SalesDataGrid.SelectedIndex);
             //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
+            _log.Debug("After SetProductDetails:" + SalesDataGrid.SelectedIndex);
 
             custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
             //custComboBoxCol.comboBox.SelectedIndex = -1;

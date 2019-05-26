@@ -12,7 +12,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 {
     class SalesBillDetailsViewModel : ReportViewModel
     {
-        private bool _showRestrictedCustomers;
+        private readonly bool _showRestrictedCustomers;
 
         public int? RunningBillNo { get; set; }
         
@@ -66,9 +66,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     {
                         AddedOn = itemArray.Field<System.DateTime>("AddedOn"),
                         SellingPrice = itemArray.Field<decimal>("SellingPrice"),
+                        Qty = itemArray.Field<decimal>("Qty"),
                         Discount = itemArray.IsNull("ItemDiscount") ? 0.0M : itemArray.Field<decimal>("ItemDiscount"),
-                        ProductId = itemArray.Field<int>("ProductId"),
-                        Qty  = itemArray.Field<decimal>("Qty"),
+                        ProductId = itemArray.Field<int>("ProductId"),                        
                         CostPrice = itemArray.Field<decimal>("Price")
                     }
                 );
@@ -80,10 +80,12 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 
         private void OnPrint(Window window)
         {
-            _rptDataSource[0] = new ReportDataSource();
-            _rptDataSource[0].Name = "DataSet1";
-            
-            _rptDataSource[0].Value = GetDataTable();
+            _rptDataSource[0] = new ReportDataSource
+            {
+                Name = "DataSet1",
+
+                Value = GetDataTable()
+            };
 
             Workspace.This.OpenReport(this);
             CloseWindow(window);
@@ -99,12 +101,16 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    var runningBillNoSqlParam = new MySqlParameter("runningBillNo", MySqlDbType.Int32);
-                    runningBillNoSqlParam.Value = RunningBillNo;
+                    var runningBillNoSqlParam = new MySqlParameter("runningBillNo", MySqlDbType.Int32)
+                    {
+                        Value = RunningBillNo
+                    };
                     cmd.Parameters.Add(runningBillNoSqlParam);
 
-                    var categorySqlParam = new MySqlParameter("category", MySqlDbType.Int32);
-                    categorySqlParam.Value = _categoryId;
+                    var categorySqlParam = new MySqlParameter("category", MySqlDbType.Int32)
+                    {
+                        Value = _categoryId
+                    };
                     cmd.Parameters.Add(categorySqlParam);
 
                     DataTable dt = new DataTable();

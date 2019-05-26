@@ -304,7 +304,7 @@
                 </xcad:DockingManager.LayoutItemContainerStyleSelector>
                 <xcad:LayoutRoot>
                     <xcad:LayoutPanel Orientation="Vertical">
-                        <xcad:LayoutDocumentPane/>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocPane"/>
                         <xcad:LayoutAnchorablePane Name="ToolsPane" DockHeight="150">
                         </xcad:LayoutAnchorablePane>
                     </xcad:LayoutPanel>

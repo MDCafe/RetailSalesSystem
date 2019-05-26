@@ -104,8 +104,10 @@ namespace RetailManagementSystem.UserControls
                 float fontHeight = itemFont.GetHeight();
                 var solidBrush = new SolidBrush(Color.Black);
 
-                StringFormat drawFormat = new StringFormat();
-                drawFormat.Alignment = StringAlignment.Center;
+                StringFormat drawFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center
+                };
                 int headerStartX = startX + 130;
                 //drawFormat.FormatFlags = StringFormatFlags.;
 
@@ -207,7 +209,7 @@ namespace RetailManagementSystem.UserControls
                     e.Graphics.DrawString(totalValue.ToString("N2"), itemFont, solidBrush, rect, rightAlignformat);
                     Offset += 20;
 
-                    itemDiscountAmount += item.Discount.HasValue ? item.Discount.Value : 0.0M;
+                    itemDiscountAmount += item.Discount ?? 0.0M;
                 }
                 Offset += -10;
 
@@ -227,7 +229,7 @@ namespace RetailManagementSystem.UserControls
                 var isTransportOrDiscountAvailable = false;
 
                 //Transport Amount
-                var transport = _billSales.TransportCharges.HasValue ? _billSales.TransportCharges.Value : 0.00M;
+                var transport = _billSales.TransportCharges ?? 0.00M;
                 if (transport != 0.0M)
                 {
                     rect = new RectangleF(startX, startY + Offset, availableWidth - 10, fontHeight);
@@ -237,7 +239,7 @@ namespace RetailManagementSystem.UserControls
                     isTransportOrDiscountAvailable = true;
                 }
 
-                var discount = _billSales.Discount.HasValue ? _billSales.Discount.Value : 0.00M;
+                var discount = _billSales.Discount ?? 0.00M;
                 if (discount != 0.00M || itemDiscountAmount != 0.0M)
                 {
                     discount += itemDiscountAmount;

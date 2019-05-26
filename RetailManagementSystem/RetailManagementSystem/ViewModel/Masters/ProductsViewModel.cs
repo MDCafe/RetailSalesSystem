@@ -15,24 +15,26 @@ namespace RetailManagementSystem.ViewModel.Masters
         Product _product;
         bool _isEditMode;
         IEnumerable<Product> _productsList;
-        IEnumerable<Category> _productsCategory;
         IEnumerable<Company> _companiesList;
-        IEnumerable<MeasuringUnit> _unitOfMeasureList;
         RMSEntities _rmsEntities;
         ObservableCollection<PriceDetail> _priceDetailsList;
 
         public ProductsViewModel()
         {
-            _product = new Product();
-            _product.SupportsMultiPrice = false;
+            _product = new Product
+            {
+                SupportsMultiPrice = false
+            };
             _rmsEntities = new RMSEntities();
             var cnt = _rmsEntities.Categories.Count();
 
-            _productsCategory = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
-            _unitOfMeasureList = _rmsEntities.MeasuringUnits.ToList().OrderBy(p => p.unit);
+            ProductCategories = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
+            UnitOfMeasures = _rmsEntities.MeasuringUnits.ToList().OrderBy(p => p.unit);
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
-            _priceDetailsList = new ObservableCollection<PriceDetail>();
-            _priceDetailsList.Add(new PriceDetail());
+            _priceDetailsList = new ObservableCollection<PriceDetail>
+            {
+                new PriceDetail()
+            };
 
             ProductActiveValues = new BooleanValue().BooleanValues;
         }
@@ -72,18 +74,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-        public IEnumerable<MeasuringUnit> UnitOfMeasures
-        {
-            get
-            {
-                return _unitOfMeasureList;
-            }
-
-            set
-            {
-                _unitOfMeasureList = value;
-            }
-        }
+        public IEnumerable<MeasuringUnit> UnitOfMeasures { get; set; }
 
 
         public Product SelectedProduct
@@ -105,18 +96,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public string SearchText { get; set; }
 
-        public IEnumerable<Category> ProductCategories
-        {
-            get
-            {
-                return _productsCategory;
-            }
-
-            set
-            {
-                _productsCategory = value;
-            }
-        }
+        public IEnumerable<Category> ProductCategories { get; set; }
 
 
         public ObservableCollection<PriceDetail> PriceDetailList
@@ -170,8 +150,10 @@ namespace RetailManagementSystem.ViewModel.Masters
                     _clearCommand = new RelayCommand<object>(
                         (p) =>
                         {
-                            _product = new Product();
-                            _product.SupportsMultiPrice = false;
+                            _product = new Product
+                            {
+                                SupportsMultiPrice = false
+                            };
                             RaisePropertyChanged("SelectedProduct");
                             _priceDetailsList.Clear();
                             _priceDetailsList.Add(new PriceDetail());
