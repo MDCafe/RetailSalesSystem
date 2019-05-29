@@ -32,7 +32,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>83</ApplicationRevision>
+    <ApplicationRevision>85</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

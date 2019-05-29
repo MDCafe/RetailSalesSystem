@@ -209,8 +209,8 @@ namespace BHCustCtrl
 
             // Dynamically set the item on our POCO (the DataContext).
             //_log.Info("CustComboBoxSelectedValue:" + CustComboBoxSelectedValue);
-            //PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
-            //info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
+            PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
+            info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
             //var grid =FindMyParentHelper<DataGrid>.FindAncestor(editingElement);
 
 
