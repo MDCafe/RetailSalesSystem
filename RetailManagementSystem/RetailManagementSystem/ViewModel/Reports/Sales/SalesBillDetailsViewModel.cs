@@ -73,9 +73,11 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     }
                 );
             }
-            UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint();
-            sp.Print(customer, salesDetails, billSales, billSales.TotalAmount.Value, null, null,_showRestrictedCustomers);
-            
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {
+                UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint(rmsEntities);
+                sp.Print(customer, salesDetails, billSales, billSales.TotalAmount.Value, null, null, _showRestrictedCustomers);
+            }
         }
 
         private void OnPrint(Window window)
@@ -83,7 +85,6 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             _rptDataSource[0] = new ReportDataSource
             {
                 Name = "DataSet1",
-
                 Value = GetDataTable()
             };
 

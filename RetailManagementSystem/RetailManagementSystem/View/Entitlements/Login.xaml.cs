@@ -3,26 +3,27 @@ using System.Windows;
 
 namespace RetailManagementSystem.View.Entitlements
 {
-
     public partial class Login : Window
     {
-        LoginViewModel loginViewModel;
+        internal LoginViewModel LoginVM { get; private set; }
 
         public Login()
         {
-            Initalize(false);
-        }
-
-        private void Initalize(bool validateAsAdmin)
-        {
             InitializeComponent();
-            loginViewModel = new LoginViewModel(validateAsAdmin);
-            DataContext = loginViewModel;
+            LoginVM = new LoginViewModel();
+            DataContext = LoginVM;
         }
 
-        public Login(bool validateAsAdmin)
+        private void Initalize(bool validateAsAdmin, bool InitialLogin)
         {
-            Initalize(validateAsAdmin);
+            
+            //loginViewModel = new LoginViewModel(validateAsAdmin, InitialLogin);
+            
         }
+
+        //public Login(bool validateAsAdmin,bool InitialLogin)
+        //{
+        //    Initalize(validateAsAdmin, InitialLogin);
+        //}
     }
 }

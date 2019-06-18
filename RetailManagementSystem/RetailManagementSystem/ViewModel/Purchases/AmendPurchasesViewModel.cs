@@ -145,9 +145,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            View.Entitlements.Login login = new View.Entitlements.Login(true);
+            View.Entitlements.Login login = new View.Entitlements.Login();
             var result = login.ShowDialog();
-            if (!result.Value)
+            if (!result.Value || !RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId))
             {
                 return;
             }

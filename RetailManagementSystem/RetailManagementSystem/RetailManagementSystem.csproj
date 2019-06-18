@@ -32,7 +32,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>85</ApplicationRevision>
+    <ApplicationRevision>88</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -353,6 +353,7 @@
     <Compile Include="ViewModel\Base\ReportBaseViewModel.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
+    <Compile Include="ViewModel\Entitlements\EntitlementInformation.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Graphs\GraphsViewModel.cs" />

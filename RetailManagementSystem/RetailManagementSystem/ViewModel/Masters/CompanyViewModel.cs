@@ -162,6 +162,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                 else
                     _rmsEntities.Companies.Add(_company);
 
+                _company.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
                 _rmsEntities.SaveChanges();
                 ClearCommand.Execute(null);
                 RaisePropertyChanged("CompanyList");

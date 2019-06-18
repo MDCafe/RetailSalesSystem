@@ -11,6 +11,7 @@ using RetailManagementSystem.ViewModel.Reports.Purhcases;
 using log4net;
 using System.Globalization;
 using System.Threading;
+using RetailManagementSystem.ViewModel.Entitlements;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
@@ -486,7 +487,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                             Tax = TotalTax,
                             PaymentMode = SelectedPaymentId.ToString(),
                             AddedOn = _transcationDate,
-                            ModifiedOn = RMSEntitiesHelper.GetServerDate()
+                            ModifiedOn = RMSEntitiesHelper.GetServerDate(),
+                            UpdatedBy = EntitlementInformation.UserInternalId
                         };
 
                         foreach (var item in _purchaseDetailsList)
@@ -499,6 +501,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                 Tax = item.Tax,
                                 AddedOn = _transcationDate,
                                 ModifiedOn = RMSEntitiesHelper.GetServerDate(),
+                                UpdatedBy = EntitlementInformation.UserInternalId,
                                 VATAmount = item.VATPercentage.HasValue && item.VATPercentage.Value != 0 ?
                                                         (item.PurchasePrice * (item.VATPercentage / 100)) * item.Qty
                                                         :
@@ -523,7 +526,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                         FreeAmount = item.PurchasePrice * item.FreeIssue.Value,
                                         IsFreeOnly = item.Qty == 0 && item.FreeIssue.HasValue ? true : false,
                                         AddedOn = _transcationDate,
-                                        ModifiedOn = RMSEntitiesHelper.GetServerDate()
+                                        ModifiedOn = RMSEntitiesHelper.GetServerDate(),
+                                        UpdatedBy = EntitlementInformation.UserInternalId
                                     });
                             }
 
@@ -1253,6 +1257,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     stockItem.Quantity -= purchaseQty;
                 }
                 cancelBill.IsCancelled = true;
+                cancelBill.UpdatedBy = EntitlementInformation.UserInternalId;
                 rmsEntities.SaveChanges();
             }
             base.OnClose();

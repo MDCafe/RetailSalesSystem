@@ -872,9 +872,9 @@ namespace RetailManagementSystem.ViewModel
                     return;
                 }
 
-                var login = new View.Entitlements.Login(true);
+                var login = new View.Entitlements.Login();
                 var loginResult = login.ShowDialog();
-                if (!loginResult.Value)
+                if (!loginResult.Value || !RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId))
                 {                   
                     return;
                 }

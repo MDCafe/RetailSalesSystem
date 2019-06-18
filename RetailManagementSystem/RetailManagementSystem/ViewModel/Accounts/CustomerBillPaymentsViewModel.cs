@@ -171,11 +171,11 @@ namespace RetailManagementSystem.ViewModel.Accounts
                                 var payment = item.PaymentMode;
                                 paymentDetails.PaymentMode = payment.Id;
                                 paymentDetails.PaymentDate = PaymentDate;
+                                paymentDetails.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
                                 if (payment.Description == "Cheque")
                                 {
                                     AddChequePayment(item, paymentDetails);
                                 }
-
                             }
                             continue;
                         }
@@ -186,7 +186,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
                             BillId = item.BillId,
                             CustomerId = SelectedCustomer.Id,
                             PaymentMode = item.PaymentMode.Id,
-                            PaymentDate = PaymentDate
+                            PaymentDate = PaymentDate,
+                            UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
                         };
                         if (item.PaymentMode.Description == "Cheque")
                         {
@@ -249,7 +250,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
                                         ChequeDate = item.ChequeDate,
                                         ChequeNo = item.ChequeNo,
                                         IsChequeRealised = false,
-                                        PaymentDate = PaymentDate
+                                        PaymentDate = PaymentDate,
+                                        UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
                                     };
             paymentDetails.ChequePaymentDetails.Add(chqPaymentDetails);
         }
@@ -406,7 +408,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
                             {
                                  CustomerId = SelectedCustomer.Id,
                                  PaidAmount = AllocationAmount,
-                                 PaymentDate = PaymentDate
+                                 PaymentDate = PaymentDate,
+                                 UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
                             }
                         );
 

@@ -195,41 +195,44 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             if (!Validate()) return;
             
-                if (_isEditMode)
+            if (_isEditMode)
+            {
+                var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
+                cust = _product;
+                _product.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
+                var priceDetailsToSave = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
+                foreach (var item in _priceDetailsList)
                 {
-                    var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
-                    cust = _product;
-                    var priceDetailsToSave = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
-                    foreach (var item in _priceDetailsList)
-                    {
-                        var itemToUpdate = priceDetailsToSave.Find(a => a.PriceId == item.PriceId);
-                        itemToUpdate.Price = item.Price;
-                        itemToUpdate.SellingPrice = item.SellingPrice;
-                    }
+                    var itemToUpdate = priceDetailsToSave.Find(a => a.PriceId == item.PriceId);
+                    itemToUpdate.Price = item.Price;
+                    itemToUpdate.SellingPrice = item.SellingPrice;
+                    itemToUpdate.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
                 }
-                else
+            }
+            else
+            {
+                var priceDetailNew = _priceDetailsList[0];
+                if (priceDetailNew.Price == 0 || priceDetailNew.SellingPrice == 0)
                 {
-                    var priceDetailNew = _priceDetailsList[0];
-                    if (priceDetailNew.Price == 0 || priceDetailNew.SellingPrice == 0)
-                    {
-                        Utility.ShowErrorBox("Please enter Cost price and Selling Price");
-                        return;
-                    }
-                    _rmsEntities.Stocks.Add(new Stock()
-                    {
-                        ExpiryDate = DateTime.Now.AddMonths(6),
-                        PriceDetail = priceDetailNew,
-                        Quantity = 0,
-                        Product = _product
-                    });
-                    _rmsEntities.Products.Add(_product);
-                    _rmsEntities.PriceDetails.Add(priceDetailNew);
+                    Utility.ShowErrorBox("Please enter Cost price and Selling Price");
+                    return;
                 }
+                _rmsEntities.Stocks.Add(new Stock()
+                {
+                    ExpiryDate = DateTime.Now.AddMonths(6),
+                    PriceDetail = priceDetailNew,
+                    Quantity = 0,
+                    Product = _product,
+                    UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
+                });
+                _rmsEntities.Products.Add(_product);
+                _rmsEntities.PriceDetails.Add(priceDetailNew);
+            }
 
-                _product.Name = _product.Name.Trim();
-                _rmsEntities.SaveChanges();
-                ClearCommand.Execute(null);
-                RaisePropertyChanged("ProductsList");
+            _product.Name = _product.Name.Trim();
+            _rmsEntities.SaveChanges();
+            ClearCommand.Execute(null);
+            RaisePropertyChanged("ProductsList");
         }
 
         private bool Validate()

@@ -24,8 +24,9 @@ namespace RetailManagementSystem.UserControls
         static readonly ILog _log = LogManager.GetLogger(typeof(SalesBillPrint));
         RMSEntities _rmsEntities;
 
-        public SalesBillPrint()
+        public SalesBillPrint(RMSEntities rmsEntities)
         {
+            _rmsEntities = rmsEntities;
             PrintDialog pd = new PrintDialog();
             string strDefaultPrinter = pd.PrinterSettings.PrinterName;//Code to get default printer name  
             _pdoc = new PrintDocument();
@@ -57,21 +58,15 @@ namespace RetailManagementSystem.UserControls
             {
                 Utilities.Utility.ShowErrorBox("Billing printer name is not configured");
             }
-
-            _rmsEntities = new RMSEntities();
-
             _rmsEntities.ApplicationDetails.Count();
             _appDetail = _rmsEntities.ApplicationDetails.FirstOrDefault();
-
-
-
         }
 
         public void Print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal totalAmount, decimal? amountPaid,decimal? balanceAmt,
                           bool showRestrictedCustomers)
         {
             try
-            {
+            {                
                 _customerName = customerName;
                 _saleDetails = saleDetails;
                 _billSales = billSales;
@@ -79,7 +74,7 @@ namespace RetailManagementSystem.UserControls
                 _balanceAmt = balanceAmt;
                 _showRestrictedCustomers = showRestrictedCustomers;
                 _totalAmount = totalAmount;
-               
+
                 _pdoc.Print();
             }
             catch (Exception ex)

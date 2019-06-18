@@ -1,16 +1,8 @@
 ﻿using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using MySql.Data.MySqlClient;
-using RetailManagementSystem.ViewModel.Graphs;
 using System;
-using System.ComponentModel;
-using System.Data;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace RetailManagementSystem.View.Graphs
 {
@@ -19,7 +11,7 @@ namespace RetailManagementSystem.View.Graphs
     /// </summary>
     public partial class Graphs : UserControl
     {
-        private ZoomingOptions _zoomingMode;
+        //private ZoomingOptions _zoomingMode;
 
         public Graphs()
         {

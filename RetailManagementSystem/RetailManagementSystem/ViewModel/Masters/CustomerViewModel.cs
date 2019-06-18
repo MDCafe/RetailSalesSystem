@@ -13,19 +13,16 @@ namespace RetailManagementSystem.ViewModel.Masters
     {
         Customer _customer;
         bool _isEditMode;
-        IEnumerable<Customer> _customersList;
-        IEnumerable<Category> _customerCategory;
-        RMSEntities _rmsEntities;
+        IEnumerable<Customer> _customersList;        
 
         public CustomerViewModel()
-        {
-            //var names = RMSEntitiesHelper.RMSEntities.Customers.SelectMany(c => c.Name);
-            _customer = new Customer();
-            _rmsEntities = new RMSEntities();
-            var cnt = _rmsEntities.Categories.Count();
-
-            _customerCategory = _rmsEntities.Categories.Where(c => c.parentId == 1).ToList();
-
+        {            
+            _customer = new Customer();                        
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {
+                CustomerCategory = rmsEntities.Categories.Where(c => c.parentId == 1).ToList();
+                var cnt = rmsEntities.Categories.Count();
+            }
         }
 
         #region Public Variables
@@ -34,8 +31,13 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             get
             {
-                if(_customersList == null)
-                    _customersList = _rmsEntities.Customers.ToList();
+                if (_customersList == null)
+                {
+                    using (RMSEntities rmsEntities = new RMSEntities())
+                    {
+                        _customersList = rmsEntities.Customers.ToList();
+                    }
+                }
 
                 return _customersList;
             }
@@ -64,18 +66,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public string SearchText { get; set; }
 
-        public IEnumerable<Category> CustomerCategory
-        {
-            get
-            {
-                return _customerCategory;
-            }
-
-            set
-            {
-                _customerCategory = value;
-            }
-        }
+        public IEnumerable<Category> CustomerCategory { get; set; }
 
         #endregion
 
@@ -129,15 +120,16 @@ namespace RetailManagementSystem.ViewModel.Masters
                             _customer = new Customer();
                             RaisePropertyChanged("SelectedCustomer");
 
-
                             _isEditMode = false;
                             DblClickSelectedCustomer = null;
-                            CustomersList = _rmsEntities.Customers.ToList();
+                            using (RMSEntities rmsEntities = new RMSEntities())
+                            {
+                                CustomersList = rmsEntities.Customers.ToList();
+                            }
                             SearchText = "";
                         }
                         );
                 }
-
                 return _clearCommand;
             }
         }        
@@ -167,20 +159,23 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             if (!string.IsNullOrWhiteSpace(SelectedCustomer.Name))
             {
-                if (_isEditMode)
+                using (RMSEntities rmsEntities = new RMSEntities())
                 {
-                    var cust = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
-                    cust = _customer;
-                }
-                else
-                    _rmsEntities.Customers.Add(_customer);
+                    if (_isEditMode)
+                    {
+                        var cust = rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+                        cust = _customer;
+                    }
+                    else
+                        rmsEntities.Customers.Add(_customer);
 
-                _rmsEntities.SaveChanges();
+                    rmsEntities.SaveChanges();
+                }
                 ClearCommand.Execute(null);
                 RaisePropertyChanged("CustomersList");
             }
             else
-                Utilities.Utility.ShowErrorBox("Customer Name can't be empty");
+                Utility.ShowErrorBox("Customer Name can't be empty");
         }
 
         #endregion
@@ -214,15 +209,18 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return;
             }
 
-            var cust = _rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
-            if(cust == null)
+            using (RMSEntities rmsEntities = new RMSEntities())
             {
-                Utility.ShowMessageBoxWithOptions("Customer : " + _customer.Name + " doesn't exist");
-                return;
-            }
+                var cust = rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
+                if (cust == null)
+                {
+                    Utility.ShowMessageBoxWithOptions("Customer : " + _customer.Name + " doesn't exist");
+                    return;
+                }
 
-            _rmsEntities.Customers.Remove(cust);
-            _rmsEntities.SaveChanges();
+                rmsEntities.Customers.Remove(cust);
+                rmsEntities.SaveChanges();
+            }            
             ClearCommand.Execute(null);
             RaisePropertyChanged("CustomersList");         
         }

@@ -222,6 +222,13 @@ namespace RetailManagementSystem
             return serverDateTime.FirstOrDefault();
         }
 
+        public static TimeSpan GetServerTime()
+        {
+            var sql = "select time(now())";
+            var serverTime = Instance.RMSEntities.Database.SqlQuery<TimeSpan>(sql);
+            return serverTime.FirstOrDefault();
+        }
+
         public bool IsAdmin(string userId)
         {
             return RMSEntities.Users.Any(u => u.username == userId && u.RoleId == Constants.ADMIN);

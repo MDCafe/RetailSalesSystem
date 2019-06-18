@@ -23,14 +23,17 @@ namespace RetailManagementSystem
             var result = login.ShowDialog();
             if (!result.Value)
             {
-                this.Shutdown();
+                Shutdown();
                 return;
             }
 
             var isAdmin = RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text.Trim());
+            ViewModel.Entitlements.EntitlementInformation.UserInternalId = login.LoginVM.UserInternalId;
 
-            var mainWindow = new MainWindow(isAdmin);
-            mainWindow.ShowActivated = true;
+            var mainWindow = new MainWindow(isAdmin)
+            {
+                ShowActivated = true
+            };
             mainWindow.ShowDialog();
             this.Shutdown();
         }

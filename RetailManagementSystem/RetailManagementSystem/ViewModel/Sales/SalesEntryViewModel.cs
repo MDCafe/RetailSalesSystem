@@ -1,20 +1,21 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Input;
-using System.Threading;
+﻿using log4net;
+using MySql.Data.MySqlClient;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Model;
+using RetailManagementSystem.UserControls;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
+using RetailManagementSystem.ViewModel.Entitlements;
+using RetailManagementSystem.ViewModel.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.Entity;
 using System.Globalization;
-using log4net;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
-using RetailManagementSystem.Model;
-using RetailManagementSystem.Utilities;
-using RetailManagementSystem.ViewModel.Extensions;
-using RetailManagementSystem.UserControls;
-using MySql.Data.MySqlClient;
+using System.Linq;
+using System.Threading;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
@@ -34,8 +35,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
-
-        SalesBillPrint _salesBillPrint;       
+        
         #endregion
 
         #region Constructor
@@ -47,7 +47,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             //var cnt = _rmsEntities.Customers.ToList();
             //var cnt1 = _rmsEntities.Products.ToList();
 
-            _salesBillPrint = new SalesBillPrint();
             _billSales = new Sale();
             SaleDetailList = new ObservableCollection<SaleDetailExtn>();
             SaleDetailList.CollectionChanged += OnSalesDetailsListCollectionChanged;
@@ -290,9 +289,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                     var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(),System.Windows.MessageBoxButton.YesNoCancel);
                     if(result == System.Windows.MessageBoxResult.Yes)
                     {
-                        var login = new View.Entitlements.Login(true);
+                        var login = new View.Entitlements.Login();
                         var loginResult = login.ShowDialog();
-                        if (RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text) && loginResult.Value)
+                        if (RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId) && loginResult.Value)
                             return;
                     }
                     CloseCommand.Execute(null);
@@ -448,6 +447,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         }
                     }
                     stockItem.Quantity += saleQty;
+                    stockItem.UpdatedBy = EntitlementInformation.UserInternalId;
                 }
 
                 //Remove the amount from customer balance due and from pending amounts
@@ -459,6 +459,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     customer.BalanceDue -= cancelBill.TotalAmount;
                 }
                 cancelBill.IsCancelled = true;
+                cancelBill.UpdatedBy = EntitlementInformation.UserInternalId;
                 rmsEntities.SaveChanges();
             }
             OnClose();
@@ -504,111 +505,24 @@ namespace RetailManagementSystem.ViewModel.Sales
         //}
 
         private void OnSave(object parameter)
-        {
+        {            
             //Validate for Errors
             if (!_isEditMode && !Validate()) return;
+            if (_isEditMode)
+            {                                    
+                SaveOnEdit(parameter);
+                return;
+            }
 
             PanelLoading = true;
             var purchaseSaveTask = System.Threading.Tasks.Task.Run(() =>
-            {                
-                try
+            {
+                using (var rmsEntitiesSaveCtx = new RMSEntities())
                 {
-                    using (var rmsEntitiesSaveCtx = new RMSEntities())
+                    using (DbContextTransaction dbTransaction = rmsEntitiesSaveCtx.Database.BeginTransaction())
                     {
-                        
-                        _log.DebugFormat("Enter save :{0}", _billSales.RunningBillNo);
-                        _billSales.CustomerId = _selectedCustomer.Id;
-                        _billSales.CustomerOrderNo = OrderNo;                        
-                        _billSales.PaymentMode = SelectedPaymentId.ToString();
-
-                        //Get the current time since it takes the window open time
-                        DateTime date = _transcationDate.Date;
-                        TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-                        DateTime combinedDateTime = date.Add(time);
-                        _billSales.AddedOn = combinedDateTime;
-                        _billSales.ModifiedOn = combinedDateTime;
-
-                        if (_isEditMode)
+                        try
                         {
-                            _billSales.ModifiedOn = RMSEntitiesHelper.GetServerDate();
-                            SaveOnEdit(parameter);
-                            return;
-                        }
-
-                        //Star transaction after edit
-                        using (DbContextTransaction scope = rmsEntitiesSaveCtx.Database.BeginTransaction())
-                        {
-                            foreach (var saleDetailItem in SaleDetailList)
-                            {
-                                if (saleDetailItem.ProductId == 0) continue;
-                                var saleDetail = new SaleDetail
-                                {
-                                    Discount = saleDetailItem.Discount,
-                                    PriceId = saleDetailItem.PriceId,
-                                    ProductId = saleDetailItem.ProductId,
-                                    Qty = saleDetailItem.Qty,
-                                    SellingPrice = saleDetailItem.SellingPrice,
-                                    BillId = _billSales.BillId,
-                                    AddedOn = combinedDateTime,
-                                    ModifiedOn = combinedDateTime
-                                };
-                                _billSales.SaleDetails.Add(saleDetail);
-
-                                var expiryDate = saleDetailItem.ExpiryDate;
-                                //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
-                                //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
-                                //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
-                                //                                               );
-
-                                var stock = GetStockDetails(rmsEntitiesSaveCtx, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
-                                if (stock != null)
-                                {
-                                    var actualStockEntity =  rmsEntitiesSaveCtx.Stocks.First(s=> s.Id == stock.Id);
-                                    actualStockEntity.Quantity -= saleDetailItem.Qty.Value;
-                                    SetStockTransaction(rmsEntitiesSaveCtx,saleDetail, actualStockEntity);
-                                }
-                            }
-
-                            //_totalAmount = _extensions.Calculate(_totalAmount.Value);
-
-                            CalculateTotalAmount();
-
-                            _billSales.TotalAmount = _totalAmount;
-                            _billSales.Discount = GetDiscountValue();
-                            _billSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
-
-                            //rmsEntities.Entry(_billSales).State = EntityState.Added;
-
-                            rmsEntitiesSaveCtx.Sales.Add(_billSales);
-
-                            //RemoveTempSalesItemForGUID(_guid);
-                            //this is done to get the latest bill no
-                            //RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
-                            //_billSales.RunningBillNo = _runningBillNo;
-                      
-
-                            var outstandingBalance = _totalAmount.Value - AmountPaid;
-                            if (outstandingBalance > 0)
-                            {                          
-                                _billSales.AmountPaid = _amountPaid;
-                                var custPaymentDetail = new PaymentDetail
-                                {
-                                    AmountPaid = AmountPaid,
-                                    CustomerId = SelectedCustomer.Id,                                
-                                    Sale = _billSales
-                                };
-
-                                rmsEntitiesSaveCtx.PaymentDetails.Add
-                                (
-                                    custPaymentDetail
-                                );
-
-                                //_billSales.PaymentDetails.Add(custPaymentDetail);
-                                var customer = rmsEntitiesSaveCtx.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
-                                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
-                            }
-
                             //Get the latest runningBill number with exclusive lock                       
                             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
                             var nextRunningNo = rmsEntitiesSaveCtx.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
@@ -620,24 +534,122 @@ namespace RetailManagementSystem.ViewModel.Sales
                             _category.RollingNo = nextRunningNo;
 
                             rmsEntitiesSaveCtx.SaveChanges();
-                            scope.Commit();
+
+                            _log.DebugFormat("Enter save :{0}", _runningBillNo);
+                            var combinedDateTime = GetCombinedDateTime();
+
+                            //Create new sales to avoid DB context Error
+                            var lclBillSales = new Sale
+                            {
+                                CustomerId = _selectedCustomer.Id,
+                                CustomerOrderNo = OrderNo,
+                                PaymentMode = SelectedPaymentId.ToString(),
+                                AddedOn = combinedDateTime,
+                                ModifiedOn = combinedDateTime,
+                                RunningBillNo = _runningBillNo,
+                                UpdatedBy = EntitlementInformation.UserInternalId
+                            };
+
+                            //_billSales.UpdatedBy = LoginViewModel.UserId;                                                
+
+                            foreach (var saleDetailItem in SaleDetailList)
+                            {
+                                if (saleDetailItem.ProductId == 0) continue;
+                                var saleDetail = new SaleDetail
+                                {
+                                    Discount = saleDetailItem.Discount,
+                                    PriceId = saleDetailItem.PriceId,
+                                    ProductId = saleDetailItem.ProductId,
+                                    Qty = saleDetailItem.Qty,
+                                    SellingPrice = saleDetailItem.SellingPrice,
+                                    BillId = lclBillSales.BillId,
+                                    AddedOn = combinedDateTime,
+                                    ModifiedOn = combinedDateTime,
+                                    UpdatedBy = EntitlementInformation.UserInternalId
+                                };
+                                lclBillSales.SaleDetails.Add(saleDetail);                                
+
+                                var expiryDate = saleDetailItem.ExpiryDate;
+                                //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                                //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
+                                //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
+                                //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
+                                //                                               );
+
+                                var stock = GetStockDetails(rmsEntitiesSaveCtx, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
+                                if (stock != null)
+                                {
+                                    var actualStockEntity = rmsEntitiesSaveCtx.Stocks.First(s => s.Id == stock.Id);
+                                    actualStockEntity.Quantity -= saleDetailItem.Qty.Value;
+                                    actualStockEntity.UpdatedBy = EntitlementInformation.UserInternalId;
+                                    SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity);
+                                }
+                            }
+
+                            //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+
+                            CalculateTotalAmount();
+
+                            lclBillSales.TotalAmount = _totalAmount;
+                            lclBillSales.Discount = GetDiscountValue();
+                            lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
+
+                            //rmsEntities.Entry(_billSales).State = EntityState.Added;
+
+                            //rmsEntitiesSaveCtx.Sales.Add(_billSales);
+
+                            //RemoveTempSalesItemForGUID(_guid);
+                            //this is done to get the latest bill no
+                            //RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
+                            //_billSales.RunningBillNo = _runningBillNo;
+
+
+                            var outstandingBalance = _totalAmount.Value - AmountPaid;
+                            if (outstandingBalance > 0)
+                            {
+                                lclBillSales.AmountPaid = _amountPaid;
+                                var custPaymentDetail = new PaymentDetail
+                                {
+                                    AmountPaid = AmountPaid,
+                                    CustomerId = SelectedCustomer.Id,
+                                    Sale = lclBillSales,
+                                    UpdatedBy = EntitlementInformation.UserInternalId
+                                };
+
+                                rmsEntitiesSaveCtx.PaymentDetails.Add
+                                (
+                                    custPaymentDetail
+                                );
+
+                                //_billSales.PaymentDetails.Add(custPaymentDetail);
+                                var customer = rmsEntitiesSaveCtx.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                                customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
+                            }
+                            
+                            rmsEntitiesSaveCtx.SaveChanges();
+                            dbTransaction.Commit();
+
+                            _log.DebugFormat("Exit save :{0}", _runningBillNo);
+
+                            if (parameter == null)
+                            {
+                                var salesBillPrint = new SalesBillPrint(rmsEntitiesSaveCtx);
+                                salesBillPrint.Print(SelectedCustomer.Name, SaleDetailList.ToList(), lclBillSales, TotalAmount.Value, 
+                                                     AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                            }
+                            //if (_salesParams.GetTemproaryData)
+                            //    CloseCommand.Execute(null);
+
+                            GetProductsToOrder();
+                            Clear();
                         }
-                        _log.DebugFormat("Exit save :{0}", _billSales.RunningBillNo);
-
-                        if (parameter == null)
-                            _salesBillPrint.Print(SelectedCustomer.Name, SaleDetailList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
-
-                        //if (_salesParams.GetTemproaryData)
-                        //    CloseCommand.Execute(null);
-
-                        GetProductsToOrder();
-                        Clear();
+                        catch (Exception ex)
+                        {
+                            dbTransaction.Rollback();
+                            Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
+                            _log.Error("Error while saving..!!", ex);
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
-                    _log.Error("Error while saving..!!", ex);
                 }
             }).ContinueWith(
             (t) =>
@@ -648,6 +660,19 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _autoResetEvent.Set();
                 }
             });
+        }
+
+       
+
+        private DateTime GetCombinedDateTime()
+        {
+            DateTime combinedDateTime;
+            //Get the current time since it takes the window open time
+            DateTime date = _transcationDate.Date;
+            TimeSpan time  = RMSEntitiesHelper.GetServerTime();
+            //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            combinedDateTime = date.Add(time);
+            return combinedDateTime;
         }
 
         private Stock GetStockDetails(RMSEntities rmsEntities, int productId,int priceId, DateTime dateToCompare)
@@ -875,139 +900,170 @@ namespace RetailManagementSystem.ViewModel.Sales
 
 
         private void SaveOnEdit(object parameter)
-        {
-            SaleDetail saleDetail;
-
-            using (var rmsEntities = new RMSEntities())
+        {         
+            PanelLoading = true;
+            var salesSaveOnEditTask = System.Threading.Tasks.Task.Run(() =>
             {
-                //Check if there are any deletions
-                RemoveDeletedItems(rmsEntities);
-                foreach (var saleDetailItemExtn in SaleDetailList)
+                using (var rmsEntities = new RMSEntities())
                 {
-                    saleDetail = rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
-                                                                         && b.ProductId == saleDetailItemExtn.ProductId
-                                                                         && b.PriceId == saleDetailItemExtn.PriceId);
-                    var serverDate = RMSEntitiesHelper.GetServerDate();
-                    //New item added
-                    if (saleDetail == null)
+                    try
                     {
-                        saleDetail = rmsEntities.SaleDetails.Create();
-                        saleDetail.AddedOn = serverDate;
-                        saleDetail.ModifiedOn = serverDate;
-                        saleDetailItemExtn.OriginalQty = saleDetailItemExtn.Qty;
-                        rmsEntities.SaleDetails.Add(saleDetail);
+                        var combinedDateTime = GetCombinedDateTime();
+                        _billSales.ModifiedOn = RMSEntitiesHelper.GetServerDate();
+                        _billSales.CustomerId = _selectedCustomer.Id;
+                        _billSales.CustomerOrderNo = OrderNo;
+                        _billSales.PaymentMode = SelectedPaymentId.ToString();
+                        _billSales.AddedOn = combinedDateTime;
+                        _billSales.ModifiedOn = combinedDateTime;
+                        _billSales.UpdatedBy = EntitlementInformation.UserInternalId;
 
-                        SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+                        SaleDetail saleDetail;
 
-                        var stockNewItem = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
-                        if (stockNewItem != null)
+                        //Check if there are any deletions
+                        RemoveDeletedItems(rmsEntities);
+                        foreach (var saleDetailItemExtn in SaleDetailList)
                         {
-                            var stkQty = stockNewItem.Quantity;
-                            //if ((stkQty - saleDetail.Qty.Value) < 0)
-                            //{
-                            //    Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetail.Qty.Value);
-                            //    return;
-                            //}
-                            stockNewItem.Quantity -= saleDetail.Qty.Value;
-                            SetStockTransaction(rmsEntities, saleDetail, stockNewItem);
-                        }
-                        continue;
-                    }
-
-                    //Update existing item
-                    SetSaleDetailItem(saleDetailItemExtn, saleDetail);
-                    saleDetail.ModifiedOn = serverDate;
-
-                    var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
-
-                    if (stock != null)
-                    {
-                        var prd = rmsEntities.Products.Find(new object[1] { saleDetailItemExtn.ProductId });
-                        var multiPriceSupport = prd.SupportsMultiPrice;
-                        StockTransaction stockTransExisting = null;
-                        if (multiPriceSupport.HasValue && multiPriceSupport.Value)
-                        {
-                            var saleDate = saleDetail.AddedOn.Value.Date;
-                            //stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id
-                            //                       && st.AddedOn.Value.Date.Day == saleDate.Day
-                            //                       && st.AddedOn.Value.Date.Month == saleDate.Month
-                            //                       && st.AddedOn.Value.Date.Year == saleDate.Year);
-
-                            //stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id
-                            //&& DbFunctions.TruncateTime(st.AddedOn) == saleDate);
-
-                            foreach (var item in rmsEntities.StockTransactions)
+                            saleDetail = rmsEntities.SaleDetails.FirstOrDefault(b => b.BillId == saleDetailItemExtn.BillId
+                                                                                 && b.ProductId == saleDetailItemExtn.ProductId
+                                                                                 && b.PriceId == saleDetailItemExtn.PriceId);
+                            var serverDate = RMSEntitiesHelper.GetServerDate();
+                            //New item added
+                            if (saleDetail == null)
                             {
-                                if(item.StockId == stock.Id)
+                                saleDetail = rmsEntities.SaleDetails.Create();
+                                saleDetail.AddedOn = serverDate;
+                                saleDetail.ModifiedOn = serverDate;
+                                saleDetailItemExtn.OriginalQty = saleDetailItemExtn.Qty;
+                                saleDetail.UpdatedBy = EntitlementInformation.UserInternalId;
+                                rmsEntities.SaleDetails.Add(saleDetail);
+
+                                SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+
+                                var stockNewItem = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+                                if (stockNewItem != null)
                                 {
-                                    if(item.AddedOn == saleDate)
+                                    var stkQty = stockNewItem.Quantity;
+                                    //if ((stkQty - saleDetail.Qty.Value) < 0)
+                                    //{
+                                    //    Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stkQty + "\nSale Quantity :" + saleDetail.Qty.Value);
+                                    //    return;
+                                    //}
+                                    stockNewItem.Quantity -= saleDetail.Qty.Value;
+                                    stockNewItem.UpdatedBy = EntitlementInformation.UserInternalId;
+                                    SetStockTransaction(rmsEntities, saleDetail, stockNewItem);
+                                }
+                                continue;
+                            }
+
+                            //Update existing item
+                            SetSaleDetailItem(saleDetailItemExtn, saleDetail);
+                            saleDetail.ModifiedOn = serverDate;
+
+                            var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetail.ProductId && s.PriceId == saleDetail.PriceId);
+
+                            if (stock != null)
+                            {
+                                var prd = rmsEntities.Products.Find(new object[1] { saleDetailItemExtn.ProductId });
+                                var multiPriceSupport = prd.SupportsMultiPrice;
+                                StockTransaction stockTransExisting = null;
+                                if (multiPriceSupport.HasValue && multiPriceSupport.Value)
+                                {
+                                    var saleDate = saleDetail.AddedOn.Value.Date;
+                                    //stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id
+                                    //                       && st.AddedOn.Value.Date.Day == saleDate.Day
+                                    //                       && st.AddedOn.Value.Date.Month == saleDate.Month
+                                    //                       && st.AddedOn.Value.Date.Year == saleDate.Year);
+
+                                    //stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id
+                                    //&& DbFunctions.TruncateTime(st.AddedOn) == saleDate);
+
+                                    foreach (var item in rmsEntities.StockTransactions)
                                     {
-                                        stockTransExisting = item;
-                                        break;
+                                        if (item.StockId == stock.Id)
+                                        {
+                                            if (item.AddedOn == saleDate)
+                                            {
+                                                stockTransExisting = item;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
-                            } 
-                        }
-                        else
-                            stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id);
+                                else
+                                    stockTransExisting = rmsEntities.StockTransactions.FirstOrDefault(st => st.StockId == stock.Id);
 
-                        if (saleDetailItemExtn.OriginalQty.Value > saleDetail.Qty.Value)
-                        {
-                            var qty = saleDetailItemExtn.OriginalQty.Value - saleDetail.Qty.Value;
-                            if (stock.Quantity - qty < 0)
-                            {
-                                Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qty);
-                                return;
-                            }
-                            stock.Quantity -= qty;
-                            stockTransExisting.Outward -= qty;
-                            stockTransExisting.ClosingBalance -= qty;
-                        }
-                        else if (saleDetailItemExtn.OriginalQty.Value < saleDetail.Qty.Value)
-                        {
-                            var qtyValue = saleDetail.Qty.Value - saleDetailItemExtn.OriginalQty.Value;
-                            if (stock.Quantity - qtyValue < 0)
-                            {
-                                Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qtyValue);
-                                return;
-                            }
+                                if (saleDetailItemExtn.OriginalQty.Value > saleDetail.Qty.Value)
+                                {
+                                    var qty = saleDetailItemExtn.OriginalQty.Value - saleDetail.Qty.Value;
+                                    //if (stock.Quantity - qty < 0)
+                                    //{
+                                    //    Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qty);
+                                    //    return;
+                                    //}
+                                    stock.Quantity -= qty;
+                                    stockTransExisting.Outward -= qty;
+                                    stockTransExisting.ClosingBalance -= qty;
+                                }
+                                else if (saleDetailItemExtn.OriginalQty.Value < saleDetail.Qty.Value)
+                                {
+                                    var qtyValue = saleDetail.Qty.Value - saleDetailItemExtn.OriginalQty.Value;
+                                    //if (stock.Quantity - qtyValue < 0)
+                                    //{
+                                    //    Utility.ShowErrorBox(" Stock available is less than sale quantity\nAvailable stock :" + stock.Quantity + "\nSale Quantity :" + qtyValue);
+                                    //    return;
+                                    //}
 
-                            stock.Quantity += qtyValue;
-                            stockTransExisting.Outward += qtyValue;
-                            stockTransExisting.ClosingBalance += qtyValue;
+                                    stock.Quantity += qtyValue;
+                                    stockTransExisting.Outward += qtyValue;
+                                    stockTransExisting.ClosingBalance += qtyValue;
+                                }
+                            }
                         }
+
+                        //foreach (var slLogitem in _rmsEntities.SaleDetails)
+                        //{
+                        //    _log.Info("Bill Info :"  + slLogitem.BillId + "," + slLogitem.ProductId + "," + slLogitem.Qty + "," + slLogitem.PriceId + "," + slLogitem.SellingPrice);
+                        //}
+
+                        //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+                        //Find the sale item again as the context is different
+                        var sale = rmsEntities.Sales.Find(_billSales.BillId);
+                        //sale = _billSales;
+
+                        sale.TotalAmount = _totalAmount;
+                        sale.ModifiedOn = _billSales.ModifiedOn;
+                        sale.PaymentMode = _billSales.PaymentMode;
+                        sale.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldvalue);
+                        sale.CustomerOrderNo = _billSales.CustomerOrderNo;
+                        sale.Discount = GetDiscountValue();
+                        sale.UpdatedBy = EntitlementInformation.UserInternalId;
+                        //This is for printing purpose
+                        _billSales.TransportCharges = sale.TransportCharges;
+
+                        rmsEntities.Entry(sale).State = EntityState.Modified;                        
+                        rmsEntities.SaveChanges();
+
+                        if (parameter == null)
+                        {
+                            var salesBillPrint = new SalesBillPrint(rmsEntities);
+                            salesBillPrint.Print(_billSales.Customer.Name, SaleDetailList.ToList(), _billSales,
+                                                 TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                        }
+                        Clear();
+                    }
+                    catch (Exception ex)
+                    {                        
+                        Utility.ShowErrorBox("Error while saving on edit..!!" + ex.Message);
+                        _log.Error("Error while saving on edit..!!", ex);
+                        CloseCommand.Execute(null);
                     }
                 }
-
-                //foreach (var slLogitem in _rmsEntities.SaleDetails)
-                //{
-                //    _log.Info("Bill Info :"  + slLogitem.BillId + "," + slLogitem.ProductId + "," + slLogitem.Qty + "," + slLogitem.PriceId + "," + slLogitem.SellingPrice);
-                //}
-
-                //_totalAmount = _extensions.Calculate(_totalAmount.Value);
-                //Find the sale item again as the context is different
-                var sale = rmsEntities.Sales.Find(_billSales.BillId);
-                //sale = _billSales;
-
-                sale.TotalAmount = _totalAmount;
-                sale.ModifiedOn = _billSales.ModifiedOn;
-                sale.PaymentMode = _billSales.PaymentMode;
-                sale.TransportCharges  = _extensions.GetPropertyValue("TransportCharges", out decimal? oldvalue);                
-                sale.CustomerOrderNo = _billSales.CustomerOrderNo;
-                sale.Discount = GetDiscountValue();
-                //This is for printing purpose
-                _billSales.TransportCharges = sale.TransportCharges;
-
-                rmsEntities.Entry(sale).State = EntityState.Modified;
-
-                rmsEntities.SaveChanges();
-
-                if (parameter == null)
-                    _salesBillPrint.Print(_billSales.Customer.Name, SaleDetailList.ToList(), _billSales,TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
-
-                Clear();
+            }).ContinueWith(
+            (t) =>
+            {
+                PanelLoading = false;
                 CloseCommand.Execute(null);
-            }
+            });
         }
 
         private void RemoveDeletedItems(RMSEntities rmsEntities)
@@ -1321,7 +1377,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         Outward = saleDetail.Qty,
                         ClosingBalance = stockTrans.ClosingBalance - saleDetail.Qty,
                         StockId = stockNewItem.Id,
-                        AddedOn = _transcationDate
+                        AddedOn = _transcationDate                        
                     };
                     //rmsEntities.StockTransactions.Add(newStockTrans);
                     stockNewItem.StockTransactions.Add(newStockTrans);
