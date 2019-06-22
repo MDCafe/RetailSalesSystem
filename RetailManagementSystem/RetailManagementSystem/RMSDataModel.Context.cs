@@ -50,5 +50,6 @@ namespace RetailManagementSystem
         public virtual DbSet<SystemData> SystemDatas { get; set; }
         public virtual DbSet<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual DbSet<StockTransaction> StockTransactions { get; set; }
+        public virtual DbSet<ExpenseDetail> ExpenseDetails { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace RetailManagementSystem
     public partial class App : Application
     {
         static readonly ILog _log = LogManager.GetLogger(typeof(App));
+        Window mainWindow;
 
         public App()
         {
@@ -30,7 +31,7 @@ namespace RetailManagementSystem
             var isAdmin = RMSEntitiesHelper.Instance.IsAdmin(login.txtUserId.Text.Trim());
             ViewModel.Entitlements.EntitlementInformation.UserInternalId = login.LoginVM.UserInternalId;
 
-            var mainWindow = new MainWindow(isAdmin)
+            mainWindow = new MainWindow(isAdmin)
             {
                 ShowActivated = true
             };
@@ -43,10 +44,10 @@ namespace RetailManagementSystem
             if(e.Exception.GetType() == typeof(MySql.Data.MySqlClient.MySqlException))
             {
                 //Mysql Exception
-                Utilities.Utility.ShowErrorBox("Database Exception" + e.Exception.ToString());
+                Utilities.Utility.ShowErrorBox(mainWindow, "Database Exception" + e.Exception.ToString());
             }
 
-            Utilities.Utility.ShowErrorBox(e.Exception.ToString());
+            Utilities.Utility.ShowErrorBox(mainWindow, e.Exception.ToString());
             _log.Debug("Application Error", e.Exception);
             e.Handled = true;
         }

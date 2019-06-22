@@ -8,6 +8,7 @@ using RetailManagementSystem.ViewModel;
 using RetailManagementSystem.ViewModel.Stocks;
 using RetailManagementSystem.ViewModel.Accounts;
 using RetailManagementSystem.ViewModel.Graphs;
+using RetailManagementSystem.ViewModel.Expenses;
 
 namespace RetailManagementSystem.View.Pane
 {
@@ -30,6 +31,13 @@ namespace RetailManagementSystem.View.Pane
             get;
             set;
         }
+
+        public DataTemplate ExpenseViewTemplate
+        {
+            get;
+            set;
+        }
+        
 
         public DataTemplate ReturnPurchaseViewTemplate
         {
@@ -105,6 +113,7 @@ namespace RetailManagementSystem.View.Pane
             if (item is CustomerViewModel)  return CustomerDataTemplate;
             
             if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
+            if (item is ExpenseEntryViewModel) return ExpenseViewTemplate;
 
             if (item is ReturnsViewModel) return ReturnPurchaseViewTemplate;
 

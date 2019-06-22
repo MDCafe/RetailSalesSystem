@@ -66,6 +66,11 @@ namespace RetailManagementSystem.Utilities
           return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);   
         }
 
+        public static MessageBoxResult ShowMessageBoxWithOptions(Window window, string message, MessageBoxButton buttonOptions)
+        {
+            return MessageBox.Show(window,message, Constants.APPLICATION_NAME, buttonOptions, MessageBoxImage.Question);
+        }
+
         public static MessageBoxResult ShowMessageBoxWithOptions(string message,MessageBoxButton buttonOptions)
         {
             return MessageBox.Show(message, Constants.APPLICATION_NAME, buttonOptions, MessageBoxImage.Question);

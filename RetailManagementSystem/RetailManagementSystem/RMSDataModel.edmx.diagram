@@ -57,6 +57,8 @@
         <AssociationConnector Association="RMSEntities.FK_PurchaseBillId" />
         <EntityTypeShape EntityType="RMSEntities.StockTransaction" Width="1.5" PointX="12.75" PointY="18.625" />
         <AssociationConnector Association="RMSEntities.fk_stockId" />
+        <EntityTypeShape EntityType="RMSEntities.ExpenseDetail" Width="1.5" PointX="8.25" PointY="9.875" />
+        <AssociationConnector Association="RMSEntities.ExpCodeMaster" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -111,6 +111,18 @@
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
+        <EntityType Name="ExpenseDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExpenseTypeId" Type="int" />
+          <Property Name="Amount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Comments" Type="varchar" MaxLength="500" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="mediumint" />
+        </EntityType>
         <EntityType Name="MeasuringUnits">
           <Key>
             <PropertyRef Name="Id" />
@@ -373,6 +385,18 @@
           <Property Name="UpdatedBy" Type="varchar" MaxLength="20" />
           <Property Name="RoleId" Type="int" />
         </EntityType>
+        <Association Name="ExpCodeMaster">
+          <End Role="CodeMaster" Type="Self.CodeMaster" Multiplicity="0..1" />
+          <End Role="ExpenseDetails" Type="Self.ExpenseDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseDetails">
+              <PropertyRef Name="ExpenseTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Category">
           <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Products" Type="Self.Products" Multiplicity="*" />
@@ -695,6 +719,7 @@
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
           <EntitySet Name="DirectPaymentDetails" EntityType="Self.DirectPaymentDetails" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="ExpenseDetails" EntityType="Self.ExpenseDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="rms" store:Type="Tables" />
@@ -713,6 +738,10 @@
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
+          <AssociationSet Name="ExpCodeMaster" Association="Self.ExpCodeMaster">
+            <End Role="CodeMaster" EntitySet="CodeMaster" />
+            <End Role="ExpenseDetails" EntitySet="ExpenseDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
             <End Role="Products" EntitySet="Products" />
@@ -860,6 +889,7 @@
           <Property Name="Description" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_returnCode" FromRole="CodeMaster" ToRole="ReturnDamagedStocks" />
           <NavigationProperty Name="PurchaseReturns" Relationship="Self.FK_returnCode_PR" FromRole="CodeMaster" ToRole="PurchaseReturn" />
+          <NavigationProperty Name="ExpenseDetails" Relationship="RMSEntities.ExpCodeMaster" FromRole="CodeMaster" ToRole="ExpenseDetail" />
         </EntityType>
         <EntityType Name="Company">
           <Key>
@@ -1361,6 +1391,11 @@
             <End Role="Stock" EntitySet="Stocks" />
             <End Role="StockTransaction" EntitySet="StockTransactions" />
           </AssociationSet>
+          <EntitySet Name="ExpenseDetails" EntityType="RMSEntities.ExpenseDetail" />
+          <AssociationSet Name="ExpCodeMaster" Association="RMSEntities.ExpCodeMaster">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="ExpenseDetail" EntitySet="ExpenseDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1702,6 +1737,31 @@
             </Principal>
             <Dependent Role="StockTransaction">
               <PropertyRef Name="StockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ExpenseDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpenseTypeId" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSEntities.ExpCodeMaster" FromRole="ExpenseDetail" ToRole="CodeMaster" />
+        </EntityType>
+        <Association Name="ExpCodeMaster">
+          <End Type="RMSEntities.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSEntities.ExpenseDetail" Role="ExpenseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseDetail">
+              <PropertyRef Name="ExpenseTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2096,6 +2156,19 @@
                 <ScalarProperty Name="Outward" ColumnName="Outward" />
                 <ScalarProperty Name="Inward" ColumnName="Inward" />
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseDetails">
+            <EntityTypeMapping TypeName="RMSEntities.ExpenseDetail">
+              <MappingFragment StoreEntitySet="ExpenseDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ExpenseTypeId" ColumnName="ExpenseTypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

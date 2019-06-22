@@ -9,6 +9,7 @@ using RetailManagementSystem.View.Reports.Stock;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.ViewModel.Accounts;
 using RetailManagementSystem.ViewModel.Base;
+using RetailManagementSystem.ViewModel.Expenses;
 using RetailManagementSystem.ViewModel.Graphs;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Reports.Accounts;
@@ -518,6 +519,39 @@ namespace RetailManagementSystem.ViewModel
         }
         #endregion
 
+
+        #region OpenExpenseEntryCommand
+        RelayCommand<object> _openExpenseEntryCommand = null;
+        public ICommand OpenExpenseEntryCommand
+        {
+            get
+            {
+                if (_openExpenseEntryCommand == null)
+                {
+                    _openExpenseEntryCommand = new RelayCommand<object>((p) =>
+                    {
+                        try
+                        {                            
+                            _documentViewModels.Add(new ExpenseEntryViewModel());
+                            ActiveDocument = _documentViewModels.Last();
+                        }
+                        catch (Exceptions.RMSException ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                            //log here
+                        }
+                    });
+                }
+
+                return _openExpenseEntryCommand;
+            }
+        }
+
+        #endregion
 
         #region ActiveDocument
 

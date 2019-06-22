@@ -19,6 +19,7 @@ namespace RetailManagementSystem
         {
             this.ReturnDamagedStocks = new HashSet<ReturnDamagedStock>();
             this.PurchaseReturns = new HashSet<PurchaseReturn>();
+            this.ExpenseDetails = new HashSet<ExpenseDetail>();
         }
     
         public int Id { get; set; }
@@ -29,5 +30,7 @@ namespace RetailManagementSystem
         public virtual ICollection<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseReturn> PurchaseReturns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ExpenseDetail> ExpenseDetails { get; set; }
     }
 }

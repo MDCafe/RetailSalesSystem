@@ -7,6 +7,7 @@
         xmlns:report="clr-namespace:RetailManagementSystem.View"
         xmlns:SalesView="clr-namespace:RetailManagementSystem.View.Sales"
         xmlns:PurchaseView="clr-namespace:RetailManagementSystem.View.Purchases"
+        xmlns:ExpenseView="clr-namespace:RetailManagementSystem.View.Expenses"
         xmlns:MastersView="clr-namespace:RetailManagementSystem.View.Masters"
         xmlns:StockView ="clr-namespace:RetailManagementSystem.View.Stock"
         xmlns:AccountsView ="clr-namespace:RetailManagementSystem.View.Accounts"   
@@ -69,6 +70,15 @@
                                       ToolTipDescription="Entry for Purchase" KeyTip="P" Command="{Binding OpenPurchaseEntryCommand}"/>
                         <RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Amend existing purchase bills" 
                                        KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>
+                    </RibbonGroup>
+
+
+                    <!-- Expense Group-->
+                    <RibbonGroup x:Name="Expense" Header="Expenses" KeyTip="E">
+                        <RibbonButton Label="Entry" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Expense Entry" 
+                                      ToolTipDescription="Entry for Expenses" KeyTip="E" Command="{Binding OpenExpenseEntryCommand}"/>
+                        <!--<RibbonButton Label="Amend/Print Purchases" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Amend existing purchase bills" 
+                                       KeyTip="A" Command="{Binding OpenAmendPurchaseCommand}"/>-->
                     </RibbonGroup>
 
                     <!-- Stock Group-->
@@ -241,6 +251,12 @@
                                 <PurchaseView:PurchaseEntry/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.PurchaseViewTemplate>
+
+                        <pane:PanesTemplateSelector.ExpenseViewTemplate>
+                            <DataTemplate>
+                                <ExpenseView:ExpenseEntry/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.ExpenseViewTemplate>
 
                         <pane:PanesTemplateSelector.ReturnPurchaseViewTemplate>
                             <DataTemplate>

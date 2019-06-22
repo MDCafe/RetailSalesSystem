@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace RetailManagementSystem.Utilities
 {
@@ -14,9 +13,7 @@ namespace RetailManagementSystem.Utilities
         public const string APPLICATION_NAME = "Retail Management System";
         public const string FREE_ISSUE = "FreeIssue";
         public const string PURCHASE_PRICE = "PurchasePrice";
-        public const int ADMIN = 1;
-        //public const string DISCOUNT_PERCENT = "DiscountPercentage";
-        //public const string DISCOUNT_AMT = "DiscountAmount";
+        public const int ADMIN = 1;     
     }
 
     class BooleanValue

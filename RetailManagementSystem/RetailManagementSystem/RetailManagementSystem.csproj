@@ -32,7 +32,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>88</ApplicationRevision>
+    <ApplicationRevision>90</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -242,6 +242,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\RMSException.cs" />
+    <Compile Include="ExpenseDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\CommandManagerHelper.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
@@ -342,6 +345,7 @@
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\ErrorValidator.cs" />
     <Compile Include="Utilities\MySQLDataAccess.cs" />
+    <Compile Include="Utilities\RMSEnums.cs" />
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
@@ -355,6 +359,7 @@
     <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
     <Compile Include="ViewModel\Entitlements\EntitlementInformation.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
+    <Compile Include="ViewModel\Expenses\ExpenseEntryViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Graphs\GraphsViewModel.cs" />
     <Compile Include="ViewModel\Graphs\SalesGraphViewModel.cs" />
@@ -390,6 +395,9 @@
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Expenses\ExpenseEntry.xaml.cs">
+      <DependentUpon>ExpenseEntry.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Graphs\Graphs.xaml.cs">
       <DependentUpon>Graphs.xaml</DependentUpon>
@@ -487,6 +495,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Entitlements\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Expenses\ExpenseEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
