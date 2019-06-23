@@ -608,7 +608,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
 
                                     var outstandingBalance = _totalAmount.Value - AmountPaid;
-                                    if (outstandingBalance > 0)
+                                    if (outstandingBalance > 0 && SelectedPaymentId != 0)
                                     {
                                         lclBillSales.AmountPaid = _amountPaid;
                                         var custPaymentDetail = new PaymentDetail
@@ -616,7 +616,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                                             AmountPaid = AmountPaid,
                                             CustomerId = SelectedCustomer.Id,
                                             Sale = lclBillSales,
-                                            UpdatedBy = EntitlementInformation.UserInternalId
+                                            UpdatedBy = EntitlementInformation.UserInternalId,
+                                            PaymentMode = 0,
+                                            PaymentDate = GetCombinedDateTime()
                                         };
 
                                         rmsEntitiesSaveCtx.PaymentDetails.Add

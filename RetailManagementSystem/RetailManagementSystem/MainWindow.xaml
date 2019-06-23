@@ -111,6 +111,11 @@
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Products to Order" KeyTip="SR" 
                                             Command="{Binding OpenOrderProductReportCommand}"/>
                         </RibbonMenuButton>
+
+                       <RibbonButton Label="Day Statement" LargeImageSource="Images\Finance.png" 
+                                     ToolTipTitle="Statment depicts the cash flows for the day"
+                                       KeyTip="R" Command="{Binding OpenDayStatamentCommand}"/>
+
                         <!--<RibbonCheckBox SmallImageSource="Images\Users.jpg" Label="Sound" KeyTip="X" />-->
                     </RibbonGroup>
                     <RibbonGroup x:Name="SystemData" Header="System Data">

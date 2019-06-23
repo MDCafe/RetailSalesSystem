@@ -30,6 +30,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
             ExpenseDetailList = new ObservableCollection<ExpenseDetail>();
 
             ExpenseDetailList.CollectionChanged += OnExpenseDetailsListCollectionChanged;
+            Title = "Expense Details";
         }
 
         #region SaveCommand

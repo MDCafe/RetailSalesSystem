@@ -826,6 +826,43 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
+        RelayCommand<object> _openDayStatamentCommand = null;
+        public ICommand OpenDayStatamentCommand
+        {
+            get
+            {
+                if (_openDayStatamentCommand == null)
+                {
+                    _openDayStatamentCommand = new RelayCommand<object>((showAll) =>
+                    {
+                        try
+                        {
+                            var showRestrictedCustomers = false;
+                            if (showAll != null)
+                                showRestrictedCustomers = bool.Parse(showAll.ToString());
+
+                            var dayStatementReport = new DayStatementReport(showRestrictedCustomers);
+                            ShowWindowDialog(dayStatementReport);
+
+                        }
+                        catch (Exceptions.RMSException ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                            //log here
+                        }
+                    });
+                }
+
+                return _openDayStatamentCommand;
+            }
+        }
+
+
+        
         #endregion
 
         public void OpenReport(ReportViewModel rptViewModel)
