@@ -32,7 +32,6 @@ namespace RetailManagementSystem
         public virtual DbSet<MeasuringUnit> MeasuringUnits { get; set; }
         public virtual DbSet<PriceDetail> PriceDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
         public virtual DbSet<PurchaseReturn> PurchaseReturns { get; set; }
         public virtual DbSet<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -51,5 +50,7 @@ namespace RetailManagementSystem
         public virtual DbSet<PurchaseDetail> PurchaseDetails { get; set; }
         public virtual DbSet<StockTransaction> StockTransactions { get; set; }
         public virtual DbSet<ExpenseDetail> ExpenseDetails { get; set; }
+        public virtual DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
+        public virtual DbSet<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
     }
 }

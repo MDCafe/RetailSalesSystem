@@ -13,7 +13,7 @@ namespace RetailManagementSystem.ViewModel.Reports
     {
         private DateTime _fromSalesDate;
         private DateTime _toSalesDate;
-        private bool _showRestrictedCustomers;
+        private readonly bool _showRestrictedCustomers;
 
         public DateTime FromSalesDate
         {
@@ -73,8 +73,10 @@ namespace RetailManagementSystem.ViewModel.Reports
 
         private void OnPrint(Window window)
         {
-            _rptDataSource[0] = new ReportDataSource();
-            _rptDataSource[0].Name = "DataSet1";
+            _rptDataSource[0] = new ReportDataSource
+            {
+                Name = "DataSet1"
+            };
 
             var query = "GetSales";
 
@@ -85,16 +87,22 @@ namespace RetailManagementSystem.ViewModel.Reports
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    var fromSqlParam = new MySqlParameter("FromSalesDate", MySqlDbType.Date);
-                    fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
+                    var fromSqlParam = new MySqlParameter("FromSalesDate", MySqlDbType.Date)
+                    {
+                        Value = FromSalesDate.ToString("yyyy-MM-dd")
+                    };
                     cmd.Parameters.Add(fromSqlParam);
 
-                    var toSqlParam = new MySqlParameter("ToSalesDate", MySqlDbType.Date);
-                    toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
+                    var toSqlParam = new MySqlParameter("ToSalesDate", MySqlDbType.Date)
+                    {
+                        Value = ToSalesDate.ToString("yyyy-MM-dd")
+                    };
                     cmd.Parameters.Add(toSqlParam);
 
-                    var categoryIdSqlParam = new MySqlParameter("categoryId", MySqlDbType.Int32);
-                    categoryIdSqlParam.Value = _categoryId;
+                    MySqlParameter categoryIdSqlParam = new MySqlParameter("categoryId", MySqlDbType.Int32)
+                    {
+                        Value = _categoryId
+                    };
                     cmd.Parameters.Add(categoryIdSqlParam);
 
                     DataTable dt = new DataTable();

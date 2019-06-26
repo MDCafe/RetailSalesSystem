@@ -6,6 +6,7 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.ViewModel.Base;
 using System.Windows;
 using RetailManagementSystem.Utilities;
+using System.Data.Entity;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -163,8 +164,9 @@ namespace RetailManagementSystem.ViewModel.Masters
                 {
                     if (_isEditMode)
                     {
-                        var cust = rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);
-                        cust = _customer;
+                        //var cust = rmsEntities.Customers.FirstOrDefault(c => c.Id == _customer.Id);                        
+                        //cust = _customer;
+                        rmsEntities.Entry(_customer).State = EntityState.Modified;
                     }
                     else
                         rmsEntities.Customers.Add(_customer);

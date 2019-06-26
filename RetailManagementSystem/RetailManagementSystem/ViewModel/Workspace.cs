@@ -482,6 +482,31 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenPurchaseBillPaymentsCommand
+        RelayCommand<object> _openPurchaseBillPaymentsCommand = null;
+        public ICommand OpenPurchaseBillPaymentsCommand
+        {
+            get
+            {
+                if (_openPurchaseBillPaymentsCommand == null)
+                {
+                    _openPurchaseBillPaymentsCommand = new RelayCommand<object>((paramValue) =>
+                    {
+                        bool showAll = false;
+                        if (paramValue != null)
+                        {
+                            showAll = bool.Parse(paramValue.ToString());
+                        }
+
+                        _documentViewModels.Add(new PurchaseBillPaymentsViewModel(showAll));
+                        ActiveDocument = _documentViewModels.Last();
+                    });
+                }
+                return _openPurchaseBillPaymentsCommand;
+            }
+        }
+        #endregion
+
 
         #region OpenCustomerBillPaymentsReportCommand
         RelayCommand<object> _openCustomerBillPaymentsReportCommand = null;
@@ -976,9 +1001,7 @@ namespace RetailManagementSystem.ViewModel
         internal bool Close(DocumentViewModel doc)
         {
             {
-                var docToClose = doc as DocumentViewModel;
-
-                if (docToClose != null)
+                if (doc is DocumentViewModel docToClose)
                 {
                     //if (docToClose.IsDirty)
                     //{

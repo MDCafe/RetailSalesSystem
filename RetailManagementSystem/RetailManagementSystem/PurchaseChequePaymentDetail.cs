@@ -12,26 +12,21 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class PurchasePaymentDetail
+    public partial class PurchaseChequePaymentDetail
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PurchasePaymentDetail()
-        {
-            this.PurchaseChequePaymentDetails = new HashSet<PurchaseChequePaymentDetail>();
-        }
-    
-        public int id { get; set; }
-        public int PurchaseBillId { get; set; }
-        public int CompanyId { get; set; }
-        public decimal AmountPaid { get; set; }
+        public int Id { get; set; }
+        public Nullable<int> PurchasePaymentId { get; set; }
+        public Nullable<int> PurchaseBillId { get; set; }
+        public Nullable<int> ChequeNo { get; set; }
+        public Nullable<System.DateTime> ChequeDate { get; set; }
+        public Nullable<bool> IsChequeRealised { get; set; }
         public Nullable<System.DateTime> PaymentDate { get; set; }
+        public string ChequeName { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
     
-        public virtual Company Company { get; set; }
         public virtual Purchase Purchase { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
+        public virtual PurchasePaymentDetail PurchasePaymentDetail { get; set; }
     }
 }

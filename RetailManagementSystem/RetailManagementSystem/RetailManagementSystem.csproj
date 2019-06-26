@@ -32,7 +32,7 @@
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>91</ApplicationRevision>
+    <ApplicationRevision>92</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -254,6 +254,7 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\PurchasePaymentDetails.cs" />
     <Compile Include="Model\CustomerPaymentDetails.cs" />
     <Compile Include="Model\Graphs\SalesGraphCustomModel.cs" />
     <Compile Include="Model\PaymentMode.cs" />
@@ -271,6 +272,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Purchase.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseChequePaymentDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PurchaseDetail.cs">
@@ -349,6 +353,7 @@
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="Validation\QuantityValidationRules.cs" />
     <Compile Include="Validation\ValidateComboRule.cs" />
+    <Compile Include="ViewModel\Accounts\PurchaseBillPaymentsViewModel.cs" />
     <Compile Include="ViewModel\Accounts\CustomerBillPaymentsViewModel.cs" />
     <Compile Include="ViewModel\Accounts\AllPendingCreditReportViewModel.cs" />
     <Compile Include="ViewModel\Base\CommonBusinessViewModel.cs" />
@@ -390,6 +395,9 @@
     <Compile Include="ViewModel\Sales\SalesParams.cs" />
     <Compile Include="ViewModel\Stocks\SwapsViewModel.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
+    <Compile Include="View\Accounts\PurchaseBillPayments.xaml.cs">
+      <DependentUpon>PurchaseBillPayments.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Accounts\CustomerBillPayments.xaml.cs">
       <DependentUpon>CustomerBillPayments.xaml</DependentUpon>
     </Compile>
@@ -493,6 +501,10 @@
     <Page Include="UserControls\SalesExtension.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Accounts\PurchaseBillPayments.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Accounts\CustomerBillPayments.xaml">
       <SubType>Designer</SubType>
@@ -626,6 +638,7 @@
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
     <Resource Include="Images\finance.png" />
+    <Resource Include="Images\PurchasePay.png" />
     <Content Include="View\Reports\Stock\ProductsToOrder.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

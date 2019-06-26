@@ -93,6 +93,12 @@ namespace RetailManagementSystem.View.Pane
             set;
         }
 
+        public DataTemplate PurchaseBillPaymentsTemplate
+        {
+            get;
+            set;
+        }
+
         public DataTemplate GraphViewTemplate
         {
             get;
@@ -124,6 +130,7 @@ namespace RetailManagementSystem.View.Pane
             if (item is SwapsViewModel) return StockTansactionViewTemplate;
 
             if (item is CustomerBillPaymentsViewModel) return CustomerBillPaymentsTemplate;
+            if (item is PurchaseBillPaymentsViewModel) return PurchaseBillPaymentsTemplate;
 
             if (item is GraphsViewModel) return GraphViewTemplate;
 

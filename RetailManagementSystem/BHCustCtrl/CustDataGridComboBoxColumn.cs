@@ -239,8 +239,7 @@ namespace BHCustCtrl
                     var parent = VisualTreeHelper.GetParent(dependencyObject) ??
                                  LogicalTreeHelper.GetParent(dependencyObject);
 
-                    var parentT = parent as T;
-                    if (parentT != null) return parentT;
+                    if (parent is T parentT) return parentT;
 
                     dependencyObject = parent;
                 }

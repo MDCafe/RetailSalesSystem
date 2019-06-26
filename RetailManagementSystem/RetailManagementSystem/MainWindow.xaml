@@ -142,6 +142,9 @@
                     <RibbonGroup x:Name="Accounts" Header="Accounts">
                         <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
                                        KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
+
+                        <RibbonButton Label="Purchase Bill Payments" LargeImageSource="Images\PurchasePay.png" ToolTipTitle="Purchase Bill Payments" 
+                                       KeyTip="P" Command="{Binding OpenPurchaseBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
                     </RibbonGroup>
                     <RibbonGroup x:Name="AcctReports" Header="Reports">
                         <RibbonButton Label="Customer wise payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle=" Credit Customer payment detail report" 
@@ -304,6 +307,11 @@
                                 <AccountsView:CustomerBillPayments/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.CustomerBillPaymentsTemplate>
+                        <pane:PanesTemplateSelector.PurchaseBillPaymentsTemplate>
+                            <DataTemplate>
+                                <AccountsView:PurchaseBillPayments/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.PurchaseBillPaymentsTemplate>
 
                     </pane:PanesTemplateSelector>
                 </xcad:DockingManager.LayoutItemTemplateSelector>
