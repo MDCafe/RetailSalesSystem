@@ -1,18 +1,15 @@
+USE `rms`;
+DROP procedure IF EXISTS `GetSalesDetailsForBillId`;
+
+DELIMITER $$
+USE `rms`$$
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSalesDetailsForBillId`(IN runningBillNo integer, IN category integer)
 BEGIN
-
 declare billidValue int;
-
 SET  billidValue = GetbillIdForCustomers(runningBillNo,category);
-
 SELECT 
-    s.AddedOn,
-    (SELECT 
-            Name AS 'Name'
-        FROM
-            customers
-        WHERE
-            id = s.customerId) AS Customer,
+    s.AddedOn,    
+    c.Name Customer,
     CustomerOrderNo,
     TransportCharges,
     RunningBillNo,
@@ -23,27 +20,17 @@ SELECT
     END AS PaymentMode,
     TotalAmount,
     sd.Discount AS ItemDiscount,
-    (SELECT 
-            Price
-        FROM
-            priceDetails pd
-        WHERE
-            pd.PriceId = sd.PriceId
-                AND pd.ProductId = sd.ProductId) AS Price,
-    (SELECT 
-            p.Name
-        FROM
-            Products p
-        WHERE
-            p.Id = sd.ProductId) AS ProductName,
+    price AS Price,
+    p.Name AS ProductName,
     sd.Qty,
     sd.SellingPrice,sd.productId
 FROM
-    sales s,
-    SaleDetails sd
-WHERE
-    s.BillId = sd.BillId
-        AND s.billId = billidValue
-        order by sd.id;
-        
-END
+    sales s inner join SaleDetails sd on (s.BillId = sd.BillId and s.billId = billidValue)
+			inner Join Customers c on c.id = s.customerId
+            inner join pricedetails pd on (sd.PriceId = pd.PriceId )
+            inner join Products p on (sd.ProductId = p.Id)
+order by sd.id;        
+END$$
+
+DELIMITER ;
+

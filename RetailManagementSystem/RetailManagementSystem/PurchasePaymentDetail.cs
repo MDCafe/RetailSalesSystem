@@ -20,7 +20,7 @@ namespace RetailManagementSystem
             this.PurchaseChequePaymentDetails = new HashSet<PurchaseChequePaymentDetail>();
         }
     
-        public int id { get; set; }
+        public int Id { get; set; }
         public int PurchaseBillId { get; set; }
         public int CompanyId { get; set; }
         public decimal AmountPaid { get; set; }
@@ -30,8 +30,8 @@ namespace RetailManagementSystem
         public Nullable<int> UpdatedBy { get; set; }
     
         public virtual Company Company { get; set; }
-        public virtual Purchase Purchase { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
+        public virtual Purchase Purchase { get; set; }
     }
 }

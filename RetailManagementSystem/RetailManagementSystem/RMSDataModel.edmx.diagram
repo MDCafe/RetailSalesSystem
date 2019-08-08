@@ -56,12 +56,12 @@
         <AssociationConnector Association="RMSEntities.fk_stockId" />
         <EntityTypeShape EntityType="RMSEntities.ExpenseDetail" Width="1.5" PointX="8.25" PointY="9.875" />
         <AssociationConnector Association="RMSEntities.ExpCodeMaster" />
-        <EntityTypeShape EntityType="RMSEntities.PurchasePaymentDetail" Width="1.5" PointX="11.25" PointY="14.875" />
+        <EntityTypeShape EntityType="RMSEntities.PurchaseChequePaymentDetail" Width="1.5" PointX="15.5" PointY="18" />
+        <EntityTypeShape EntityType="RMSEntities.PurchasePaymentDetail" Width="1.5" PointX="11.25" PointY="13.75" />
         <AssociationConnector Association="RMSEntities.FK_compId" />
-        <AssociationConnector Association="RMSEntities.FK_purchaseId" />
-        <EntityTypeShape EntityType="RMSEntities.PurchaseChequePaymentDetail" Width="1.5" PointX="15.5" PointY="18.5" />
+        <AssociationConnector Association="RMSEntities.pur_pay_det" />
         <AssociationConnector Association="RMSEntities.Purchase_Bill" />
-        <AssociationConnector Association="RMSEntities.Purchase_Payment" />
+        <AssociationConnector Association="RMSEntities.FK_purchaseId" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
