@@ -26,13 +26,14 @@ namespace RetailManagementSystem.ViewModel.Sales
         static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
         Sale _billSales;                          
         
-        IExtensions _extensions;   
+        IExtensions _extensions;
+
         //System.Timers.Timer _timer,_autoTimer;
         //static object rootLock = new object();
         //string _guid;
-        SalesParams _salesParams;
+        readonly SalesParams _salesParams;
         List<Customer> _customerList;
-        AutoResetEvent _autoResetEvent;
+        readonly AutoResetEvent _autoResetEvent;
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
@@ -190,7 +191,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (_extensions != null)
             {
                 var transportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldTransportValue);
-                tempTotal = tempTotal + (transportCharges);
+                tempTotal += (transportCharges);
             }
 
             _totalAmount = tempTotal;
@@ -1395,7 +1396,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
             else
             {
-                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
+                var systemDBDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
+                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate);
                 if (dateDiff == 0)
                 {
                     stockTrans.Outward = saleDetail.Qty.Value + (stockTrans.Outward ?? 0);
@@ -1411,8 +1413,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                         StockId = stockNewItem.Id,
                         AddedOn = _transcationDate                        
                     };
-                    //rmsEntities.StockTransactions.Add(newStockTrans);
-                    stockNewItem.StockTransactions.Add(newStockTrans);
+                    rmsEntities.StockTransactions.Add(newStockTrans);
+                    //stockNewItem.StockTransactions.Add(newStockTrans);
                 }
             }
         }
@@ -1487,11 +1489,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             //SaleDetailExtn.Qty.Value
             SaleDetailExtn.Qty = SaleDetailExtn.Qty ?? 1;
         }
-
-        private bool CanSaveAs(object parameter)
-        {
-            return true;
-        }      
 
         private void SaveDataTemp()
         {

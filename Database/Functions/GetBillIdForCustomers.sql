@@ -1,5 +1,7 @@
+use rms;
+drop function if exists `GetbillIdForCustomers` ;
 DELIMITER $$
-CREATE DEFINER=`RMS`@`%` FUNCTION `GetbillIdForCustomers`(runningBillNo integer,category integer) RETURNS int(11)
+CREATE DEFINER=`RMS`@`%` FUNCTION `GetbillIdForCustomers`(runningBillNo integer,category integer) RETURNS int DETERMINISTIC
 BEGIN
 
 declare billidValue int;

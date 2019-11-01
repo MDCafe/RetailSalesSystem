@@ -12,8 +12,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
     class PurchaseSummaryViewModel : ReportViewModel
     {
         private DateTime _fromPurchaseDate;
-        private DateTime _toPurchaseDate;
-        private readonly bool _showRestrictedCustomers;
+        private DateTime _toPurchaseDate;        
 
         public DateTime FromPurchaseDate
         {
@@ -51,7 +50,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             FromPurchaseDate = DateTime.Now;
             ToPurchaseDate = DateTime.Now;
 
-            _showRestrictedCustomers = showRestrictedPeople;
+            //_showRestrictedCustomers = showRestrictedPeople;
 
              ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
 

@@ -12,11 +12,11 @@ namespace RetailManagementSystem.ViewModel.Sales
 {
     class AmendPurchasesViewModel : ViewModelBase
     {
-        bool _showRestrictedSuppliers;                
+        readonly bool _showRestrictedSuppliers;                
         Company _selectedSupplier;               
         string _selectedSupplierText;
         IEnumerable<Purchase> _billList;
-        RMSEntities _rmsEntities;
+        readonly RMSEntities _rmsEntities;
         protected int _categoryId;
 
         public int? BillNo { get; set; }
@@ -94,7 +94,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_printCommand == null)
                 {
-                    _printCommand = new RelayCommand<Window>((w) => OnPrint(w), (w) => CanExecuteMethod(w));
+                    _printCommand = new RelayCommand<Window>((w) => OnPrint(w), (w) => CanExecuteMethod());
                 }
 
                 return _printCommand;
@@ -111,7 +111,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 RunningBillNo = BillNo
             };
             psummVM.PrintCommand.Execute(null);
-            _closeWindowCommand.Execute(window);
+            closeWindowCommand.Execute(window);
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_amendCommand == null)
                 {
-                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w),(p) => CanExecuteMethod(p));
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w),(p) => CanExecuteMethod());
                 }
 
                 return _amendCommand;
@@ -155,30 +155,30 @@ namespace RetailManagementSystem.ViewModel.Sales
             var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId,ShowAllCompanies = _showRestrictedSuppliers };
 
             Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
-            _closeWindowCommand.Execute(window);
+            closeWindowCommand.Execute(window);
 
          
         }       
 
-        private bool CanExecuteMethod(object parameter)
+        private bool CanExecuteMethod()
         {
             return BillNo != null;
         }
         #endregion
 
         #region CloseWindow Command
-        public RelayCommand<Window> _closeWindowCommand { get; private set; }
+        public RelayCommand<Window> closeWindowCommand { get; private set; }
 
         public ICommand CloseWindowCommand
         {
             get
             {
-                if (_closeWindowCommand == null)
+                if (closeWindowCommand == null)
                 {
-                    _closeWindowCommand = new RelayCommand<Window>((w) => CloseWindow(w));
+                    closeWindowCommand = new RelayCommand<Window>((w) => CloseWindow(w));
                 }
 
-                return _closeWindowCommand;
+                return closeWindowCommand;
             }
         }
 

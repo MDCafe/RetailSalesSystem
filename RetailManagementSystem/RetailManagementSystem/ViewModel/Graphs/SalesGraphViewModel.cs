@@ -20,7 +20,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
         {
             Title = "Sales Graph";
 
-            var labelsList = GetSalesData("", "Sales");
+            var labelsList = GetSalesData("");
 
             Labels = labelsList.ToArray();
             //GraphSeriesCollection = new SeriesCollection();
@@ -29,7 +29,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
             //Labels = labelsList.ToArray();
 
             //var creditQuery = "SELECT " +
-            //                            "SUM(totalamount), " +
+            //                            "SUM(totalamount), " +admin
             //                            "DATE_FORMAT(s.addedOn, '%b-%y') SalesMonth " +
             //                        "FROM " +
             //                            "sales s, Customers c " +
@@ -86,7 +86,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
             //DataContext = this;
         }
 
-        public List<string> GetSalesData(string query,string seriesTitle)
+        public List<string> GetSalesData(string query)
         {
             query = "GetSalesGraphReport";
             List<string> lst = new List<string>();

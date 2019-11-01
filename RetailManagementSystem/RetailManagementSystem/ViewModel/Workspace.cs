@@ -26,7 +26,7 @@ namespace RetailManagementSystem.ViewModel
 {
     class Workspace : ViewModelBase
     {
-        ObservableCollection<DocumentViewModel> _documentViewModels = null;
+        readonly ObservableCollection<DocumentViewModel> _documentViewModels = null;
         ReadOnlyObservableCollection<DocumentViewModel> _readOnlyDocView = null;
         public ReadOnlyObservableCollection<DocumentViewModel> DocumentViews
         {
@@ -65,16 +65,11 @@ namespace RetailManagementSystem.ViewModel
           {
             if (_openSalesEntryCommand == null)
             {
-                _openSalesEntryCommand = new RelayCommand<object>((p) => OnOpenSalesEntryCommand(p), (p) => CanNew(p));
+                _openSalesEntryCommand = new RelayCommand<object>((p) => OnOpenSalesEntryCommand(p), (p) => { return true; });
             }
 
             return _openSalesEntryCommand;
           }
-        }
-
-        private bool CanNew(object parameter) 
-        {
-          return true;
         }
 
         private void OnOpenSalesEntryCommand(object paramValue)
@@ -119,14 +114,14 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_openSalesEntryTempCommand == null)
                 {
-                    _openSalesEntryTempCommand = new RelayCommand<object>((p) => OnOpenSalesEntryTempCommand(p));
+                    _openSalesEntryTempCommand = new RelayCommand<object>((p) => OnOpenSalesEntryTempCommand());
                 }
 
                 return _openSalesEntryTempCommand;
             }
         }      
 
-        private void OnOpenSalesEntryTempCommand(object paramValue)
+        private void OnOpenSalesEntryTempCommand()
         {
             //check if temp data exists 
             if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
@@ -156,16 +151,11 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_openAmendSalesCommand == null)
                 {
-                    _openAmendSalesCommand = new RelayCommand<object>((p) => OnOpenAmendSalesCommand(p), (p) => CanAmendNew(p));
+                    _openAmendSalesCommand = new RelayCommand<object>((p) => OnOpenAmendSalesCommand(p), (p) => { return true; });
                 }
 
                 return _openAmendSalesCommand;
             }
-        }
-
-        private bool CanAmendNew(object parameter)
-        {
-            return true;
         }
 
         private void OnOpenAmendSalesCommand(object showAll)
@@ -440,13 +430,13 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_openStockTransactionCommand == null)
                 {
-                    _openStockTransactionCommand = new RelayCommand<object>((p) => OnOpenStockTransactionCommand(p));
+                    _openStockTransactionCommand = new RelayCommand<object>((p) => OnOpenStockTransactionCommand());
                 }
                 return _openStockTransactionCommand;
             }
         }
 
-        private void OnOpenStockTransactionCommand(object paramValue)
+        private void OnOpenStockTransactionCommand()
         {
             _documentViewModels.Add(new SwapsViewModel());
             ActiveDocument = _documentViewModels.Last();
@@ -951,14 +941,14 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_changeSystemDBDateCommand == null)
                 {
-                    _changeSystemDBDateCommand = new RelayCommand<object>((p) => OnChangeSystemDBDateCommand(p));
+                    _changeSystemDBDateCommand = new RelayCommand<object>((p) => OnChangeSystemDBDateCommand());
                 }
 
                 return _changeSystemDBDateCommand;
             }
         }
 
-        private void OnChangeSystemDBDateCommand(object showAll)
+        private void OnChangeSystemDBDateCommand()
         {
             try
             {

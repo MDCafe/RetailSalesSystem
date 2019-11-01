@@ -22,15 +22,15 @@ namespace RetailManagementSystem.ViewModel.Purchases
         private string _invoiceNo;
         ObservableCollection<PurchaseDetailExtn> _purchaseDetailsList;
         List<PurchaseDetailExtn> _deletedItems;
-        private RMSEntities _rmsEntities;        
+        private readonly RMSEntities _rmsEntities;        
         string _selectedCompanyText;
         private decimal? _coolieCharges;
         private decimal? _kCoolieCharges;
         private decimal? _transportCharges;
         private decimal? _localCoolieCharges;
         private int? _editBillNo;
-        PurchaseParams _purchaseParams;
-        private AutoResetEvent _autoResetEvent;
+        readonly PurchaseParams _purchaseParams;
+        private readonly AutoResetEvent _autoResetEvent;
 
         static readonly ILog _log = LogManager.GetLogger(typeof(PurchaseEntryViewModel));
 
@@ -235,7 +235,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             decimal? tempTotal = _purchaseDetailsList.Sum(a => a.Amount);
             var expenses = CalculateExpenses();
-            tempTotal = tempTotal - GetDiscount();
+            tempTotal -= GetDiscount();
 
             if (_specialDiscountAmount.HasValue)
             {
@@ -437,14 +437,14 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave());
                 }
 
                 return _saveCommand;
             }
         }
        
-        public bool CanSave(object parameter)
+        public bool CanSave()
         {
             return _selectedCompany != null && _selectedCompany.Id != 0 && _purchaseDetailsList.Count != 0 &&
                     _purchaseDetailsList[0].ProductId != 0 && _selectedCompanyText == _selectedCompany.Name;
@@ -925,12 +925,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
 
-            //stock transaction not available for this product. Add them 
+            //stock transaction not available for this product. Add them
             if (stockTrans == null)
             {
                 var firstStockTrans = new StockTransaction()
                 {
-                    OpeningBalance = stockNewItem.Quantity -  purchaseDetail.PurchasedQty, //Opening balance will be the one from stock table 
+                    OpeningBalance = stockNewItem.Quantity - purchaseDetail.PurchasedQty, //Opening balance will be the one from stock table 
                     Inward = purchaseDetail.PurchasedQty,
                     ClosingBalance = stockNewItem.Quantity,
                     StockId = stockNewItem.Id,
@@ -942,66 +942,89 @@ namespace RetailManagementSystem.ViewModel.Purchases
             //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
             else
             {
-                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, DateTime.Now.Date);
-                if (dateDiff == 0)
+                using (RMSEntities stkTransRMSEntities = new RMSEntities())
                 {
-                    stockTrans.Inward = stockTrans.Inward.HasValue ? stockTrans.Inward + purchaseDetail.PurchasedQty : purchaseDetail.PurchasedQty;
-                    stockTrans.ClosingBalance += purchaseDetail.PurchasedQty;
-                }
-                else
-                {
-                    var newStockTrans = new StockTransaction()
+                    var sqlCheckSTForTransactionDate = "Select * from StockTransaction where StockId = " + stockNewItem.Id
+                                                    +  " and date(AddedOn) = '" + _transcationDate.ToString("yyyy-MM-dd") + "'";
+
+                    var sqlCheckSTForTransactionDateResult = stkTransRMSEntities.Database.SqlQuery<StockTransaction>(sqlCheckSTForTransactionDate);
+
+                    decimal openingBalanceForOthers = 0;
+
+                    if (sqlCheckSTForTransactionDateResult.Any())
                     {
-                        OpeningBalance = stockTrans.ClosingBalance,
-                        Inward = purchaseDetail.PurchasedQty,
-                        ClosingBalance = purchaseDetail.PurchasedQty + stockTrans.ClosingBalance,
-                        StockId = stockNewItem.Id,
-                        AddedOn = _transcationDate
-                    };
-                    rmsEntities.StockTransactions.Add(newStockTrans);
+                        var stockIdForTransDate = sqlCheckSTForTransactionDateResult.FirstOrDefault().Id;
+                        var stockForTransDate = rmsEntities.StockTransactions.FirstOrDefault(std => std.Id == stockIdForTransDate);
+
+                        stockForTransDate.Inward = stockForTransDate.Inward.HasValue ? stockForTransDate.Inward + purchaseDetail.PurchasedQty : purchaseDetail.PurchasedQty;
+                        stockForTransDate.ClosingBalance += purchaseDetail.PurchasedQty;
+                        openingBalanceForOthers = stockForTransDate.ClosingBalance.Value;
+                    }
+                    else
+                    {
+                        //Add a new transaction for that transaction date
+                        var newStockTrans = new StockTransaction()
+                        {
+                            OpeningBalance = stockTrans.ClosingBalance,
+                            Inward = purchaseDetail.PurchasedQty,
+                            ClosingBalance = purchaseDetail.PurchasedQty + stockTrans.ClosingBalance,
+                            StockId = stockNewItem.Id,
+                            AddedOn = _transcationDate
+                        };
+
+                        openingBalanceForOthers = purchaseDetail.PurchasedQty.Value + stockTrans.ClosingBalance.Value;
+                        rmsEntities.StockTransactions.Add(newStockTrans);
+                    }
+
+                    var stockLastTransDate = stockTrans.AddedOn.Value.Date;
+
+                    DateTime fromDate, todate;
+
+                    if (DateTime.Compare(_transcationDate, stockLastTransDate) >= 1)
+                    {
+                        fromDate = stockLastTransDate;
+                        todate = _transcationDate;
+                    }
+                    else
+                    {
+                        fromDate = _transcationDate;
+                        todate = stockLastTransDate;
+                    }
+
+                    //update all the entires that are above
+                    var queryStockTrans = "select * from StockTransaction where StockId = " + stockNewItem.Id
+                                            + " and date(AddedOn) > '" + fromDate.ToString("yyyy-MM-dd") +
+                                            "' and date(AddedOn) <='" + todate.ToString("yyyy-MM-dd") + "' order by date(Addedon)";
+
+                    var sqlResult = stkTransRMSEntities.Database.SqlQuery<StockTransaction>(queryStockTrans).ToList();
+                    
+                    foreach (var item in sqlResult)
+                    {
+                        if (item.Id == stockTrans.Id)
+                        {
+                            stockTrans.OpeningBalance = openingBalanceForOthers;
+                            stockTrans.ClosingBalance = (openingBalanceForOthers + (item.Inward ?? 0)) - (item.Outward ?? 0);
+                            openingBalanceForOthers = item.ClosingBalance.Value;
+                            continue;
+                        }
+                        item.OpeningBalance = openingBalanceForOthers;
+                        item.ClosingBalance = (openingBalanceForOthers + (item.Inward ?? 0)) - (item.Outward ?? 0);
+                        openingBalanceForOthers = item.ClosingBalance.Value;
+                        rmsEntities.Entry(item).State = System.Data.Entity.EntityState.Modified;                        
+                    }
                 }
             }
         }
 
-        private PriceDetail GetPriceDetails(PurchaseDetailExtn purchaseDetailItemExtn, IQueryable<PriceDetail> priceDetails, ref int priceId)
+        private bool CompareStockTransaction(List<StockTransaction> lst, StockTransaction st)
         {
-            PriceDetail priceDetailItem;
-            if (priceDetails.Any())
-            {
-                //Same item exists. Just update the with new billId 
-                priceDetailItem = priceDetails.FirstOrDefault();
-                priceDetailItem.BillId = purchaseDetailItemExtn.BillId;
-                priceId = priceDetailItem.PriceId;
-                priceDetailItem.SellingPrice = purchaseDetailItemExtn.SellingPrice.Value;
-            }
-            else
-            {
-                //New Price, add it to price details list
-                priceDetailItem = new PriceDetail()
-                {
-                    BillId = RunningBillNo,
-                    ProductId = purchaseDetailItemExtn.ProductId,
-                    Price = purchaseDetailItemExtn.PurchasePrice.Value,
-                    SellingPrice = purchaseDetailItemExtn.SellingPrice.Value
-                };
-                _rmsEntities.PriceDetails.Add(priceDetailItem);
-            }
-
-            return priceDetailItem;
+            if (lst.Contains(st)) return true;
+            return false;
         }
 
-        private void SetPurchaseDetailItem(PurchaseDetailExtn purchaseDetailExtn,  PurchaseDetail purchaseDetail)
-        {
-            purchaseDetail.Discount = purchaseDetailExtn.Discount;
-            //purchaseDetail.PriceId = purchaseDetailExtn.PriceId;
-            purchaseDetail.ProductId = purchaseDetailExtn.ProductId;
-            purchaseDetail.PurchasedQty = purchaseDetailExtn.Qty + (purchaseDetailExtn.FreeIssue ?? 0);
-            purchaseDetail.ActualPrice = purchaseDetailExtn.PurchasePrice.Value;
-            purchaseDetail.BillId = _editBillNo.Value;
-            purchaseDetail.Tax = purchaseDetailExtn.Tax;
-        }
- 
         #endregion
+
+
 
         #region Clear Command
 
@@ -1139,33 +1162,6 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 _log.Error("Error while getting bill details.", ex);
                 Utility.ShowErrorBox(ex.Message);
-            }
-        }
-
-        private void RemoveDeletedItems()
-        {
-            foreach (var item in _deletedItems)
-            {
-                var purchaseDetail = _rmsEntities.PurchaseDetails.FirstOrDefault(s => s.BillId == item.BillId && s.ProductId == item.ProductId);
-
-                if (purchaseDetail == null) continue;
-
-                var stockNewItem = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId && s.PriceId == purchaseDetail.PriceId);
-                if (stockNewItem != null)
-                {
-                    var stockTrans = _rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
-
-                    //if(stockTrans == null)
-                    //{
-                    //    SetStockTransaction(purchaseDetail, stockNewItem);
-                    //}
-                    var qty = item.Qty.Value;
-                    stockTrans.Inward -= qty;
-                    stockTrans.ClosingBalance -= qty;
-
-                    stockNewItem.Quantity -= qty;
-                }
-                _rmsEntities.PurchaseDetails.Remove(purchaseDetail);
             }
         }
 

@@ -9,6 +9,7 @@ using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.ViewModel;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Sales;
+using RetailManagementSystem.ViewModel.Entitlements;
 
 namespace RetailManagementSystem
 {
@@ -31,7 +32,7 @@ namespace RetailManagementSystem
             try
             {
                 Title = RMSEntitiesHelper.Instance.RMSEntities.ApplicationDetails.FirstOrDefault().Name + " - " +
-               "Retail Management System";
+                        "Retail Management System -  " + EntitlementInformation.UserName;
 
                 Loaded += (sender, e) =>
                 {

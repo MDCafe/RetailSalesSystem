@@ -52,5 +52,6 @@ namespace RetailManagementSystem
         public virtual DbSet<ExpenseDetail> ExpenseDetails { get; set; }
         public virtual DbSet<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
         public virtual DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
+        public virtual DbSet<StockDailyTransaction> StockDailyTransactions { get; set; }
     }
 }

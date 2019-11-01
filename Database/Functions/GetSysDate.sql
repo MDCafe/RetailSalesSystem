@@ -1,5 +1,8 @@
+use rms;
+drop FUNCTION if exists `GetSysDate` ;
+
 DELIMITER $$
-CREATE DEFINER=`RMS`@`%` FUNCTION `GetSysDate`(runningBillNo integer,category integer) RETURNS datetime
+CREATE DEFINER=`RMS`@`%` FUNCTION `GetSysDate`() RETURNS datetime DETERMINISTIC
 BEGIN
 
 declare sysDateTime datetime;

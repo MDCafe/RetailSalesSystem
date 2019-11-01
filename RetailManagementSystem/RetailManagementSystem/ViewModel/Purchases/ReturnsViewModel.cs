@@ -14,7 +14,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 {
     class ReturnsViewModel : DocumentViewModel
     {
-        RMSEntities _rmsEntities;
+        readonly RMSEntities _rmsEntities;
         ObservableCollection<ReturnPurchaseDetailExtn> _returnPurchaseDetailsList;
         IEnumerable<PriceDetail> _returnPriceList;                
         decimal? _totalAmount;

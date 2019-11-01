@@ -26,7 +26,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
             {
                 ExpenseTypesList = rmsEntities.CodeMasters.Where(c => c.Code == "EXP").ToList();
             }
-            TranscationDate = RMSEntitiesHelper.GetServerDate();
+            TranscationDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
             ExpenseDetailList = new ObservableCollection<ExpenseDetail>();
 
             ExpenseDetailList.CollectionChanged += OnExpenseDetailsListCollectionChanged;

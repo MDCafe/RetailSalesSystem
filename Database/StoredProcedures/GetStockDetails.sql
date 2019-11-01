@@ -7,7 +7,7 @@ CREATE DEFINER=`RMS`@`%` PROCEDURE `GetStockDetails`(in categoryId int,in produc
 													 in fromDate date, in ToDate date)
 BEGIN
 
-if(categoryId = 0 && productId = 0 && companyId = 0)
+if(categoryId = 0 and productId = 0 and companyId = 0)
 then
 	select p.Id as productId,p.Name,c.id categoryId,c.name CategoryName,pd.PriceId, pd.Price,
     pd.SellingPrice,p.CompanyId,cp.Name CompanyName,
@@ -17,7 +17,7 @@ then
 					Join PriceDetails pd on pd.ProductId = p.Id
                     Join Stocks s on s.ProductId = p.Id and s.PriceId = pd.PriceId
 					left Join StockTransaction st on st.StockId = s.Id and date(st.addedOn) between fromDate and toDate;
-elseif (categoryId !=0 && productId = 0 && companyId = 0)
+elseif (categoryId !=0 and productId = 0 and companyId = 0)
 then
 	select p.Id as productId,p.Name,c.id categoryId,c.name CategoryName,pd.PriceId, pd.Price,
     pd.SellingPrice,p.CompanyId,cp.Name CompanyName,
@@ -28,7 +28,7 @@ then
                     Join Stocks s on s.ProductId = p.Id and s.PriceId = pd.PriceId
 					left Join StockTransaction st on st.StockId = s.Id and date(st.addedOn) between fromDate and toDate;		
     
-elseif (categoryId =0 && productId != 0 && companyId = 0)
+elseif (categoryId =0 and productId != 0 and companyId = 0)
 then
 		select p.Id as productId,p.Name,c.id categoryId,c.name CategoryName,pd.PriceId, pd.Price,
     pd.SellingPrice,p.CompanyId,cp.Name CompanyName,
@@ -39,7 +39,7 @@ then
                     Join Stocks s on s.ProductId = p.Id and s.PriceId = pd.PriceId
 					left Join StockTransaction st on st.StockId = s.Id and date(st.addedOn) between fromDate and toDate
     where p.Id = productId;
-elseif (categoryId =0 && productId = 0 && companyId != 0)
+elseif (categoryId =0 and productId = 0 and companyId != 0)
 then
 	select p.Id as productId,p.Name,c.id categoryId,c.name CategoryName,pd.PriceId, pd.Price,
     pd.SellingPrice,p.CompanyId,cp.Name CompanyName,

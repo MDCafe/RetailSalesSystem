@@ -16,7 +16,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         bool _isEditMode;
         IEnumerable<Product> _productsList;
         IEnumerable<Company> _companiesList;
-        RMSEntities _rmsEntities;
+        readonly RMSEntities _rmsEntities;
         ObservableCollection<PriceDetail> _priceDetailsList;
 
         public ProductsViewModel()
@@ -115,18 +115,18 @@ namespace RetailManagementSystem.ViewModel.Masters
         #endregion
 
         #region CloseWindow Command
-        public RelayCommand<Window> _closeCommand { get; private set; }
+        public RelayCommand<Window> closeCommand { get; private set; }
 
         public ICommand CloseCommand
         {
             get
             {
-                if (_closeCommand == null)
+                if (closeCommand == null)
                 {
-                    _closeCommand = new RelayCommand<Window>((w) => CloseWindow(w));
+                    closeCommand = new RelayCommand<Window>((w) => CloseWindow(w));
                 }
 
-                return _closeCommand;
+                return closeCommand;
             }
         }
 
@@ -180,18 +180,17 @@ namespace RetailManagementSystem.ViewModel.Masters
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(), (p) =>
+                    {
+                        return !string.IsNullOrWhiteSpace(SelectedProduct.Name);
+                    }
+                    ); 
                 }
                 return _saveCommand;
             }
         }        
 
-        public bool CanSave(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(SelectedProduct.Name);                        
-        }
-
-        private void OnSave(object parameter)
+        private void OnSave()
         {
             if (!Validate()) return;
             

@@ -1,0 +1,3 @@
+WT - Bugs
+
+Credit amount doesn't appear in report when there is part payment for cash customer

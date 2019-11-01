@@ -2,11 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         mc:Ignorable="d"
         Name="SalesSummaryParamWindow"
-        FocusManager.FocusedElement="{Binding ElementName=txtBillNo}"
+        FocusManager.FocusedElement="{Binding ElementName=CboUserName}"
         Title="Sales Summary Report" Height="210" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Grid>
         <Grid.RowDefinitions>
@@ -19,9 +18,10 @@
             <ColumnDefinition Width="85*"/>
             <ColumnDefinition Width="207*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Bill No" Grid.Row="0" Grid.Column="0" Margin="5"></Label>
-        <TextBox Name="txtBillNo" Text="{Binding BillNo, TargetNullValue={x:Static sys:String.Empty}}" Grid.Row="0"  Grid.Column="1"  Width="100" Height="20" Margin="5,7,0,7" HorizontalAlignment="Left"></TextBox>
-
+        <Label Content="User Name" Grid.Row="0" Grid.Column="0" Margin="5"/>
+        <ComboBox  Name ="CboUserName" Grid.Row="0" ItemsSource="{Binding UsersList}" DisplayMemberPath="username"  SelectedValue="{Binding SelectedUserName}" 
+                   SelectedValuePath="Id"
+                   Grid.Column="1"  Width="100" Height="20" HorizontalAlignment="Left" Margin="5,0,0,0"/>
         <Label Content="From" Grid.Column="0" Grid.Row="1" Margin="5"/>
         <DatePicker x:Name="FromSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
             SelectedDateFormat="Short" SelectedDate="{Binding FromSalesDate}" BorderThickness="0" Margin="5" 

@@ -1,5 +1,7 @@
+use rms;
+drop procedure if exists `GetSalesDetailsForBillId` ;
 DELIMITER $$
-CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSalesDetailsForBillId`(IN runningBillNo integer, IN category integer)
+CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSalesDetailsForBillId`(IN runningBillNo integer, IN category integer) DETERMINISTIC
 BEGIN
 
 declare billidValue int;

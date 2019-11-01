@@ -13,9 +13,9 @@ namespace RetailManagementSystem
     internal class RMSEntitiesHelper
     {
         static RMSEntitiesHelper _rMSEntitiesHelper;
-        static readonly object _syncRoot = new object();        
-        List<INotifier> _salesNotifierList = new List<INotifier>();
-        List<INotifier> _purchaseNotifierList = new List<INotifier>();
+        static readonly object _syncRoot = new object();
+        readonly List<INotifier> _salesNotifierList = new List<INotifier>();
+        readonly List<INotifier> _purchaseNotifierList = new List<INotifier>();
         static string productsPriceSQL;
 
         private RMSEntitiesHelper()
@@ -94,9 +94,7 @@ namespace RetailManagementSystem
         }
 
         public void SelectRunningBillNo(int categoryId,bool onload,
-            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
-            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
-            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
         {
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
             var salesNo = RMSEntities.Database.SqlQuery<int>(sqlRunningNo, categoryId).FirstOrDefault();
@@ -269,6 +267,15 @@ namespace RetailManagementSystem
                     return true;
 
                 return false;
+            }
+        }
+
+
+        public IEnumerable<User> GetUsers()
+        {
+            using(RMSEntities rmsEntities = new RMSEntities())
+            {
+                return rmsEntities.Users.ToList();
             }
         }
     }

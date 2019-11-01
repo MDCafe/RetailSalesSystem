@@ -12,24 +12,25 @@ namespace RetailManagementSystem.ViewModel.Entitlements
     {        
         public string UserId { get; set; }
         public int UserInternalId { get; set; }
+        public string UserName { get; set; }
 
         #region OK Command
-        public RelayCommand<PasswordBox> _okCommand { get; private set; }
+        public RelayCommand<PasswordBox> okCommand { get; private set; }
 
         public ICommand OkCommand
         {
             get
             {
-                if (_okCommand == null)
+                if (okCommand == null)
                 {
-                    _okCommand = new RelayCommand<PasswordBox>((p) => Login(p), (p) =>
+                    okCommand = new RelayCommand<PasswordBox>((p) => Login(p), (p) =>
                     {
                         var password = p.Password;
                         return !string.IsNullOrWhiteSpace(UserId) && !string.IsNullOrWhiteSpace(password);
                     });
                 }
 
-                return _okCommand;
+                return okCommand;
             }
         }
 
@@ -81,21 +82,22 @@ namespace RetailManagementSystem.ViewModel.Entitlements
             if (user == null) return false;
 
             UserInternalId = user.Id;
+            EntitlementInformation.UserName = user.username;
             return true;
         }
 
         #endregion
 
         #region CloseWindow Command
-        public RelayCommand<Window> _closeWindowCommand { get; private set; }
+        public RelayCommand<Window> closeWindowCommand { get; private set; }
 
         public ICommand CloseWindowCommand
         {
             get
             {
-                if (_closeWindowCommand == null)
+                if (closeWindowCommand == null)
                 {
-                    _closeWindowCommand = new RelayCommand<Window>((window) =>
+                    closeWindowCommand = new RelayCommand<Window>((window) =>
                     {
                         if (window != null)
                         {                            
@@ -104,7 +106,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
                     });
                 }
 
-                return _closeWindowCommand;
+                return closeWindowCommand;
             }
         }       
         #endregion
