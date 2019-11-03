@@ -356,16 +356,16 @@
           <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
-        <EntityType Name="StockDailyTransaction">
+        <EntityType Name="StockAdjustments">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProductId" Type="mediumint" />
+          <Property Name="StockId" Type="mediumint" />
           <Property Name="OpeningBalance" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="SalesQty" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="AdjustedQty" Type="decimal" Precision="10" Scale="0" />
           <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="PurchaseQty" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="CostPrice" Type="decimal" Precision="10" Scale="0" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -789,7 +789,7 @@
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Sales" EntityType="Self.Sales" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="StockDailyTransaction" EntityType="Self.StockDailyTransaction" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
@@ -1443,7 +1443,7 @@
             <End Role="Purchase" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
-          <EntitySet Name="StockDailyTransactions" EntityType="RMSEntities.StockDailyTransaction" />
+          <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1884,16 +1884,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="StockDailyTransaction">
+        <EntityType Name="StockAdjustment">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductId" Type="Int32" />
+          <Property Name="StockId" Type="Int32" />
           <Property Name="OpeningBalance" Type="Decimal" />
-          <Property Name="SalesQty" Type="Decimal" />
+          <Property Name="AdjustedQty" Type="Decimal" />
           <Property Name="ClosingBalance" Type="Decimal" />
-          <Property Name="PurchaseQty" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -2323,16 +2323,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockDailyTransactions">
-            <EntityTypeMapping TypeName="RMSEntities.StockDailyTransaction">
-              <MappingFragment StoreEntitySet="StockDailyTransaction">
+          <EntitySetMapping Name="StockAdjustments">
+            <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
+              <MappingFragment StoreEntitySet="StockAdjustments">
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PurchaseQty" ColumnName="PurchaseQty" />
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
                 <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
-                <ScalarProperty Name="SalesQty" ColumnName="SalesQty" />
+                <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
                 <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -18,15 +18,15 @@ namespace RetailManagementSystem.View.Sales
         public SalesEntry()
         {
             InitializeComponent();
-            RoutedEventHandler handler = null;
-            handler = (object sender, RoutedEventArgs e) =>
+            void handler(object sender, RoutedEventArgs e)
             {
                 if (_salesViewModel.IsEditMode == false)
                 {
                     CboCustomers.SelectedValue = _salesViewModel.DefaultCustomer.Id;
                     CboCustomers.SelectedItem = _salesViewModel.DefaultCustomer;
                     //CboCustomers.Text = _salesViewModel.SelectedCustomerText;
-                }else
+                }
+                else
                 {
                     SalesDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
                     (ExecutedRoutedEventHandler)((cmdSender, args) =>
@@ -48,7 +48,8 @@ namespace RetailManagementSystem.View.Sales
                     }));
                 }
                 Loaded -= handler;
-            };
+            }
+
             Loaded += handler;
 
             DataContextChanged += (sender, eventArgs) =>

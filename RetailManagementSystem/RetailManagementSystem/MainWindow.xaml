@@ -87,6 +87,9 @@
                                        KeyTip="R" Command="{Binding OpenReturnPurchaseCommand}"/>
                         <RibbonButton Label="Swaps" LargeImageSource="Images\SalesBasket.png" ToolTipTitle="Products swaps with vendors" 
                                       KeyTip="SP" Command="{Binding OpenStockTransactionCommand}"/>
+                        <RibbonButton Label="Stock Adjustment" LargeImageSource="Images\StkAdjust.png" 
+                                      ToolTipTitle="Adust the stocks which are not correct" 
+                                      KeyTip="SP" Command="{Binding OpenStockAdjustmentCommand}"/>
                     </RibbonGroup>
 
                     <!-- Reports Group-->
@@ -107,9 +110,11 @@
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Report" KeyTip="SR" 
                                             Command="{Binding OpenStockReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Balance Report" KeyTip="SR" 
-                                            Command="{Binding OpenStockBalanceReportCommand}"/>
+                                            Command="{Binding OpenStockBalanceReportCommand}" CommandParameter="ShowStockAdjustReportView"/>
                             <RibbonMenuItem ImageSource="Images\Report.png" Header="Products to Order" KeyTip="SR" 
                                             Command="{Binding OpenOrderProductReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Report.png" Header="Stock Adjustment" KeyTip="SAJ" 
+                                            Command="{Binding OpenCommonReportCommand}" CommandParameter="ShowStockAdjustReportView"/>
                         </RibbonMenuButton>
 
                        <RibbonButton Label="Day Statement" LargeImageSource="Images\Finance.png" 
@@ -301,6 +306,13 @@
                                 <StockView:Swaps/>
                             </DataTemplate>
                         </pane:PanesTemplateSelector.StockTansactionViewTemplate>
+
+                        <pane:PanesTemplateSelector.StockAdjustmentViewTemplate>
+                            <DataTemplate>
+                                <StockView:StockAdjustment/>
+                            </DataTemplate>
+                        </pane:PanesTemplateSelector.StockAdjustmentViewTemplate>
+
 
                         <pane:PanesTemplateSelector.CustomerBillPaymentsTemplate>
                             <DataTemplate>

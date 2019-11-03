@@ -49,25 +49,7 @@ namespace RetailManagementSystem.View.Pane
         {
             get;
             set;
-        }
-
-        //public DataTemplate SalesDataTemplate
-        //{
-        //    get
-        //    {
-        //        //set up the stack panel
-        //        FrameworkElementFactory spFactory = new FrameworkElementFactory(typeof(Sales.SalesEntry));
-        //        spFactory.Name = "myComboFactory";
-        //        //spFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-        //        _salesDataTemplate.VisualTree = spFactory;
-        //        return _salesDataTemplate;
-        //    }
-        //    set
-        //    {
-        //        _salesDataTemplate = value;
-        //   }
-        //}
+        }        
 
         public DataTemplate CustomerDataTemplate
         {
@@ -105,10 +87,14 @@ namespace RetailManagementSystem.View.Pane
             set;
         }
 
+        public DataTemplate StockAdjustmentViewTemplate
+        {
+            get;
+            set;
+        }
+
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var itemAsLayoutContent = item as LayoutContent;
-
             //var content = item as ContentPresenter;
             //content.ContentTemplate = CustomerDataTemplate;            
 
@@ -133,6 +119,8 @@ namespace RetailManagementSystem.View.Pane
             if (item is PurchaseBillPaymentsViewModel) return PurchaseBillPaymentsTemplate;
 
             if (item is GraphsViewModel) return GraphViewTemplate;
+
+            if (item is StockAdjustmentViewModel) return StockAdjustmentViewTemplate;
 
             return base.SelectTemplate(item, container);
         }

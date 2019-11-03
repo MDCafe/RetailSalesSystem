@@ -123,21 +123,21 @@ namespace RetailManagementSystem.ViewModel
 
         private void OnOpenSalesEntryTempCommand()
         {
-            //check if temp data exists 
-            if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
-            {
-                Utility.ShowErrorBox("No temporary data is available");
-                return;
-            }
+            ////check if temp data exists 
+            //if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
+            //{
+            //    Utility.ShowErrorBox("No temporary data is available");
+            //    return;
+            //}
 
-            var tempRecords = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities().SaleTemps.GroupBy(g => g.Guid);
+            //var tempRecords = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities().SaleTemps.GroupBy(g => g.Guid);
 
-            foreach (var item in tempRecords)
-            {
-                var salesParams = new SalesParams() { GetTemproaryData = true,Guid = item.Key};
-                _documentViewModels.Add(new SalesEntryViewModel(salesParams));
-                ActiveDocument = _documentViewModels.Last();
-            }
+            //foreach (var item in tempRecords)
+            //{
+            //    var salesParams = new SalesParams() { GetTemproaryData = true,Guid = item.Key};
+            //    _documentViewModels.Add(new SalesEntryViewModel(salesParams));
+            //    ActiveDocument = _documentViewModels.Last();
+            //}
             
         }
 
@@ -441,6 +441,28 @@ namespace RetailManagementSystem.ViewModel
             _documentViewModels.Add(new SwapsViewModel());
             ActiveDocument = _documentViewModels.Last();
         }
+
+        #endregion
+
+        #region OpenStockAdjustmentCommand
+        RelayCommand<object> _openStockAdjustmentCommand = null;
+        public ICommand OpenStockAdjustmentCommand
+        {
+            get
+            {
+                if (_openStockAdjustmentCommand == null)
+                {
+                    _openStockAdjustmentCommand = new RelayCommand<object>((p) =>
+                    {
+                        _documentViewModels.Add(new StockAdjustmentViewModel());
+                        ActiveDocument = _documentViewModels.Last();
+                    });
+                }
+                return _openStockAdjustmentCommand;
+            }
+        }
+
+        
 
         #endregion
 
@@ -753,10 +775,8 @@ namespace RetailManagementSystem.ViewModel
                     _openStockBalanceReportCommand = new RelayCommand<object>((p) =>
                     {
                         try
-                        {
-                            var stockBalanceReport = new StockBalanceReport(false);
-                            ShowWindowDialog(stockBalanceReport);
-
+                        {                            
+                            ShowWindowDialog(new StockBalanceReport(false));
                         }
                         catch (Exceptions.RMSException ex)
                         {
@@ -877,7 +897,41 @@ namespace RetailManagementSystem.ViewModel
         }
 
 
+
+        #endregion
+
+        #region OpenCommonReport
         
+        RelayCommand<object> _openCommonReportCommand = null;
+        public ICommand OpenCommonReportCommand
+        {
+            get
+            {
+                if (_openCommonReportCommand == null)
+                {
+                    _openCommonReportCommand = new RelayCommand<object>((p) =>
+                    {
+                        if(p.ToString() == "ShowStockAdjustReportView")
+                        {
+                            try
+                            {
+                                ShowWindowDialog(new StockAdjustReport());
+                            }
+                            catch (Exceptions.RMSException ex)
+                            {
+                                Utility.ShowErrorBox(ex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Utility.ShowErrorBox(ex.Message);
+                            }
+                        }                       
+                    });
+                }
+                return _openCommonReportCommand;
+            }
+        }
+
         #endregion
 
         public void OpenReport(ReportViewModel rptViewModel)

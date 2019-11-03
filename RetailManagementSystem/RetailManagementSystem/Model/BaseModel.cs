@@ -5,9 +5,8 @@ namespace RetailManagementSystem.Model
 {
     public delegate void AmountChanged();
 
-    public class BaseModel : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+    public class BaseModel : BaseModelNotifier
+    {        
         public event AmountChanged OnAmountChanged;
 
         private int _billId;
@@ -43,7 +42,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _supportsMultiplePrice = value;
-                OnPropertyChanged("SupportsMultiplePrice");
+                OnPropertyChanged(nameof(SupportsMultiplePrice));
             }
         }
 
@@ -64,7 +63,7 @@ namespace RetailManagementSystem.Model
                 }
                 _sellingPrice = value;
                 CalculateAmount();
-                this.OnPropertyChanged("SellingPrice");
+                this.OnPropertyChanged(nameof(SellingPrice));
             }
         }
 
@@ -84,7 +83,7 @@ namespace RetailManagementSystem.Model
                 }
                 _qty = value;
                 CalculateAmount();
-                OnPropertyChanged("Qty");
+                OnPropertyChanged(nameof(Qty));
             }
         }
 
@@ -102,7 +101,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _billId = value;
-                OnPropertyChanged("BillId");
+                OnPropertyChanged(nameof(BillId));
             }
         }
 
@@ -121,7 +120,7 @@ namespace RetailManagementSystem.Model
                 //    return;
                 //}
                 _productId = value;
-                OnPropertyChanged("ProductId");
+                OnPropertyChanged(nameof(ProductId));
             }
         }
 
@@ -140,7 +139,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _priceId = value;
-                OnPropertyChanged("PriceId");
+                OnPropertyChanged(nameof(PriceId));
             }
         }
 
@@ -160,7 +159,7 @@ namespace RetailManagementSystem.Model
                 }
                 _discount = value;
                 //CalculateAmount();
-                OnPropertyChanged("Discount");
+                OnPropertyChanged(nameof(Discount));
             }
         }
 
@@ -179,7 +178,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _addedOn = value;
-                OnPropertyChanged("AddedOn");
+                OnPropertyChanged(nameof(AddedOn));
             }
         }
 
@@ -198,7 +197,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _modifiedOn = value;
-                OnPropertyChanged("ModifiedOn");
+                OnPropertyChanged(nameof(ModifiedOn));
             }
         }
 
@@ -217,7 +216,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _updatedBy = value;
-                OnPropertyChanged("UpdatedBy");
+                OnPropertyChanged(nameof(UpdatedBy));
             }
         }
 
@@ -239,7 +238,7 @@ namespace RetailManagementSystem.Model
                 //    //_expiryDate = DateTime.Now.AddMonths(1);
                 //}
                 _expiryDate = value;
-                this.OnPropertyChanged("ExpiryDate");
+                this.OnPropertyChanged(nameof(ExpiryDate));
             }
         }
 
@@ -268,7 +267,7 @@ namespace RetailManagementSystem.Model
             set
             {
                 _propertyReadOnly = value;
-                OnPropertyChanged("PropertyReadOnly");
+                OnPropertyChanged(nameof(PropertyReadOnly));
             }
         }
 
@@ -286,7 +285,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _serialNo = value;
-                OnPropertyChanged("SerialNo");
+                OnPropertyChanged(nameof(SerialNo));
             }
         }
 
@@ -305,7 +304,7 @@ namespace RetailManagementSystem.Model
                     return;
                 }
                 _originalQty = value;
-                OnPropertyChanged("OriginalQty");
+                OnPropertyChanged(nameof(OriginalQty));
             }
         }
 
@@ -326,18 +325,6 @@ namespace RetailManagementSystem.Model
             var disAmt = DiscountAmount != 0 ? DiscountAmount : 0m;
             return dispercentAmt + disAmt;
         }
-
-        public virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            bool flag = propertyChanged != null;
-            if (flag)
-            {
-                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-
 
         public void SubscribeToAmountChange(AmountChanged amountChangedDelegate)
         {

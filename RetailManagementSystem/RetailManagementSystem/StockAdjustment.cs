@@ -12,14 +12,14 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class StockDailyTransaction
+    public partial class StockAdjustment
     {
         public int Id { get; set; }
-        public Nullable<int> ProductId { get; set; }
+        public Nullable<int> StockId { get; set; }
         public Nullable<decimal> OpeningBalance { get; set; }
-        public Nullable<decimal> SalesQty { get; set; }
+        public Nullable<decimal> AdjustedQty { get; set; }
         public Nullable<decimal> ClosingBalance { get; set; }
-        public Nullable<decimal> PurchaseQty { get; set; }
+        public Nullable<decimal> CostPrice { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     }
