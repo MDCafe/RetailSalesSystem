@@ -77,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             return new ReportDataSource
             {
                 Name = datasetName,
-                Value = this.GetDataTable(query, new MySql.Data.MySqlClient.MySqlParameter[1]
+                Value = GetDataTable(query, new MySql.Data.MySqlClient.MySqlParameter[1]
                         {
                             new MySql.Data.MySqlClient.MySqlParameter("fromDate",FromDate.ToString("yyyy-MM-dd"))
                         }

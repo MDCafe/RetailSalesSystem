@@ -1,13 +1,12 @@
 ﻿<Window x:Class="RetailManagementSystem.View.Reports.Stock.StockReport"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="StockReportWindow"
         FocusManager.FocusedElement="{Binding ElementName=CboCompanies}"
-        Title="Stock Report" Height="300" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Title="Stock Report" Height="280" Width="340" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationTemplate">
             <DockPanel>
@@ -51,7 +50,7 @@
         <DatePicker x:Name="ToDate" ForceCursor="True" FirstDayOfWeek="Monday" 
             SelectedDateFormat="Short" SelectedDate="{Binding ToDate}" BorderThickness="0" Margin="5,8,0,8" 
                     Height="25" Grid.Column="1" Grid.Row="4" Width="147" HorizontalAlignment="Left"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Right" Grid.Column="2">
+        <StackPanel Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2">
             <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=StockReportWindow}"  
                     Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>

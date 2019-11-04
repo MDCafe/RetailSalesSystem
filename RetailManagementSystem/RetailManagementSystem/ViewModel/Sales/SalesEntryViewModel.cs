@@ -566,6 +566,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                             ProductId = saleDetailItem.ProductId,
                                             Qty = saleDetailItem.Qty,
                                             SellingPrice = saleDetailItem.SellingPrice,
+                                            CostPrice = saleDetailItem.CostPrice,
                                             BillId = lclBillSales.BillId,
                                             AddedOn = combinedDateTime,
                                             ModifiedOn = combinedDateTime,

@@ -99,6 +99,9 @@
                                             Command="{Binding OpenDailySalesReportCommand}"/>
                             <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Customer Sales" KeyTip="CS"
                                             Command="{Binding OpenCustomerWiseSalesReportCommand}"/>
+                            <RibbonMenuItem ImageSource="Images\Users.jpg" Header="Product Wise Sales" KeyTip="PS"
+                                            Command="{Binding OpenCommonReportCommand}" 
+                                            CommandParameter="ShowProductWiseSalesReportView"/>
                         </RibbonMenuButton>
 
                         <RibbonMenuButton LargeImageSource="Images\Report.png" Label="Purchase" KeyTip="P">

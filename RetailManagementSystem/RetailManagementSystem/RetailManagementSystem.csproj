@@ -400,6 +400,7 @@
     <Compile Include="ViewModel\Reports\Accounts\CustomerPaymentDetailsRptViewModel.cs" />
     <Compile Include="ViewModel\Reports\Accounts\DayStatementReportViewModel.cs" />
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Sales\ProductWiseBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\CustomerWiseSalesViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
@@ -465,6 +466,9 @@
     </Compile>
     <Compile Include="View\Reports\Sales\Customers\CustomerWiseSales.xaml.cs">
       <DependentUpon>CustomerWiseSales.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Sales\ProductWiseBillDetails.xaml.cs">
+      <DependentUpon>ProductWiseBillDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports\Stock\StockAdjustReport.xaml.cs">
       <DependentUpon>StockAdjustReport.xaml</DependentUpon>
@@ -590,6 +594,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Reports\Sales\ProductWiseBillDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Reports\Stock\StockAdjustReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -657,6 +665,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include=".editorconfig" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -691,6 +700,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\Reports\Stock\StockAdjustment.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\Reports\Sales\ProductWiseBillDetails.rdl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\finance.png" />
@@ -801,12 +813,12 @@
   <ItemGroup>
     <PublishFile Include="System.Windows.Controls.Ribbon">
       <Visible>False</Visible>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
   </ItemGroup>

@@ -311,6 +311,7 @@
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="PriceId" Type="mediumint" Nullable="false" />
           <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CostPrice" Type="decimal" Precision="10" Scale="2" />
           <Property Name="Qty" Type="decimal" Precision="10" Scale="3" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" />
@@ -362,10 +363,10 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StockId" Type="mediumint" />
-          <Property Name="OpeningBalance" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="AdjustedQty" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="CostPrice" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="OpeningBalance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AdjustedQty" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CostPrice" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -1093,6 +1094,7 @@
           <NavigationProperty Name="PriceDetail" Relationship="Self.FK_price_id" FromRole="SaleDetails" ToRole="PriceDetails" />
           <NavigationProperty Name="Product" Relationship="Self.FK_ProdId" FromRole="SaleDetails" ToRole="Products" />
           <NavigationProperty Name="Sale" Relationship="Self.Fk_sale_bill" FromRole="SaleDetails" ToRole="Sales" />
+          <Property Name="CostPrice" Type="Decimal" />
         </EntityType>
         <EntityType Name="Sale">
           <Key>
@@ -2050,6 +2052,7 @@
           <EntitySetMapping Name="SaleDetails">
             <EntityTypeMapping TypeName="RMSEntities.SaleDetail">
               <MappingFragment StoreEntitySet="SaleDetails">
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />

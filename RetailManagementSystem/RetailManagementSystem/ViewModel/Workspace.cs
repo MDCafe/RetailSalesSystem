@@ -910,22 +910,30 @@ namespace RetailManagementSystem.ViewModel
                 if (_openCommonReportCommand == null)
                 {
                     _openCommonReportCommand = new RelayCommand<object>((p) =>
-                    {
-                        if(p.ToString() == "ShowStockAdjustReportView")
+                    {                        
+                        try
                         {
-                            try
+                            
+                            switch (p.ToString())
                             {
-                                ShowWindowDialog(new StockAdjustReport());
+                                case "ShowStockAdjustReportView":
+                                    ShowWindowDialog(new StockAdjustReport());
+                                    break;
+                                case "ShowProductWiseSalesReportView":
+                                    ShowWindowDialog(new ProductWiseBillDetails());
+                                    break;
                             }
-                            catch (Exceptions.RMSException ex)
-                            {
-                                Utility.ShowErrorBox(ex.Message);
-                            }
-                            catch (Exception ex)
-                            {
-                                Utility.ShowErrorBox(ex.Message);
-                            }
-                        }                       
+                            
+                        }
+                        catch (Exceptions.RMSException ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                        
                     });
                 }
                 return _openCommonReportCommand;

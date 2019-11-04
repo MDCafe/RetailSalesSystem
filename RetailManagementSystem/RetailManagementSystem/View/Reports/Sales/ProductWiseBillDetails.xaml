@@ -1,0 +1,55 @@
+﻿<Window x:Class="RetailManagementSystem.View.Reports.Sales.ProductWiseBillDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Name="ProductWiseBillDetailsReportWindow"
+        FocusManager.FocusedElement="{Binding ElementName=CboProduct}"
+        Title="Product Wise Bill Details Report" Height="200" Width="340" WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20"><Run Text="!"/></TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="207*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="Product" Grid.Column="0" Margin="5,0,5,10"/>
+        <ComboBox x:Name="CboProduct" Grid.Column="1" HorizontalAlignment="Left" Height="23" 
+            SelectedItem="{Binding SelectedProduct}" VerticalAlignment="Top" Width="200"
+            ItemsSource="{Binding ProductList}" SelectedValuePath="Id" DisplayMemberPath="Name" Margin="10,8,0,0"/>
+
+        <Label Content="From Date" Grid.Column="0" Grid.Row="1" Margin="5"/>
+        <DatePicker x:Name="FromDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding FromDate}" BorderThickness="0" Margin="5,8,0,8" 
+                    Height="25" Grid.Column="1" Grid.Row="1" Width="147" HorizontalAlignment="Left"/>
+
+        <Label Content="To Date" Grid.Column="0" Grid.Row="2" Margin="5"/>
+        <DatePicker x:Name="ToDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding ToDate}" BorderThickness="0" Margin="5,8,0,8" 
+                    Height="25" Grid.Column="1" Grid.Row="2" Width="147" HorizontalAlignment="Left"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2">
+            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" 
+                    CommandParameter="{Binding ElementName=ProductWiseBillDetailsReportWindow}"  
+                    Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=ProductWiseBillDetailsReportWindow}" Margin="5" IsCancel="True"/>
+        </StackPanel>
+
+
+    </Grid>
+</Window>

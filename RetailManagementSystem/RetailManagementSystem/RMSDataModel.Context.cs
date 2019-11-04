@@ -13,7 +13,7 @@ namespace RetailManagementSystem
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class RMSEntities: DbContext
+    public partial class RMSEntities : DbContext
     {
         public RMSEntities()
             : base("name=RMSEntities")

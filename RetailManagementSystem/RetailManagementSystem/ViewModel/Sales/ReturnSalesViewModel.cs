@@ -289,9 +289,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                _billSales = _rmsEntities.Sales.Where(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId).FirstOrDefault();
                
                CustomerName = _billSales.Customer.Name;
-               SaleDate = _billSales.AddedOn.Value;
-               PaymentMode pm = new PaymentMode();
-               ModeOfPayment = pm.GetPaymentString(_billSales.PaymentMode);
+               SaleDate = _billSales.AddedOn.Value;              
+               ModeOfPayment = PaymentMode.GetPaymentString(_billSales.PaymentMode);
                var saleDetailsForBill = _rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
 
                foreach (var saleDetailItem in saleDetailsForBill.ToList())

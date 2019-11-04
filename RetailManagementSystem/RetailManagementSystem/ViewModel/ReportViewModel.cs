@@ -99,7 +99,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        protected DataTable GetDataTable(string queryCustomer, MySqlParameter[] sqlParameter, CommandType commandType)
+        protected static DataTable GetDataTable(string queryCustomer, MySqlParameter[] sqlParameter, CommandType commandType)
         {
             using (var conn = MySQLDataAccess.GetConnection())
             {
@@ -111,7 +111,7 @@ namespace RetailManagementSystem.ViewModel
                     cmd.Parameters.AddRange(sqlParameter);
                     conn.Open();
 
-                    DataTable dt = new DataTable();
+                    var dt = new DataTable();
                     using (var rdr = cmd.ExecuteReader())
                     {
                         dt.Load(rdr);

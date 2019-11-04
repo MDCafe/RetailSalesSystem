@@ -24,7 +24,7 @@
             _paymentModes = new PaymentMode[3];
         }
 
-        public string GetPaymentString(string paymentId)
+        public static string GetPaymentString(string paymentId)
         {
             if (paymentId == "0")
                 return "Cash";
