@@ -106,31 +106,43 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
         private void OnSave()
         {
-            using(RMSEntities rmsEntities = new RMSEntities())
+            using(var rmsEntities = new RMSEntities())
             {
                 try
                 {
                     foreach (var item in StockAdjustmentList)
-                    {
-                        var stockadjustment = new StockAdjustment()
-                        {
-                            StockId = item.StockId,
-                            AdjustedQty = item.AdjustedQty,
-                            OpeningBalance = item.OpeningBalance,
-                            ClosingBalance = item.ClosingBalance,
-                            CostPrice = item.CostPrice
-                        };
-                        rmsEntities.StockAdjustments.Add(stockadjustment);
-
-                        var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
-                        if (stock != null)
-                        {
-                            stock.Quantity = stockadjustment.ClosingBalance.Value;
-                        }
+                    {                        
                         var stockTrns = rmsEntities.StockTransactions.Where(st => st.StockId == item.StockId).OrderByDescending(d => d.AddedOn).FirstOrDefault();
+                        //while Adjusting always add new row..
                         if (stockTrns != null)
                         {
-                            stockTrns.ClosingBalance = stockadjustment.ClosingBalance.Value;
+                            var newStockTrans = new StockTransaction()
+                            {
+                                StockId = item.StockId,
+                                OpeningBalance = stockTrns.OpeningBalance, //opening balance of last transaction
+                                ClosingBalance = item.ClosingBalance,
+                                AddedOn = RMSEntitiesHelper.Instance.GetSystemDBDate()
+                            };
+
+                            rmsEntities.StockTransactions.Add(newStockTrans);
+
+                            var stockadjustment = new StockAdjustment()
+                            {
+                                StockId = item.StockId,
+                                AdjustedQty = item.AdjustedQty,
+                                OpeningBalance = item.OpeningBalance,
+                                ClosingBalance = item.ClosingBalance,
+                                CostPrice = item.CostPrice,
+                                StockTransaction = newStockTrans
+                            };
+                            rmsEntities.StockAdjustments.Add(stockadjustment);
+
+                            var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
+                            if (stock != null)
+                            {
+                                stock.Quantity = stockadjustment.ClosingBalance.Value;
+                            }
+
                         }
                         rmsEntities.SaveChanges();
                         Clear();

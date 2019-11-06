@@ -14,6 +14,12 @@ namespace RetailManagementSystem
     
     public partial class StockTransaction
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public StockTransaction()
+        {
+            this.StockAdjustments = new HashSet<StockAdjustment>();
+        }
+    
         public int Id { get; set; }
         public Nullable<int> StockId { get; set; }
         public Nullable<decimal> Inward { get; set; }
@@ -25,5 +31,7 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     
         public virtual Stock Stock { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StockAdjustment> StockAdjustments { get; set; }
     }
 }

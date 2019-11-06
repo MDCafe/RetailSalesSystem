@@ -63,6 +63,7 @@
         <AssociationConnector Association="RMSEntities.Purchase_Bill" />
         <AssociationConnector Association="RMSEntities.FK_purchaseId" />
         <EntityTypeShape EntityType="RMSEntities.StockAdjustment" Width="1.5" PointX="7.375" PointY="0.75" />
+        <AssociationConnector Association="RMSEntities.FK_STKADJ_STRANS" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

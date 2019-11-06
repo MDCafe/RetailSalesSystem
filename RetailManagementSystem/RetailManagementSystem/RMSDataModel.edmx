@@ -369,6 +369,7 @@
           <Property Name="CostPrice" Type="decimal" Precision="10" Scale="2" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="StockTransId" Type="int" />
         </EntityType>
         <EntityType Name="Stocks">
           <Key>
@@ -730,6 +731,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_STKADJ_STRANS">
+          <End Role="StockTransaction" Type="Self.StockTransaction" Multiplicity="0..1" />
+          <End Role="StockAdjustments" Type="Self.StockAdjustments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockTransaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockAdjustments">
+              <PropertyRef Name="StockTransId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_stockId">
           <End Role="Stocks" Type="Self.Stocks" Multiplicity="0..1" />
           <End Role="StockTransaction" Type="Self.StockTransaction" Multiplicity="*" />
@@ -898,6 +911,10 @@
           <AssociationSet Name="FK_Sales_Cust" Association="Self.FK_Sales_Cust">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Sales" EntitySet="Sales" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STKADJ_STRANS" Association="Self.FK_STKADJ_STRANS">
+            <End Role="StockTransaction" EntitySet="StockTransaction" />
+            <End Role="StockAdjustments" EntitySet="StockAdjustments" />
           </AssociationSet>
           <AssociationSet Name="fk_stockId" Association="Self.fk_stockId">
             <End Role="Stocks" EntitySet="Stocks" />
@@ -1446,6 +1463,10 @@
             <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
           <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
+          <AssociationSet Name="FK_STKADJ_STRANS" Association="RMSEntities.FK_STKADJ_STRANS">
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
+            <End Role="StockAdjustment" EntitySet="StockAdjustments" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1766,6 +1787,7 @@
           <Property Name="AddedOn" Type="DateTime" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Stock" Relationship="RMSEntities.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
+          <NavigationProperty Name="StockAdjustments" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockTransaction" ToRole="StockAdjustment" />
         </EntityType>
         <Association Name="fk_stockId">
           <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="0..1" />
@@ -1898,7 +1920,21 @@
           <Property Name="CostPrice" Type="Decimal" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockTransId" Type="Int32" />
+          <NavigationProperty Name="StockTransaction" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockAdjustment" ToRole="StockTransaction" />
         </EntityType>
+        <Association Name="FK_STKADJ_STRANS">
+          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="0..1" />
+          <End Type="RMSEntities.StockAdjustment" Role="StockAdjustment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockTransaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockAdjustment">
+              <PropertyRef Name="StockTransId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2329,6 +2365,7 @@
           <EntitySetMapping Name="StockAdjustments">
             <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
               <MappingFragment StoreEntitySet="StockAdjustments">
+                <ScalarProperty Name="StockTransId" ColumnName="StockTransId" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
