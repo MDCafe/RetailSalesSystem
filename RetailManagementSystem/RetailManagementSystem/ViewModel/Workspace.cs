@@ -106,42 +106,42 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        #region OpenSalesEntryTempCommand
-        RelayCommand<object> _openSalesEntryTempCommand = null;
-        public ICommand OpenSalesEntryTempCommand
-        {
-            get
-            {
-                if (_openSalesEntryTempCommand == null)
-                {
-                    _openSalesEntryTempCommand = new RelayCommand<object>((p) => OnOpenSalesEntryTempCommand());
-                }
+        //#region OpenSalesEntryTempCommand
+        //RelayCommand<object> _openSalesEntryTempCommand = null;
+        //public ICommand OpenSalesEntryTempCommand
+        //{
+        //    get
+        //    {
+        //        if (_openSalesEntryTempCommand == null)
+        //        {
+        //            _openSalesEntryTempCommand = new RelayCommand<object>((p) => OnOpenSalesEntryTempCommand());
+        //        }
 
-                return _openSalesEntryTempCommand;
-            }
-        }      
+        //        return _openSalesEntryTempCommand;
+        //    }
+        //}      
 
-        private void OnOpenSalesEntryTempCommand()
-        {
-            ////check if temp data exists 
-            //if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
-            //{
-            //    Utility.ShowErrorBox("No temporary data is available");
-            //    return;
-            //}
+        //private void OnOpenSalesEntryTempCommand()
+        //{
+        //    ////check if temp data exists 
+        //    //if (RMSEntitiesHelper.Instance.RMSEntities.SaleTemps.Count() == 0)
+        //    //{
+        //    //    Utility.ShowErrorBox("No temporary data is available");
+        //    //    return;
+        //    //}
 
-            //var tempRecords = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities().SaleTemps.GroupBy(g => g.Guid);
+        //    //var tempRecords = RMSEntitiesHelper.Instance.GetNewInstanceOfRMSEntities().SaleTemps.GroupBy(g => g.Guid);
 
-            //foreach (var item in tempRecords)
-            //{
-            //    var salesParams = new SalesParams() { GetTemproaryData = true,Guid = item.Key};
-            //    _documentViewModels.Add(new SalesEntryViewModel(salesParams));
-            //    ActiveDocument = _documentViewModels.Last();
-            //}
+        //    //foreach (var item in tempRecords)
+        //    //{
+        //    //    var salesParams = new SalesParams() { GetTemproaryData = true,Guid = item.Key};
+        //    //    _documentViewModels.Add(new SalesEntryViewModel(salesParams));
+        //    //    ActiveDocument = _documentViewModels.Last();
+        //    //}
             
-        }
+        //}
 
-        #endregion
+        //#endregion
 
         #region OpenAmendSalesCommand
         RelayCommand<object> _openAmendSalesCommand = null;
@@ -809,7 +809,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        private void OnOpenOrderProductReportCommand()
+        private static void OnOpenOrderProductReportCommand()
         {
             try
             {
@@ -843,7 +843,7 @@ namespace RetailManagementSystem.ViewModel
                 return _openAllPendingCreditReportCommand;
             }
         }
-        private void OnOpenAllPendingCreditReportCommand(object showAll)
+        private static void OnOpenAllPendingCreditReportCommand(object showAll)
         {
             try
             {
@@ -1010,7 +1010,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        private void OnChangeSystemDBDateCommand()
+        private static void OnChangeSystemDBDateCommand()
         {
             try
             {

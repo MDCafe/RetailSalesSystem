@@ -32,7 +32,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _productsPriceList = value;                
-                RaisePropertyChanged("ProductsPriceList");
+                RaisePropertyChanged(nameof(ProductsPriceList));
             }
         }
 
@@ -42,7 +42,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _selectedPaymentId = value;
-                RaisePropertyChanged("SelectedPaymentId");
+                RaisePropertyChanged(nameof(SelectedPaymentId));
             }
         }
 
@@ -62,7 +62,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _runningBillNo = value;
-                RaisePropertyChanged("RunningBillNo");
+                RaisePropertyChanged(nameof(RunningBillNo));
             }
         }
 
@@ -72,7 +72,7 @@ namespace RetailManagementSystem.ViewModel.Base
             private set
             {
                 _paymentModes = value;
-                RaisePropertyChanged("PaymentModes");
+                RaisePropertyChanged(nameof(PaymentModes));
             }
         }
 
@@ -82,7 +82,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _selectedPaymentMode = value;
-                RaisePropertyChanged("SelectedPaymentMode");
+                RaisePropertyChanged(nameof(SelectedPaymentMode));
             }
         }
 
@@ -92,7 +92,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _discountEnabled = value;
-                RaisePropertyChanged("DiscountEnabled");
+                RaisePropertyChanged(nameof(DiscountEnabled));
             }
         }
 
@@ -102,7 +102,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _discountPercentEnabled = value;
-                RaisePropertyChanged("DiscountPercentEnabled");
+                RaisePropertyChanged(nameof(DiscountPercentEnabled));
             }
         }
 
@@ -112,8 +112,8 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _amountPaid = value;
-                RaisePropertyChanged("AmountPaid");
-                RaisePropertyChanged("BalanceAmount");
+                RaisePropertyChanged(nameof(AmountPaid));
+                RaisePropertyChanged(nameof(BalanceAmount));
             }
         }
 
@@ -183,7 +183,7 @@ namespace RetailManagementSystem.ViewModel.Base
         public void RefreshProductList()
         { 
             _productsPriceList =  RMSEntitiesHelper.Instance.GetProductPriceList();
-            RaisePropertyChanged("ProductsPriceList");
+            RaisePropertyChanged(nameof(ProductsPriceList));
             NotifierCollectionChangedEvent?.Invoke();
         }
 

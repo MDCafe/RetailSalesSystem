@@ -65,7 +65,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
             using (var rmsEntities = new RMSEntities())
             {
-                var cnt = rmsEntities.CodeMasters.Local.Count();
+                var cnt = rmsEntities.CodeMasters.Local.Count;
 
 
                 //foreach (var item in rmsEntities.CodeMasters)

@@ -25,7 +25,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         string _customerName;
         string _modeOfPayment;
 
-        public int? BillNo { get; private set; }        
+        public int? BillNo { get; set; }        
 
         public decimal? TotalAmount
         {

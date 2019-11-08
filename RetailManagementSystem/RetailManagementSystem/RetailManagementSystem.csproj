@@ -278,6 +278,7 @@
     <Compile Include="Model\SaleDetailExtn.cs" />
     <Compile Include="Model\StockAdjustmentExtn.cs" />
     <Compile Include="Model\StockAdjustProductPrice.cs" />
+    <Compile Include="Model\SwapExtn.cs" />
     <Compile Include="PaymentDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -344,6 +345,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="StockTransaction.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Swap.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SystemData.cs">

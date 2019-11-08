@@ -1268,7 +1268,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 base.OnClose();
                 return true;
             }
-            if (_purchaseDetailsList.Count() > 0)
+            if (_purchaseDetailsList.Count > 0)
             {
                 var options = Utility.ShowMessageBoxWithOptions("Unsaved items are available, do you want to save them?", System.Windows.MessageBoxButton.YesNo);
                 if (options == System.Windows.MessageBoxResult.Yes)

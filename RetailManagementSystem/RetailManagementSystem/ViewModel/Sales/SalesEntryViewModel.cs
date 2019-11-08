@@ -110,9 +110,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                 using (var rmsEntities = new RMSEntities())
                 {
                     var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
-                    _customerList = new List<Customer>();
-                    var cnt = rmsEntities.Customers.ToList().Count();
-
+                    //_customerList = new List<Customer>();
+                    var cnt = rmsEntities.Customers.ToList().Count;
                     _customerList = new List<Customer>(cnt);
 
                     if (_salesParams.GetTemproaryData)
@@ -196,8 +195,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             _totalAmount = tempTotal;
             //TotalAmountDisplay = _totalAmount.Value;
-            RaisePropertyChanged("TotalAmount");
-            RaisePropertyChanged("BalanceAmount");
+            RaisePropertyChanged(nameof(TotalAmount));
+            RaisePropertyChanged(nameof(BalanceAmount));
         }
 
         public decimal? TotalDiscountAmount
@@ -207,7 +206,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _totalDiscountAmount = value;
                 CalculateTotalAmount();
-                RaisePropertyChanged("TotalDiscountAmount");
+                RaisePropertyChanged(nameof(TotalDiscountAmount));
             }
         }
 
@@ -218,7 +217,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _totalDiscountPercent = value;
                 CalculateTotalAmount();
-                RaisePropertyChanged("TotalDiscountPercent");
+                RaisePropertyChanged(nameof(TotalDiscountPercent));
             }
         }
 
@@ -263,7 +262,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                 _selectedCustomer = value;                
                 //CheckIfWithinCreditLimimt();
-                RaisePropertyChanged("SelectedCustomer");
+                RaisePropertyChanged(nameof(SelectedCustomer));
             }
         }
 
@@ -308,36 +307,17 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _selectedCustomerText = value;
                 //NotifyPropertyChanged(() => this._selectedCustomer);
-                RaisePropertyChanged("SelectedCustomerText");
+                RaisePropertyChanged(nameof(SelectedCustomerText));
             }
         }
         
         #endregion
 
-        #region TextContent
-
-        private string _textContent = string.Empty;
-        public string TextContent
-        {
-          get { return _textContent; }
-          set
-          {
-            if (_textContent != value)
-            {
-              _textContent = value;
-              RaisePropertyChanged("TextContent");
-              
-            }
-          }
-        }
-
-        #endregion
-       
         #region CloseCommand
       
         override protected bool OnClose()
         {
-            if(SaleDetailList.Count() > 0 && !IsEditMode)
+            if(SaleDetailList.Any() && !IsEditMode)
             {
                 var options = Utility.ShowMessageBoxWithOptions(System.Windows.Application.Current.MainWindow,
                                                                 "Unsaved items are available, do you want to save them?",
@@ -763,7 +743,7 @@ namespace RetailManagementSystem.ViewModel.Sales
               .Where(g => g.Count() > 1)
               .ToList();
 
-            if (duplicateResult != null && duplicateResult.Count() > 0)
+            if (duplicateResult != null && duplicateResult.Any())
             {
                 var duplicateSaleItem = duplicateResult.First().First();
                 var duplicateItemIndex = SaleDetailList.IndexOf(duplicateSaleItem);
@@ -1135,7 +1115,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if (_isEditMode)
                     _deletedItems.Add(SaleDetailExtn);
                 _totalAmount -= SaleDetailExtn.Amount;
-                RaisePropertyChanged("TotalAmount");
+                RaisePropertyChanged(nameof(TotalAmount));
 
                 var i = 0;
                 foreach (var item in SaleDetailList)
@@ -1278,7 +1258,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         private void AddCustomer()
         {
             Workspace.This.OpenCustomerCommand.Execute(null);
-            RaisePropertyChanged("CustomersList");
+            RaisePropertyChanged(nameof(CustomersList));
         }
 
         #endregion
@@ -1301,7 +1281,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         private void OnCustomerChanged()
         {
             Workspace.This.OpenCustomerCommand.Execute(null);
-            RaisePropertyChanged("CustomersList");
+            RaisePropertyChanged(nameof(CustomersList));
         }
 
         

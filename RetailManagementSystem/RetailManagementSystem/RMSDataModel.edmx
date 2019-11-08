@@ -398,6 +398,17 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="Swaps">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StockId" Type="int" />
+          <Property Name="LendOrBorrowId" Type="int" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+        </EntityType>
         <EntityType Name="SystemData">
           <Key>
             <PropertyRef Name="Id" />
@@ -806,6 +817,7 @@
           <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="Swaps" EntityType="Self.Swaps" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
           <AssociationSet Name="ExpCodeMaster" Association="Self.ExpCodeMaster">
@@ -1467,6 +1479,7 @@
             <End Role="StockTransaction" EntitySet="StockTransactions" />
             <End Role="StockAdjustment" EntitySet="StockAdjustments" />
           </AssociationSet>
+          <EntitySet Name="Swaps" EntityType="RMSEntities.Swap" />
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1935,6 +1948,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Swap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="LendOrBorrowId" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2372,6 +2396,18 @@
                 <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
                 <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
                 <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Swaps">
+            <EntityTypeMapping TypeName="RMSEntities.Swap">
+              <MappingFragment StoreEntitySet="Swaps">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="LendOrBorrowId" ColumnName="LendOrBorrowId" />
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

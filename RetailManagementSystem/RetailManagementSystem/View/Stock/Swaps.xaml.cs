@@ -1,7 +1,6 @@
-﻿using System.Windows.Controls;
-using RetailManagementSystem.Model;
-using System;
+﻿using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Stocks;
+using System.Windows.Controls;
 
 namespace RetailManagementSystem.View.Stock
 {
@@ -19,20 +18,20 @@ namespace RetailManagementSystem.View.Stock
                 custComboBoxCol.ItemsSource = _swapsViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
 
-                _swapsViewModel.NotifierCollectionChangedEvent += () =>
-                {
-                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        custComboBoxCol.ItemsSource = _swapsViewModel.ProductsPriceList;
-                    }));
-                };
+                //_swapsViewModel.NotifierCollectionChangedEvent += () =>
+                //{
+                //    App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                //    {
+                //        custComboBoxCol.ItemsSource = _swapsViewModel.ProductsPriceList;
+                //    }));
+                //};
             };
 
         }        
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
-            var productPrice = selectedItem as ProductPrice;
+            var productPrice = selectedItem as StockAdjustProductPrice;
 
             _swapsViewModel.SetProductDetails(productPrice, SalesDataGrid.SelectedIndex);
             custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
@@ -42,11 +41,6 @@ namespace RetailManagementSystem.View.Stock
             custComboBoxCol.ClearSelection();
             custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
 
-        }
-
-        private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
-        {
-            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
-        }
+        }        
     }
 }
