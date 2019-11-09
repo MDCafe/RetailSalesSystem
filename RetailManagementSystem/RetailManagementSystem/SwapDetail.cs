@@ -12,22 +12,17 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class Swap
+    public partial class SwapDetail
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Swap()
-        {
-            this.SwapDetails = new HashSet<SwapDetail>();
-        }
-    
         public int Id { get; set; }
-        public Nullable<int> CustomerId { get; set; }
-        public Nullable<int> LendOrBorrowId { get; set; }
-        public Nullable<decimal> TotalAmount { get; set; }
+        public Nullable<int> SwapId { get; set; }
+        public Nullable<int> StockId { get; set; }
+        public Nullable<decimal> Quantity { get; set; }
+        public Nullable<decimal> SellingPrice { get; set; }
+        public Nullable<decimal> CostPrice { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SwapDetail> SwapDetails { get; set; }
+        public virtual Swap Swap { get; set; }
     }
 }

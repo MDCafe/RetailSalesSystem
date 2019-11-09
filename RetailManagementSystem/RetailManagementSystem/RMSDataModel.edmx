@@ -398,15 +398,28 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
-        <EntityType Name="Swaps">
+        <EntityType Name="SwapDetails">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SwapId" Type="mediumint" />
           <Property Name="StockId" Type="int" />
-          <Property Name="LendOrBorrowId" Type="int" />
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="0" />
-          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="SellingPrice" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="CostPrice" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="Swaps">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="mediumint" />
+          <Property Name="LendOrBorrowId" Type="int" />
+          <Property Name="TotalAmount" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="SystemData">
@@ -766,6 +779,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SWAP_MAIN">
+          <End Role="Swaps" Type="Self.Swaps" Multiplicity="0..1" />
+          <End Role="SwapDetails" Type="Self.SwapDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Swaps">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SwapDetails">
+              <PropertyRef Name="SwapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="pur_pay_det">
           <End Role="PurchasePaymentDetails" Type="Self.PurchasePaymentDetails" Multiplicity="0..1" />
           <End Role="PurchaseChequePaymentDetails" Type="Self.PurchaseChequePaymentDetails" Multiplicity="*" />
@@ -817,6 +842,7 @@
           <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="SwapDetails" EntityType="Self.SwapDetails" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Swaps" EntityType="Self.Swaps" Schema="rms" store:Type="Tables" />
           <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
@@ -931,6 +957,10 @@
           <AssociationSet Name="fk_stockId" Association="Self.fk_stockId">
             <End Role="Stocks" EntitySet="Stocks" />
             <End Role="StockTransaction" EntitySet="StockTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SWAP_MAIN" Association="Self.FK_SWAP_MAIN">
+            <End Role="Swaps" EntitySet="Swaps" />
+            <End Role="SwapDetails" EntitySet="SwapDetails" />
           </AssociationSet>
           <AssociationSet Name="pur_pay_det" Association="Self.pur_pay_det">
             <End Role="PurchasePaymentDetails" EntitySet="PurchasePaymentDetails" />
@@ -1479,7 +1509,12 @@
             <End Role="StockTransaction" EntitySet="StockTransactions" />
             <End Role="StockAdjustment" EntitySet="StockAdjustments" />
           </AssociationSet>
+          <EntitySet Name="SwapDetails" EntityType="RMSEntities.SwapDetail" />
           <EntitySet Name="Swaps" EntityType="RMSEntities.Swap" />
+          <AssociationSet Name="FK_SWAP_MAIN" Association="RMSEntities.FK_SWAP_MAIN">
+            <End Role="Swap" EntitySet="Swaps" />
+            <End Role="SwapDetail" EntitySet="SwapDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Customer">
           <Key>
@@ -1948,17 +1983,44 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SwapDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SwapId" Type="Int32" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Swap" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="SwapDetail" ToRole="Swap" />
+        </EntityType>
         <EntityType Name="Swap">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockId" Type="Int32" />
+          <Property Name="CustomerId" Type="Int32" />
           <Property Name="LendOrBorrowId" Type="Int32" />
-          <Property Name="Quantity" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TotalAmount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="SwapDetails" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="Swap" ToRole="SwapDetail" />
         </EntityType>
+        <Association Name="FK_SWAP_MAIN">
+          <End Type="RMSEntities.Swap" Role="Swap" Multiplicity="0..1" />
+          <End Type="RMSEntities.SwapDetail" Role="SwapDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Swap">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SwapDetail">
+              <PropertyRef Name="SwapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2401,19 +2463,33 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SwapDetails">
+            <EntityTypeMapping TypeName="RMSEntities.SwapDetail">
+              <MappingFragment StoreEntitySet="SwapDetails">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="SwapId" ColumnName="SwapId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Swaps">
             <EntityTypeMapping TypeName="RMSEntities.Swap">
               <MappingFragment StoreEntitySet="Swaps">
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
                 <ScalarProperty Name="LendOrBorrowId" ColumnName="LendOrBorrowId" />
-                <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

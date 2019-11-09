@@ -1,17 +1,22 @@
-﻿using RetailManagementSystem.Model;
+﻿using log4net;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Stocks
 {
     class SwapsViewModel : DocumentViewModel
-    {                
+    {
+        static readonly ILog log = LogManager.GetLogger(typeof(SwapsViewModel));
         public ObservableCollection<StockAdjustProductPrice> ProductsPriceList { get; private set; }
         public DateTime TranscationDate { get; set; }
-        public int SelectedSwapModeId { get;set; }        
+        public int SelectedSwapModeId { get;set; }
+        public Customer SelectedCustomer { get; set; }
         public IEnumerable<CodeMaster> SwapsCodeList { get; set; }
         public static IEnumerable<Customer> SwapsCustomersList{ get; set; }
         public decimal TotalAmount { get; set; }
@@ -66,6 +71,8 @@ namespace RetailManagementSystem.ViewModel.Stocks
         {                        
             SwapsDetailList = new ObservableCollection<SwapExtn>();
             TotalAmount = 0;
+            SelectedCustomer = null;
+            SelectedSwapModeId = -1;
         }
 
         internal void SetProductDetails(StockAdjustProductPrice productPrice, int selectedIndex)
@@ -87,7 +94,68 @@ namespace RetailManagementSystem.ViewModel.Stocks
                 selRowSwapExtn.AvailableStock = productPrice.Quantity;
                 selRowSwapExtn.CostPrice = productPrice.Price;                
                 selRowSwapExtn.Amount = productPrice.SellingPrice * selRowSwapExtn.Quantity;
+                selRowSwapExtn.StockId = productPrice.StockId;
             }
-        }        
+        }
+
+
+        #region SaveCommand
+        RelayCommand<object> _saveCommand = null;
+        public ICommand SaveCommand
+        {
+            get
+            {
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(), (p) =>
+                    {
+                        return SelectedCustomer != null && SelectedCustomer.Id != 0 && SwapsDetailList.Count != 0 &&
+                          SwapsDetailList[0].ProductId != 0;
+                    });
+                }
+
+                return _saveCommand;
+            }
+        }
+
+        private void OnSave()
+        {
+            using(var rmsEntities = new RMSEntities())
+            {
+                try
+                {
+                    var swaps = new Swap()
+                    {
+                        LendOrBorrowId = SelectedSwapModeId,
+                        CustomerId = SelectedCustomer.Id,
+                        TotalAmount = TotalAmount,
+                        AddedOn = TranscationDate
+                    };
+                    rmsEntities.Swaps.Add(swaps);
+
+                    foreach (var item in SwapsDetailList)
+                    {
+                        swaps.SwapDetails.Add(new SwapDetail()
+                        {
+                            StockId = item.StockId,                            
+                            Quantity = item.Quantity,
+                            SellingPrice = item.SellingPrice,
+                            CostPrice = item.CostPrice,
+                            AddedOn = TranscationDate
+                        });
+                    }
+                    rmsEntities.SaveChanges();
+                    Clear();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error while saving", ex);
+                    Utilities.Utility.ShowErrorBox(ex.Message);
+                }
+            }
+        }
+
+        #endregion 
+
     }
 }

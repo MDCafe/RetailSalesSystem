@@ -11,7 +11,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
 {
     class StockAdjustmentViewModel : DocumentViewModel
     {
-        static readonly ILog _log = LogManager.GetLogger(typeof(StockAdjustmentViewModel));
+        static readonly ILog log = LogManager.GetLogger(typeof(StockAdjustmentViewModel));
 
         public ObservableCollection<StockAdjustProductPrice> ProductsPriceList { get; private set; }
         public ObservableCollection<StockAdjustmentExtn> StockAdjustmentList { get; private set; }
@@ -49,12 +49,12 @@ namespace RetailManagementSystem.ViewModel.Stocks
          
             if (productPrice == null)
             {
-                _log.Debug("SetProductDetails(); Product Price is null");
+                log.Debug("SetProductDetails(); Product Price is null");
                 return;
             }            
             try
             {
-                _log.Info("SetProductDetails:SelIndex:" + selectedIndex);
+                log.Info("SetProductDetails:SelIndex:" + selectedIndex);
                 if (selectedIndex == -1 || selectedIndex > StockAdjustmentList.Count - 1)
                 {
                     //_log.Info("Inside Return : selectedIndex" + selectedIndex);
@@ -75,7 +75,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
             }
             catch (Exception ex)
             {
-                _log.Error("Error on SetProductDetails", ex);
+                log.Error("Error on SetProductDetails", ex);
                 //_log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}", selectedIndex, productPrice.ProductId, productPrice.PriceId);
             }
         }
@@ -150,7 +150,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Error while saving",ex);
+                    log.Error("Error while saving",ex);
                     Utilities.Utility.ShowErrorBox(ex.Message);                    
                 }
             }

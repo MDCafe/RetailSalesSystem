@@ -350,6 +350,9 @@
     <Compile Include="Swap.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SwapDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SystemData.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>

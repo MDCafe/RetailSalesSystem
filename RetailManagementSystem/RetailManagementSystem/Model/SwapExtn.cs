@@ -17,6 +17,8 @@
         public decimal Amount { get; set; }
         public decimal AvailableStock { get; set; }
         public decimal CostPrice { get; set; }
+
+        public int StockId { get; set; }
         public decimal Quantity
         {
             get => quantity;
