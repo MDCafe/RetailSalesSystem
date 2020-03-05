@@ -142,7 +142,7 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _isVisible = value;
-                RaisePropertyChanged("VisibIsVisiblele");
+                RaisePropertyChanged(nameof(IsVisible));
             }
         }
 
@@ -182,7 +182,7 @@ namespace RetailManagementSystem.ViewModel.Base
 
         public void RefreshProductList()
         { 
-            _productsPriceList =  RMSEntitiesHelper.Instance.GetProductPriceList();
+            _productsPriceList =  RMSEntitiesHelper.GetProductPriceList();
             RaisePropertyChanged(nameof(ProductsPriceList));
             NotifierCollectionChangedEvent?.Invoke();
         }

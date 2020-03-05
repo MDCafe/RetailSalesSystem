@@ -13,10 +13,10 @@ namespace RetailManagementSystem
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class rmsEntitiesconfig : DbContext
+    public partial class RMSEntities : DbContext
     {
-        public rmsEntitiesconfig()
-            : base("name=rmsEntitiesconfig")
+        public RMSEntities()
+            : base("name=RMSEntities")
         {
         }
     
@@ -52,8 +52,8 @@ namespace RetailManagementSystem
         public virtual DbSet<ExpenseDetail> ExpenseDetails { get; set; }
         public virtual DbSet<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
         public virtual DbSet<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
-        public virtual DbSet<StockAdjustment> StockAdjustments { get; set; }
         public virtual DbSet<SwapDetail> SwapDetails { get; set; }
         public virtual DbSet<Swap> Swaps { get; set; }
+        public virtual DbSet<StockAdjustment> StockAdjustments { get; set; }
     }
 }

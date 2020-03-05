@@ -24,7 +24,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>\\WOODLANDSSERVER\Shared\RMS\</PublishUrl>
+    <PublishUrl>\\woodlandsmain\SharedFolder\RMS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,11 +34,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\WOODLANDSSERVER\Shared\RMS\</InstallUrl>
+    <InstallUrl>\\woodlandsmain\SharedFolder\RMS\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>100</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -278,6 +278,7 @@
     <Compile Include="Model\SaleDetailExtn.cs" />
     <Compile Include="Model\StockAdjustmentExtn.cs" />
     <Compile Include="Model\StockAdjustProductPrice.cs" />
+    <Compile Include="Model\StockTransactionExt.cs" />
     <Compile Include="Model\SwapExtn.cs" />
     <Compile Include="PaymentDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>

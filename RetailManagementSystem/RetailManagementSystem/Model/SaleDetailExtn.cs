@@ -4,34 +4,12 @@ namespace RetailManagementSystem.Model
 {
     public class SaleDetailExtn : BaseModel
     {
-        //used while edit
-       
-        private decimal? _lastSoldPrice;
-
         public virtual Product Product { get; set; }
-
         public virtual Sale Sale { get; set; }
-
-        public decimal? LastSoldPrice
-        {
-            get
-            {
-                return _lastSoldPrice;
-            }
-
-            set
-            {
-                _lastSoldPrice = value;
-            }
-        }
-      
-
-        //public decimal? PriceToCalculate { get => _priceToCalculate; set => _priceToCalculate = value; }
-
+        public decimal? LastSoldPrice { get; set; }
+        public int UnitOfMeasure { get; set; }
         public void Clear()
-        {
-            //this.ProductId = -1;
-            //this.PriceId = -1;
+        {         
             this.Amount = null;
             this.AvailableStock = 0;
             this.CostPrice = 0;
@@ -41,9 +19,7 @@ namespace RetailManagementSystem.Model
             this.DiscountPercentage = 0;
             this.LastSoldPrice = null;
             this.Qty = null;
-        }
-
-        
+        }        
     }
 
     public  class ReturnSaleDetailExtn : SaleDetailExtn

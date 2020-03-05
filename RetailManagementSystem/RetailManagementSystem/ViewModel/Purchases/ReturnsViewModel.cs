@@ -390,7 +390,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             if (SelectedCompany == null) return;
 
             IsGridEnabled = true;
-            ProductsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList(_selectedCompany.Id);
+            ProductsPriceList = RMSEntitiesHelper.GetProductPriceList(_selectedCompany.Id);
             NotifierCollectionChangedEvent?.Invoke();
 
             _returnPurchaseDetailsList.Clear();

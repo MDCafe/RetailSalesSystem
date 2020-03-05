@@ -29,7 +29,7 @@ namespace RetailManagementSystem.Model
                 //PriceToCalculate = _purchasePrice;
                 CalculateAmount();
                 CalculateCost();
-                OnPropertyChanged("PurchasePrice");
+                OnPropertyChanged(nameof(PurchasePrice));
             }
         }
         public decimal? FreeIssue
@@ -47,7 +47,7 @@ namespace RetailManagementSystem.Model
                 }
                 _freeIssue = value;
                 CalculateCost();
-                this.OnPropertyChanged("FreeIssue");
+                this.OnPropertyChanged(nameof(FreeIssue));
             }
         }
         public decimal? OldCostPrice { get; set; }

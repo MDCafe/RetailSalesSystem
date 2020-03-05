@@ -54,7 +54,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             private set
             {
                 _productsList = value;
-                RaisePropertyChanged("ProductsList");
+                RaisePropertyChanged(nameof(ProductsList));
             }
         }
 
@@ -83,7 +83,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             set
             {
                 _product = value;
-                RaisePropertyChanged("SelectedProduct");
+                RaisePropertyChanged(nameof(SelectedProduct));
             }
         }
 
@@ -154,7 +154,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                             {
                                 SupportsMultiPrice = false
                             };
-                            RaisePropertyChanged("SelectedProduct");
+                            RaisePropertyChanged(nameof(SelectedProduct));
                             _priceDetailsList.Clear();
                             _priceDetailsList.Add(new PriceDetail());
                             RaisePropertyChanged("PriceDetailsList");
@@ -231,7 +231,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             _product.Name = _product.Name.Trim();
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
-            RaisePropertyChanged("ProductsList");
+            RaisePropertyChanged(nameof(ProductsList));
         }
 
         private bool Validate()
@@ -303,7 +303,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
-            RaisePropertyChanged("ProductsList");         
+            RaisePropertyChanged(nameof(ProductsList));         
         }
 
         #endregion

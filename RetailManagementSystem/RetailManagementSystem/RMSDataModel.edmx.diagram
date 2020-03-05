@@ -62,11 +62,11 @@
         <AssociationConnector Association="RMSEntities.pur_pay_det" />
         <AssociationConnector Association="RMSEntities.Purchase_Bill" />
         <AssociationConnector Association="RMSEntities.FK_purchaseId" />
-        <EntityTypeShape EntityType="RMSEntities.StockAdjustment" Width="1.5" PointX="7.375" PointY="0.75" />
-        <AssociationConnector Association="RMSEntities.FK_STKADJ_STRANS" />
         <EntityTypeShape EntityType="RMSEntities.SwapDetail" Width="1.5" PointX="9.625" PointY="5" />
         <EntityTypeShape EntityType="RMSEntities.Swap" Width="1.5" PointX="7.375" PointY="33.25" />
         <AssociationConnector Association="RMSEntities.FK_SWAP_MAIN" />
+        <EntityTypeShape EntityType="RMSEntities.StockAdjustment" Width="1.5" PointX="15" PointY="22.75" />
+        <AssociationConnector Association="RMSEntities.FK_STKADJ_STRANS" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

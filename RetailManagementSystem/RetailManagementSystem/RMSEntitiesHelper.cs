@@ -25,7 +25,7 @@ namespace RetailManagementSystem
             productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                  " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
                                  " from Products p, PriceDetails pd, Stocks st " +
                                  "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                  " and st.Quantity != 0 and p.Isactive = true" +
@@ -33,7 +33,7 @@ namespace RetailManagementSystem
                                    "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
                                    "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                    " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
                                    " from Products p, PriceDetails pd, Stocks st " +
                                    " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                    " and st.Quantity = 0 and p.Isactive = true " +
@@ -120,7 +120,7 @@ namespace RetailManagementSystem
             }
         }
 
-        public ObservableCollection<ProductPrice> GetProductPriceList()
+        public static ObservableCollection<ProductPrice> GetProductPriceList()
         {
             return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQL));
             //foreach (var item in productList)
@@ -129,12 +129,12 @@ namespace RetailManagementSystem
             //}
         }
 
-        public ObservableCollection<ProductPrice> GetProductPriceList(int companyId)
+        public static ObservableCollection<ProductPrice> GetProductPriceList(int companyId)
         {
            var productsPriceSQLCompany = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                          " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                          " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                         " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                         " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
                                          " from Products p, PriceDetails pd, Stocks st " +
                                          "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                          " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
@@ -142,7 +142,7 @@ namespace RetailManagementSystem
                                            "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
                                            "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                            " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                           " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno" +
+                                           " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
                                            " from Products p, PriceDetails pd, Stocks st " +
                                            " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                            " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
@@ -153,8 +153,8 @@ namespace RetailManagementSystem
             return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQLCompany));
         }
 
-        public decimal? GetLastSoldPrice(int productId,int customerId)
-        {
+        public static decimal? GetLastSoldPrice(int productId,int customerId)
+        {            
             string lastSoldPriceSQL = "select sd.SellingPrice from sales s, saleDetails sd " +
                                   "  where s.CustomerId = " + customerId +
                                   "  and s.BillId = sd.billId " +
@@ -270,13 +270,44 @@ namespace RetailManagementSystem
             }
         }
 
-
         public IEnumerable<User> GetUsers()
         {
             using(RMSEntities rmsEntities = new RMSEntities())
             {
                 return rmsEntities.Users.ToList();
             }
+        }
+
+        public static DateTime GetCombinedDateTime(DateTime transactionDate)
+        {
+            DateTime combinedDateTime;
+            //Get the current time since it takes the window open time
+            DateTime date = transactionDate.Date;
+            TimeSpan time = GetServerTime();
+            //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            combinedDateTime = date.Add(time);
+            return combinedDateTime;
+        }
+
+        public static DateTime GetCombinedDateTime()
+        {
+            DateTime combinedDateTime;
+            //Get the current time since it takes the window open time
+            DateTime date = Instance.GetSystemDBDate();
+            TimeSpan time = GetServerTime();
+            //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            combinedDateTime = date.Add(time);
+            return combinedDateTime;
+        }
+
+        public static StockTransactionExt CheckStockAdjustment(RMSEntities rmsEntities, int stockId)
+        {
+            var query = "select st.*,sa.StockTransId from StockTransaction st  " +
+                                    " left join StockAdjustments sa on(st.id = sa.stockTransId) " +
+                                    " where st.StockId = " + stockId +
+                                    " order by st.Addedon desc ";
+            var stockTransCheck = rmsEntities.Database.SqlQuery<StockTransactionExt>(query).FirstOrDefault();
+            return stockTransCheck;
         }
     }
 

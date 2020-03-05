@@ -24,6 +24,7 @@ namespace RetailManagementSystem.View.Sales
                 {
                     CboCustomers.SelectedValue = _salesViewModel.DefaultCustomer.Id;
                     CboCustomers.SelectedItem = _salesViewModel.DefaultCustomer;
+                    _salesViewModel.SelectedCustomer = _salesViewModel.DefaultCustomer;
                     //CboCustomers.Text = _salesViewModel.SelectedCustomerText;
                 }
                 else
@@ -37,8 +38,7 @@ namespace RetailManagementSystem.View.Sales
                             if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
                             DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
                             FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
-                            var saleDetailExtn = focusedElement.DataContext as SaleDetailExtn;
-                            if (saleDetailExtn == null) return;
+                            if (!(focusedElement.DataContext is SaleDetailExtn saleDetailExtn)) return;
                             var model = (SaleDetailExtn)focusedElement.DataContext;
                             if (model.PropertyReadOnly)
                             {
@@ -198,8 +198,7 @@ namespace RetailManagementSystem.View.Sales
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                T childType = child as T;
-                if (childType == null)
+                if (!(child is T))
                 {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
@@ -209,9 +208,8 @@ namespace RetailManagementSystem.View.Sales
                 }
                 else if (!string.IsNullOrEmpty(childName))
                 {
-                    var frameworkElement = child as FrameworkElement;
                     // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    if (child is FrameworkElement frameworkElement && frameworkElement.Name == childName)
                     {
                         // if the child's name is of the request name
                         foundChild = (T)child;

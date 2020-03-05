@@ -20,9 +20,9 @@ namespace RetailManagementSystem
         public Nullable<decimal> AdjustedQty { get; set; }
         public Nullable<decimal> ClosingBalance { get; set; }
         public Nullable<decimal> CostPrice { get; set; }
+        public Nullable<int> StockTransId { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public Nullable<int> StockTransId { get; set; }
     
         public virtual StockTransaction StockTransaction { get; set; }
     }

@@ -24,7 +24,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             set
             {
                 _fromPurchaseDate = value;
-                RaisePropertyChanged("FromPurchaseDate");
+                RaisePropertyChanged(nameof(FromPurchaseDate));
             }
         }
 
@@ -38,7 +38,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             set
             {
                 _toPurchaseDate = value;
-                RaisePropertyChanged("ToPurchaseDate");
+                RaisePropertyChanged(nameof(ToPurchaseDate));
             }
         }
 

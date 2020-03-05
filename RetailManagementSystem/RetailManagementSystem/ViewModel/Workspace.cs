@@ -53,8 +53,19 @@ namespace RetailManagementSystem.ViewModel
 
         private void ShowWindowDialog(Window dialogWindow)
         {
-            dialogWindow.Owner = MainDockingWindow;
-            dialogWindow.ShowDialog();
+            try
+            {
+                dialogWindow.Owner = MainDockingWindow;
+                dialogWindow.ShowDialog();
+            }
+            catch (Exceptions.RMSException ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }            
         }
 
         #region OpenSalesEntryCommand
@@ -151,28 +162,13 @@ namespace RetailManagementSystem.ViewModel
             {
                 if (_openAmendSalesCommand == null)
                 {
-                    _openAmendSalesCommand = new RelayCommand<object>((p) => OnOpenAmendSalesCommand(p), (p) => { return true; });
+                    _openAmendSalesCommand = new RelayCommand<object>((p) => 
+                    {                                                
+                        ShowWindowDialog(new AmendSales(false));                        
+                    }
+                    );
                 }
-
                 return _openAmendSalesCommand;
-            }
-        }
-
-        private void OnOpenAmendSalesCommand(object showAll)
-        {            
-            try
-            {
-                var amendSales = new AmendSales(false);
-                ShowWindowDialog(amendSales);                
-            }
-            catch (Exceptions.RMSException ex)
-            {
-                Utility.ShowErrorBox(ex.Message);                
-            }
-            catch (Exception ex)
-            {
-                Utility.ShowErrorBox(ex.Message);
-                //log here
             }
         }
 
@@ -261,24 +257,10 @@ namespace RetailManagementSystem.ViewModel
                 if (_openAmendPurchaseCommand == null)
                 {
                     _openAmendPurchaseCommand = new RelayCommand<object>((p) =>
-                    {
-                        try
-                        {
-                            AmendPurchases amendPurchases = new AmendPurchases(false);
-                            ShowWindowDialog(amendPurchases);
-                        }
-                        catch (Exceptions.RMSException ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                            //log here
-                        }
+                    {                        
+                        ShowWindowDialog(new AmendPurchases(false));   
                     });
                 }
-
                 return _openAmendPurchaseCommand;
             }
         }      
@@ -332,21 +314,8 @@ namespace RetailManagementSystem.ViewModel
                 if (_openCustomerCommand == null)
                 {
                     _openCustomerCommand = new RelayCommand<object>((p) =>
-                    {
-                        try
-                        {
-                            View.Masters.Customer customer = new View.Masters.Customer();
-                            ShowWindowDialog(customer);
-                        }
-                        catch (Exceptions.RMSException ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                            //log here
-                        }
+                    {                        
+                        ShowWindowDialog(new View.Masters.Customer());                        
                     });
                 }
 
@@ -365,21 +334,8 @@ namespace RetailManagementSystem.ViewModel
                 if (_openCompaniesCommand == null)
                 {
                     _openCompaniesCommand = new RelayCommand<object>((p) =>
-                    {
-                        try
-                        {
-                            var companiesView = new Companies();
-                            ShowWindowDialog(companiesView);
-                        }
-                        catch (Exceptions.RMSException ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                            //log here
-                        }
+                    {                     
+                        ShowWindowDialog(new Companies());                        
                     });
                 }
 
@@ -399,20 +355,7 @@ namespace RetailManagementSystem.ViewModel
                 {
                     _openProductCommand = new RelayCommand<object>((p) =>
                     {
-                        try
-                        {
-                            Products productView = new Products();
-                            ShowWindowDialog(productView);
-                        }
-                        catch (Exceptions.RMSException ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                            //log here
-                        }
+                        ShowWindowDialog(new Products());                        
                     }
                     );
                 }
@@ -461,9 +404,7 @@ namespace RetailManagementSystem.ViewModel
                 return _openStockAdjustmentCommand;
             }
         }
-
-        
-
+       
         #endregion
 
         #region OpenCustomerBillPaymentsCommand
@@ -535,10 +476,8 @@ namespace RetailManagementSystem.ViewModel
                             var showRestrictedCustomers = false;
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
-
-                            var custPayReport = new CustomerPaymentDetailsReport(showRestrictedCustomers);
-                            ShowWindowDialog(custPayReport);
-
+                            
+                            ShowWindowDialog(new CustomerPaymentDetailsReport(showRestrictedCustomers));
                         }
                         catch (Exceptions.RMSException ex)
                         {
@@ -601,7 +540,7 @@ namespace RetailManagementSystem.ViewModel
             if (_activeDocument != value)
             {
               _activeDocument = value;
-              RaisePropertyChanged("ActiveDocument");
+              RaisePropertyChanged(nameof(ActiveDocument));
                     ActiveDocumentChanged?.Invoke(this, EventArgs.Empty);
                 }
           }
@@ -629,9 +568,7 @@ namespace RetailManagementSystem.ViewModel
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
 
-                            var salesSummary = new SalesSummary(showRestrictedCustomers);
-                            ShowWindowDialog(salesSummary);
-
+                            ShowWindowDialog(new SalesSummary(showRestrictedCustomers));
                         }
                         catch (Exceptions.RMSException ex)
                         {
@@ -666,9 +603,8 @@ namespace RetailManagementSystem.ViewModel
                             var showRestrictedCustomers = false;
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
-
-                            var customerWiseSales = new CustomerWiseSales(showRestrictedCustomers);
-                            ShowWindowDialog(customerWiseSales);
+                            
+                            ShowWindowDialog(new CustomerWiseSales(showRestrictedCustomers));
 
                         }
                         catch (Exceptions.RMSException ex)
@@ -704,9 +640,7 @@ namespace RetailManagementSystem.ViewModel
                             var showRestrictedCustomers = false;
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
-
-                            var PurchaseSummary = new PurchaseSummary(showRestrictedCustomers);
-                            ShowWindowDialog(PurchaseSummary);
+                            ShowWindowDialog(new PurchaseSummary(showRestrictedCustomers));
 
                         }
                         catch (Exceptions.RMSException ex)
@@ -742,9 +676,8 @@ namespace RetailManagementSystem.ViewModel
                             var showRestrictedCustomers = false;
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
-
-                            var stockReport = new StockReport(showRestrictedCustomers);
-                            ShowWindowDialog(stockReport);
+                            
+                            ShowWindowDialog(new StockReport(showRestrictedCustomers));
 
                         }
                         catch (Exceptions.RMSException ex)
@@ -773,20 +706,8 @@ namespace RetailManagementSystem.ViewModel
                 if (_openStockBalanceReportCommand == null)
                 {
                     _openStockBalanceReportCommand = new RelayCommand<object>((p) =>
-                    {
-                        try
-                        {                            
-                            ShowWindowDialog(new StockBalanceReport(false));
-                        }
-                        catch (Exceptions.RMSException ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            Utility.ShowErrorBox(ex.Message);
-                            //log here
-                        }
+                    {                                                    
+                        ShowWindowDialog(new StockBalanceReport(false));                        
                     });
                 }
                 return _openStockBalanceReportCommand;
@@ -876,8 +797,7 @@ namespace RetailManagementSystem.ViewModel
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
 
-                            var dayStatementReport = new DayStatementReport(showRestrictedCustomers);
-                            ShowWindowDialog(dayStatementReport);
+                            ShowWindowDialog(new DayStatementReport(showRestrictedCustomers));
 
                         }
                         catch (Exceptions.RMSException ex)

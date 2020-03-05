@@ -12,7 +12,6 @@ namespace RetailManagementSystem.ViewModel.Stocks
     class StockAdjustmentViewModel : DocumentViewModel
     {
         static readonly ILog log = LogManager.GetLogger(typeof(StockAdjustmentViewModel));
-
         public ObservableCollection<StockAdjustProductPrice> ProductsPriceList { get; private set; }
         public ObservableCollection<StockAdjustmentExtn> StockAdjustmentList { get; private set; }
 
@@ -110,40 +109,39 @@ namespace RetailManagementSystem.ViewModel.Stocks
             {
                 try
                 {
+                    var combinedDateTime = RMSEntitiesHelper.GetCombinedDateTime();
                     foreach (var item in StockAdjustmentList)
-                    {                        
+                    {
+                        var stockadjustment = new StockAdjustment()
+                        {
+                            StockId = item.StockId,
+                            AdjustedQty = item.AdjustedQty,
+                            OpeningBalance = item.OpeningBalance,
+                            ClosingBalance = item.ClosingBalance,
+                            CostPrice = item.CostPrice,                            
+                            AddedOn = combinedDateTime
+                        };
+                        rmsEntities.StockAdjustments.Add(stockadjustment);
+
+                        var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
+                        if (stock != null)
+                        {
+                            stock.Quantity = stockadjustment.ClosingBalance.Value;
+                        }
+
                         var stockTrns = rmsEntities.StockTransactions.Where(st => st.StockId == item.StockId).OrderByDescending(d => d.AddedOn).FirstOrDefault();
                         //while Adjusting always add new row..
-                        if (stockTrns != null)
+                        
+                        var newStockTrans = new StockTransaction()
                         {
-                            var newStockTrans = new StockTransaction()
-                            {
-                                StockId = item.StockId,
-                                OpeningBalance = stockTrns.OpeningBalance, //opening balance of last transaction
-                                ClosingBalance = item.ClosingBalance,
-                                AddedOn = RMSEntitiesHelper.Instance.GetSystemDBDate()
-                            };
+                            StockId = item.StockId,
+                            OpeningBalance = stockTrns != null ? stockTrns.OpeningBalance : stock.Quantity, //opening balance of last transaction if trans is not null
+                            ClosingBalance = item.ClosingBalance,
+                            AddedOn = combinedDateTime
+                        };
 
-                            rmsEntities.StockTransactions.Add(newStockTrans);
-
-                            var stockadjustment = new StockAdjustment()
-                            {
-                                StockId = item.StockId,
-                                AdjustedQty = item.AdjustedQty,
-                                OpeningBalance = item.OpeningBalance,
-                                ClosingBalance = item.ClosingBalance,
-                                CostPrice = item.CostPrice,
-                                StockTransaction = newStockTrans
-                            };
-                            rmsEntities.StockAdjustments.Add(stockadjustment);
-
-                            var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
-                            if (stock != null)
-                            {
-                                stock.Quantity = stockadjustment.ClosingBalance.Value;
-                            }
-
-                        }
+                        stockadjustment.StockTransaction = newStockTrans;
+                        rmsEntities.StockTransactions.Add(newStockTrans);                        
                         rmsEntities.SaveChanges();
                         Clear();
                     }

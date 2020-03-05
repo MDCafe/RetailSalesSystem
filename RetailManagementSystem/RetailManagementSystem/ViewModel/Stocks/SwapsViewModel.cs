@@ -133,6 +133,8 @@ namespace RetailManagementSystem.ViewModel.Stocks
                     };
                     rmsEntities.Swaps.Add(swaps);
 
+                    var stockTransDate = RMSEntitiesHelper.GetCombinedDateTime(TranscationDate);
+
                     foreach (var item in SwapsDetailList)
                     {
                         swaps.SwapDetails.Add(new SwapDetail()
@@ -143,6 +145,14 @@ namespace RetailManagementSystem.ViewModel.Stocks
                             CostPrice = item.CostPrice,
                             AddedOn = TranscationDate
                         });
+
+                        var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
+                        SetStockTransaction(rmsEntities, item, stock, stockTransDate);
+                        
+                        if (stock != null)
+                        {
+                            stock.Quantity -= item.Quantity;
+                        }
                     }
                     rmsEntities.SaveChanges();
                     Clear();
@@ -157,5 +167,48 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
         #endregion 
 
+
+        private static void SetStockTransaction(RMSEntities rmsEntities, SwapExtn swapDetail, Stock stockNewItem,DateTime stockTransDate)
+        {
+            var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
+            var stockAdjustCheck =  RMSEntitiesHelper.CheckStockAdjustment(rmsEntities, stockNewItem.Id);
+
+            //stock transaction not available for this product. Add them 
+            if (stockTrans == null)
+            {
+                var firstStockTrans = new StockTransaction()
+                {
+                    OpeningBalance = stockNewItem.Quantity - swapDetail.Quantity, //Opening balance will be the one from stock table 
+                    Outward = swapDetail.Quantity,
+                    ClosingBalance = stockNewItem.Quantity,
+                    StockId = stockNewItem.Id,
+                    AddedOn = stockTransDate
+                };
+                stockNewItem.StockTransactions.Add(firstStockTrans);
+            }
+            //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
+            else
+            {
+                var systemDBDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
+                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate);
+                if (dateDiff == 0 && stockAdjustCheck!=null &&  !stockAdjustCheck.StockTransId.HasValue)
+                {
+                    stockTrans.Outward = swapDetail.Quantity + (stockTrans.Outward ?? 0);
+                    stockTrans.ClosingBalance -= swapDetail.Quantity;
+                }
+                else
+                {
+                    var newStockTrans = new StockTransaction()
+                    {
+                        OpeningBalance = stockTrans.ClosingBalance,
+                        Outward = swapDetail.Quantity,
+                        ClosingBalance = stockTrans.ClosingBalance - swapDetail.Quantity,
+                        StockId = stockNewItem.Id,
+                        AddedOn = stockTransDate
+                    };
+                    rmsEntities.StockTransactions.Add(newStockTrans);
+                }
+            }
+        }        
     }
 }

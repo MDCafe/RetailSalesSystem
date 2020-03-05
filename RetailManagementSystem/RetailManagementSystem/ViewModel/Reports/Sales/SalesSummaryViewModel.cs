@@ -27,7 +27,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             set
             {
                 _fromSalesDate = value;
-                RaisePropertyChanged("FromSalesDate");
+                RaisePropertyChanged(nameof(FromSalesDate));
             }
         }
         public DateTime ToSalesDate
@@ -40,7 +40,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             set
             {
                 _toSalesDate = value;
-                RaisePropertyChanged("ToSalesDate");
+                RaisePropertyChanged(nameof(ToSalesDate));
             }
         }
 

@@ -8,8 +8,8 @@ namespace RetailManagementSystem.ViewModel.Misc
 {
     class PriceListViewModel : ViewModelBase
     {
-        CollectionViewSource _cvsProductsPriceList;
-        ObservableCollection<ProductPrice> _productsPriceList;
+        readonly CollectionViewSource _cvsProductsPriceList;
+        readonly ObservableCollection<ProductPrice> _productsPriceList;
         string _productName;
        // System.Windows.Data.CollectionView cv;
 
@@ -32,13 +32,14 @@ namespace RetailManagementSystem.ViewModel.Misc
 
         public PriceListViewModel()
         {
-            _productsPriceList = RMSEntitiesHelper.Instance.GetProductPriceList();
-            _cvsProductsPriceList = new CollectionViewSource();
-            _cvsProductsPriceList.Source = _productsPriceList;
+            _productsPriceList = RMSEntitiesHelper.GetProductPriceList();
+            _cvsProductsPriceList = new CollectionViewSource
+            {
+                Source = _productsPriceList
+            };
             _cvsProductsPriceList.Filter += (s, e) =>
              {
-                 var productPrice = e.Item as ProductPrice;
-                 if (productPrice == null || ProductName == null || string.IsNullOrWhiteSpace(ProductName)) e.Accepted = true;
+                 if (!(e.Item is ProductPrice productPrice) || ProductName == null || string.IsNullOrWhiteSpace(ProductName)) e.Accepted = true;
                  else
                  {
                      e.Accepted = productPrice.ProductName.ToUpper().Contains(ProductName.ToUpper());

@@ -367,9 +367,9 @@
           <Property Name="AdjustedQty" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ClosingBalance" Type="decimal" Precision="10" Scale="2" />
           <Property Name="CostPrice" Type="decimal" Precision="10" Scale="2" />
-          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="StockTransId" Type="int" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="Stocks">
           <Key>
@@ -1504,16 +1504,16 @@
             <End Role="Purchase" EntitySet="Purchases" />
             <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
           </AssociationSet>
-          <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
-          <AssociationSet Name="FK_STKADJ_STRANS" Association="RMSEntities.FK_STKADJ_STRANS">
-            <End Role="StockTransaction" EntitySet="StockTransactions" />
-            <End Role="StockAdjustment" EntitySet="StockAdjustments" />
-          </AssociationSet>
           <EntitySet Name="SwapDetails" EntityType="RMSEntities.SwapDetail" />
           <EntitySet Name="Swaps" EntityType="RMSEntities.Swap" />
           <AssociationSet Name="FK_SWAP_MAIN" Association="RMSEntities.FK_SWAP_MAIN">
             <End Role="Swap" EntitySet="Swaps" />
             <End Role="SwapDetail" EntitySet="SwapDetails" />
+          </AssociationSet>
+          <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
+          <AssociationSet Name="FK_STKADJ_STRANS" Association="RMSEntities.FK_STKADJ_STRANS">
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
+            <End Role="StockAdjustment" EntitySet="StockAdjustments" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Customer">
@@ -1956,33 +1956,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="StockAdjustment">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockId" Type="Int32" />
-          <Property Name="OpeningBalance" Type="Decimal" />
-          <Property Name="AdjustedQty" Type="Decimal" />
-          <Property Name="ClosingBalance" Type="Decimal" />
-          <Property Name="CostPrice" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockTransId" Type="Int32" />
-          <NavigationProperty Name="StockTransaction" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockAdjustment" ToRole="StockTransaction" />
-        </EntityType>
-        <Association Name="FK_STKADJ_STRANS">
-          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="0..1" />
-          <End Type="RMSEntities.StockAdjustment" Role="StockAdjustment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="StockTransaction">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="StockAdjustment">
-              <PropertyRef Name="StockTransId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="SwapDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -2018,6 +1991,33 @@
             </Principal>
             <Dependent Role="SwapDetail">
               <PropertyRef Name="SwapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="StockAdjustment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="OpeningBalance" Type="Decimal" />
+          <Property Name="AdjustedQty" Type="Decimal" />
+          <Property Name="ClosingBalance" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
+          <Property Name="StockTransId" Type="Int32" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="StockTransaction" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockAdjustment" ToRole="StockTransaction" />
+        </EntityType>
+        <Association Name="FK_STKADJ_STRANS">
+          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="0..1" />
+          <End Type="RMSEntities.StockAdjustment" Role="StockAdjustment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockTransaction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockAdjustment">
+              <PropertyRef Name="StockTransId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2448,21 +2448,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockAdjustments">
-            <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
-              <MappingFragment StoreEntitySet="StockAdjustments">
-                <ScalarProperty Name="StockTransId" ColumnName="StockTransId" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
-                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
-                <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
-                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
-                <ScalarProperty Name="StockId" ColumnName="StockId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="SwapDetails">
             <EntityTypeMapping TypeName="RMSEntities.SwapDetail">
               <MappingFragment StoreEntitySet="SwapDetails">
@@ -2485,6 +2470,21 @@
                 <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
                 <ScalarProperty Name="LendOrBorrowId" ColumnName="LendOrBorrowId" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockAdjustments">
+            <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
+              <MappingFragment StoreEntitySet="StockAdjustments">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="StockTransId" ColumnName="StockTransId" />
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
+                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
+                <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
+                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -49,7 +49,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             set
             {
                 _selectedSupplierText = value;
-                RaisePropertyChanged("SelectedSupplierText");
+                RaisePropertyChanged(nameof(SelectedSupplierText));
             }
         }
 
@@ -60,7 +60,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _billList = value;
                 //NotifyPropertyChanged(() => this._selectedCustomer);
-                RaisePropertyChanged("BillList");
+                RaisePropertyChanged(nameof(BillList));
             }
         }
 
