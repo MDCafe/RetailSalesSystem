@@ -108,9 +108,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId, window);
             if (customerBill == null) return;
 
-            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomers, BillNo);
-            salesReportVM.ShowPrintReceiptButton = Visibility.Visible;
-            salesReportVM.RunningBillNo = BillNo;
+            SalesBillDetailsViewModel salesReportVM = new SalesBillDetailsViewModel(_showRestrictedCustomers, BillNo)
+            {
+                ShowPrintReceiptButton = Visibility.Visible,
+                RunningBillNo = BillNo
+            };
             salesReportVM.PrintCommand.Execute(window);
             salesReportVM.IsActive = true;
             salesReportVM.IsSelected = true;

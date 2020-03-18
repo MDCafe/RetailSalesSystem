@@ -6,7 +6,7 @@ namespace RetailManagementSystem.View.Sales
 {
     public partial class AmendSales : Window
     {
-        AmendSalesViewModel amVM;
+        readonly AmendSalesViewModel amVM;
 
         public AmendSales(bool showRestrictedCustomers)
         {

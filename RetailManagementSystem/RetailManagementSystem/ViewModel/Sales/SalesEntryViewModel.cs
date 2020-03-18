@@ -773,10 +773,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                     Utility.ShowErrorBox("Selling Price can't be more than 500% of cost price");
                     return false;
                 }
-                //7 is Bottle
-                if (saleDetailItem.UnitOfMeasure == 7 && !(saleDetailItem.Qty % 1 == 0))
+                //Continue if kg or grams
+                if (saleDetailItem.UnitOfMeasure == 2 || saleDetailItem.UnitOfMeasure == 14)
                 {
-                    Utility.ShowErrorBox("Bottle items can't be sold in decimals");
+                    continue;
+                }
+                if(!(saleDetailItem.Qty % 1 == 0))
+                {
+                    var prod = ProductsPriceList.FirstOrDefault(p => p.ProductId == saleDetailItem.ProductId);
+                    if(prod != null)
+                        Utility.ShowErrorBox(prod.ProductName + " can't be sold in decimals");                    
                     return false;
                 }
 
