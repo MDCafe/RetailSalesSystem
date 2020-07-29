@@ -70,8 +70,9 @@
                 <toolKit:DataGridTextColumn Header="Unit Of Measure" Binding="{Binding MeasuringUnit, Converter={StaticResource uomCodeConverter}}" />
                 <toolKit:DataGridTextColumn Header="Supplier Name" Binding="{Binding Company, Converter={StaticResource companyCodeConverter}}" />
                 <toolKit:DataGridTextColumn Header="Category" Binding="{Binding Category,  Converter={StaticResource categoryCodeConverter}}" />
+                <toolKit:DataGridTextColumn Header="BarCode" Binding="{Binding BarcodeNo}" />
                 <toolKit:DataGridTextColumn Header="Re-Order Point" Binding="{Binding ReorderPoint}" />
-                <toolKit:DataGridTextColumn Header="Active" Binding="{Binding IsActive}" Width="200" />    
+                <toolKit:DataGridTextColumn Header="Active" Binding="{Binding IsActive}" Width="200" />
             </toolKit:DataGrid.Columns>
         </toolKit:DataGrid>
         <TextBox Grid.Column="1" Margin="5,8,0,8" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedProduct.Name}" Width="217" HorizontalAlignment="Left" BorderBrush="Black"/>
@@ -97,6 +98,9 @@
                   VerticalAlignment="Top" Width="217"
             ItemsSource="{Binding ProductActiveValues}" DisplayMemberPath="Value" SelectedValuePath="Key" 
                  />
+        <TextBox Grid.Column="3" HorizontalAlignment="Left" Height="23" Margin="5,5,0,0" Grid.Row="5" TextWrapping="Wrap" 
+            Text="{Binding SelectedProduct.BarcodeNo}" VerticalAlignment="Top" Width="175" MaxLength="13"/>
+
         <StackPanel Orientation="Horizontal" Grid.Row="10"  HorizontalAlignment="Right" Grid.Column="1"  Grid.ColumnSpan="3" Width="370">
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
@@ -132,7 +136,9 @@
         <Label Content="Price Details" Grid.Row="7" Grid.Column="0" Margin="0,0,0,10" FontWeight="Bold" FontStyle="Italic" />
         <Label  Content="Multi Price"  Margin="5,10,5,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
         <CheckBox x:Name="chkMultiSupplier" Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,15,0,5" Grid.Row="1" IsChecked="{Binding SelectedProduct.SupportsMultiPrice, Mode=TwoWay}"/>
-    
+        <Label Content="Bar Code"  Grid.Row="5" VerticalAlignment="Top" Grid.Column="2" Height="26"/>
+       
+
 
 
     </Grid>

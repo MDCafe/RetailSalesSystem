@@ -17,9 +17,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
         private Category _selectedCategory;
         private Product _selectedProduct;
         private DateTime _fromDate;
-        private DateTime _toDate;
-        private bool _showRestrictedCustomers;
-        RMSEntities _rmsEntities;
+        private DateTime _toDate;                
         IEnumerable<Company> _companiesList;
 
         public Company SelectedCompany
@@ -32,7 +30,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             set
             {
                 _selectedCompany = value;
-                RaisePropertyChanged("SelectedCompany");
+                RaisePropertyChanged(nameof(SelectedCompany));
             }
         }
 
@@ -46,7 +44,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             set
             {
                 _selectedCategory = value;
-                RaisePropertyChanged("SelectedCategory");
+                RaisePropertyChanged(nameof(SelectedCategory));
             }
         }
 
@@ -60,7 +58,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             set
             {
                 _selectedProduct = value;
-                RaisePropertyChanged("SelectedProduct");
+                RaisePropertyChanged(nameof(SelectedProduct));
             }
         }
 
@@ -74,7 +72,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             set
             {
                 _fromDate = value;
-                RaisePropertyChanged("FromDate");
+                RaisePropertyChanged(nameof(FromDate));
             }
         }
 
@@ -87,7 +85,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             set
             {
                 _toDate = value;
-                RaisePropertyChanged("ToDate");
+                RaisePropertyChanged(nameof(ToDate));
             }
         }
 
@@ -96,8 +94,12 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             get
             {
                 if (_companiesList == null)
-                    _companiesList = _rmsEntities.Companies.ToList();
-
+                {
+                    using (RMSEntities rmsEntities = new RMSEntities())
+                    {
+                        _companiesList = rmsEntities.Companies.ToList();
+                    }
+                }
                 return _companiesList;
             }
 
@@ -113,13 +115,14 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
 
         public StockReportViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Stock Report")
         {
-            _showRestrictedCustomers = showRestrictedCustomers;
+            
             ReportPath = @"View\Reports\Stock\StockDetails.rdl";
-
-            _rmsEntities = new RMSEntities();
-            ProductCategories = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
-            _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
-            ProductList = _rmsEntities.Products.ToList().OrderBy(p => p.Name);
+            using (RMSEntities rmsEntities = new RMSEntities())
+            {             
+                ProductCategories = rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
+                _companiesList = rmsEntities.Companies.ToList().OrderBy(c => c.Name);
+                ProductList = rmsEntities.Products.ToList().OrderBy(p => p.Name);
+            }
             _fromDate = DateTime.Now;
             _toDate = DateTime.Now;
         }

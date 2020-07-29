@@ -5,7 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS-LOCAL</ConnectString>
+        <ConnectString>Dsn=RMS-Server</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>
@@ -16,15 +16,8 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <CommandText>select p.Id as productId,p.Name,c.id categoryId,c.name CategoryName,pd.PriceId, pd.Price,
-    pd.SellingPrice,p.CompanyId,cp.Name CompanyName,COALESCE(st.OpeningBalance,0) OpeningBal, 
-	COALESCE(st.ClosingBalance,0) Quantity,st.Inward,st.outward,st.addedOn,st.SalesPurchaseCancelQty,
-    sa.StockTransId
-	from StockTransaction st Join Stocks s on st.stockId = s.id and date(st.addedOn) between "2019-05-01" and "2019-10-30"
-							 Join Products p on s.ProductId = p.Id and p.Id = 482                             Join PriceDetails pd on pd.ProductId = p.Id and s.PriceId = pd.PriceId 
-							 Join category c on c.Id = p.CategoryId
-							 Join Companies cp on cp.Id = p.CompanyId							 							 
-							 left join StockAdjustments sa on sa.StockId = s.Id	and sa.StockTransId = st.Id;</CommandText>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>call GetStockDetails(0,1588,0,"2020-05-01","2020-06-07");</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>

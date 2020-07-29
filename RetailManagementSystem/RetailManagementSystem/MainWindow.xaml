@@ -149,16 +149,16 @@
                 <RibbonTab Header="Accounts" KeyTip="A">
                     <RibbonGroup x:Name="Accounts" Header="Accounts">
                         <RibbonButton Label="Customer Bill Payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle="Customer Sales Bill Payments" 
-                                       KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
+                                       KeyTip="C" Command="{Binding OpenCustomerBillPaymentsCommand}" CommandParameter="false"/>
 
                         <RibbonButton Label="Purchase Bill Payments" LargeImageSource="Images\PurchasePay.png" ToolTipTitle="Purchase Bill Payments" 
-                                       KeyTip="P" Command="{Binding OpenPurchaseBillPaymentsCommand}" CommandParameter="false"></RibbonButton>
+                                       KeyTip="P" Command="{Binding OpenPurchaseBillPaymentsCommand}" CommandParameter="false"/>
                     </RibbonGroup>
                     <RibbonGroup x:Name="AcctReports" Header="Reports">
                         <RibbonButton Label="Customer wise payments" LargeImageSource="Images\Accounts.jpg" ToolTipTitle=" Credit Customer payment detail report" 
                                        KeyTip="RC" Command="{Binding OpenCustomerBillPaymentsReportCommand}" CommandParameter="false"></RibbonButton>
                         <RibbonButton Label="All Pending Credits" LargeImageSource="Images\Accounts.jpg" ToolTipTitle=" Complete pending credit" 
-                                       KeyTip="PC" Command="{Binding OpenAllPendingCreditReportCommand}" CommandParameter="false"></RibbonButton>
+                                       KeyTip="PC" Command="{Binding OpenAllPendingCreditReportCommand}" CommandParameter="false"/>
                     </RibbonGroup>
                 </RibbonTab>
 

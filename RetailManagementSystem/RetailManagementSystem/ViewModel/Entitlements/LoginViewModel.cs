@@ -5,11 +5,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
 using RetailManagementSystem.Utilities;
+using log4net;
 
 namespace RetailManagementSystem.ViewModel.Entitlements
 {
     internal class LoginViewModel : ViewModelBase
-    {        
+    {
+        static readonly ILog _log = LogManager.GetLogger(typeof(LoginViewModel));
+
         public string UserId { get; set; }
         public int UserInternalId { get; set; }
         public string UserName { get; set; }
@@ -35,32 +38,40 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         }
 
         void Login(PasswordBox passwordBox)
-        {            
-            var password = passwordBox.Password;
-            using (RMSEntities rmsEntities = new RMSEntities())
+        {
+            try
             {
-               // var count = rmsEntities.Users.Local.ToList().Count;
-                var pwdGrid = passwordBox.Parent as Grid;
-                var window = pwdGrid.Parent as Window;
-                ////Check if the user is admin
-                //if (_validateAsAdmin)
-                //{
-                //    if (ValidateAdminUser(rmsEntities, password))
-                //    {
-                //        window.DialogResult = true;
-                //        window.Close();
-                //        return;
-                //    }                   
-                //}
-
-                if (ValidateUser(rmsEntities, password))
+                var password = passwordBox.Password;
+                using (RMSEntities rmsEntities = new RMSEntities())
                 {
-                    window.DialogResult = true;
-                    window.Close();
-                    return;
-                }
+                    // var count = rmsEntities.Users.Local.ToList().Count;
+                    var pwdGrid = passwordBox.Parent as Grid;
+                    var window = pwdGrid.Parent as Window;
+                    ////Check if the user is admin
+                    //if (_validateAsAdmin)
+                    //{
+                    //    if (ValidateAdminUser(rmsEntities, password))
+                    //    {
+                    //        window.DialogResult = true;
+                    //        window.Close();
+                    //        return;
+                    //    }                   
+                    //}
 
-                Utility.ShowMessageBox(window, "Invalid UserId or Password");
+                    if (ValidateUser(rmsEntities, password))
+                    {
+                        window.DialogResult = true;
+                        window.Close();
+                        return;
+                    }
+
+                    Utility.ShowMessageBox(window, "Invalid UserId or Password");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+                _log.Error("Error on login..", ex);
             }
         }
 

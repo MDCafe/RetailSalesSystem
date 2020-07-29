@@ -635,7 +635,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                  {
                                      dbTransaction.Rollback();
                                      _log.Error("Error while saving..!!", ex);
-                                     throw ex;
+                                     Utility.ShowErrorBox(ex.StackTrace);
                                  }
                              }
                          }

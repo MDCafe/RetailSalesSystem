@@ -19,6 +19,12 @@ namespace RetailManagementSystem
 
         private void ApplicationStart(object sender, StartupEventArgs e)
         {
+            //Utilities.Utility.ShutdownRemoteMachine();
+
+            //using (MySql.Data.MySqlClient.MySqlConnection con = new MySql.Data.MySqlClient.MySqlConnection("server=woodlandsmain;user id=RMS;password=RMS!@#$;persistsecurityinfo=True;database=rms"))
+            //{
+            //    con.Open();
+            //}
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             var login = new Login();
             var result = login.ShowDialog();
