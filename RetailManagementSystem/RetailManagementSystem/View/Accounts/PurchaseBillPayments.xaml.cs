@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace RetailManagementSystem.View.Accounts
 {
@@ -16,7 +15,7 @@ namespace RetailManagementSystem.View.Accounts
                 var datacontext = DataContext as ViewModel.Accounts.PurchaseBillPaymentsViewModel;
                 ComboBoxColumn.ItemsSource = datacontext.PaymentModes;
                 //ComboBoxColumn.SelectedItemBinding = new Binding("SelectedPaymentMode");
-            });               
+            });
         }
     }
 }

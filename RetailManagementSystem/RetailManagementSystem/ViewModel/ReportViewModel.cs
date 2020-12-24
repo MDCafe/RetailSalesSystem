@@ -4,11 +4,11 @@ using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
-using System.Collections.Generic;
 
 namespace RetailManagementSystem.ViewModel
 {

@@ -62,9 +62,9 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             var query = "select " +
                         "    s.BillId,s.RunningbillNo,c.Name,sd.qty,s.TotalAmount,s.IsCancelled,s.CustomerOrderNo,s.AddedOn, " +
                         "    CASE " +
-                        "        WHEN s.PaymentMode = 0 THEN 'Cash'"  +
-                        "        WHEN s.PaymentMode = 1 THEN 'Credit'"  +
-                        "        ELSE 'Cheque' " + 
+                        "        WHEN s.PaymentMode = 0 THEN 'Cash'" +
+                        "        WHEN s.PaymentMode = 1 THEN 'Credit'" +
+                        "        ELSE 'Cheque' " +
                         "    END as PaymentMode " +
                         "    from saleDetails sd join sales s on (s.BillId = sd.BillId) " +
                         "                        join customers c on (c.id = s.customerId) " +
@@ -107,7 +107,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         override internal void Clear()
         {
             ToDate = DateTime.Now;
-            FromDate = DateTime.Now;            
+            FromDate = DateTime.Now;
             SelectedProduct = null;
         }
         #endregion

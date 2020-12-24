@@ -60,8 +60,7 @@
                                        >
             <toolKit:DataGrid.InputBindings>
                 <MouseBinding   MouseAction="LeftDoubleClick"
-                                Command="{Binding DoubleClickCommand}"
-                                CommandParameter="{Binding CollectionView}"/>
+                                Command="{Binding DoubleClickCommand}"/>
             </toolKit:DataGrid.InputBindings>
             <toolKit:DataGrid.Columns>
                 <toolKit:DataGridTextColumn Header="Id" Binding="{Binding Id}" />
@@ -105,8 +104,7 @@
             <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5"/>
             <Button x:Name="btnDelete" Content="Delete"  Width="80" Command="{Binding DeleteCommand}" Margin="5"/>
             <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5"/>
-            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
-                CommandParameter="{Binding ElementName=CustomerWindow}" Margin="5" IsCancel="True"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="80"  Margin="5" IsCancel="True"/>
         </StackPanel>
         <Label Content="Search on Product Name" Grid.Row="6" Grid.Column="0" Margin="0,0,0,5" FontWeight="Bold" FontStyle="Italic" />
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3">

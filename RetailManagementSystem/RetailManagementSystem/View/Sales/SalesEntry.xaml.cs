@@ -1,12 +1,12 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows;
-using System;
+﻿using log4net;
+using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
-using RetailManagementSystem.Model;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
-using log4net;
 
 namespace RetailManagementSystem.View.Sales
 {
@@ -69,7 +69,7 @@ namespace RetailManagementSystem.View.Sales
                 };
             };
 
-            
+
 
             //SalesDataGrid.SelectedCellsChanged += (g, ev) =>
             // {
@@ -147,15 +147,15 @@ namespace RetailManagementSystem.View.Sales
                 //    }
                 //}
             };
-        }        
+        }
 
         private void CustComboBoxColComboBoxSelectedEvent(object selectedItem)
         {
-            var barcodeNo = custComboBoxCol._cboTextBox.Text;          
+            var barcodeNo = custComboBoxCol._cboTextBox.Text;
             var productPrice = selectedItem as ProductPrice;
 
             _log.Debug("Before SetProductDetails:" + productPrice);
-            _salesViewModel.SetProductDetails(barcodeNo, productPrice,SalesDataGrid.SelectedIndex);
+            _salesViewModel.SetProductDetails(barcodeNo, productPrice, SalesDataGrid.SelectedIndex);
             //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
             _log.Debug("After SetProductDetails:" + SalesDataGrid.SelectedIndex);
 

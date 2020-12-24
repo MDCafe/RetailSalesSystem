@@ -1,18 +1,18 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using System.Collections.Generic;
-using RetailManagementSystem.ViewModel.Reports.Sales;
-using RetailManagementSystem.Command;
+﻿using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
+using RetailManagementSystem.ViewModel.Reports.Sales;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
     class AmendSalesViewModel : ViewModelBase
     {
-        bool _showRestrictedCustomers;                
-        Customer _selectedCustomer;               
+        bool _showRestrictedCustomers;
+        Customer _selectedCustomer;
         string _selectedCustomerText;
         IEnumerable<Sale> _billList;
         RMSEntities _rmsEntities;
@@ -24,7 +24,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         public IEnumerable<Customer> CustomersList
         {
             get
-            {               
+            {
                 if (_showRestrictedCustomers)
                     return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name);
 
@@ -37,7 +37,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _selectedCustomer; }
             set
             {
-                _selectedCustomer = value;                
+                _selectedCustomer = value;
                 RaisePropertyChanged("SelectedCustomer");
             }
         }
@@ -64,12 +64,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        public AmendSalesViewModel(bool showRestrictedCustomers) 
+        public AmendSalesViewModel(bool showRestrictedCustomers)
         {
             _rmsEntities = new RMSEntities();
-            _showRestrictedCustomers = showRestrictedCustomers;            
+            _showRestrictedCustomers = showRestrictedCustomers;
             _rmsEntities.Customers.ToList();
-            
+
             if (_showRestrictedCustomers)
                 _categoryId = Constants.CUSTOMERS_OTHERS;
             else
@@ -127,7 +127,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_amendCommand == null)
                 {
-                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w),(p) => CanExecuteMethod(p));
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => CanExecuteMethod(p));
                 }
 
                 return _amendCommand;
@@ -136,7 +136,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId,window);
+            var customerBill = RMSEntitiesHelper.CheckIfBillExists(BillNo.Value, _categoryId, window);
             if (customerBill == null)
                 return;
 
@@ -144,7 +144,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
             {
-                Utility.ShowWarningBox(window,"Bill has been cancelled already");
+                Utility.ShowWarningBox(window, "Bill has been cancelled already");
                 return;
             }
 
@@ -152,17 +152,17 @@ namespace RetailManagementSystem.ViewModel.Sales
             var result = login.ShowDialog();
             //var t = ;
             if (!result.Value || !RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId))
-            {                
+            {
                 return;
             }
 
-            var saleParams = new SalesParams() { Billno = BillNo,CustomerId = customerBill.CustomerId,ShowAllCustomers = _showRestrictedCustomers};
+            var saleParams = new SalesParams() { Billno = BillNo, CustomerId = customerBill.CustomerId, ShowAllCustomers = _showRestrictedCustomers };
 
             Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
             _closeWindowCommand.Execute(window);
 
             //window.DialogResult = true;
-        }       
+        }
 
         private bool CanExecuteMethod(object parameter)
         {
@@ -205,7 +205,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_getCustomerBillsCommand == null)
                 {
-                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills(),(p) => CanGetCustomerBills());
+                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills(), (p) => CanGetCustomerBills());
                 }
 
                 return _getCustomerBillsCommand;
@@ -219,10 +219,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void GetCustomerBills()
         {
-            if(BillList == null)
+            if (BillList == null)
                 _rmsEntities.Sales.ToList();
 
-            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id).OrderBy(o => o.ModifiedOn );                       
+            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id).OrderBy(o => o.ModifiedOn);
         }
 
 

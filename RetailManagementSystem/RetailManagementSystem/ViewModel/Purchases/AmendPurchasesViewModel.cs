@@ -1,19 +1,19 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using System.Collections.Generic;
-using RetailManagementSystem.Command;
+﻿using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Reports.Purhcases;
-using RetailManagementSystem.ViewModel.Base;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
     class AmendPurchasesViewModel : ViewModelBase
     {
-        readonly bool _showRestrictedSuppliers;                
-        Company _selectedSupplier;               
+        readonly bool _showRestrictedSuppliers;
+        Company _selectedSupplier;
         string _selectedSupplierText;
         IEnumerable<Purchase> _billList;
         readonly RMSEntities _rmsEntities;
@@ -25,7 +25,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         public IEnumerable<Company> SupplierList
         {
             get
-            {               
+            {
                 if (_showRestrictedSuppliers)
                     return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId != Constants.COMPANIES_MAIN);
 
@@ -38,7 +38,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             get { return _selectedSupplier; }
             set
             {
-                _selectedSupplier = value;                
+                _selectedSupplier = value;
                 RaisePropertyChanged("_selectedSupplier");
             }
         }
@@ -72,12 +72,12 @@ namespace RetailManagementSystem.ViewModel.Sales
             else
                 _categoryId = Constants.COMPANIES_MAIN;
 
-            _rmsEntities = new RMSEntities();          
-            _rmsEntities.Companies.ToList();           
+            _rmsEntities = new RMSEntities();
+            _rmsEntities.Companies.ToList();
         }
 
         #region Clear Command
-       
+
         internal void Clear()
         {
             BillNo = null;
@@ -124,7 +124,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_amendCommand == null)
                 {
-                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w),(p) => CanExecuteMethod());
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => CanExecuteMethod());
                 }
 
                 return _amendCommand;
@@ -133,7 +133,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnAmend(Window window)
         {
-            var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId,window);
+            var companyBill = RMSEntitiesHelper.CheckIfPurchaseBillExists(BillNo.Value, _categoryId, window);
             if (companyBill == null)
                 return;
 
@@ -152,13 +152,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                 return;
             }
 
-            var purchaseParams = new PurchaseParams() { Billno = BillNo,CompanyId = companyBill.CompanyId,ShowAllCompanies = _showRestrictedSuppliers };
+            var purchaseParams = new PurchaseParams() { Billno = BillNo, CompanyId = companyBill.CompanyId, ShowAllCompanies = _showRestrictedSuppliers };
 
             Workspace.This.OpenPurchaseEntryCommand.Execute(purchaseParams);
             closeWindowCommand.Execute(window);
 
-         
-        }       
+
+        }
 
         private bool CanExecuteMethod()
         {
@@ -201,7 +201,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_getCustomerBillsCommand == null)
                 {
-                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills(),(p) => CanGetCustomerBills());
+                    _getCustomerBillsCommand = new RelayCommand<Window>((w) => GetCustomerBills(), (p) => CanGetCustomerBills());
                 }
 
                 return _getCustomerBillsCommand;
@@ -215,10 +215,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void GetCustomerBills()
         {
-            if(BillList == null)
+            if (BillList == null)
                 _rmsEntities.Purchases.ToList();
 
-            BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedSupplier.Id);                       
+            BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedSupplier.Id);
         }
 
 

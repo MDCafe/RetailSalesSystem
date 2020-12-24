@@ -1,12 +1,12 @@
-﻿using System.Windows.Input;
-using System.Linq;
+﻿using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Collections.Generic;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
-using System.Windows;
-using RetailManagementSystem.Utilities;
 using System.Data.Entity;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -14,11 +14,11 @@ namespace RetailManagementSystem.ViewModel.Masters
     {
         Customer _customer;
         bool _isEditMode;
-        IEnumerable<Customer> _customersList;        
+        IEnumerable<Customer> _customersList;
 
         public CustomerViewModel()
-        {            
-            _customer = new Customer();                        
+        {
+            _customer = new Customer();
             using (RMSEntities rmsEntities = new RMSEntities())
             {
                 CustomerCategory = rmsEntities.Categories.Where(c => c.parentId == 1).ToList();
@@ -62,7 +62,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public Customer DblClickSelectedCustomer
         {
-            get;set;
+            get; set;
         }
 
         public string SearchText { get; set; }
@@ -133,7 +133,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                 }
                 return _clearCommand;
             }
-        }        
+        }
         #endregion
 
         #region SaveCommand
@@ -149,11 +149,11 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                 return _saveCommand;
             }
-        }        
+        }
 
         public bool CanSave(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(SelectedCustomer.Name);                        
+            return !string.IsNullOrWhiteSpace(SelectedCustomer.Name);
         }
 
         private void OnSave(object parameter)
@@ -206,7 +206,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         private void OnDelete()
         {
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to delete the customer : " + _customer.Name);
-            if(msgResult != MessageBoxResult.Yes)
+            if (msgResult != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -222,9 +222,9 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                 rmsEntities.Customers.Remove(cust);
                 rmsEntities.SaveChanges();
-            }            
+            }
             ClearCommand.Execute(null);
-            RaisePropertyChanged("CustomersList");         
+            RaisePropertyChanged("CustomersList");
         }
 
         #endregion
@@ -242,7 +242,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 _isEditMode = true;
-                                SelectedCustomer = DblClickSelectedCustomer;                      
+                                SelectedCustomer = DblClickSelectedCustomer;
                             }
                         );
                 }
@@ -267,8 +267,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 if (string.IsNullOrWhiteSpace(SearchText)) return;
-                                CustomersList = CustomersList.Where(c => c.Name.StartsWith(SearchText,StringComparison.InvariantCultureIgnoreCase));
-                                
+                                CustomersList = CustomersList.Where(c => c.Name.StartsWith(SearchText, StringComparison.InvariantCultureIgnoreCase));
+
                             }
                         );
                 }
@@ -277,7 +277,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-       
+
 
 
         #endregion

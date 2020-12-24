@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RetailManagementSystem.Model.Graphs
+﻿namespace RetailManagementSystem.Model.Graphs
 {
     public class SalesGraphCustomModel
     {

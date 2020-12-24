@@ -8,7 +8,7 @@ namespace RetailManagementSystem.View.Masters
     /// </summary>
     public partial class Products : Window
     {
-        
+
         public Products()
         {
             InitializeComponent();

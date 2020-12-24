@@ -1,15 +1,15 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using System.Linq;
-using log4net;
-using RetailManagementSystem.View.Misc;
+﻿using log4net;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.View.Misc;
 using RetailManagementSystem.View.Sales;
 using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Entitlements;
 using RetailManagementSystem.ViewModel.Purchases;
 using RetailManagementSystem.ViewModel.Sales;
-using RetailManagementSystem.ViewModel.Entitlements;
+using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem
 {
@@ -19,7 +19,7 @@ namespace RetailManagementSystem
     public partial class MainWindow : Window
     {
         static readonly ILog log = LogManager.GetLogger(typeof(SalesEntryViewModel));
-        
+
         public MainWindow(bool isAdmin)
         {
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace RetailManagementSystem
 
                 Loaded += (sender, e) =>
                 {
-                    if(!isAdmin)
+                    if (!isAdmin)
                         AdminTab.Visibility = Visibility.Hidden;
                 };
             }
@@ -47,7 +47,7 @@ namespace RetailManagementSystem
                 Application.Current.Shutdown();
             }
 
-       }
+        }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -55,7 +55,7 @@ namespace RetailManagementSystem
             {
                 docView.CloseCommand.Execute(null);
             }
-            
+
             //e.Cancel = true;
         }
 
@@ -181,7 +181,7 @@ namespace RetailManagementSystem
                 #endregion
             }
 
-           else if ((Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control) && e.Key == Key.P)
+            else if ((Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control) && e.Key == Key.P)
             {
                 PriceListView prView = new PriceListView();
                 prView.ShowDialog();

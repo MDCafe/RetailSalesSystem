@@ -1,6 +1,4 @@
-﻿using RetailManagementSystem.ViewModel.Notification;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -10,15 +8,15 @@ namespace RetailManagementSystem.UserControls
     /// Interaction logic for NotificationWindow.xaml
     /// </summary>
     public partial class NotificationWindow : Window
-    {        
+    {
         public NotificationWindow()
         {
             InitializeComponent();
-            this.Closed += this.NotificationWindowClosed;            
-        }        
+            this.Closed += this.NotificationWindowClosed;
+        }
 
         public new void Show()
-        {            
+        {
             this.Topmost = true;
             base.Show();
 
@@ -40,17 +38,17 @@ namespace RetailManagementSystem.UserControls
                 }
             }
 
-            this.Top = top;            
+            this.Top = top;
         }
-       
+
         public void GenerateListView(string[,] properties)
         {
-            for (int i = 0; i < properties.Length/2; i++)
+            for (int i = 0; i < properties.Length / 2; i++)
             {
                 GridViewList.Columns.Add(new System.Windows.Controls.GridViewColumn()
                 {
-                    Header = properties[i,0],
-                    DisplayMemberBinding = new System.Windows.Data.Binding(properties[i,1])
+                    Header = properties[i, 0],
+                    DisplayMemberBinding = new System.Windows.Data.Binding(properties[i, 1])
                 });
             }
         }

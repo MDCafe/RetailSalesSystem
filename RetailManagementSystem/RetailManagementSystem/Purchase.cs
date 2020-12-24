@@ -17,9 +17,9 @@ namespace RetailManagementSystem
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Purchase()
         {
-            this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
-            this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.PurchaseChequePaymentDetails = new HashSet<PurchaseChequePaymentDetail>();
+            this.PurchaseDetails = new HashSet<PurchaseDetail>();
+            this.PurchaseFreeDetails = new HashSet<PurchaseFreeDetail>();
             this.PurchasePaymentDetails = new HashSet<PurchasePaymentDetail>();
         }
     
@@ -43,11 +43,11 @@ namespace RetailManagementSystem
     
         public virtual Company Company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
+        public virtual ICollection<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchaseChequePaymentDetail> PurchaseChequePaymentDetails { get; set; }
+        public virtual ICollection<PurchaseFreeDetail> PurchaseFreeDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchasePaymentDetail> PurchasePaymentDetails { get; set; }
     }

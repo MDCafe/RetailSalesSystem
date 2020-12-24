@@ -28,7 +28,7 @@
 
         <StackPanel Grid.Column="1"  Grid.Row="3" Orientation="Horizontal">
             <Button x:Name="btnOk" Content="OK"  Margin="5" IsDefault="True" Width="75" Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=txtPassword}"/>
-            <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Margin="5" Width="75" Command="{Binding Path=CloseCommand}" CommandParameter="{Binding ElementName=LoginWindow}"/>
+            <Button x:Name="btnCancel" Content="Cancel" IsCancel="True" Margin="5" Width="75" />
         </StackPanel>
 
     </Grid>

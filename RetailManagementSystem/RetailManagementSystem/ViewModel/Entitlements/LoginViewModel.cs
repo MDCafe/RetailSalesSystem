@@ -1,11 +1,11 @@
-﻿using RetailManagementSystem.Command;
+﻿using log4net;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using RetailManagementSystem.Utilities;
-using log4net;
 
 namespace RetailManagementSystem.ViewModel.Entitlements
 {
@@ -97,29 +97,6 @@ namespace RetailManagementSystem.ViewModel.Entitlements
             return true;
         }
 
-        #endregion
-
-        #region CloseWindow Command
-        public RelayCommand<Window> closeWindowCommand { get; private set; }
-
-        public ICommand CloseWindowCommand
-        {
-            get
-            {
-                if (closeWindowCommand == null)
-                {
-                    closeWindowCommand = new RelayCommand<Window>((window) =>
-                    {
-                        if (window != null)
-                        {                            
-                            window.Close();
-                        }
-                    });
-                }
-
-                return closeWindowCommand;
-            }
-        }       
-        #endregion
+        #endregion        
     }
 }

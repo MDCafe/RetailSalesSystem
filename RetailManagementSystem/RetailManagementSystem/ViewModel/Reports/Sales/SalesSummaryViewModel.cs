@@ -1,13 +1,11 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
-using RetailManagementSystem.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
-using System.Linq;
 
 namespace RetailManagementSystem.ViewModel.Reports
 {
@@ -48,18 +46,18 @@ namespace RetailManagementSystem.ViewModel.Reports
 
         public int SelectedUserName { get; set; }
 
-        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers, 
+        public SalesSummaryViewModel(bool showRestrictedCustomers) : base(false, showRestrictedCustomers,
                                      showRestrictedCustomers ? "Sales Summary Report *" : "Sales Summary Report")
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
             UsersList = RMSEntitiesHelper.Instance.GetUsers();
-            
+
             _showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
 
-            
+
         }
 
         #region Print Command
@@ -78,45 +76,45 @@ namespace RetailManagementSystem.ViewModel.Reports
         }
 
         private void OnPrint(Window window)
-        {            
+        {
             _rptDataSource[0] = new ReportDataSource
             {
                 Name = "DataSet1"
             };
 
-                    
+
             var fromSqlParam = new MySqlParameter("FromSalesDate", MySqlDbType.Date)
             {
                 Value = FromSalesDate.ToString("yyyy-MM-dd")
             };
-            
+
             var toSqlParam = new MySqlParameter("ToSalesDate", MySqlDbType.Date)
             {
                 Value = ToSalesDate.ToString("yyyy-MM-dd")
-            };            
+            };
 
             var categoryIdSqlParam = new MySqlParameter("categoryId", MySqlDbType.Int32)
             {
                 Value = _categoryId
-            };            
-            
+            };
+
             var userSqlParam = new MySqlParameter("UserId", MySqlDbType.Int32)
             {
                 Value = SelectedUserName
-            };              
-            
-            _rptDataSource[0].Value = GetDataTable("GetSales",new MySqlParameter[4] 
+            };
+
+            _rptDataSource[0].Value = GetDataTable("GetSales", new MySqlParameter[4]
                                                  {
                                                      fromSqlParam,toSqlParam,categoryIdSqlParam,userSqlParam
                                                  },
                                                  CommandType.StoredProcedure);
-            
+
             Workspace.This.OpenReport(this);
             CloseWindow(window);
         }
         #endregion
 
-       
+
 
         #region Clear Command
 

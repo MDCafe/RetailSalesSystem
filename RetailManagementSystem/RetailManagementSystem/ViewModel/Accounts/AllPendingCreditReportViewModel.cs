@@ -6,7 +6,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
 {
     class AllPendingCreditReportViewModel : ReportViewModel
     {
-        public AllPendingCreditReportViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"All Pending Credit Report")
+        public AllPendingCreditReportViewModel(bool showRestrictedCustomers) : base(false, showRestrictedCustomers, "All Pending Credit Report")
         {
             ReportPath = @"View\Reports\Accounts\AllPendingCredits.rdl";
             _rptDataSource[0] = new ReportDataSource();

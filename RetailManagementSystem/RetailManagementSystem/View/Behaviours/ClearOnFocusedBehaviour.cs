@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 
@@ -22,7 +21,7 @@ namespace RetailManagementSystem.View.Behaviours
             AssociatedObject.LostFocus += OnLostFocusHandler;
         }
 
-        private readonly RoutedEventHandler OnLostFocusHandler = (sender,e) =>
+        private readonly RoutedEventHandler OnLostFocusHandler = (sender, e) =>
         {
             var txtBox = sender as TextBox;
             if (string.IsNullOrWhiteSpace(txtBox.Text))

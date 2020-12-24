@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS-Server</ConnectString>
+        <ConnectString>Dsn=RMS-Laptop</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
-      <rd:SecurityType>DataBase</rd:SecurityType>
+      <rd:SecurityType>Integrated</rd:SecurityType>
       <rd:DataSourceID>0f61d808-6402-4c10-bc04-6c9811504176</rd:DataSourceID>
     </DataSource>
   </DataSources>
@@ -15,16 +16,16 @@
     <DataSet Name="SalesDataSet">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <CommandText>select sum(TotalAmount) from (
-select sum(AmountPaid) as TotalAmount from sales where date(AddedOn) = "2019-06-22" and (PaymentMode = 1 or PaymentMode = 2)
+        <CommandText>select sum(TotalAmount) TotalSalesAmount from (
+select sum(AmountPaid) as TotalAmount from sales where date(AddedOn) = "2020-08-09" and (PaymentMode = 1 or PaymentMode = 2)
 union all
-select sum(TotalAmount) as TotalAmount from sales where date(AddedOn) = "2019-06-22" and PaymentMode = 0
+select sum(TotalAmount) as TotalAmount from sales where date(AddedOn) = "2020-08-09" and PaymentMode = 0
 ) a;</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
-        <Field Name="sum_TotalAmount_">
-          <DataField>sum(TotalAmount)</DataField>
+        <Field Name="TotalSalesAmount">
+          <DataField>TotalSalesAmount</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
@@ -99,7 +100,7 @@ select sum(TotalAmount) as TotalAmount from sales where date(AddedOn) = "2019-06
         <DataSourceName>DataSource1</DataSourceName>
         <CommandText>select cm.Description,sum(amount) Amount from ExpenseDetails exp, CodeMaster cm 
 where 
-date(addedOn) = "2019-06-22" and cm.Id = exp.ExpenseTypeId
+date(addedOn) = "2020-08-09" and cm.Id = exp.ExpenseTypeId and cm.Description !='InCash'
 group by exp.ExpenseTypeId</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
@@ -118,8 +119,9 @@ group by exp.ExpenseTypeId</CommandText>
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
         <CommandText>select c.Name,p.TotalBillAmount from Purchases p, companies c
-where paymentMode = 0 and date(p.addedOn) = "2019-06-22"
+where paymentMode = 0 and date(p.addedOn) = "2020-08-09"
 and p.CompanyId = c.Id</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="Name">
@@ -136,8 +138,9 @@ and p.CompanyId = c.Id</CommandText>
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
         <CommandText>select c.name, sum(AmountPaid) AmonutPaid from PaymentDetails pd, Customers c 
-where date(paymentDate) = "2019-06-23" and pd.customerId = c.Id
-group by c.Id</CommandText>
+where date(paymentDate) = "2020-08-09" and pd.customerId = c.Id
+group by c.Id having AmonutPaid !=0</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="name">
@@ -146,6 +149,26 @@ group by c.Id</CommandText>
         </Field>
         <Field Name="AmonutPaid">
           <DataField>AmonutPaid</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="InCashDataSet">
+      <Query>
+        <DataSourceName>DataSource1</DataSourceName>
+        <CommandText>select cm.Description,sum(amount) Amount from ExpenseDetails exp, CodeMaster cm 
+where 
+date(addedOn) = "2020-08-09" and cm.Id = exp.ExpenseTypeId and cm.Description ='InCash'
+group by exp.ExpenseTypeId</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="Description">
+          <DataField>Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Amount">
+          <DataField>Amount</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
@@ -276,14 +299,14 @@ group by c.Id</CommandText>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="sum_TotalAmount_1">
+                        <Textbox Name="TotalSalesAmount">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!sum_TotalAmount_.Value)</Value>
+                                  <Value>=Fields!TotalSalesAmount.Value</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>n2</Format>
@@ -295,7 +318,147 @@ group by c.Id</CommandText>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>sum_TotalAmount_1</rd:DefaultName>
+                          <rd:DefaultName>TotalSalesAmount</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>In Cash</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Sum(Fields!Amount.Value, "InCashDataSet")</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Format>#,0.00;(#,0.00);''</Format>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Total</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="SalesInCashTotal">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TotalSalesAmount.Value + Sum(Fields!Amount.Value, "InCashDataSet")</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
                           <Style>
                             <Border>
                               <Color>#7292cc</Color>
@@ -323,12 +486,14 @@ group by c.Id</CommandText>
               <TablixMembers>
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>SalesDataSet</DataSetName>
             <Top>0.25in</Top>
             <Left>0.2962in</Left>
-            <Height>0.54167in</Height>
+            <Height>1.04167in</Height>
             <Width>5.04514in</Width>
             <Style>
               <Border>
@@ -583,7 +748,7 @@ group by c.Id</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>ExpDataSet</DataSetName>
-            <Top>2.31125in</Top>
+            <Top>2.56125in</Top>
             <Left>0.2962in</Left>
             <Height>0.82292in</Height>
             <Width>5.04514in</Width>
@@ -841,7 +1006,7 @@ group by c.Id</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>CashPurchaseDataSet</DataSetName>
-            <Top>3.33208in</Top>
+            <Top>3.58208in</Top>
             <Left>0.31125in</Left>
             <Height>0.78125in</Height>
             <Width>5.03009in</Width>
@@ -913,7 +1078,7 @@ group by c.Id</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox32</rd:DefaultName>
-            <Top>4.42583in</Top>
+            <Top>4.67583in</Top>
             <Left>0.33208in</Left>
             <Height>0.91792in</Height>
             <Width>2.21412in</Width>
@@ -935,7 +1100,7 @@ group by c.Id</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=(Sum(Fields!AmonutPaid.Value, "CustomerPaymentsDataSet") +Sum(Fields!sum_TotalAmount_.Value, "SalesDataSet")) - (Sum(Fields!Amount.Value, "ExpDataSet") +Sum(Fields!TotalBillAmount.Value, "CashPurchaseDataSet"))</Value>
+                    <Value>=(Sum(Fields!AmonutPaid.Value, "CustomerPaymentsDataSet") + ReportItems!SalesInCashTotal.Value) - (Sum(Fields!Amount.Value, "ExpDataSet") +Sum(Fields!TotalBillAmount.Value, "CashPurchaseDataSet"))</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                       <Format>n2</Format>
@@ -948,7 +1113,7 @@ group by c.Id</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox33</rd:DefaultName>
-            <Top>4.42583in</Top>
+            <Top>4.67583in</Top>
             <Left>2.73833in</Left>
             <Height>0.33458in</Height>
             <Width>2.60301in</Width>
@@ -1211,7 +1376,7 @@ group by c.Id</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>CustomerPaymentsDataSet</DataSetName>
-            <Top>0.98611in</Top>
+            <Top>1.48611in</Top>
             <Left>0.31125in</Left>
             <Height>0.84375in</Height>
             <Width>5.03009in</Width>
@@ -1223,7 +1388,7 @@ group by c.Id</CommandText>
             </Style>
           </Tablix>
           <Line Name="Line1">
-            <Top>2.13194in</Top>
+            <Top>2.38194in</Top>
             <Left>0.08208in</Left>
             <Height>0in</Height>
             <Width>5.595in</Width>
@@ -1236,14 +1401,14 @@ group by c.Id</CommandText>
             </Style>
           </Line>
         </ReportItems>
-        <Height>5.41667in</Height>
+        <Height>5.76042in</Height>
         <Style>
           <Border>
             <Style>None</Style>
           </Border>
         </Style>
       </Body>
-      <Width>5.78125in</Width>
+      <Width>5.79167in</Width>
       <Page>
         <PageHeader>
           <Height>0.68972in</Height>
@@ -1347,6 +1512,19 @@ group by c.Id</CommandText>
       <Prompt>DateFilter</Prompt>
     </ReportParameter>
   </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>1</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DateFilter</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>973d286c-cdbe-4bc4-a78f-f49b3e6b901c</rd:ReportID>
 </Report>

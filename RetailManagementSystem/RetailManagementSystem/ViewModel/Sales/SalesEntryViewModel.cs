@@ -23,9 +23,9 @@ namespace RetailManagementSystem.ViewModel.Sales
     class SalesEntryViewModel : SalesViewModelbase
     {
         #region Private Variables
-        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));                                       
-        Sale _billSales;                          
-        
+        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));
+        Sale _billSales;
+
         IExtensions _extensions;
 
         //System.Timers.Timer _timer,_autoTimer;
@@ -37,12 +37,13 @@ namespace RetailManagementSystem.ViewModel.Sales
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
-        
+        IEnumerable<MeasuringUnit> _mesauringUnitList;
+
         #endregion
 
         #region Constructor
 
-        public SalesEntryViewModel(SalesParams salesParams) : base(salesParams !=null ? salesParams.ShowAllCustomers : false)
+        public SalesEntryViewModel(SalesParams salesParams) : base(salesParams != null ? salesParams.ShowAllCustomers : false)
         {
             _salesParams = salesParams;
             //_rmsEntities = new RMSEntities();// RMSEntitiesHelper.Instance.RMSEntities;
@@ -66,15 +67,15 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (salesParams != null)
             {
                 //Temp window to save 10 items                
-                if(salesParams.IsTempDataWindow)
-                {
-                    //AutoSaveData();
-                    
-                    //Title = "Sales Entry";
-                    RMSEntitiesHelper.Instance.AddNotifier(this);
-                    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
-                    return;
-                }
+                //if (salesParams.IsTempDataWindow)
+                //{
+                //    //AutoSaveData();
+
+                //    //Title = "Sales Entry";
+                //    RMSEntitiesHelper.Instance.AddNotifier(this);
+                //    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, true);
+                //    return;
+                //}
 
                 if (salesParams.Billno.HasValue)
                 {
@@ -92,13 +93,18 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
                 //return;
             }
-            
+
             //Title = "Sales Entry";
             RMSEntitiesHelper.Instance.AddNotifier(this);
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,true);
-            //SaveDataTemp();            
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, true);
+            //SaveDataTemp();           
+            
+            using(var rmsEntities = new RMSEntities())
+            {
+                _mesauringUnitList = rmsEntities.MeasuringUnits.ToList();
+            }
         }
-       
+
         #endregion
 
         #region Getters and Setters
@@ -161,7 +167,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         public ObservableCollection<SaleDetailExtn> SaleDetailList { get; private set; }
 
-        public string OrderNo { get; set; }       
+        public string OrderNo { get; set; }
 
         public decimal? TotalAmount
         {
@@ -169,7 +175,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             set
             {
                 //if discout is available apply it
-                CalculateTotalAmount();                
+                CalculateTotalAmount();
             }
         }
 
@@ -226,7 +232,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             set
             {
                 _extensions = value;
-                if(_isEditMode)
+                if (_isEditMode)
                 {
                     var transportCharges = _billSales.TransportCharges == null ? 0 : _billSales.TransportCharges.Value;
                     _extensions.SetValues(transportCharges);
@@ -243,16 +249,17 @@ namespace RetailManagementSystem.ViewModel.Sales
                 };
             }
             get { return _extensions; }
-        }        
+        }
 
         public Customer SelectedCustomer
         {
-            get {
+            get
+            {
                 //if(_selectedCustomer == null)
                 //{
                 //    _selectedCustomer = _rmsEntities.Customers.FirstOrDefault();
                 //    RaisePropertyChanged("SelectedCustomer");
-                 //   return _selectedCustomer;
+                //   return _selectedCustomer;
                 //}
                 return _selectedCustomer;
             }
@@ -260,7 +267,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_selectedCustomer == value) return;
 
-                _selectedCustomer = value;                
+                _selectedCustomer = value;
                 //CheckIfWithinCreditLimimt();
                 RaisePropertyChanged(nameof(SelectedCustomer));
             }
@@ -268,10 +275,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void CheckIfWithinCreditLimimt()
         {
-            if (_selectedCustomer !=null && _selectedCustomer.Name != "Cash Customer")
+            if (_selectedCustomer != null && _selectedCustomer.Name != "Cash Customer")
             {
-                var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);                
-                var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);                
+                var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
+                var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
                 var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
                 {
                     Value = _selectedCustomer.Id
@@ -287,8 +294,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                     msgBuilder.Append("Credit limit\t= ").Append(_selectedCustomer.CreditLimit.Value.ToString("N2")).AppendLine();
                     msgBuilder.Append("Balance     \t= ").Append((_selectedCustomer.CreditLimit - acctBalanceAmountValue).Value.ToString("N2")).AppendLine();
                     msgBuilder.Append("Do you want to override?");
-                    var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(),System.Windows.MessageBoxButton.YesNoCancel);
-                    if(result == System.Windows.MessageBoxResult.Yes)
+                    var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(), System.Windows.MessageBoxButton.YesNoCancel);
+                    if (result == System.Windows.MessageBoxResult.Yes)
                     {
                         var login = new View.Entitlements.Login();
                         var loginResult = login.ShowDialog();
@@ -310,14 +317,14 @@ namespace RetailManagementSystem.ViewModel.Sales
                 RaisePropertyChanged(nameof(SelectedCustomerText));
             }
         }
-        
+
         #endregion
 
         #region CloseCommand
-      
+
         override protected bool OnClose()
         {
-            if(SaleDetailList.Any() && !IsEditMode)
+            if (SaleDetailList.Any() && !IsEditMode)
             {
                 var options = Utility.ShowMessageBoxWithOptions(System.Windows.Application.Current.MainWindow,
                                                                 "Unsaved items are available, do you want to save them?",
@@ -330,7 +337,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _autoResetEvent.WaitOne();
                 }
             }
-            
+
             //Clear all the data if cancel is pressed
             //if (_salesParams.GetTemproaryData)
             //{
@@ -404,7 +411,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 foreach (var item in cancelBillItems.ToList())
                 {
                     var stockItem = rmsEntities.Stocks.FirstOrDefault(st => st.ProductId == item.ProductId && st.PriceId == item.PriceId);
-                    var stockTrans = GetStockTransation(rmsEntities,stockItem, cancelBill.AddedOn.Value);
+                    var stockTrans = GetStockTransation(rmsEntities, stockItem, cancelBill.AddedOn.Value);
                     //if (item.Product.SupportsMultiPrice.HasValue && item.Product.SupportsMultiPrice.Value)
                     //var stockTransList = rmsEntities.StockTransactions.Where(str => str.StockId == stockItem.Id);
                     //foreach (var stkTrnsItem in stockTransList)
@@ -419,9 +426,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                     //  stockTrans = rmsEntities.StockTransactions.FirstOrDefault(str => str.StockId == stockItem.Id);
 
 
-                     //&& str.AddedOn.Value.Date.Month == cancelBill.AddedOn.Value.Date.Month
-                     //                                                          && str.AddedOn.Value.Date.Day == cancelBill.AddedOn.Value.Date.Day
-                     //                                                          && str.AddedOn.Value.Date.Year == cancelBill.AddedOn.Value.Date.Year
+                    //&& str.AddedOn.Value.Date.Month == cancelBill.AddedOn.Value.Date.Month
+                    //                                                          && str.AddedOn.Value.Date.Day == cancelBill.AddedOn.Value.Date.Day
+                    //                                                          && str.AddedOn.Value.Date.Year == cancelBill.AddedOn.Value.Date.Year
                     var saleQty = item.Qty.Value;
                     if (stockTrans != null)
                     {
@@ -452,7 +459,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             OnClose();
         }
 
-        private StockTransaction GetStockTransation(RMSEntities rmsEntities, Stock stock,DateTime transDateTime)
+        private StockTransaction GetStockTransation(RMSEntities rmsEntities, Stock stock, DateTime transDateTime)
         {
             var query = "Select * from stockTransaction where StockId =  " + stock.Id + " and Date(addedon) ='" + transDateTime.ToString("yyyy-MM-dd") + "'";
             return rmsEntities.Database.SqlQuery<StockTransaction>(query).FirstOrDefault();
@@ -462,24 +469,24 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region SaveCommand
         RelayCommand<object> _saveCommand = null;
-         public ICommand SaveCommand
+        public ICommand SaveCommand
         {
-          get
-          {
-            if (_saveCommand == null)
+            get
             {
-              _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p).ConfigureAwait(false), (p) =>
-              {
-                  return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
-                    SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
-              });
-            }
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p).ConfigureAwait(false), (p) =>
+                    {
+                        return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
+                          SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
+                    });
+                }
 
-            return _saveCommand;
-          }
+                return _saveCommand;
+            }
         }
-       
-        
+
+
         private async Task OnSave(object parameter)
         {
             short paramValue = Convert.ToInt16(parameter);
@@ -487,7 +494,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //Validate for Errors
             if (!_isEditMode && !Validate()) return;
             if (_isEditMode)
-            {                                    
+            {
                 SaveOnEdit(paramValue);
                 return;
             }
@@ -504,8 +511,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                              {
                                  try
                                  {
-                                    //Get the latest runningBill number with exclusive lock                       
-                                    string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
+                                     //Get the latest runningBill number with exclusive lock                       
+                                     string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
                                      var nextRunningNo = rmsEntitiesSaveCtx.Database.SqlQuery<int>(sqlRunningNo, _categoryId).FirstOrDefault();
 
                                      _runningBillNo = nextRunningNo;
@@ -514,13 +521,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                                      var _category = rmsEntitiesSaveCtx.Categories.FirstOrDefault(c => c.Id == _categoryId);
                                      _category.RollingNo = nextRunningNo;
 
-                                    //rmsEntitiesSaveCtx.SaveChanges();
+                                     //rmsEntitiesSaveCtx.SaveChanges();
 
-                                    _log.DebugFormat("Enter save :{0}", _runningBillNo);
+                                     _log.DebugFormat("Enter save :{0}", _runningBillNo);
                                      var combinedDateTime = GetCombinedDateTime();
 
-                                    //Create new sales to avoid DB context Error
-                                    var lclBillSales = new Sale
+                                     //Create new sales to avoid DB context Error
+                                     var lclBillSales = new Sale
                                      {
                                          CustomerId = _selectedCustomer.Id,
                                          CustomerOrderNo = OrderNo,
@@ -531,9 +538,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          UpdatedBy = EntitlementInformation.UserInternalId
                                      };
 
-                                    //_billSales.UpdatedBy = LoginViewModel.UserId;                                                
+                                     //_billSales.UpdatedBy = LoginViewModel.UserId;                                                
 
-                                    foreach (var saleDetailItem in SaleDetailList)
+                                     foreach (var saleDetailItem in SaleDetailList)
                                      {
                                          if (saleDetailItem.ProductId == 0) continue;
                                          var saleDetail = new SaleDetail
@@ -552,13 +559,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          lclBillSales.SaleDetails.Add(saleDetail);
 
                                          var expiryDate = saleDetailItem.ExpiryDate;
-                                        //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                                        //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
-                                        //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
-                                        //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
-                                        //                                               );
+                                         //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                                         //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
+                                         //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
+                                         //                                               && s.ExpiryDate.Day == expiryDate.Value.Day
+                                         //                                               );
 
-                                        var stock = GetStockDetails(rmsEntitiesSaveCtx, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
+                                         var stock = GetStockDetails(rmsEntitiesSaveCtx, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
                                          if (stock != null)
                                          {
                                              var actualStockEntity = rmsEntitiesSaveCtx.Stocks.First(s => s.Id == stock.Id);
@@ -568,25 +575,25 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          }
                                      }
 
-                                    //_totalAmount = _extensions.Calculate(_totalAmount.Value);
+                                     //_totalAmount = _extensions.Calculate(_totalAmount.Value);
 
-                                    CalculateTotalAmount();
+                                     CalculateTotalAmount();
 
                                      lclBillSales.TotalAmount = _totalAmount;
                                      lclBillSales.Discount = GetDiscountValue();
                                      lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
 
-                                    //rmsEntities.Entry(_billSales).State = EntityState.Added;
+                                     //rmsEntities.Entry(_billSales).State = EntityState.Added;
 
-                                    //rmsEntitiesSaveCtx.Sales.Add(_billSales);
+                                     //rmsEntitiesSaveCtx.Sales.Add(_billSales);
 
-                                    //RemoveTempSalesItemForGUID(_guid);
-                                    //this is done to get the latest bill no
-                                    //RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
-                                    //_billSales.RunningBillNo = _runningBillNo;
+                                     //RemoveTempSalesItemForGUID(_guid);
+                                     //this is done to get the latest bill no
+                                     //RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
+                                     //_billSales.RunningBillNo = _runningBillNo;
 
 
-                                    var outstandingBalance = _totalAmount.Value - AmountPaid;
+                                     var outstandingBalance = _totalAmount.Value - AmountPaid;
                                      if (outstandingBalance > 0 && SelectedPaymentId != 0)
                                      {
                                          lclBillSales.AmountPaid = _amountPaid;
@@ -605,8 +612,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                                              custPaymentDetail
                                          );
 
-                                        //_billSales.PaymentDetails.Add(custPaymentDetail);
-                                        var customer = rmsEntitiesSaveCtx.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+                                         //_billSales.PaymentDetails.Add(custPaymentDetail);
+                                         var customer = rmsEntitiesSaveCtx.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
                                          customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
                                      }
 
@@ -623,9 +630,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          salesBillPrint.Print(SelectedCustomer.Name, SaleDetailList.ToList(), lclBillSales, TotalAmount.Value,
                                                               AmountPaid, BalanceAmount, _showRestrictedCustomer);
                                      }
-                                    //if (_salesParams.GetTemproaryData)
-                                    //    CloseCommand.Execute(null);
-                                    if (paramValue != SaveOperations.SaveOnWindowClosing)
+                                     //if (_salesParams.GetTemproaryData)
+                                     //    CloseCommand.Execute(null);
+                                     if (paramValue != SaveOperations.SaveOnWindowClosing)
                                      {
                                          GetProductsToOrder();
                                          Clear();
@@ -655,7 +662,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             catch (Exception ex)
             {
                 if (paramValue == SaveOperations.SaveOnWindowClosing) return;
-                Utility.ShowErrorBox("Error while saving..!!" + ex.Message);                
+                Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
             }
             finally
             {
@@ -664,21 +671,21 @@ namespace RetailManagementSystem.ViewModel.Sales
                 {
                     _autoResetEvent.Set();
                 }
-            }            
+            }
         }
-      
+
         private DateTime GetCombinedDateTime()
         {
             DateTime combinedDateTime;
             //Get the current time since it takes the window open time
             DateTime date = _transcationDate.Date;
-            TimeSpan time  = RMSEntitiesHelper.GetServerTime();
+            TimeSpan time = RMSEntitiesHelper.GetServerTime();
             //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             combinedDateTime = date.Add(time);
             return combinedDateTime;
         }
 
-        private static Stock GetStockDetails(RMSEntities rmsEntities, int productId,int priceId, DateTime dateToCompare)
+        private static Stock GetStockDetails(RMSEntities rmsEntities, int productId, int priceId, DateTime dateToCompare)
         {
             var query = "select * from stocks where ProductId = " + productId +
                         " and PriceId =" + priceId +
@@ -699,7 +706,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    
+
                     string str = string.Join(",", SaleDetailList.Select(s => s.ProductId.ToString()));
                     var companySqlParam = new MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString)
                     {
@@ -728,8 +735,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                                                               {"Stock","StockQuantity"},
                                                               {"Reorder","ReorderPoint"}};
 
-                    var nvm = new Notification.NotificationViewModel<ProductOrder>(lstProductOrder, properties);                    
-                    nvm.ExecuteShowWindow();                    
+                    var nvm = new Notification.NotificationViewModel<ProductOrder>(lstProductOrder, properties);
+                    nvm.ExecuteShowWindow();
                 }
             }
         }
@@ -746,7 +753,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 var duplicateItemIndex = SaleDetailList.IndexOf(duplicateSaleItem);
                 var duplicateProduct = ProductsPriceList.FirstOrDefault(p => p.ProductId == duplicateSaleItem.ProductId);
 
-                Utility.ShowErrorBox("'" + duplicateProduct.ProductName +  "' Product appears more than Once at location " + duplicateItemIndex + 1 + ".Please check");
+                Utility.ShowErrorBox("'" + duplicateProduct.ProductName + "' Product appears more than Once at location " + duplicateItemIndex + 1 + ".Please check");
                 return false;
             }
 
@@ -754,71 +761,71 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (saleDetailItem.ProductId == 0) continue;
                 if (saleDetailItem.Qty < 0 || saleDetailItem.SellingPrice == 0) continue;
-                
 
-                if(!saleDetailItem.Qty.HasValue || !saleDetailItem.Amount.HasValue )
+
+                if (!saleDetailItem.Qty.HasValue || !saleDetailItem.Amount.HasValue)
                 {
                     Utility.ShowErrorBox("Product Quantity or Amount can't be null");
                     return false;
                 }
 
-                if(saleDetailItem.SellingPrice < ((saleDetailItem.CostPrice * 3/100) + saleDetailItem.CostPrice))
+                if (saleDetailItem.SellingPrice < ((saleDetailItem.CostPrice * 3 / 100) + saleDetailItem.CostPrice))
                 {
                     Utility.ShowErrorBox("Selling Price can't be lower than 3% of cost price");
                     return false;
                 }
 
-                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 500/100) + saleDetailItem.CostPrice))
+                if (saleDetailItem.SellingPrice > ((saleDetailItem.CostPrice * 500 / 100) + saleDetailItem.CostPrice))
                 {
                     Utility.ShowErrorBox("Selling Price can't be more than 500% of cost price");
                     return false;
                 }
-                //Continue if kg or grams
-                if (saleDetailItem.UnitOfMeasure == 2 || saleDetailItem.UnitOfMeasure == 14)
-                {
-                    continue;
-                }
-                if(!(saleDetailItem.Qty % 1 == 0))
+
+
+                var msUnit = _mesauringUnitList.FirstOrDefault(m => m.Id == saleDetailItem.UnitOfMeasure);
+                if (msUnit == null) return true;
+
+                if (msUnit.AllowFractions == false && !(saleDetailItem.Qty % 1 == 0))
                 {
                     var prod = ProductsPriceList.FirstOrDefault(p => p.ProductId == saleDetailItem.ProductId);
-                    if(prod != null)
-                        Utility.ShowErrorBox(prod.ProductName + " can't be sold in decimals");                    
+                    if (prod != null)
+                        Utility.ShowErrorBox(prod.ProductName + " can't be sold in decimals");
                     return false;
                 }
 
                 //return true;
 
-                    //var saleQty = saleDetailItem.Qty;
-                    //if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
-                    //    && (saleQty > 0))
-                    //{
-                    //    Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
-                    //    return false;
-                    //}
+                //var saleQty = saleDetailItem.Qty;
+                //if ((saleQty == null || saleQty > saleDetailItem.AvailableStock || saleDetailItem.AvailableStock == 0)
+                //    && (saleQty > 0))
+                //{
+                //    Utility.ShowErrorBox("Selling quantity can't be more than available quantity");
+                //    return false;
+                //}
 
-                    //using (var rmsEntities = new RMSEntities())
-                    //{
-                    //    var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
-                    //                                                   && s.Quantity == saleDetailItem.AvailableStock);
+                //using (var rmsEntities = new RMSEntities())
+                //{
+                //    var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
+                //                                                   && s.Quantity == saleDetailItem.AvailableStock);
 
-                    //    if (stock != null)
-                    //    {
-                    //        var stkQty = stock.Quantity;
-                    //        var saleQtyValue = saleDetailItem.Qty.Value;
-                    //        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
-                    //        {
-                    //            var product = rmsEntities.Products.Find(saleDetailItem.ProductId);
-                    //            var productName = "";
-                    //            if (product != null)
-                    //            {
-                    //                productName = product.Name;
-                    //            }
-                    //            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
-                    //                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
-                    //            return false;
-                    //        }
-                    //    }
-                    //}
+                //    if (stock != null)
+                //    {
+                //        var stkQty = stock.Quantity;
+                //        var saleQtyValue = saleDetailItem.Qty.Value;
+                //        if (saleQtyValue > 0 && (stkQty - saleDetailItem.Qty.Value) < 0)
+                //        {
+                //            var product = rmsEntities.Products.Find(saleDetailItem.ProductId);
+                //            var productName = "";
+                //            if (product != null)
+                //            {
+                //                productName = product.Name;
+                //            }
+                //            Utility.ShowErrorBox("Stock available is less than sale quantity \nProduct Name: " + productName +
+                //                                 "\nAvailable stock : " + stkQty + "\nSale Quantity :" + saleDetailItem.Qty.Value);
+                //            return false;
+                //        }
+                //    }
+                //}
             }
             return true;
         }
@@ -896,7 +903,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         //                    _salesDetailsList.Remove(s);
         //                    //var stateAfter = _rmsEntities.Entry<SaleDetail>(s).State;
         //                });
-                       
+
         //            }
         //        );
 
@@ -915,7 +922,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
 
         private void SaveOnEdit(short parameter)
-        {         
+        {
             PanelLoading = true;
             var salesSaveOnEditTask = Task.Run(() =>
             {
@@ -965,7 +972,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                     //}
                                     stockNewItem.Quantity -= saleDetail.Qty.Value;
                                     stockNewItem.UpdatedBy = EntitlementInformation.UserInternalId;
-                                    SetStockTransaction(rmsEntities, saleDetail, stockNewItem,combinedDateTime);
+                                    SetStockTransaction(rmsEntities, saleDetail, stockNewItem, combinedDateTime);
                                 }
                                 continue;
                             }
@@ -1055,9 +1062,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                         //This is for printing purpose
                         _billSales.TransportCharges = sale.TransportCharges;
 
-                        rmsEntities.Entry(sale).State = EntityState.Modified;                        
+                        rmsEntities.Entry(sale).State = EntityState.Modified;
                         rmsEntities.SaveChanges();
-                        
+
                         if (parameter == SaveOperations.SavePrint)
                         {
                             var salesBillPrint = new SalesBillPrint(rmsEntities);
@@ -1067,7 +1074,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         Clear();
                     }
                     catch (Exception ex)
-                    {                        
+                    {
                         Utility.ShowErrorBox("Error while saving on edit..!!" + ex.Message);
                         _log.Error("Error while saving on edit..!!", ex);
                         CloseCommand.Execute(null);
@@ -1118,7 +1125,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnSalesDetailsListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 if (!(e.OldItems[0] is SaleDetailExtn SaleDetailExtn) || SaleDetailExtn.ProductId <= 0) return;
                 if (_isEditMode)
@@ -1131,7 +1138,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 {
                     item.SerialNo = ++i;
                 }
-            }            
+            }
         }
 
         private void SetSaleDetailItem(SaleDetailExtn saleDetailItemExtn, SaleDetail saleDetail)
@@ -1139,9 +1146,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             saleDetail.Discount = saleDetailItemExtn.Discount;
             saleDetail.PriceId = saleDetailItemExtn.PriceId;
             saleDetail.ProductId = saleDetailItemExtn.ProductId;
-            saleDetail.Qty = saleDetailItemExtn.Qty; 
+            saleDetail.Qty = saleDetailItemExtn.Qty;
             saleDetail.SellingPrice = saleDetailItemExtn.SellingPrice;
-            saleDetail.BillId = _billSales.BillId;            
+            saleDetail.BillId = _billSales.BillId;
         }
 
         #endregion
@@ -1232,13 +1239,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 SaleDetailList.Clear();
             });
-            
+
             _billSales = new Sale();
             _totalAmount = 0;
             TotalAmount = null;
-            AmountPaid = 0.0M;            
+            AmountPaid = 0.0M;
             _extensions.Clear();
-            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId,false);
+            RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, false);
             _isEditMode = false;
             TotalDiscountAmount = null;
             TotalDiscountPercent = null;
@@ -1293,18 +1300,21 @@ namespace RetailManagementSystem.ViewModel.Sales
             RaisePropertyChanged(nameof(CustomersList));
         }
 
-        
+
 
         #region Public Methods
 
         public void SetProductDetails(string barCodeNo, ProductPrice productPrice, int selectedIndex)
         {
-            var productPriceForBarCode = _productsPriceList.FirstOrDefault(p => p.BarCodeNo == barCodeNo);
-
-            if (productPriceForBarCode != null)
+            if (!string.IsNullOrEmpty(barCodeNo))
             {
-                productPrice = productPriceForBarCode;
-                
+                var productPriceForBarCode = _productsPriceList.FirstOrDefault(p => p.BarCodeNo == barCodeNo);
+
+                if (productPriceForBarCode != null)
+                {
+                    productPrice = productPriceForBarCode;
+
+                }
             }
             if (productPrice == null)
             {
@@ -1339,7 +1349,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             catch (Exception ex)
             {
                 _log.Error("Error on SetProductDetails", ex);
-                _log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}",selectedIndex,productPrice.ProductId,productPrice.PriceId);
+                _log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}", selectedIndex, productPrice.ProductId, productPrice.PriceId);
             }
         }
 
@@ -1365,7 +1375,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region Private Methods
 
-        private static void SetStockTransaction(RMSEntities rmsEntities, SaleDetail saleDetail, Stock stockNewItem,DateTime combinedDateTime)
+        private static void SetStockTransaction(RMSEntities rmsEntities, SaleDetail saleDetail, Stock stockNewItem, DateTime combinedDateTime)
         {
             var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.Id).FirstOrDefault();
             var stockAdjustCheck = RMSEntitiesHelper.CheckStockAdjustment(rmsEntities, stockNewItem.Id);
@@ -1380,7 +1390,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     ClosingBalance = stockNewItem.Quantity,
                     StockId = stockNewItem.Id,
                     AddedOn = combinedDateTime
-                };                
+                };
                 stockNewItem.StockTransactions.Add(firstStockTrans);
             }
             //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
@@ -1403,12 +1413,12 @@ namespace RetailManagementSystem.ViewModel.Sales
                         StockId = stockNewItem.Id,
                         AddedOn = combinedDateTime
                     };
-                    rmsEntities.StockTransactions.Add(newStockTrans);                    
+                    rmsEntities.StockTransactions.Add(newStockTrans);
                 }
             }
         }
 
-        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn,int selectedIndex)
+        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn, int selectedIndex)
         {
             if (SaleDetailExtn != null)
             {
@@ -1417,7 +1427,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.PriceId = productPrice.PriceId;
                 SaleDetailExtn.AvailableStock = productPrice.Quantity;
                 SaleDetailExtn.SerialNo = ++selectedIndex;
-                SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
+                SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
                 SaleDetailExtn.ProductId = productPrice.ProductId;
                 //SaleDetailExtn.PriceToCalculate = SaleDetailExtn.SellingPrice;   
                 SaleDetailExtn.UnitOfMeasure = productPrice.UnitOfMeasure;

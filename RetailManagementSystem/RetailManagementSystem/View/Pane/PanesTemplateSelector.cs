@@ -1,19 +1,18 @@
-﻿using System.Windows.Controls;
-using System.Windows;
-using Xceed.Wpf.AvalonDock.Layout;
-using RetailManagementSystem.ViewModel.Sales;
+﻿using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Accounts;
+using RetailManagementSystem.ViewModel.Expenses;
+using RetailManagementSystem.ViewModel.Graphs;
 using RetailManagementSystem.ViewModel.Masters;
 using RetailManagementSystem.ViewModel.Purchases;
-using RetailManagementSystem.ViewModel;
+using RetailManagementSystem.ViewModel.Sales;
 using RetailManagementSystem.ViewModel.Stocks;
-using RetailManagementSystem.ViewModel.Accounts;
-using RetailManagementSystem.ViewModel.Graphs;
-using RetailManagementSystem.ViewModel.Expenses;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace RetailManagementSystem.View.Pane
 {
     class PanesTemplateSelector : DataTemplateSelector
-    {        
+    {
         public DataTemplate SalesViewTemplate
         {
             get;
@@ -37,7 +36,7 @@ namespace RetailManagementSystem.View.Pane
             get;
             set;
         }
-        
+
 
         public DataTemplate ReturnPurchaseViewTemplate
         {
@@ -49,12 +48,12 @@ namespace RetailManagementSystem.View.Pane
         {
             get;
             set;
-        }        
+        }
 
         public DataTemplate CustomerDataTemplate
         {
             get;
-            set;            
+            set;
         }
 
         public DataTemplate ProductsDataTemplate
@@ -98,12 +97,12 @@ namespace RetailManagementSystem.View.Pane
             //var content = item as ContentPresenter;
             //content.ContentTemplate = CustomerDataTemplate;            
 
-            if (item is SalesEntryViewModel) return SalesViewTemplate;            
-            
+            if (item is SalesEntryViewModel) return SalesViewTemplate;
+
             if (item is ReturnSalesViewModel) return ReturnSalesViewTemplate;
 
-            if (item is CustomerViewModel)  return CustomerDataTemplate;
-            
+            if (item is CustomerViewModel) return CustomerDataTemplate;
+
             if (item is PurchaseEntryViewModel) return PurchaseViewTemplate;
             if (item is ExpenseEntryViewModel) return ExpenseViewTemplate;
 

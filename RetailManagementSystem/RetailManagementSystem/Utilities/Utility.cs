@@ -59,15 +59,15 @@ namespace RetailManagementSystem.Utilities
 
         public static MessageBoxResult ShowMessageBoxWithOptions(string message)
         {
-          return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);   
+            return MessageBox.Show(message, Constants.APPLICATION_NAME, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
         }
 
         public static MessageBoxResult ShowMessageBoxWithOptions(Window window, string message, MessageBoxButton buttonOptions)
         {
-            return MessageBox.Show(window,message, Constants.APPLICATION_NAME, buttonOptions, MessageBoxImage.Question);
+            return MessageBox.Show(window, message, Constants.APPLICATION_NAME, buttonOptions, MessageBoxImage.Question);
         }
 
-        public static MessageBoxResult ShowMessageBoxWithOptions(string message,MessageBoxButton buttonOptions)
+        public static MessageBoxResult ShowMessageBoxWithOptions(string message, MessageBoxButton buttonOptions)
         {
             return MessageBox.Show(message, Constants.APPLICATION_NAME, buttonOptions, MessageBoxImage.Question);
         }
@@ -119,7 +119,7 @@ namespace RetailManagementSystem.Utilities
 
             //var psi = new ProcessStartInfo("shutdown", "/m  \\swadeshi /s /t 0")
             //{
-                
+
             //    //UseShellExecute = false,
             //    //UserName = "WoodlandsTrader",
             //    //Password = securePwd
@@ -136,7 +136,7 @@ namespace RetailManagementSystem.Utilities
                 process.WaitForExit();
             }
 
-            return true; 
+            return true;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             ToDate = DateTime.Now;
             _showRestrictedCustomers = showRestrictedCustomers;
             ReportPath = @"View\Reports\Accounts\DayStatement.rdl";
-            _rptDataSource = new ReportDataSource[5];
+            _rptDataSource = new ReportDataSource[6];
         }
 
         #region Print Command
@@ -39,32 +39,40 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
 
         private void OnPrint(Window window)
         {
-            var salesQuery = "select sum(TotalAmount) from ( " +
+            var salesQuery = "select sum(TotalAmount) TotalSalesAmount from ( " +
                             " select sum(AmountPaid) as TotalAmount from sales where date(AddedOn) = @fromDate and(PaymentMode = 1 or PaymentMode = 2) " +
                             " union all " +
                             " select sum(TotalAmount) as TotalAmount from sales where date(AddedOn) = @fromDate and PaymentMode = 0" +
                             " ) a; ";
 
             _rptDataSource[0] = GetReportDataSource(salesQuery, "SalesDataSet");
-            
+
             var expenseQuery = "select cm.Description,sum(amount) Amount from ExpenseDetails exp, CodeMaster cm  " +
                                 " where " +
-                                " date(addedOn) = @fromDate and cm.Id = exp.ExpenseTypeId " +
+                                " date(addedOn) = @fromDate and cm.Id = exp.ExpenseTypeId and cm.Description !='InCash'" +
                                 " group by exp.ExpenseTypeId";
 
-            _rptDataSource[2] = GetReportDataSource(expenseQuery,  "ExpDataSet");
+            _rptDataSource[2] = GetReportDataSource(expenseQuery, "ExpDataSet");
 
             var cashPurchaseQuery = "select c.Name,p.TotalBillAmount from Purchases p, companies c " +
                                     " where paymentMode = 0 and date(p.addedOn) = @fromDate " +
                                     " and p.CompanyId = c.Id";
 
             _rptDataSource[3] = GetReportDataSource(cashPurchaseQuery, "CashPurchaseDataSet");
-                      
+
             var amountPaidQuery = "select c.name, sum(AmountPaid) AmonutPaid from PaymentDetails pd, Customers c  " +
                                   " where date(paymentDate) = @fromDate and pd.customerId = c.Id " +
-                                  " group by c.Id";
+                                  " group by c.Id having AmonutPaid !=0";
 
-            _rptDataSource[4] = GetReportDataSource(amountPaidQuery,  "CustomerPaymentsDataSet");
+            _rptDataSource[4] = GetReportDataSource(amountPaidQuery, "CustomerPaymentsDataSet");
+
+
+            var IncashQuery = "select cm.Description,sum(amount) Amount from ExpenseDetails exp, CodeMaster cm  " +
+                                " where " +
+                                " date(addedOn) = @fromDate and cm.Id = exp.ExpenseTypeId and cm.Description ='InCash'" +
+                                " group by exp.ExpenseTypeId";
+
+            _rptDataSource[5] = GetReportDataSource(IncashQuery, "InCashDataSet");
 
             ReportParameterValue = new ReportParameter("DateFilter", FromDate.ToString("dd-MM-yyyy"));
 

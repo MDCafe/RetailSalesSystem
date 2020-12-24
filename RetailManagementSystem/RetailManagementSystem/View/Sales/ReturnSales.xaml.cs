@@ -1,17 +1,17 @@
-﻿using System.Linq;
+﻿using RetailManagementSystem.ViewModel.Sales;
+using System.Linq;
 using System.Windows.Controls;
-using RetailManagementSystem.ViewModel.Sales;
 
 namespace RetailManagementSystem.View.Sales
 {
     public partial class ReturnSales : UserControl
     {
         ReturnSalesViewModel _returnSalesViewModel;
-       
+
         public ReturnSales()
-        {            
+        {
             InitializeComponent();
-           // this.DataContext = new ReturnSalesViewModel(false);
+            // this.DataContext = new ReturnSalesViewModel(false);
 
             DataContextChanged += (sender, eventArgs) =>
             {
@@ -20,41 +20,41 @@ namespace RetailManagementSystem.View.Sales
                 //custComboBoxCol.FilterPropertyName = "Name";
 
                 //custComboBoxColReturnPrice.ItemsSource = _returnSalesViewModel.ReturnPriceList;
-                
+
                 _returnSalesViewModel.MakeReadonlyEvent += (s) =>
                 {
                     var visibility = System.Windows.Visibility.Hidden;
 
-                    this.Dispatcher.Invoke( () =>
-                    {
-                        if (s)
-                        {
-                            visibility = System.Windows.Visibility.Visible;
-                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Hidden;
-                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Hidden;
-                            ReturnSalesDataGrid.CanUserAddRows = false;
-                        }
-                        else
-                        {
-                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Visible;
-                            ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Visible;
-                            ReturnSalesDataGrid.CanUserAddRows = true;
-                        }
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Select").Visibility = visibility;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Quantity").Visibility = visibility;
+                    this.Dispatcher.Invoke(() =>
+                   {
+                       if (s)
+                       {
+                           visibility = System.Windows.Visibility.Visible;
+                           ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Hidden;
+                           ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Hidden;
+                           ReturnSalesDataGrid.CanUserAddRows = false;
+                       }
+                       else
+                       {
+                           ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Product Price").Visibility = System.Windows.Visibility.Visible;
+                           ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Return Price").Visibility = System.Windows.Visibility.Visible;
+                           ReturnSalesDataGrid.CanUserAddRows = true;
+                       }
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Select").Visibility = visibility;
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Quantity").Visibility = visibility;
                         //ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
                         ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Cost Price").Visibility = visibility;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Selling Price").Visibility = visibility;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount (%)").Visibility = visibility;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount Amount").Visibility = visibility;
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Selling Price").Visibility = visibility;
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount (%)").Visibility = visibility;
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount Amount").Visibility = visibility;
 
-                        if (!s)
-                        {
-                            ReturnSalesDataGrid.LoadingRow += DataGridLoadingRow;
-                        }
-                        else
-                            ReturnSalesDataGrid.LoadingRow -= DataGridLoadingRow;
-                    });
+                       if (!s)
+                       {
+                           ReturnSalesDataGrid.LoadingRow += DataGridLoadingRow;
+                       }
+                       else
+                           ReturnSalesDataGrid.LoadingRow -= DataGridLoadingRow;
+                   });
                 };
             };
 
@@ -63,7 +63,7 @@ namespace RetailManagementSystem.View.Sales
             //ReturnSalesDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
             //(ExecutedRoutedEventHandler)((sender, args) =>
             //{
-                
+
             //    //if (args.Command == DataGrid.routed)
             //    //{                    
             //    DependencyObject focusScope = FocusManager.GetFocusScope(ReturnSalesDataGrid);
@@ -82,11 +82,11 @@ namespace RetailManagementSystem.View.Sales
             //    //}
             //    //}
             //}));
-        }       
+        }
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
-            var product = selectedItem as Product;           
+            var product = selectedItem as Product;
             //custComboBoxCol.comboBox.ItemsSource = _returnSalesViewModel.ProductsList;
             //custComboBoxCol.comboBox.SelectedIndex = -1;
             //custComboBoxCol.ClearSelection();
@@ -113,7 +113,7 @@ namespace RetailManagementSystem.View.Sales
             var cmb = sender as ComboBox;
             if (cmb.SelectedValue == null) return;
             var priceId = int.Parse(cmb.SelectedValue.ToString());
-            _returnSalesViewModel.SetPriceDetails(priceId,ReturnSalesDataGrid.SelectedIndex);
+            _returnSalesViewModel.SetPriceDetails(priceId, ReturnSalesDataGrid.SelectedIndex);
         }
     }
 

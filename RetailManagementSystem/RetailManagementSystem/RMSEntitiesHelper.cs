@@ -55,7 +55,7 @@ namespace RetailManagementSystem
                 }
                 Monitor.Exit(_syncRoot);
                 return _rMSEntitiesHelper;
-            }            
+            }
         }
 
         public RMSEntities RMSEntities { get; }
@@ -93,7 +93,7 @@ namespace RetailManagementSystem
             Monitor.Exit(_salesNotifierList);
         }
 
-        public void SelectRunningBillNo(int categoryId,bool onload,
+        public void SelectRunningBillNo(int categoryId, bool onload,
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "")
         {
             string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0";
@@ -109,7 +109,7 @@ namespace RetailManagementSystem
             {
                 foreach (var purchaseNotifyList in _purchaseNotifierList)
                 {
-                    purchaseNotifyList.Notify(salesNo,categoryId);
+                    purchaseNotifyList.Notify(salesNo, categoryId);
                 }
                 return;
             }
@@ -131,30 +131,30 @@ namespace RetailManagementSystem
 
         public static ObservableCollection<ProductPrice> GetProductPriceList(int companyId)
         {
-           var productsPriceSQLCompany = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
-                                         " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                         " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                         " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
-                                         " from Products p, PriceDetails pd, Stocks st " +
-                                         "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                         " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
-                                         " union " +
-                                           "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
-                                           "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
-                                           " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                           " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
-                                           " from Products p, PriceDetails pd, Stocks st " +
-                                           " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                           " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
-                                           " and St.ModifiedOn = " +
-                                           " (select max(ModifiedOn) from Stocks s " +
-                                            "   where s.ProductId = st.ProductId) " +
-                                           " order by ProductName ";
+            var productsPriceSQLCompany = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
+                                          " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                          " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                          " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
+                                          " from Products p, PriceDetails pd, Stocks st " +
+                                          "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                          " and st.Quantity != 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                          " union " +
+                                            "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
+                                            "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
+                                            " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
+                                            " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
+                                            " from Products p, PriceDetails pd, Stocks st " +
+                                            " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
+                                            " and st.Quantity = 0 and p.Isactive = true and p.CompanyId =" + companyId +
+                                            " and St.ModifiedOn = " +
+                                            " (select max(ModifiedOn) from Stocks s " +
+                                             "   where s.ProductId = st.ProductId) " +
+                                            " order by ProductName ";
             return new ObservableCollection<ProductPrice>(Instance.RMSEntities.Database.SqlQuery<ProductPrice>(productsPriceSQLCompany));
         }
 
-        public static decimal? GetLastSoldPrice(int productId,int customerId)
-        {            
+        public static decimal? GetLastSoldPrice(int productId, int customerId)
+        {
             string lastSoldPriceSQL = "select sd.SellingPrice from sales s, saleDetails sd " +
                                   "  where s.CustomerId = " + customerId +
                                   "  and s.BillId = sd.billId " +
@@ -165,7 +165,7 @@ namespace RetailManagementSystem
             return Instance.RMSEntities.Database.SqlQuery<decimal?>(lastSoldPriceSQL).FirstOrDefault();
         }
 
-        public static CustomerBill CheckIfBillExists(int billNo, int categoryId,Window window)
+        public static CustomerBill CheckIfBillExists(int billNo, int categoryId, Window window)
         {
             var checkBill = from s in RMSEntitiesHelper.Instance.RMSEntities.Sales
                             join c in RMSEntitiesHelper.Instance.RMSEntities.Customers
@@ -180,14 +180,14 @@ namespace RetailManagementSystem
 
             if (checkBill.FirstOrDefault() == null)
             {
-                if(window !=null)
-                    Utility.ShowErrorBox(window,"Bill Number doesn't exist");
+                if (window != null)
+                    Utility.ShowErrorBox(window, "Bill Number doesn't exist");
                 else
                     Utility.ShowErrorBox("Bill Number doesn't exist");
 
                 return null;
             }
-            
+
             return customerBill;
         }
 
@@ -206,7 +206,7 @@ namespace RetailManagementSystem
 
             if (checkBill.FirstOrDefault() == null)
             {
-                Utility.ShowErrorBox(window,"Bill Number doesn't exist");
+                Utility.ShowErrorBox(window, "Bill Number doesn't exist");
                 return null;
             }
 
@@ -261,7 +261,7 @@ namespace RetailManagementSystem
             {
                 var systemDBDate = rmsEntities.SystemDatas.FirstOrDefault();
                 if (systemDBDate == null) return false;
-                
+
                 var serverDate = GetServerDate().AddDays(1);
                 if (serverDate.Date.Ticks == systemDBDate.SysDate.Value.Ticks)
                     return true;
@@ -272,7 +272,7 @@ namespace RetailManagementSystem
 
         public IEnumerable<User> GetUsers()
         {
-            using(RMSEntities rmsEntities = new RMSEntities())
+            using (RMSEntities rmsEntities = new RMSEntities())
             {
                 return rmsEntities.Users.ToList();
             }
@@ -311,7 +311,7 @@ namespace RetailManagementSystem
         }
     }
 
-    public class  CustomerBill
+    public class CustomerBill
     {
         public int CustomerId { get; set; }
     }

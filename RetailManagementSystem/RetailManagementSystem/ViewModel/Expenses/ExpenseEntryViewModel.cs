@@ -13,7 +13,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
 {
     internal class ExpenseEntryViewModel : DocumentViewModel
     {
-        public List<CodeMaster> ExpenseTypesList { get;private set; }
+        public List<CodeMaster> ExpenseTypesList { get; private set; }
         public DateTime TranscationDate { get; set; }
         public ObservableCollection<ExpenseDetail> ExpenseDetailList { get; set; }
         public decimal TotalAmount { get; set; }
@@ -88,7 +88,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
                             _log.Error("Error while saving..!!", ex);
                             throw ex;
                         }
-                    }                
+                    }
                 }).ContinueWith(
                     (t) =>
                     {
@@ -129,12 +129,12 @@ namespace RetailManagementSystem.ViewModel.Expenses
             DateTime combinedDateTime;
             //Get the current time since it takes the window open time
             DateTime date = TranscationDate.Date;
-            TimeSpan time = RMSEntitiesHelper.GetServerTime();            
+            TimeSpan time = RMSEntitiesHelper.GetServerTime();
             combinedDateTime = date.Add(time);
             return combinedDateTime;
         }
 
-                
+
         private bool Validate()
         {
             foreach (var expItem in ExpenseDetailList)
@@ -152,7 +152,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
             return true;
         }
 
-       
+
 
 
         //private void SaveOnEdit(short parameter)
@@ -164,7 +164,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
         //        {
         //            try
         //            {
-                        
+
         //                Clear();
         //            }
         //            catch (Exception ex)

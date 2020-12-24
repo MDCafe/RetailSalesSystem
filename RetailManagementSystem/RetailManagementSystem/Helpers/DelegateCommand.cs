@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Input;
-
-namespace RetailManagementSystem.Helpers
+﻿namespace RetailManagementSystem.Helpers
 {
     /// <summary>
     /// This class allows delegating the commanding logic to methods passed as parameters,

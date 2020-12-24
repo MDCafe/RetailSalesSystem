@@ -54,9 +54,9 @@ namespace RetailManagementSystem.Model
         public decimal? OldSellingPrice { get; set; }
         public decimal? Tax { get; set; }
 
-        public decimal? VATAmount { get => _vatAmount; set { _vatAmount = value;CalculateAmount(); CalculateCost(); } }
+        public decimal? VATAmount { get => _vatAmount; set { _vatAmount = value; CalculateAmount(); CalculateCost(); } }
         public decimal? VATPercentage { get => _vatPercentage; set { _vatPercentage = value; CalculateAmount(); CalculateCost(); } }
-        
+
 
         public decimal? ItemCoolieCharges
         {
@@ -91,7 +91,7 @@ namespace RetailManagementSystem.Model
 
         private decimal GetCoolieChargesPerItem()
         {
-            if (!Qty.HasValue) return 0;            
+            if (!Qty.HasValue) return 0;
             return GetCoolieCharges() / Qty.Value;
         }
 
@@ -131,7 +131,7 @@ namespace RetailManagementSystem.Model
             CostPrice = (amount / totalQtyWithFreeIssue) - (discountPerItem != 0 ? discountPerItem : 0m) +
                         GetTransportCharges() +
                         GetCoolieChargesPerItem();
-                        
+
 
             //if (_itemTransportCharges.HasValue)
             //    CostPrice += GetTransportCharges();
@@ -160,16 +160,16 @@ namespace RetailManagementSystem.Model
         private decimal GetVatAmount()
         {
             if (!Qty.HasValue) return 0m;
-            return VATAmount.HasValue && VATAmount.Value != 0 ? 
-                   VATAmount.Value  : 
-                   VATPercentage.HasValue && VATPercentage.Value !=0 ? ((_purchasePrice * (_vatPercentage/100)) * Qty).Value : 0m;
+            return VATAmount.HasValue && VATAmount.Value != 0 ?
+                   VATAmount.Value :
+                   VATPercentage.HasValue && VATPercentage.Value != 0 ? ((_purchasePrice * (_vatPercentage / 100)) * Qty).Value : 0m;
         }
 
         private decimal GetVatAmountPerItem()
         {
             if (!Qty.HasValue) return 0m;
-            return VATAmount.HasValue && VATAmount.Value!=0 ? 
-                    VATAmount.Value/Qty.Value : 
+            return VATAmount.HasValue && VATAmount.Value != 0 ?
+                    VATAmount.Value / Qty.Value :
                     VATPercentage.HasValue && VATPercentage.Value != 0 ? ((_purchasePrice * (_vatPercentage / 100))).Value : 0m;
         }
     }

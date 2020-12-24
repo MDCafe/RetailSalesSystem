@@ -1,5 +1,5 @@
-﻿using System.Windows.Input;
-using RetailManagementSystem.Command;
+﻿using RetailManagementSystem.Command;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
@@ -10,7 +10,7 @@ namespace RetailManagementSystem.ViewModel.Base
     /// (text file edits, Start Page, Prgram Settings).
     /// </summary>
     internal abstract class DocumentViewModel : PaneViewModel
-  {
+    {
 
         #region Fields
         bool _panelLoading;
@@ -87,6 +87,6 @@ namespace RetailManagementSystem.ViewModel.Base
         #endregion
 
         #endregion properties
-        
-  }
+
+    }
 }

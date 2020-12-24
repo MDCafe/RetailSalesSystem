@@ -23,7 +23,7 @@ namespace RetailManagementSystem.Helpers
                 {
                     var reference = handlers[i];
                     var handler = reference.Target as EventHandler;
-                    
+
                     if (handler == null)
                     {
                         handlers.RemoveAt(i);
@@ -71,7 +71,7 @@ namespace RetailManagementSystem.Helpers
                 {
                     var reference = handlers[i];
                     var existingHandler = reference.Target as EventHandler;
-                   
+
                     if ((existingHandler == null) || (existingHandler == handler))
                     {
                         handlers.RemoveAt(i);

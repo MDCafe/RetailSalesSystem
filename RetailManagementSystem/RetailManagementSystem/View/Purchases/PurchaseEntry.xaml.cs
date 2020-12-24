@@ -1,9 +1,9 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Input;
+﻿using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Purchases;
-using RetailManagementSystem.Model;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.View.Purchases
 {
@@ -51,13 +51,13 @@ namespace RetailManagementSystem.View.Purchases
                 _purchaseEntryViewModel = DataContext as PurchaseEntryViewModel;
                 custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
-                _purchaseEntryViewModel.NotifierCollectionChangedEvent +=() =>
-                {
-                    App.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
-                        _purchaseEntryViewModel.SetProductId();
-                    }));
+                _purchaseEntryViewModel.NotifierCollectionChangedEvent += () =>
+                 {
+                     App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                     {
+                         custComboBoxCol.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
+                         _purchaseEntryViewModel.SetProductId();
+                     }));
                  };
 
                 //_salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
@@ -131,13 +131,13 @@ namespace RetailManagementSystem.View.Purchases
                 }
 
             };
-        }      
+        }
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
             var productPrice = selectedItem as ProductPrice;
 
-            _purchaseEntryViewModel.SetProductDetails(productPrice,PurchaseDataGrid.SelectedIndex);
+            _purchaseEntryViewModel.SetProductDetails(productPrice, PurchaseDataGrid.SelectedIndex);
 
             custComboBoxCol.comboBox.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
             custComboBoxCol.comboBox.SelectedIndex = -1;
@@ -148,5 +148,5 @@ namespace RetailManagementSystem.View.Purchases
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
-    }   
+    }
 }

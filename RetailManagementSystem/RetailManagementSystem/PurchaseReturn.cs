@@ -19,13 +19,13 @@ namespace RetailManagementSystem
         public int ProductId { get; set; }
         public decimal Quantity { get; set; }
         public int PriceId { get; set; }
+        public Nullable<decimal> ReturnPrice { get; set; }
         public Nullable<int> ReturnReasonCode { get; set; }
+        public Nullable<bool> MarkedForReturn { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
         public string comments { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public Nullable<bool> MarkedForReturn { get; set; }
-        public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public Nullable<decimal> ReturnPrice { get; set; }
     
         public virtual CodeMaster CodeMaster { get; set; }
         public virtual Product Product { get; set; }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Drawing.Printing;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Linq;
-using System.Collections.Generic;
+﻿using log4net;
 using RetailManagementSystem.Model;
-using System.Text;
-using log4net;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace RetailManagementSystem.UserControls
 {
@@ -34,8 +33,8 @@ namespace RetailManagementSystem.UserControls
                 PrinterSettings ps = new PrinterSettings();
 
                 //Font font = new Font("Courier New", 15);//set default font for page
-                                                        //PaperSize psize = new PaperSize("Custom", 212, 130);//set paper size sing code
-                                                        //PaperSize psize = new PaperSize("Custom", 212, 100);
+                //PaperSize psize = new PaperSize("Custom", 212, 130);//set paper size sing code
+                //PaperSize psize = new PaperSize("Custom", 212, 100);
                 pd.Document = _pdoc;
                 //pd.Document.DefaultPageSettings.PaperSize = psize;
                 _pdoc.PrintPage += new PrintPageEventHandler(PrintPage);
@@ -64,11 +63,11 @@ namespace RetailManagementSystem.UserControls
             _appDetail = _rmsEntities.ApplicationDetails.FirstOrDefault();
         }
 
-        public void Print(string customerName,IEnumerable<SaleDetailExtn> saleDetails,Sale billSales,decimal totalAmount, decimal? amountPaid,decimal? balanceAmt,
+        public void Print(string customerName, IEnumerable<SaleDetailExtn> saleDetails, Sale billSales, decimal totalAmount, decimal? amountPaid, decimal? balanceAmt,
                           bool showRestrictedCustomers)
         {
             try
-            {                
+            {
                 _customerName = customerName;
                 _saleDetails = saleDetails;
                 _billSales = billSales;
@@ -82,7 +81,7 @@ namespace RetailManagementSystem.UserControls
             catch (Exception ex)
             {
                 Utilities.Utility.ShowErrorBox("Error while Printing..!!" + ex.Message);
-                _log.Error("Error while Printing..!! - "  + _billSales.BillId, ex);
+                _log.Error("Error while Printing..!! - " + _billSales.BillId, ex);
             }
         }
 
@@ -304,7 +303,7 @@ namespace RetailManagementSystem.UserControls
 
                 Offset = 0;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _log.Error("Error while Printing..!! - " + _billSales.BillId, ex);
                 throw;

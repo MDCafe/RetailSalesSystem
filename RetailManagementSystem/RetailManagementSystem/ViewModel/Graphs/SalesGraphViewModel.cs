@@ -91,7 +91,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
             query = "GetSalesGraphReport";
             List<string> lst = new List<string>();
             using (var conn = MySQLDataAccess.GetConnection())
-            {                              
+            {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     cmd.CommandText = query;
@@ -100,7 +100,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
 
                     conn.Open();
                     using (var rdr = cmd.ExecuteReader())
-                    {                                                
+                    {
                         //LineSeries LnSeries = new LineSeries();
                         var cashChartValues = new ChartValues<Decimal>();
                         //var creditChartValues = new ChartValues<Decimal>();
@@ -116,7 +116,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
                                     SaleYearMonth = rdr.GetString(1),
                                     CreditSales = rdr.GetDecimal(2),
                                     HotelSales = rdr.GetDecimal(3),
-                                    TotalSales = rdr.GetDouble(4)                                    
+                                    TotalSales = rdr.GetDouble(4)
                                 }
                             );
                             //cashChartValues.Add(rdr.GetDecimal(4));
@@ -138,7 +138,7 @@ namespace RetailManagementSystem.ViewModel.Graphs
                         .X((value, index) => index) // lets use the position of the item as X
                         .Y(value => value.TotalSales);
 
-                       
+
                         //var creditlineSeries = new LineSeries
                         //{
                         //    Values = creditChartValues, 
@@ -153,10 +153,10 @@ namespace RetailManagementSystem.ViewModel.Graphs
 
                         //XAxisLabels = xAxisChartValues;
                     }
-                }                
+                }
             }
             return lst;
         }
-       
+
     }
 }

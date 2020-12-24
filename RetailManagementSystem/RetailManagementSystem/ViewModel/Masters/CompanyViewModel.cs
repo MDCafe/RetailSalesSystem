@@ -1,11 +1,11 @@
-﻿using System.Windows.Input;
-using System.Linq;
-using System;
-using System.Windows;
-using System.Collections.Generic;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
+﻿using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -19,7 +19,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public CompanyViewModel()
         {
-             _company = new Company();
+            _company = new Company();
             _rmsEntities = new RMSEntities();
             var cnt = _rmsEntities.Categories.Count();
 
@@ -32,7 +32,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             get
             {
-                if(_companyList == null)
+                if (_companyList == null)
                     _companyList = _rmsEntities.Companies.ToList();
 
                 return _companyList;
@@ -57,7 +57,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public Company DblClickSelectedCompany
         {
-            get;set;
+            get; set;
         }
 
         public string SearchText { get; set; }
@@ -127,7 +127,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                 return _clearCommand;
             }
-        }        
+        }
         #endregion
 
         #region SaveCommand
@@ -143,11 +143,11 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                 return _saveCommand;
             }
-        }        
+        }
 
         public bool CanSave(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(SelectedCompany.Name);                        
+            return !string.IsNullOrWhiteSpace(SelectedCompany.Name);
         }
 
         private void OnSave(object parameter)
@@ -197,13 +197,13 @@ namespace RetailManagementSystem.ViewModel.Masters
         private void OnDelete()
         {
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to delete the company : " + _company.Name);
-            if(msgResult != MessageBoxResult.Yes)
+            if (msgResult != MessageBoxResult.Yes)
             {
                 return;
             }
 
             var cmp = _rmsEntities.Companies.FirstOrDefault(c => c.Id == _company.Id);
-            if(cmp == null)
+            if (cmp == null)
             {
                 Utility.ShowMessageBoxWithOptions("Company : " + _company.Name + " doesn't exist");
                 return;
@@ -212,7 +212,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             _rmsEntities.Companies.Remove(cmp);
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
-            RaisePropertyChanged("CompnayList");         
+            RaisePropertyChanged("CompnayList");
         }
 
         #endregion
@@ -230,7 +230,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 _isEditMode = true;
-                                SelectedCompany = DblClickSelectedCompany;                      
+                                SelectedCompany = DblClickSelectedCompany;
                             }
                         );
                 }
@@ -255,8 +255,8 @@ namespace RetailManagementSystem.ViewModel.Masters
                             p =>
                             {
                                 if (string.IsNullOrWhiteSpace(SearchText)) return;
-                                CompanyList = CompanyList.Where(c => c.Name.StartsWith(SearchText,StringComparison.InvariantCultureIgnoreCase));
-                                
+                                CompanyList = CompanyList.Where(c => c.Name.StartsWith(SearchText, StringComparison.InvariantCultureIgnoreCase));
+
                             }
                         );
                 }
@@ -265,7 +265,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-       
+
 
 
         #endregion

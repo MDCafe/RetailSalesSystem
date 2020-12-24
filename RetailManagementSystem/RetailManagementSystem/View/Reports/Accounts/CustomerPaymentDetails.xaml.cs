@@ -7,7 +7,7 @@ namespace RetailManagementSystem.View.Reports.Accounts
     {
         public CustomerPaymentDetailsReport(bool showRestrictedCustomers)
         {
-            InitializeComponent();  
+            InitializeComponent();
             DataContext = new CustomerPaymentDetailsRptViewModel(showRestrictedCustomers);
         }
     }

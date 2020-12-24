@@ -4,11 +4,11 @@ namespace RetailManagementSystem.ViewModel.Extensions
 {
     public interface IExtensions : INotifyPropertyChanged
     {
-                    
+
         decimal Calculate(decimal amount);
         void Clear();
         void SetValues(params decimal[] extensionValues);
-        decimal GetPropertyValue(string propertyName,out decimal? oldValue);
+        decimal GetPropertyValue(string propertyName, out decimal? oldValue);
 
     }
 }

@@ -11,7 +11,7 @@ namespace RetailManagementSystem.Converter
             if (value == null)
             {
                 return string.Empty;
-            }            
+            }
             try
             {
                 //var indexOfWhiteSpace = value.ToString().Trim().LastIndexOf(" ");
@@ -40,12 +40,12 @@ namespace RetailManagementSystem.Converter
 
             DateTime result = new DateTime();
 
-            if(DateTime.TryParseExact(value.ToString(), "d/M/yyyy", null,DateTimeStyles.None,out result))
+            if (DateTime.TryParseExact(value.ToString(), "d/M/yyyy", null, DateTimeStyles.None, out result))
             {
                 return result.ToShortDateString();
             }
 
-            return null;                       
+            return null;
         }
     }
 }

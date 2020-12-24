@@ -1,4 +1,4 @@
-select * from customers;
+
 
 select * from paymentdetails pd
 where BillId in(

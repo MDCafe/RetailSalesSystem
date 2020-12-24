@@ -32,7 +32,7 @@ namespace RetailManagementSystem.ViewModel.Extensions
         public decimal Calculate(decimal value)
         {
             var totalAmount = value + (TransportCharges.HasValue ? TransportCharges.Value : 0);
-            return totalAmount;                        
+            return totalAmount;
         }
 
         public void Clear()

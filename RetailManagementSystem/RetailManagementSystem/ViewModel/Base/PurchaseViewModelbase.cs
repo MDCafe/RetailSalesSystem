@@ -3,7 +3,7 @@
 namespace RetailManagementSystem.ViewModel.Base
 {
     class PurchaseViewModelbase : CommonBusinessViewModel
-    {             
+    {
         protected bool _showRestrictedCompanies;
 
         public PurchaseViewModelbase(bool showRestrictedCompanies)
@@ -13,6 +13,6 @@ namespace RetailManagementSystem.ViewModel.Base
                 _categoryId = Constants.COMPANIES_OTHERS;
             else
                 _categoryId = Constants.COMPANIES_MAIN;
-        }        
+        }
     }
- }
+}

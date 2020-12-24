@@ -42,7 +42,7 @@ namespace RetailManagementSystem.View.Graphs
             //YFormatter = val => val.ToString("C");
 
             //this.DataContextChanged += Graphs_DataContextChanged;
-            
+
         }
 
         //private void Graphs_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace RetailManagementSystem.Model
 {
     public delegate void AmountChanged();
 
     public class BaseModel : BaseModelNotifier
-    {        
+    {
         public event AmountChanged OnAmountChanged;
 
         private int _billId;

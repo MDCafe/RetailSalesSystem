@@ -73,7 +73,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             }
         }
 
-        public CustomerPaymentDetailsRptViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers, "Customer Wise Sales Report")
+        public CustomerPaymentDetailsRptViewModel(bool showRestrictedCustomers) : base(false, showRestrictedCustomers, "Customer Wise Sales Report")
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
@@ -125,7 +125,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             };
 
             var paramList = new MySqlParameter[] { fromSqlParam, toSqlParam, categoryIdSqlParam };
-            _rptDataSource[0].Value = GetDataTable(query, paramList, CommandType.StoredProcedure);                    
+            _rptDataSource[0].Value = GetDataTable(query, paramList, CommandType.StoredProcedure);
 
             var queryCustomer = "Select Name,OldBalanceDue from customers where Id=@customerId";
             var customerIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
@@ -149,7 +149,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             Workspace.This.OpenReport(this);
             CloseWindow(window);
         }
-        
+
         #endregion
 
         #region Clear Command

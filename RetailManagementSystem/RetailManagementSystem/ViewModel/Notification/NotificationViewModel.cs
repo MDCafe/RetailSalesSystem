@@ -9,7 +9,7 @@ namespace RetailManagementSystem.ViewModel.Notification
         public IEnumerable<T> DataList { get; set; }
         private string[,] _properties;
 
-        public NotificationViewModel(IEnumerable<T> dataList,string[,] properties)
+        public NotificationViewModel(IEnumerable<T> dataList, string[,] properties)
         {
             DataList = dataList;
             _properties = properties;

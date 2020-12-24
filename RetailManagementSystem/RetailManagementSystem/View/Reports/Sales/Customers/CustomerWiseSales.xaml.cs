@@ -7,7 +7,7 @@ namespace RetailManagementSystem.View.Reports.Sales.Customers
     {
         public CustomerWiseSales(bool showRestrictedCustomers)
         {
-            InitializeComponent();  
+            InitializeComponent();
             DataContext = new CustomerWiseSalesViewModel(showRestrictedCustomers);
         }
     }

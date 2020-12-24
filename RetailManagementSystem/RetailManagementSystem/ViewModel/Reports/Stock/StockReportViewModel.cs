@@ -17,7 +17,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
         private Category _selectedCategory;
         private Product _selectedProduct;
         private DateTime _fromDate;
-        private DateTime _toDate;                
+        private DateTime _toDate;
         IEnumerable<Company> _companiesList;
 
         public Company SelectedCompany
@@ -113,12 +113,12 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
 
         public IEnumerable<Product> ProductList { get; set; }
 
-        public StockReportViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers,"Stock Report")
+        public StockReportViewModel(bool showRestrictedCustomers) : base(false, showRestrictedCustomers, "Stock Report")
         {
-            
+
             ReportPath = @"View\Reports\Stock\StockDetails.rdl";
             using (RMSEntities rmsEntities = new RMSEntities())
-            {             
+            {
                 ProductCategories = rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
                 _companiesList = rmsEntities.Companies.ToList().OrderBy(c => c.Name);
                 ProductList = rmsEntities.Products.ToList().OrderBy(p => p.Name);
@@ -144,7 +144,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
 
         private void OnPrint(Window window)
         {
-            if(FromDate.CompareTo(ToDate) > 0)
+            if (FromDate.CompareTo(ToDate) > 0)
             {
                 Utilities.Utility.ShowErrorBox("From date can't be more than To date");
                 return;

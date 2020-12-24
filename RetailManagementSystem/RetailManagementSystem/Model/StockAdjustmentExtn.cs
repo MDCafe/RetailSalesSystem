@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetailManagementSystem.Model
 {
@@ -12,14 +8,16 @@ namespace RetailManagementSystem.Model
 
         public Nullable<int> StockId { get; set; }
         public Nullable<decimal> OpeningBalance { get; set; }
-        public Nullable<decimal> AdjustedQty { get => adjustedQty; 
-            set 
+        public Nullable<decimal> AdjustedQty
+        {
+            get => adjustedQty;
+            set
             {
                 if (adjustedQty == value) return;
                 adjustedQty = value;
                 ClosingBalance = OpeningBalance - adjustedQty;
                 OnPropertyChanged(nameof(ClosingBalance));
-            } 
+            }
         }
 
         public Nullable<decimal> ClosingBalance { get; set; }

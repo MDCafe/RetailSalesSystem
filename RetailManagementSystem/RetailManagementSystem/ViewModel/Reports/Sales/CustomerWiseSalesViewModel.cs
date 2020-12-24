@@ -1,13 +1,13 @@
-﻿using System;
-using System.Data;
-using System.Windows;
-using System.Windows.Input;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.Reporting.WinForms;
+﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Reports
 {
@@ -69,17 +69,17 @@ namespace RetailManagementSystem.ViewModel.Reports
                 using (RMSEntities rmsEntities = new RMSEntities())
                 {
                     return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == _categoryId).OrderBy(a => a.Name);
-                } 
+                }
             }
         }
 
-        public CustomerWiseSalesViewModel(bool showRestrictedCustomers) : base(false,showRestrictedCustomers, "Customer Wise Sales Report")
+        public CustomerWiseSalesViewModel(bool showRestrictedCustomers) : base(false, showRestrictedCustomers, "Customer Wise Sales Report")
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
             _showRestrictedCustomers = showRestrictedCustomers;
 
-            ReportPath = @"View\Reports\Sales\Customers\CustomerWiseSales.rdl";            
+            ReportPath = @"View\Reports\Sales\Customers\CustomerWiseSales.rdl";
         }
 
         #region Print Command

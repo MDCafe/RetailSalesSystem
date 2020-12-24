@@ -120,7 +120,7 @@
                                             Command="{Binding OpenCommonReportCommand}" CommandParameter="ShowStockAdjustReportView"/>
                         </RibbonMenuButton>
 
-                       <RibbonButton Label="Day Statement" LargeImageSource="Images\Finance.png" 
+                        <RibbonButton Label="Day Statement" LargeImageSource="Images\Finance.png" 
                                      ToolTipTitle="Statment depicts the cash flows for the day"
                                        KeyTip="R" Command="{Binding OpenDayStatamentCommand}"/>
 
@@ -166,76 +166,12 @@
                 <RibbonTab Header="Admin" KeyTip="A" x:Name="AdminTab" Visibility="Hidden">
                     <RibbonGroup x:Name="SalesAdmin" Header="Sales">
                         <RibbonButton Label="Sales Graph" LargeImageSource="Images\SalesGraph.png" ToolTipTitle="Sales Graph" 
-                                       KeyTip="SG" Command="{Binding OpenSalesGraphCommand}"></RibbonButton>
+                                       Command="{Binding OpenSalesGraphCommand}"/>
+                        <RibbonButton Label="Sales Percentage" LargeImageSource="Images\Report.png" ToolTipTitle="Sales Percentage" 
+                                       Command="{Binding OpenSalesPercentageCommand}"/>
                     </RibbonGroup>
                 </RibbonTab>
             </Ribbon>
-            <!--<Menu DockPanel.Dock="Top">
-                <MenuItem Header="_Sales">
-                    <MenuItem Header="_Sale Entry"  Command="{Binding OpenSalesEntryCommand}" CommandParameter="false"/>
-                </MenuItem>
-                <MenuItem Header="_Purchases">
-                    <MenuItem Header="Purchase Entry" />
-                </MenuItem>
-                <MenuItem Header="S_tocks">
-                    <MenuItem Header="View Current Stocks" />
-                    <MenuItem Header="View High Moving Stocks" />
-                </MenuItem>
-                <MenuItem Header="_Admin">
-                    <MenuItem Header="_Products">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                    <MenuItem Header="C_ompanies">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                    <MenuItem Header="_Customers">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                    <MenuItem Header="_Users">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/RetailManagementSystem;Component/Images/user_male.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                    <MenuItem Header="_Measuring Units">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                    <MenuItem Header="Ca_tegory">
-                        --><!--<MenuItem.Icon>
-                            <Image Source="/WpfTutorialSamples;component/Images/user.png" />
-                        </MenuItem.Icon>--><!--
-                    </MenuItem>
-                </MenuItem>
-            </Menu>-->
-                             
-                    <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                        <TextBlock Text="Theme:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <ComboBox x:Name="_themeCombo" SelectedIndex="0" Width="200">
-                            <ComboBoxItem Content="Generic" />
-                            <ComboBoxItem Content="Aero">
-                                <ComboBoxItem.Tag>
-                                    <xcad:AeroTheme />
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                            <ComboBoxItem Content="VS2010">
-                                <ComboBoxItem.Tag>
-                                    <xcad:VS2010Theme />
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                            <ComboBoxItem Content="Metro">
-                                <ComboBoxItem.Tag>
-                                    <xcad:MetroTheme />
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>-->
             <xcad:DockingManager 
                            AllowMixedOrientation="True"
                            BorderBrush="Black"

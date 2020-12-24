@@ -4,16 +4,16 @@
  * First Release Oct, 2009
  */
 
+using log4net;
+using Microsoft.Windows.Controls.Primitives;
 using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.ComponentModel;
 using System.Windows.Markup;
-using System.Collections.ObjectModel;
-using Microsoft.Windows.Controls.Primitives;
-using log4net;
+using System.Windows.Media;
 
 namespace BHCustCtrl
 {
@@ -44,7 +44,7 @@ namespace BHCustCtrl
 
         static CustComboBox()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustComboBox), new FrameworkPropertyMetadata(typeof(CustComboBox)));                        
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustComboBox), new FrameworkPropertyMetadata(typeof(CustComboBox)));
         }
 
         //The property is default and Content property for CustComboBox
@@ -66,14 +66,14 @@ namespace BHCustCtrl
         {
             if (popupDataGrid == null)
             {
-                
+
                 popupDataGrid = this.Template.FindName(partPopupDataGrid, this) as Microsoft.Windows.Controls.DataGrid;
                 if (popupDataGrid != null && columns != null)
                 {
                     //Add columns to DataGrid columns
                     for (int i = 0; i < columns.Count; i++)
                         popupDataGrid.Columns.Add(columns[i]);
-                    
+
                     //Add event handler for DataGrid popup
                     popupDataGrid.MouseDown += new MouseButtonEventHandler(popupDataGrid_MouseDown);
                     popupDataGrid.SelectionChanged += new SelectionChangedEventHandler(popupDataGrid_SelectionChanged);
@@ -87,7 +87,7 @@ namespace BHCustCtrl
         void popupDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //When open in Blend prevent raising exception 
-          if (!DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignerProperties.GetIsInDesignMode(this))
             {
                 Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
                 if (dg != null)
@@ -122,7 +122,7 @@ namespace BHCustCtrl
 
                 if (dep is DataGridColumnHeader)
                 {
-                   // do something
+                    // do something
                 }
                 //When user clicks to Microsoft.Windows.Controls.DataGrid cell, popup have to be closed
                 if (dep is Microsoft.Windows.Controls.DataGridCell)
@@ -151,9 +151,9 @@ namespace BHCustCtrl
             }
         }
         protected override void OnDropDownOpened(EventArgs e)
-        { 
+        {
             popupDataGrid.SelectedItem = this.SelectedItem;
-            
+
             base.OnDropDownOpened(e);
 
             if (popupDataGrid.SelectedItem != null)
@@ -168,9 +168,9 @@ namespace BHCustCtrl
             //ScrollViewer scrollViewer = GetScrollViewer(popupDataGrid) as ScrollViewer;
             //scrollViewer.ScrollToHome();
         }
-     
+
         public static DependencyObject GetScrollViewer(DependencyObject o)
-        {            
+        {
             if (o is ScrollViewer)
             { return o; }
 

@@ -15,16 +15,16 @@ namespace RetailManagementSystem.ViewModel.Stocks
         static readonly ILog log = LogManager.GetLogger(typeof(SwapsViewModel));
         public ObservableCollection<StockAdjustProductPrice> ProductsPriceList { get; private set; }
         public DateTime TranscationDate { get; set; }
-        public int SelectedSwapModeId { get;set; }
+        public int SelectedSwapModeId { get; set; }
         public Customer SelectedCustomer { get; set; }
         public IEnumerable<CodeMaster> SwapsCodeList { get; set; }
-        public static IEnumerable<Customer> SwapsCustomersList{ get; set; }
+        public static IEnumerable<Customer> SwapsCustomersList { get; set; }
         public decimal TotalAmount { get; set; }
         public ObservableCollection<SwapExtn> SwapsDetailList { get; private set; }
 
         public SwapsViewModel()
-        {            
-            Title = "Lend/Borrow Products";            
+        {
+            Title = "Lend/Borrow Products";
             SwapsDetailList = new ObservableCollection<SwapExtn>();
             SwapsDetailList.CollectionChanged += SwapsDetailList_CollectionChanged;
 
@@ -61,14 +61,14 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
         private void SwapsDetailList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 TotalAmount = SwapsDetailList.Sum(sw => sw.Amount);
             }
         }
 
         internal override void Clear()
-        {                        
+        {
             SwapsDetailList = new ObservableCollection<SwapExtn>();
             TotalAmount = 0;
             SelectedCustomer = null;
@@ -80,7 +80,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
             if (productPrice == null) return;
             //var saleItem = SwapsDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             var selRowSwapExtn = SwapsDetailList[selectedIndex];
-            if(selRowSwapExtn != null)
+            if (selRowSwapExtn != null)
             {
                 selRowSwapExtn.PropertyChanged += (s, e) =>
                 {
@@ -90,9 +90,9 @@ namespace RetailManagementSystem.ViewModel.Stocks
                     }
                 };
                 selRowSwapExtn.Quantity = 1;
-                selRowSwapExtn.SellingPrice = productPrice.SellingPrice;                
+                selRowSwapExtn.SellingPrice = productPrice.SellingPrice;
                 selRowSwapExtn.AvailableStock = productPrice.Quantity;
-                selRowSwapExtn.CostPrice = productPrice.Price;                
+                selRowSwapExtn.CostPrice = productPrice.Price;
                 selRowSwapExtn.Amount = productPrice.SellingPrice * selRowSwapExtn.Quantity;
                 selRowSwapExtn.StockId = productPrice.StockId;
             }
@@ -120,7 +120,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
         private void OnSave()
         {
-            using(var rmsEntities = new RMSEntities())
+            using (var rmsEntities = new RMSEntities())
             {
                 try
                 {
@@ -139,7 +139,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
                     {
                         swaps.SwapDetails.Add(new SwapDetail()
                         {
-                            StockId = item.StockId,                            
+                            StockId = item.StockId,
                             Quantity = item.Quantity,
                             SellingPrice = item.SellingPrice,
                             CostPrice = item.CostPrice,
@@ -148,7 +148,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
                         var stock = rmsEntities.Stocks.FirstOrDefault(s => s.Id == item.StockId);
                         SetStockTransaction(rmsEntities, item, stock, stockTransDate);
-                        
+
                         if (stock != null)
                         {
                             stock.Quantity -= item.Quantity;
@@ -168,10 +168,10 @@ namespace RetailManagementSystem.ViewModel.Stocks
         #endregion 
 
 
-        private static void SetStockTransaction(RMSEntities rmsEntities, SwapExtn swapDetail, Stock stockNewItem,DateTime stockTransDate)
+        private static void SetStockTransaction(RMSEntities rmsEntities, SwapExtn swapDetail, Stock stockNewItem, DateTime stockTransDate)
         {
             var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.AddedOn).FirstOrDefault();
-            var stockAdjustCheck =  RMSEntitiesHelper.CheckStockAdjustment(rmsEntities, stockNewItem.Id);
+            var stockAdjustCheck = RMSEntitiesHelper.CheckStockAdjustment(rmsEntities, stockNewItem.Id);
 
             //stock transaction not available for this product. Add them 
             if (stockTrans == null)
@@ -191,7 +191,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
             {
                 var systemDBDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
                 var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate);
-                if (dateDiff == 0 && stockAdjustCheck!=null &&  !stockAdjustCheck.StockTransId.HasValue)
+                if (dateDiff == 0 && stockAdjustCheck != null && !stockAdjustCheck.StockTransId.HasValue)
                 {
                     stockTrans.Outward = swapDetail.Quantity + (stockTrans.Outward ?? 0);
                     stockTrans.ClosingBalance -= swapDetail.Quantity;
@@ -209,6 +209,6 @@ namespace RetailManagementSystem.ViewModel.Stocks
                     rmsEntities.StockTransactions.Add(newStockTrans);
                 }
             }
-        }        
+        }
     }
 }

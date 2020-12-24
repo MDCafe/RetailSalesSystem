@@ -16,9 +16,9 @@ namespace RetailManagementSystem.View.Entitlements
 
         private void Initalize(bool validateAsAdmin, bool InitialLogin)
         {
-            
+
             //loginViewModel = new LoginViewModel(validateAsAdmin, InitialLogin);
-            
+
         }
 
         //public Login(bool validateAsAdmin,bool InitialLogin)

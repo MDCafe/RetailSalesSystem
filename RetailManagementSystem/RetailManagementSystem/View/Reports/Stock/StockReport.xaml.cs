@@ -7,7 +7,7 @@ namespace RetailManagementSystem.View.Reports.Stock
     {
         StockReportViewModel _stockReportViewModel = new StockReportViewModel(false);
 
-        public StockReport(bool showRestrictedCustomers)
+        public StockReport()
         {
             InitializeComponent();
             this.DataContext = _stockReportViewModel;

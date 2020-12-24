@@ -130,6 +130,7 @@
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="unit" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="MeasureQty" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="AllowFractions" Type="bit" />
         </EntityType>
         <EntityType Name="PaymentDetails">
           <Key>
@@ -816,36 +817,36 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="RMSEntitiesStoreContainer">
-          <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Category" EntityType="Self.Category" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="ChequePaymentDetails" EntityType="Self.ChequePaymentDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Companies" EntityType="Self.Companies" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="DirectPaymentDetails" EntityType="Self.DirectPaymentDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="ExpenseDetails" EntityType="Self.ExpenseDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Products" EntityType="Self.Products" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PurchaseChequePaymentDetails" EntityType="Self.PurchaseChequePaymentDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="PurchaseReturn" EntityType="Self.PurchaseReturn" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStocks" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Sales" EntityType="Self.Sales" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="SwapDetails" EntityType="Self.SwapDetails" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Swaps" EntityType="Self.Swaps" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="rms" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="rms" store:Type="Tables" />
+          <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ChequePaymentDetails" EntityType="Self.ChequePaymentDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Companies" EntityType="Self.Companies" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="DirectPaymentDetails" EntityType="Self.DirectPaymentDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ExpenseDetails" EntityType="Self.ExpenseDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PurchaseChequePaymentDetails" EntityType="Self.PurchaseChequePaymentDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PurchaseFreeDetails" EntityType="Self.PurchaseFreeDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PurchasePaymentDetails" EntityType="Self.PurchasePaymentDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="PurchaseReturn" EntityType="Self.PurchaseReturn" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStocks" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Sales" EntityType="Self.Sales" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="SwapDetails" EntityType="Self.SwapDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Swaps" EntityType="Self.Swaps" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="SystemData" EntityType="Self.SystemData" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="RMS" store:Type="Tables" />
           <AssociationSet Name="ExpCodeMaster" Association="Self.ExpCodeMaster">
             <End Role="CodeMaster" EntitySet="CodeMaster" />
             <End Role="ExpenseDetails" EntitySet="ExpenseDetails" />
@@ -975,6 +976,162 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RMSEntities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="rmsEntitiesconfig" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ApplicationDetails" EntityType="RMSEntities.ApplicationDetail" />
+          <EntitySet Name="Categories" EntityType="RMSEntities.Category" />
+          <EntitySet Name="ChequePaymentDetails" EntityType="RMSEntities.ChequePaymentDetail" />
+          <EntitySet Name="CodeMasters" EntityType="RMSEntities.CodeMaster" />
+          <EntitySet Name="Companies" EntityType="RMSEntities.Company" />
+          <EntitySet Name="Customers" EntityType="RMSEntities.Customer" />
+          <EntitySet Name="DirectPaymentDetails" EntityType="RMSEntities.DirectPaymentDetail" />
+          <EntitySet Name="ExpenseDetails" EntityType="RMSEntities.ExpenseDetail" />
+          <EntitySet Name="MeasuringUnits" EntityType="RMSEntities.MeasuringUnit" />
+          <EntitySet Name="PaymentDetails" EntityType="RMSEntities.PaymentDetail" />
+          <EntitySet Name="PriceDetails" EntityType="RMSEntities.PriceDetail" />
+          <EntitySet Name="Products" EntityType="RMSEntities.Product" />
+          <EntitySet Name="PurchaseChequePaymentDetails" EntityType="RMSEntities.PurchaseChequePaymentDetail" />
+          <EntitySet Name="PurchaseDetails" EntityType="RMSEntities.PurchaseDetail" />
+          <EntitySet Name="PurchaseFreeDetails" EntityType="RMSEntities.PurchaseFreeDetail" />
+          <EntitySet Name="PurchasePaymentDetails" EntityType="RMSEntities.PurchasePaymentDetail" />
+          <EntitySet Name="PurchaseReturns" EntityType="RMSEntities.PurchaseReturn" />
+          <EntitySet Name="Purchases" EntityType="RMSEntities.Purchase" />
+          <EntitySet Name="ReturnDamagedStocks" EntityType="RMSEntities.ReturnDamagedStock" />
+          <EntitySet Name="Roles" EntityType="RMSEntities.Role" />
+          <EntitySet Name="SaleDetails" EntityType="RMSEntities.SaleDetail" />
+          <EntitySet Name="Sales" EntityType="RMSEntities.Sale" />
+          <EntitySet Name="SaleTemps" EntityType="RMSEntities.SaleTemp" />
+          <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
+          <EntitySet Name="Stocks" EntityType="RMSEntities.Stock" />
+          <EntitySet Name="StockTransactions" EntityType="RMSEntities.StockTransaction" />
+          <EntitySet Name="SwapDetails" EntityType="RMSEntities.SwapDetail" />
+          <EntitySet Name="Swaps" EntityType="RMSEntities.Swap" />
+          <EntitySet Name="SystemDatas" EntityType="RMSEntities.SystemData" />
+          <EntitySet Name="Users" EntityType="RMSEntities.User" />
+          <AssociationSet Name="FK_Category" Association="RMSEntities.FK_Category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHQ_paymentDetails" Association="RMSEntities.FK_CHQ_paymentDetails">
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+            <End Role="ChequePaymentDetail" EntitySet="ChequePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="ExpCodeMaster" Association="RMSEntities.ExpCodeMaster">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="ExpenseDetail" EntitySet="ExpenseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_returnCode" Association="RMSEntities.FK_returnCode">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_returnCode_PR" Association="RMSEntities.FK_returnCode_PR">
+            <End Role="CodeMaster" EntitySet="CodeMasters" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Company" Association="RMSEntities.FK_Company">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyId" Association="RMSEntities.FK_CompanyId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="Purchase" EntitySet="Purchases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_compId" Association="RMSEntities.FK_compId">
+            <End Role="Company" EntitySet="Companies" />
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sales_Cust" Association="RMSEntities.FK_Sales_Cust">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Sale" EntitySet="Sales" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MOU" Association="RMSEntities.FK_MOU">
+            <End Role="MeasuringUnit" EntitySet="MeasuringUnits" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_sale_pay" Association="RMSEntities.Fk_sale_pay">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_price_id" Association="RMSEntities.FK_price_id">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_price_purchase" Association="RMSEntities.FK_price_purchase">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_priceId" Association="RMSEntities.FK_priceId">
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+            <End Role="Stock" EntitySet="Stocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product" Association="RMSEntities.FK_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PriceDetail" EntitySet="PriceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PrdId" Association="RMSEntities.FK_PrdId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Stock" EntitySet="Stocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProdId" Association="RMSEntities.FK_ProdId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductFree" Association="RMSEntities.FK_ProductFree">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductId" Association="RMSEntities.FK_ProductId">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductId_PR" Association="RMSEntities.FK_ProductId_PR">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductId_RD" Association="RMSEntities.FK_ProductId_RD">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ReturnDamagedStock" EntitySet="ReturnDamagedStocks" />
+          </AssociationSet>
+          <AssociationSet Name="pur_pay_det" Association="RMSEntities.pur_pay_det">
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+            <End Role="PurchaseChequePaymentDetail" EntitySet="PurchaseChequePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="Purchase_Bill" Association="RMSEntities.Purchase_Bill">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchaseChequePaymentDetail" EntitySet="PurchaseChequePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseBillId" Association="RMSEntities.FK_PurchaseBillId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pdt_bill" Association="RMSEntities.FK_pdt_bill">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_purchaseId" Association="RMSEntities.FK_purchaseId">
+            <End Role="Purchase" EntitySet="Purchases" />
+            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="fk_role" Association="RMSEntities.fk_role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_sale_bill" Association="RMSEntities.Fk_sale_bill">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="SaleDetail" EntitySet="SaleDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STKADJ_STRANS" Association="RMSEntities.FK_STKADJ_STRANS">
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
+            <End Role="StockAdjustment" EntitySet="StockAdjustments" />
+          </AssociationSet>
+          <AssociationSet Name="fk_stockId" Association="RMSEntities.fk_stockId">
+            <End Role="Stock" EntitySet="Stocks" />
+            <End Role="StockTransaction" EntitySet="StockTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SWAP_MAIN" Association="RMSEntities.FK_SWAP_MAIN">
+            <End Role="Swap" EntitySet="Swaps" />
+            <End Role="SwapDetail" EntitySet="SwapDetails" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="ApplicationDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -1000,9 +1157,25 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="parentId" Type="Int32" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="RollingNo" Type="Int32" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Category" FromRole="Category" ToRole="Products" />
+          <NavigationProperty Name="Products" Relationship="RMSEntities.FK_Category" FromRole="Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="ChequePaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="PaymentId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentId" Type="Int32" Nullable="false" />
+          <Property Name="ChequeNo" Type="Int32" />
+          <Property Name="ChequeDate" Type="DateTime" />
+          <Property Name="IsChequeRealised" Type="Boolean" />
+          <Property Name="PaymentDate" Type="DateTime" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PaymentDetail" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="ChequePaymentDetail" ToRole="PaymentDetail" />
         </EntityType>
         <EntityType Name="CodeMaster">
           <Key>
@@ -1011,17 +1184,17 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Code" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_returnCode" FromRole="CodeMaster" ToRole="ReturnDamagedStocks" />
-          <NavigationProperty Name="PurchaseReturns" Relationship="Self.FK_returnCode_PR" FromRole="CodeMaster" ToRole="PurchaseReturn" />
           <NavigationProperty Name="ExpenseDetails" Relationship="RMSEntities.ExpCodeMaster" FromRole="CodeMaster" ToRole="ExpenseDetail" />
+          <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSEntities.FK_returnCode" FromRole="CodeMaster" ToRole="ReturnDamagedStock" />
+          <NavigationProperty Name="PurchaseReturns" Relationship="RMSEntities.FK_returnCode_PR" FromRole="CodeMaster" ToRole="PurchaseReturn" />
         </EntityType>
         <EntityType Name="Company">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MobileNo" Type="Int32" />
           <Property Name="LanNo" Type="Int32" />
@@ -1033,489 +1206,10 @@
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Company" FromRole="Companies" ToRole="Products" />
+          <NavigationProperty Name="Products" Relationship="RMSEntities.FK_Company" FromRole="Company" ToRole="Product" />
           <NavigationProperty Name="Purchases" Relationship="RMSEntities.FK_CompanyId" FromRole="Company" ToRole="Purchase" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSEntities.FK_compId" FromRole="Company" ToRole="PurchasePaymentDetail" />
         </EntityType>
-        <EntityType Name="MeasuringUnit">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="unit" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="MeasureQty" Type="Decimal" Nullable="false" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_MOU" FromRole="MeasuringUnits" ToRole="Products" />
-        </EntityType>
-        <EntityType Name="PriceDetail">
-          <Key>
-            <PropertyRef Name="PriceId" />
-          </Key>
-          <Property Name="PriceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" />
-          <Property Name="SellingPrice" Type="Decimal" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="SaleDetails" Relationship="Self.FK_price_id" FromRole="PriceDetails" ToRole="SaleDetails" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_Product" FromRole="PriceDetails" ToRole="Products" />
-          <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_priceId" FromRole="PriceDetail" ToRole="Stock" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_price_purchase" FromRole="PriceDetail" ToRole="PurchaseDetail" />
-        </EntityType>
-        <EntityType Name="Product">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="UnitOfMeasure" Type="Int32" />
-          <Property Name="CategoryId" Type="Int32" />
-          <Property Name="CompanyId" Type="Int32" Nullable="false" />
-          <Property Name="ReorderPoint" Type="Decimal" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Category" FromRole="Products" ToRole="Category" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_Company" FromRole="Products" ToRole="Companies" />
-          <NavigationProperty Name="MeasuringUnit" Relationship="Self.FK_MOU" FromRole="Products" ToRole="MeasuringUnits" />
-          <NavigationProperty Name="PriceDetails" Relationship="Self.FK_Product" FromRole="Products" ToRole="PriceDetails" />
-          <NavigationProperty Name="SaleDetails" Relationship="Self.FK_ProdId" FromRole="Products" ToRole="SaleDetails" />
-          <NavigationProperty Name="PurchaseReturns" Relationship="Self.FK_ProductId_PR" FromRole="Products" ToRole="PurchaseReturn" />
-          <NavigationProperty Name="ReturnDamagedStocks" Relationship="Self.FK_ProductId_RD" FromRole="Products" ToRole="ReturnDamagedStocks" />
-          <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_PrdId" FromRole="Product" ToRole="Stock" />
-          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
-          <Property Name="SupportsMultiPrice" Type="Boolean" />
-          <Property Name="BarcodeNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
-          <Property Name="IsActive" Type="Boolean" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
-        </EntityType>
-        <EntityType Name="PurchaseReturn">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="ReturnReasonCode" Type="Int32" />
-          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="CodeMaster" Relationship="Self.FK_returnCode_PR" FromRole="PurchaseReturn" ToRole="CodeMaster" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProductId_PR" FromRole="PurchaseReturn" ToRole="Products" />
-          <Property Name="MarkedForReturn" Type="Boolean" />
-          <Property Name="ExpiryDate" Type="DateTime" />
-          <Property Name="ReturnPrice" Type="Decimal" />
-        </EntityType>
-        <EntityType Name="ReturnDamagedStock">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="isReturn" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReturnReasonCode" Type="Int32" />
-          <NavigationProperty Name="CodeMaster" Relationship="Self.FK_returnCode" FromRole="ReturnDamagedStocks" ToRole="CodeMaster" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProductId_RD" FromRole="ReturnDamagedStocks" ToRole="Products" />
-        </EntityType>
-        <EntityType Name="Role">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="RoleName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Users" Relationship="Self.fk_role" FromRole="Roles" ToRole="Users" />
-        </EntityType>
-        <EntityType Name="SaleDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
-          <Property Name="SellingPrice" Type="Decimal" />
-          <Property Name="Qty" Type="Decimal" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PriceDetail" Relationship="Self.FK_price_id" FromRole="SaleDetails" ToRole="PriceDetails" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_ProdId" FromRole="SaleDetails" ToRole="Products" />
-          <NavigationProperty Name="Sale" Relationship="Self.Fk_sale_bill" FromRole="SaleDetails" ToRole="Sales" />
-          <Property Name="CostPrice" Type="Decimal" />
-        </EntityType>
-        <EntityType Name="Sale">
-          <Key>
-            <PropertyRef Name="BillId" />
-          </Key>
-          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CustomerId" Type="Int32" Nullable="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="TransportCharges" Type="Decimal" />
-          <Property Name="TotalAmount" Type="Decimal" />
-          <Property Name="IsCancelled" Type="Boolean" />
-          <Property Name="CustomerOrderNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="None" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
-          <Property Name="PaymentMode" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="SaleDetails" Relationship="Self.Fk_sale_bill" FromRole="Sales" ToRole="SaleDetails" />
-          <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
-          <Property Name="AmountPaid" Type="Decimal" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.Fk_sale_pay" FromRole="Sale" ToRole="PaymentDetail" />
-        </EntityType>
-        <EntityType Name="SaleTemp">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Guid" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Guid" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="SaleDate" Type="DateTime" />
-          <Property Name="CustomerId" Type="Int32" />
-          <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="OrderNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="Quantity" Type="Decimal" />
-          <Property Name="SellingPrice" Type="Decimal" />
-          <Property Name="DiscountPercentage" Type="Decimal" />
-          <Property Name="DiscountAmount" Type="Decimal" />
-          <Property Name="Amount" Type="Decimal" />
-          <Property Name="PriceId" Type="Int32" />
-          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="RoleId" Type="Int32" />
-          <NavigationProperty Name="Role" Relationship="Self.fk_role" FromRole="Users" ToRole="Roles" />
-        </EntityType>
-        <Association Name="FK_Category">
-          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
-          <End Role="Products" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_returnCode">
-          <End Role="CodeMaster" Type="Self.CodeMaster" Multiplicity="0..1" />
-          <End Role="ReturnDamagedStocks" Type="Self.ReturnDamagedStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CodeMaster">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ReturnDamagedStocks">
-              <PropertyRef Name="ReturnReasonCode" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_returnCode_PR">
-          <End Role="CodeMaster" Type="Self.CodeMaster" Multiplicity="0..1" />
-          <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CodeMaster">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseReturn">
-              <PropertyRef Name="ReturnReasonCode" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Company">
-          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
-          <End Role="Products" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MOU">
-          <End Role="MeasuringUnits" Type="Self.MeasuringUnit" Multiplicity="0..1" />
-          <End Role="Products" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MeasuringUnits">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="UnitOfMeasure" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_price_id">
-          <End Role="PriceDetails" Type="Self.PriceDetail" Multiplicity="1" />
-          <End Role="SaleDetails" Type="Self.SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriceDetails">
-              <PropertyRef Name="PriceId" />
-            </Principal>
-            <Dependent Role="SaleDetails">
-              <PropertyRef Name="PriceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Product">
-          <End Role="Products" Type="Self.Product" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="PriceDetails" Type="Self.PriceDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PriceDetails">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProdId">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="SaleDetails" Type="Self.SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SaleDetails">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductId_PR">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseReturn">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductId_RD">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="ReturnDamagedStocks" Type="Self.ReturnDamagedStock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ReturnDamagedStocks">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_role">
-          <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
-          <End Role="Users" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Roles">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Users">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Fk_sale_bill">
-          <End Role="Sales" Type="Self.Sale" Multiplicity="1" />
-          <End Role="SaleDetails" Type="Self.SaleDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sales">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="SaleDetails">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="rmsEntitiesconfig" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetail" />
-          <EntitySet Name="Categories" EntityType="Self.Category" />
-          <EntitySet Name="CodeMasters" EntityType="Self.CodeMaster" />
-          <EntitySet Name="Companies" EntityType="Self.Company" />
-          <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnit" />
-          <EntitySet Name="PriceDetails" EntityType="Self.PriceDetail" />
-          <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="PurchaseReturns" EntityType="Self.PurchaseReturn" />
-          <EntitySet Name="ReturnDamagedStocks" EntityType="Self.ReturnDamagedStock" />
-          <EntitySet Name="Roles" EntityType="Self.Role" />
-          <EntitySet Name="SaleDetails" EntityType="Self.SaleDetail" />
-          <EntitySet Name="Sales" EntityType="Self.Sale" />
-          <EntitySet Name="SaleTemps" EntityType="Self.SaleTemp" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <AssociationSet Name="FK_Category" Association="Self.FK_Category">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="Products" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_returnCode" Association="Self.FK_returnCode">
-            <End Role="CodeMaster" EntitySet="CodeMasters" />
-            <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_returnCode_PR" Association="Self.FK_returnCode_PR">
-            <End Role="CodeMaster" EntitySet="CodeMasters" />
-            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Company" Association="Self.FK_Company">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Products" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MOU" Association="Self.FK_MOU">
-            <End Role="MeasuringUnits" EntitySet="MeasuringUnits" />
-            <End Role="Products" EntitySet="Products" />
-          </AssociationSet>
-          <AssociationSet Name="FK_price_id" Association="Self.FK_price_id">
-            <End Role="PriceDetails" EntitySet="PriceDetails" />
-            <End Role="SaleDetails" EntitySet="SaleDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Product" Association="Self.FK_Product">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="PriceDetails" EntitySet="PriceDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProdId" Association="Self.FK_ProdId">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="SaleDetails" EntitySet="SaleDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductId_PR" Association="Self.FK_ProductId_PR">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductId_RD" Association="Self.FK_ProductId_RD">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="ReturnDamagedStocks" EntitySet="ReturnDamagedStocks" />
-          </AssociationSet>
-          <AssociationSet Name="fk_role" Association="Self.fk_role">
-            <End Role="Roles" EntitySet="Roles" />
-            <End Role="Users" EntitySet="Users" />
-          </AssociationSet>
-          <AssociationSet Name="Fk_sale_bill" Association="Self.Fk_sale_bill">
-            <End Role="Sales" EntitySet="Sales" />
-            <End Role="SaleDetails" EntitySet="SaleDetails" />
-          </AssociationSet>
-          <EntitySet Name="Customers" EntityType="RMSEntities.Customer" />
-          <AssociationSet Name="FK_Sales_Cust" Association="RMSEntities.FK_Sales_Cust">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="Sale" EntitySet="Sales" />
-          </AssociationSet>
-          <EntitySet Name="Stocks" EntityType="RMSEntities.Stock" />
-          <AssociationSet Name="FK_priceId" Association="RMSEntities.FK_priceId">
-            <End Role="PriceDetail" EntitySet="PriceDetails" />
-            <End Role="Stock" EntitySet="Stocks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PrdId" Association="RMSEntities.FK_PrdId">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="Stock" EntitySet="Stocks" />
-          </AssociationSet>
-          <EntitySet Name="PurchaseFreeDetails" EntityType="RMSEntities.PurchaseFreeDetail" />
-          <EntitySet Name="Purchases" EntityType="RMSEntities.Purchase" />
-          <AssociationSet Name="FK_CompanyId" Association="RMSEntities.FK_CompanyId">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="Purchase" EntitySet="Purchases" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductFree" Association="RMSEntities.FK_ProductFree">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_pdt_bill" Association="RMSEntities.FK_pdt_bill">
-            <End Role="Purchase" EntitySet="Purchases" />
-            <End Role="PurchaseFreeDetail" EntitySet="PurchaseFreeDetails" />
-          </AssociationSet>
-          <EntitySet Name="ChequePaymentDetails" EntityType="RMSEntities.ChequePaymentDetail" />
-          <EntitySet Name="PaymentDetails" EntityType="RMSEntities.PaymentDetail" />
-          <AssociationSet Name="FK_CHQ_paymentDetails" Association="RMSEntities.FK_CHQ_paymentDetails">
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-            <End Role="ChequePaymentDetail" EntitySet="ChequePaymentDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_cust_pay" Association="RMSEntities.FK_cust_pay">
-            <End Role="Customer" EntitySet="Customers" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
-          <AssociationSet Name="Fk_sale_pay" Association="RMSEntities.Fk_sale_pay">
-            <End Role="Sale" EntitySet="Sales" />
-            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
-          </AssociationSet>
-          <EntitySet Name="DirectPaymentDetails" EntityType="RMSEntities.DirectPaymentDetail" />
-          <EntitySet Name="SystemDatas" EntityType="RMSEntities.SystemData" />
-          <EntitySet Name="PurchaseDetails" EntityType="RMSEntities.PurchaseDetail" />
-          <AssociationSet Name="FK_price_purchase" Association="RMSEntities.FK_price_purchase">
-            <End Role="PriceDetail" EntitySet="PriceDetails" />
-            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ProductId" Association="RMSEntities.FK_ProductId">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseBillId" Association="RMSEntities.FK_PurchaseBillId">
-            <End Role="Purchase" EntitySet="Purchases" />
-            <End Role="PurchaseDetail" EntitySet="PurchaseDetails" />
-          </AssociationSet>
-          <EntitySet Name="StockTransactions" EntityType="RMSEntities.StockTransaction" />
-          <AssociationSet Name="fk_stockId" Association="RMSEntities.fk_stockId">
-            <End Role="Stock" EntitySet="Stocks" />
-            <End Role="StockTransaction" EntitySet="StockTransactions" />
-          </AssociationSet>
-          <EntitySet Name="ExpenseDetails" EntityType="RMSEntities.ExpenseDetail" />
-          <AssociationSet Name="ExpCodeMaster" Association="RMSEntities.ExpCodeMaster">
-            <End Role="CodeMaster" EntitySet="CodeMasters" />
-            <End Role="ExpenseDetail" EntitySet="ExpenseDetails" />
-          </AssociationSet>
-          <EntitySet Name="PurchaseChequePaymentDetails" EntityType="RMSEntities.PurchaseChequePaymentDetail" />
-          <EntitySet Name="PurchasePaymentDetails" EntityType="RMSEntities.PurchasePaymentDetail" />
-          <AssociationSet Name="FK_compId" Association="RMSEntities.FK_compId">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
-          </AssociationSet>
-          <AssociationSet Name="pur_pay_det" Association="RMSEntities.pur_pay_det">
-            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
-            <End Role="PurchaseChequePaymentDetail" EntitySet="PurchaseChequePaymentDetails" />
-          </AssociationSet>
-          <AssociationSet Name="Purchase_Bill" Association="RMSEntities.Purchase_Bill">
-            <End Role="Purchase" EntitySet="Purchases" />
-            <End Role="PurchaseChequePaymentDetail" EntitySet="PurchaseChequePaymentDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_purchaseId" Association="RMSEntities.FK_purchaseId">
-            <End Role="Purchase" EntitySet="Purchases" />
-            <End Role="PurchasePaymentDetail" EntitySet="PurchasePaymentDetails" />
-          </AssociationSet>
-          <EntitySet Name="SwapDetails" EntityType="RMSEntities.SwapDetail" />
-          <EntitySet Name="Swaps" EntityType="RMSEntities.Swap" />
-          <AssociationSet Name="FK_SWAP_MAIN" Association="RMSEntities.FK_SWAP_MAIN">
-            <End Role="Swap" EntitySet="Swaps" />
-            <End Role="SwapDetail" EntitySet="SwapDetails" />
-          </AssociationSet>
-          <EntitySet Name="StockAdjustments" EntityType="RMSEntities.StockAdjustment" />
-          <AssociationSet Name="FK_STKADJ_STRANS" Association="RMSEntities.FK_STKADJ_STRANS">
-            <End Role="StockTransaction" EntitySet="StockTransactions" />
-            <End Role="StockAdjustment" EntitySet="StockAdjustments" />
-          </AssociationSet>
-          </EntityContainer>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Id" />
@@ -1531,6 +1225,7 @@
           <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="CustomerTypeId" Type="Int32" />
           <Property Name="BalanceDue" Type="Decimal" />
+          <Property Name="OldBalanceDue" Type="Decimal" />
           <Property Name="CreditLimit" Type="Decimal" />
           <Property Name="CreditDays" Type="Int32" Nullable="false" />
           <Property Name="ContactPerson" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
@@ -1539,61 +1234,144 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Sales" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Customer" ToRole="Sale" />
-          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.FK_cust_pay" FromRole="Customer" ToRole="PaymentDetail" />
-          <Property Name="OldBalanceDue" Type="Decimal" />
         </EntityType>
-        <Association Name="FK_Sales_Cust">
-          <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Sale">
-              <PropertyRef Name="CustomerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Stock">
+        <EntityType Name="DirectPaymentDetail">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Decimal" Nullable="false" />
-          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" />
-          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="PaidAmount" Type="Decimal" />
+          <Property Name="PaymentDate" Type="DateTime" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_priceId" FromRole="Stock" ToRole="PriceDetail" />
-          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_PrdId" FromRole="Stock" ToRole="Product" />
-          <NavigationProperty Name="StockTransactions" Relationship="RMSEntities.fk_stockId" FromRole="Stock" ToRole="StockTransaction" />
         </EntityType>
-        <Association Name="FK_priceId">
-          <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="1" />
-          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PriceDetail">
-              <PropertyRef Name="PriceId" />
-            </Principal>
-            <Dependent Role="Stock">
-              <PropertyRef Name="PriceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PrdId">
-          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
-          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Stock">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <EntityType Name="ExpenseDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpenseTypeId" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSEntities.ExpCodeMaster" FromRole="ExpenseDetail" ToRole="CodeMaster" />
+        </EntityType>
+        <EntityType Name="MeasuringUnit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="unit" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MeasureQty" Type="Decimal" Nullable="false" />
+          <Property Name="AllowFractions" Type="Boolean" />
+          <NavigationProperty Name="Products" Relationship="RMSEntities.FK_MOU" FromRole="MeasuringUnit" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="PaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="AmountPaid" Type="Decimal" />
+          <Property Name="PaymentMode" Type="Int32" />
+          <Property Name="PaymentDate" Type="DateTime" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="ChequePaymentDetails" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="PaymentDetail" ToRole="ChequePaymentDetail" />
+          <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_pay" FromRole="PaymentDetail" ToRole="Sale" />
+        </EntityType>
+        <EntityType Name="PriceDetail">
+          <Key>
+            <PropertyRef Name="PriceId" />
+          </Key>
+          <Property Name="PriceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" />
+          <Property Name="SellingPrice" Type="Decimal" Nullable="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSEntities.FK_price_id" FromRole="PriceDetail" ToRole="SaleDetail" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_price_purchase" FromRole="PriceDetail" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_priceId" FromRole="PriceDetail" ToRole="Stock" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_Product" FromRole="PriceDetail" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UnitOfMeasure" Type="Int32" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="ReorderPoint" Type="Decimal" Nullable="false" />
+          <Property Name="SupportsMultiPrice" Type="Boolean" />
+          <Property Name="BarcodeNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="Category" Relationship="RMSEntities.FK_Category" FromRole="Product" ToRole="Category" />
+          <NavigationProperty Name="Company" Relationship="RMSEntities.FK_Company" FromRole="Product" ToRole="Company" />
+          <NavigationProperty Name="MeasuringUnit" Relationship="RMSEntities.FK_MOU" FromRole="Product" ToRole="MeasuringUnit" />
+          <NavigationProperty Name="PriceDetails" Relationship="RMSEntities.FK_Product" FromRole="Product" ToRole="PriceDetail" />
+          <NavigationProperty Name="Stocks" Relationship="RMSEntities.FK_PrdId" FromRole="Product" ToRole="Stock" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSEntities.FK_ProdId" FromRole="Product" ToRole="SaleDetail" />
+          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_ProductFree" FromRole="Product" ToRole="PurchaseFreeDetail" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="PurchaseReturns" Relationship="RMSEntities.FK_ProductId_PR" FromRole="Product" ToRole="PurchaseReturn" />
+          <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSEntities.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
+        </EntityType>
+        <EntityType Name="PurchaseChequePaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PurchasePaymentId" Type="Int32" />
+          <Property Name="PurchaseBillId" Type="Int32" />
+          <Property Name="ChequeNo" Type="Int32" />
+          <Property Name="ChequeDate" Type="DateTime" />
+          <Property Name="IsChequeRealised" Type="Boolean" />
+          <Property Name="PaymentDate" Type="DateTime" />
+          <Property Name="ChequeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PurchasePaymentDetail" Relationship="RMSEntities.pur_pay_det" FromRole="PurchaseChequePaymentDetail" ToRole="PurchasePaymentDetail" />
+          <NavigationProperty Name="Purchase" Relationship="RMSEntities.Purchase_Bill" FromRole="PurchaseChequePaymentDetail" ToRole="Purchase" />
+        </EntityType>
+        <EntityType Name="PurchaseDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="PriceId" Type="Int32" />
+          <Property Name="PurchasedQty" Type="Decimal" />
+          <Property Name="ActualPrice" Type="Decimal" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="Tax" Type="Decimal" />
+          <Property Name="ItemCoolieCharges" Type="Decimal" />
+          <Property Name="ItemTransportCharges" Type="Decimal" />
+          <Property Name="VATAmount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_price_purchase" FromRole="PurchaseDetail" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductId" FromRole="PurchaseDetail" ToRole="Product" />
+          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="PurchaseDetail" ToRole="Purchase" />
+        </EntityType>
         <EntityType Name="PurchaseFreeDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -1611,6 +1389,41 @@
           <Property Name="IsFreeOnly" Type="Boolean" />
           <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductFree" FromRole="PurchaseFreeDetail" ToRole="Product" />
           <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_pdt_bill" FromRole="PurchaseFreeDetail" ToRole="Purchase" />
+        </EntityType>
+        <EntityType Name="PurchasePaymentDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PurchaseBillId" Type="Int32" Nullable="false" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="AmountPaid" Type="Decimal" Nullable="false" />
+          <Property Name="PaymentDate" Type="DateTime" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="Company" Relationship="RMSEntities.FK_compId" FromRole="PurchasePaymentDetail" ToRole="Company" />
+          <NavigationProperty Name="PurchaseChequePaymentDetails" Relationship="RMSEntities.pur_pay_det" FromRole="PurchasePaymentDetail" ToRole="PurchaseChequePaymentDetail" />
+          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_purchaseId" FromRole="PurchasePaymentDetail" ToRole="Purchase" />
+        </EntityType>
+        <EntityType Name="PurchaseReturn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="ReturnPrice" Type="Decimal" />
+          <Property Name="ReturnReasonCode" Type="Int32" />
+          <Property Name="MarkedForReturn" Type="Boolean" />
+          <Property Name="ExpiryDate" Type="DateTime" />
+          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSEntities.FK_returnCode_PR" FromRole="PurchaseReturn" ToRole="CodeMaster" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductId_PR" FromRole="PurchaseReturn" ToRole="Product" />
         </EntityType>
         <EntityType Name="Purchase">
           <Key>
@@ -1634,80 +1447,202 @@
           <Property Name="ModifiedOn" Type="DateTime" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="Company" Relationship="RMSEntities.FK_CompanyId" FromRole="Purchase" ToRole="Company" />
-          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_pdt_bill" FromRole="Purchase" ToRole="PurchaseFreeDetail" />
-          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="Purchase" ToRole="PurchaseDetail" />
           <NavigationProperty Name="PurchaseChequePaymentDetails" Relationship="RMSEntities.Purchase_Bill" FromRole="Purchase" ToRole="PurchaseChequePaymentDetail" />
+          <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="Purchase" ToRole="PurchaseDetail" />
+          <NavigationProperty Name="PurchaseFreeDetails" Relationship="RMSEntities.FK_pdt_bill" FromRole="Purchase" ToRole="PurchaseFreeDetail" />
           <NavigationProperty Name="PurchasePaymentDetails" Relationship="RMSEntities.FK_purchaseId" FromRole="Purchase" ToRole="PurchasePaymentDetail" />
         </EntityType>
-        <Association Name="FK_CompanyId">
-          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
-          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Purchase">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ProductFree">
-          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
-          <End Type="RMSEntities.PurchaseFreeDetail" Role="PurchaseFreeDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchaseFreeDetail">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_pdt_bill">
-          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
-          <End Type="RMSEntities.PurchaseFreeDetail" Role="PurchaseFreeDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Purchase">
-              <PropertyRef Name="BillId" />
-            </Principal>
-            <Dependent Role="PurchaseFreeDetail">
-              <PropertyRef Name="BillId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="ChequePaymentDetail">
+        <EntityType Name="ReturnDamagedStock">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="PaymentId" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PaymentId" Type="Int32" Nullable="false" />
-          <Property Name="ChequeNo" Type="Int32" />
-          <Property Name="ChequeDate" Type="DateTime" />
-          <Property Name="IsChequeRealised" Type="Boolean" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BillId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="comments" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="isReturn" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PaymentDetail" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="ChequePaymentDetail" ToRole="PaymentDetail" />
-          <Property Name="PaymentDate" Type="DateTime" />
+          <Property Name="ReturnReasonCode" Type="Int32" />
+          <NavigationProperty Name="CodeMaster" Relationship="RMSEntities.FK_returnCode" FromRole="ReturnDamagedStock" ToRole="CodeMaster" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductId_RD" FromRole="ReturnDamagedStock" ToRole="Product" />
         </EntityType>
-        <EntityType Name="PaymentDetail">
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RoleName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="RMSEntities.fk_role" FromRole="Role" ToRole="User" />
+        </EntityType>
+        <EntityType Name="SaleDetail">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
+          <Property Name="Qty" Type="Decimal" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_price_id" FromRole="SaleDetail" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProdId" FromRole="SaleDetail" ToRole="Product" />
+          <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_bill" FromRole="SaleDetail" ToRole="Sale" />
+        </EntityType>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="BillId" />
+          </Key>
+          <Property Name="BillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="Discount" Type="Decimal" />
+          <Property Name="TransportCharges" Type="Decimal" />
           <Property Name="AmountPaid" Type="Decimal" />
-          <Property Name="PaymentMode" Type="Int32" />
+          <Property Name="TotalAmount" Type="Decimal" />
+          <Property Name="IsCancelled" Type="Boolean" />
+          <Property Name="CustomerOrderNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" />
+          <Property Name="UpdatedBy" Type="Int32" />
+          <Property Name="RunningBillNo" Type="Int32" Nullable="false" />
+          <Property Name="PaymentMode" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_Sales_Cust" FromRole="Sale" ToRole="Customer" />
+          <NavigationProperty Name="PaymentDetails" Relationship="RMSEntities.Fk_sale_pay" FromRole="Sale" ToRole="PaymentDetail" />
+          <NavigationProperty Name="SaleDetails" Relationship="RMSEntities.Fk_sale_bill" FromRole="Sale" ToRole="SaleDetail" />
+        </EntityType>
+        <EntityType Name="SaleTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Guid" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="SaleDate" Type="DateTime" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="PaymentMode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="OrderNo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="DiscountPercentage" Type="Decimal" />
+          <Property Name="DiscountAmount" Type="Decimal" />
+          <Property Name="Amount" Type="Decimal" />
+          <Property Name="PriceId" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="StockAdjustment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="OpeningBalance" Type="Decimal" />
+          <Property Name="AdjustedQty" Type="Decimal" />
+          <Property Name="ClosingBalance" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
+          <Property Name="StockTransId" Type="Int32" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="StockTransaction" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockAdjustment" ToRole="StockTransaction" />
+        </EntityType>
+        <EntityType Name="Stock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" />
+          <Property Name="PriceId" Type="Int32" Nullable="false" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="ChequePaymentDetails" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="PaymentDetail" ToRole="ChequePaymentDetail" />
-          <NavigationProperty Name="Customer" Relationship="RMSEntities.FK_cust_pay" FromRole="PaymentDetail" ToRole="Customer" />
-          <NavigationProperty Name="Sale" Relationship="RMSEntities.Fk_sale_pay" FromRole="PaymentDetail" ToRole="Sale" />
-          <Property Name="PaymentDate" Type="DateTime" />
+          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_priceId" FromRole="Stock" ToRole="PriceDetail" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_PrdId" FromRole="Stock" ToRole="Product" />
+          <NavigationProperty Name="StockTransactions" Relationship="RMSEntities.fk_stockId" FromRole="Stock" ToRole="StockTransaction" />
         </EntityType>
+        <EntityType Name="StockTransaction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="Inward" Type="Decimal" />
+          <Property Name="Outward" Type="Decimal" />
+          <Property Name="OpeningBalance" Type="Decimal" />
+          <Property Name="ClosingBalance" Type="Decimal" />
+          <Property Name="SalesPurchaseCancelQty" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="StockAdjustments" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockTransaction" ToRole="StockAdjustment" />
+          <NavigationProperty Name="Stock" Relationship="RMSEntities.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
+        </EntityType>
+        <EntityType Name="SwapDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SwapId" Type="Int32" />
+          <Property Name="StockId" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" />
+          <Property Name="SellingPrice" Type="Decimal" />
+          <Property Name="CostPrice" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Swap" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="SwapDetail" ToRole="Swap" />
+        </EntityType>
+        <EntityType Name="Swap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="LendOrBorrowId" Type="Int32" />
+          <Property Name="TotalAmount" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="SwapDetails" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="Swap" ToRole="SwapDetail" />
+        </EntityType>
+        <EntityType Name="SystemData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="SysDate" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RoleId" Type="Int32" />
+          <NavigationProperty Name="Role" Relationship="RMSEntities.fk_role" FromRole="User" ToRole="Role" />
+        </EntityType>
+        <Association Name="FK_Category">
+          <End Type="RMSEntities.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CHQ_paymentDetails">
           <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="1" />
           <End Type="RMSEntities.ChequePaymentDetail" Role="ChequePaymentDetail" Multiplicity="*" />
@@ -1720,15 +1655,99 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_cust_pay">
-          <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="0..1" />
-          <End Type="RMSEntities.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+        <Association Name="ExpCodeMaster">
+          <End Type="RMSEntities.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSEntities.ExpenseDetail" Role="ExpenseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExpenseDetail">
+              <PropertyRef Name="ExpenseTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_returnCode">
+          <End Type="RMSEntities.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSEntities.ReturnDamagedStock" Role="ReturnDamagedStock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ReturnDamagedStock">
+              <PropertyRef Name="ReturnReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_returnCode_PR">
+          <End Type="RMSEntities.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
+          <End Type="RMSEntities.PurchaseReturn" Role="PurchaseReturn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CodeMaster">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ReturnReasonCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Company">
+          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyId">
+          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Purchase">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_compId">
+          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
+          <End Type="RMSEntities.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchasePaymentDetail">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sales_Cust">
+          <End Type="RMSEntities.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Customer">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="PaymentDetail">
+            <Dependent Role="Sale">
               <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MOU">
+          <End Type="RMSEntities.MeasuringUnit" Role="MeasuringUnit" Multiplicity="0..1" />
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MeasuringUnit">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="UnitOfMeasure" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1744,47 +1763,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="DirectPaymentDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="CustomerId" Type="Int32" />
-          <Property Name="PaidAmount" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <Property Name="PaymentDate" Type="DateTime" />
-        </EntityType>
-        <EntityType Name="SystemData">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="SysDate" Type="DateTime" />
-        </EntityType>
-        <EntityType Name="PurchaseDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BillId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" />
-          <Property Name="PriceId" Type="Int32" />
-          <Property Name="PurchasedQty" Type="Decimal" />
-          <Property Name="ActualPrice" Type="Decimal" Nullable="false" />
-          <Property Name="Discount" Type="Decimal" />
-          <Property Name="Tax" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PriceDetail" Relationship="RMSEntities.FK_price_purchase" FromRole="PurchaseDetail" ToRole="PriceDetail" />
-          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_ProductId" FromRole="PurchaseDetail" ToRole="Product" />
-          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_PurchaseBillId" FromRole="PurchaseDetail" ToRole="Purchase" />
-          <Property Name="VATAmount" Type="Decimal" />
-          <Property Name="ItemCoolieCharges" Type="Decimal" />
-          <Property Name="ItemTransportCharges" Type="Decimal" />
-        </EntityType>
+        <Association Name="FK_price_id">
+          <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="1" />
+          <End Type="RMSEntities.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceDetail">
+              <PropertyRef Name="PriceId" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_price_purchase">
           <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="0..1" />
           <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
@@ -1794,6 +1784,68 @@
             </Principal>
             <Dependent Role="PurchaseDetail">
               <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_priceId">
+          <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="1" />
+          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PriceDetail">
+              <PropertyRef Name="PriceId" />
+            </Principal>
+            <Dependent Role="Stock">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="RMSEntities.PriceDetail" Role="PriceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PriceDetail">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PrdId">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Stock">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProdId">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductFree">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.PurchaseFreeDetail" Role="PurchaseFreeDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PurchaseFreeDetail">
+              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1809,114 +1861,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PurchaseBillId">
-          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
-          <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+        <Association Name="FK_ProductId_PR">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.PurchaseReturn" Role="PurchaseReturn" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Purchase">
-              <PropertyRef Name="BillId" />
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="PurchaseDetail">
-              <PropertyRef Name="BillId" />
+            <Dependent Role="PurchaseReturn">
+              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="StockTransaction">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockId" Type="Int32" />
-          <Property Name="Inward" Type="Decimal" />
-          <Property Name="Outward" Type="Decimal" />
-          <Property Name="OpeningBalance" Type="Decimal" />
-          <Property Name="ClosingBalance" Type="Decimal" />
-          <Property Name="SalesPurchaseCancelQty" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Stock" Relationship="RMSEntities.fk_stockId" FromRole="StockTransaction" ToRole="Stock" />
-          <NavigationProperty Name="StockAdjustments" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockTransaction" ToRole="StockAdjustment" />
-        </EntityType>
-        <Association Name="fk_stockId">
-          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="0..1" />
-          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="*" />
+        <Association Name="FK_ProductId_RD">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.ReturnDamagedStock" Role="ReturnDamagedStock" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Stock">
+            <Principal Role="Product">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="StockTransaction">
-              <PropertyRef Name="StockId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="ExpenseDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ExpenseTypeId" Type="Int32" />
-          <Property Name="Amount" Type="Decimal" />
-          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="CodeMaster" Relationship="RMSEntities.ExpCodeMaster" FromRole="ExpenseDetail" ToRole="CodeMaster" />
-        </EntityType>
-        <Association Name="ExpCodeMaster">
-          <End Type="RMSEntities.CodeMaster" Role="CodeMaster" Multiplicity="0..1" />
-          <End Type="RMSEntities.ExpenseDetail" Role="ExpenseDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CodeMaster">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ExpenseDetail">
-              <PropertyRef Name="ExpenseTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="PurchaseChequePaymentDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PurchasePaymentId" Type="Int32" />
-          <Property Name="PurchaseBillId" Type="Int32" />
-          <Property Name="ChequeNo" Type="Int32" />
-          <Property Name="ChequeDate" Type="DateTime" />
-          <Property Name="IsChequeRealised" Type="Boolean" />
-          <Property Name="PaymentDate" Type="DateTime" />
-          <Property Name="ChequeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="PurchasePaymentDetail" Relationship="RMSEntities.pur_pay_det" FromRole="PurchaseChequePaymentDetail" ToRole="PurchasePaymentDetail" />
-          <NavigationProperty Name="Purchase" Relationship="RMSEntities.Purchase_Bill" FromRole="PurchaseChequePaymentDetail" ToRole="Purchase" />
-        </EntityType>
-        <EntityType Name="PurchasePaymentDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PurchaseBillId" Type="Int32" Nullable="false" />
-          <Property Name="CompanyId" Type="Int32" Nullable="false" />
-          <Property Name="AmountPaid" Type="Decimal" Nullable="false" />
-          <Property Name="PaymentDate" Type="DateTime" />
-          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UpdatedBy" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="RMSEntities.FK_compId" FromRole="PurchasePaymentDetail" ToRole="Company" />
-          <NavigationProperty Name="PurchaseChequePaymentDetails" Relationship="RMSEntities.pur_pay_det" FromRole="PurchasePaymentDetail" ToRole="PurchaseChequePaymentDetail" />
-          <NavigationProperty Name="Purchase" Relationship="RMSEntities.FK_purchaseId" FromRole="PurchasePaymentDetail" ToRole="Purchase" />
-        </EntityType>
-        <Association Name="FK_compId">
-          <End Type="RMSEntities.Company" Role="Company" Multiplicity="1" />
-          <End Type="RMSEntities.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PurchasePaymentDetail">
-              <PropertyRef Name="CompanyId" />
+            <Dependent Role="ReturnDamagedStock">
+              <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1944,6 +1909,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PurchaseBillId">
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSEntities.PurchaseDetail" Role="PurchaseDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchaseDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pdt_bill">
+          <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
+          <End Type="RMSEntities.PurchaseFreeDetail" Role="PurchaseFreeDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Purchase">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="PurchaseFreeDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_purchaseId">
           <End Type="RMSEntities.Purchase" Role="Purchase" Multiplicity="1" />
           <End Type="RMSEntities.PurchasePaymentDetail" Role="PurchasePaymentDetail" Multiplicity="*" />
@@ -1956,59 +1945,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="SwapDetail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SwapId" Type="Int32" />
-          <Property Name="StockId" Type="Int32" />
-          <Property Name="Quantity" Type="Decimal" />
-          <Property Name="SellingPrice" Type="Decimal" />
-          <Property Name="CostPrice" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Swap" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="SwapDetail" ToRole="Swap" />
-        </EntityType>
-        <EntityType Name="Swap">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CustomerId" Type="Int32" />
-          <Property Name="LendOrBorrowId" Type="Int32" />
-          <Property Name="TotalAmount" Type="Decimal" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="SwapDetails" Relationship="RMSEntities.FK_SWAP_MAIN" FromRole="Swap" ToRole="SwapDetail" />
-        </EntityType>
-        <Association Name="FK_SWAP_MAIN">
-          <End Type="RMSEntities.Swap" Role="Swap" Multiplicity="0..1" />
-          <End Type="RMSEntities.SwapDetail" Role="SwapDetail" Multiplicity="*" />
+        <Association Name="fk_role">
+          <End Type="RMSEntities.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="RMSEntities.User" Role="User" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Swap">
+            <Principal Role="Role">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="SwapDetail">
-              <PropertyRef Name="SwapId" />
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="StockAdjustment">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StockId" Type="Int32" />
-          <Property Name="OpeningBalance" Type="Decimal" />
-          <Property Name="AdjustedQty" Type="Decimal" />
-          <Property Name="ClosingBalance" Type="Decimal" />
-          <Property Name="CostPrice" Type="Decimal" />
-          <Property Name="StockTransId" Type="Int32" />
-          <Property Name="AddedOn" Type="DateTime" />
-          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="StockTransaction" Relationship="RMSEntities.FK_STKADJ_STRANS" FromRole="StockAdjustment" ToRole="StockTransaction" />
-        </EntityType>
+        <Association Name="Fk_sale_bill">
+          <End Type="RMSEntities.Sale" Role="Sale" Multiplicity="1" />
+          <End Type="RMSEntities.SaleDetail" Role="SaleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="BillId" />
+            </Principal>
+            <Dependent Role="SaleDetail">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_STKADJ_STRANS">
           <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="0..1" />
           <End Type="RMSEntities.StockAdjustment" Role="StockAdjustment" Multiplicity="*" />
@@ -2021,6 +1981,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_stockId">
+          <End Type="RMSEntities.Stock" Role="Stock" Multiplicity="0..1" />
+          <End Type="RMSEntities.StockTransaction" Role="StockTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Stock">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StockTransaction">
+              <PropertyRef Name="StockId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SWAP_MAIN">
+          <End Type="RMSEntities.Swap" Role="Swap" Multiplicity="0..1" />
+          <End Type="RMSEntities.SwapDetail" Role="SwapDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Swap">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SwapDetail">
+              <PropertyRef Name="SwapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2030,221 +2014,80 @@
           <EntitySetMapping Name="ApplicationDetails">
             <EntityTypeMapping TypeName="RMSEntities.ApplicationDetail">
               <MappingFragment StoreEntitySet="ApplicationDetails">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="Province" ColumnName="Province" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
-                <ScalarProperty Name="Lan_Line_No" ColumnName="Lan Line No" />
-                <ScalarProperty Name="Mobile_No" ColumnName="Mobile No" />
-                <ScalarProperty Name="FacebookURL" ColumnName="FacebookURL" />
-                <ScalarProperty Name="TwitterURL" ColumnName="TwitterURL" />
-                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
-                <ScalarProperty Name="WhatsAppNo" ColumnName="WhatsAppNo" />
                 <ScalarProperty Name="LogoUrl" ColumnName="LogoUrl" />
+                <ScalarProperty Name="WhatsAppNo" ColumnName="WhatsAppNo" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="TwitterURL" ColumnName="TwitterURL" />
+                <ScalarProperty Name="FacebookURL" ColumnName="FacebookURL" />
+                <ScalarProperty Name="Mobile_No" ColumnName="Mobile No" />
+                <ScalarProperty Name="Lan_Line_No" ColumnName="Lan Line No" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="RMSEntities.Category">
               <MappingFragment StoreEntitySet="Category">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="parentId" ColumnName="parentId" />
-                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="RollingNo" ColumnName="RollingNo" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="parentId" ColumnName="parentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChequePaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.ChequePaymentDetail">
+              <MappingFragment StoreEntitySet="ChequePaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="IsChequeRealised" ColumnName="IsChequeRealised" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
+                <ScalarProperty Name="PaymentId" ColumnName="PaymentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CodeMasters">
             <EntityTypeMapping TypeName="RMSEntities.CodeMaster">
               <MappingFragment StoreEntitySet="CodeMaster">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="RMSEntities.Company">
               <MappingFragment StoreEntitySet="Companies">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="VATNo" ColumnName="VATNo" />
-                <ScalarProperty Name="IsSupplier" ColumnName="IsSupplier" />
-                <ScalarProperty Name="CategoryTypeId" ColumnName="CategoryTypeId" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="DueAmount" ColumnName="DueAmount" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MeasuringUnits">
-            <EntityTypeMapping TypeName="RMSEntities.MeasuringUnit">
-              <MappingFragment StoreEntitySet="MeasuringUnits">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="unit" ColumnName="unit" />
-                <ScalarProperty Name="MeasureQty" ColumnName="MeasureQty" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PriceDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PriceDetail">
-              <MappingFragment StoreEntitySet="PriceDetails">
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Products">
-            <EntityTypeMapping TypeName="RMSEntities.Product">
-              <MappingFragment StoreEntitySet="Products">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="BarcodeNo" ColumnName="BarcodeNo" />
-                <ScalarProperty Name="SupportsMultiPrice" ColumnName="SupportsMultiPrice" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="CategoryTypeId" ColumnName="CategoryTypeId" />
+                <ScalarProperty Name="IsSupplier" ColumnName="IsSupplier" />
+                <ScalarProperty Name="VATNo" ColumnName="VATNo" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LanNo" ColumnName="LanNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="UnitOfMeasure" ColumnName="UnitOfMeasure" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
-                <ScalarProperty Name="ReorderPoint" ColumnName="ReorderPoint" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseReturns">
-            <EntityTypeMapping TypeName="RMSEntities.PurchaseReturn">
-              <MappingFragment StoreEntitySet="PurchaseReturn">
-                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="MarkedForReturn" ColumnName="MarkedForReturn" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
-                <ScalarProperty Name="comments" ColumnName="comments" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ReturnDamagedStocks">
-            <EntityTypeMapping TypeName="RMSEntities.ReturnDamagedStock">
-              <MappingFragment StoreEntitySet="ReturnDamagedStocks">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="comments" ColumnName="comments" />
-                <ScalarProperty Name="isReturn" ColumnName="isReturn" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="RMSEntities.Role">
-              <MappingFragment StoreEntitySet="Roles">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SaleDetails">
-            <EntityTypeMapping TypeName="RMSEntities.SaleDetail">
-              <MappingFragment StoreEntitySet="SaleDetails">
-                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
-                <ScalarProperty Name="Qty" ColumnName="Qty" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Sales">
-            <EntityTypeMapping TypeName="RMSEntities.Sale">
-              <MappingFragment StoreEntitySet="Sales">
-                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
-                <ScalarProperty Name="BillId" ColumnName="BillId" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
-                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
-                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
-                <ScalarProperty Name="CustomerOrderNo" ColumnName="CustomerOrderNo" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SaleTemps">
-            <EntityTypeMapping TypeName="RMSEntities.SaleTemp">
-              <MappingFragment StoreEntitySet="SaleTemp">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Guid" ColumnName="Guid" />
-                <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
-                <ScalarProperty Name="DiscountPercentage" ColumnName="DiscountPercentage" />
-                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="RMSEntities.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="RMSEntities.Customer">
               <MappingFragment StoreEntitySet="Customers">
-                <ScalarProperty Name="OldBalanceDue" ColumnName="OldBalanceDue" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -2252,6 +2095,7 @@
                 <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
                 <ScalarProperty Name="CreditDays" ColumnName="CreditDays" />
                 <ScalarProperty Name="CreditLimit" ColumnName="CreditLimit" />
+                <ScalarProperty Name="OldBalanceDue" ColumnName="OldBalanceDue" />
                 <ScalarProperty Name="BalanceDue" ColumnName="BalanceDue" />
                 <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -2266,16 +2110,124 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Stocks">
-            <EntityTypeMapping TypeName="RMSEntities.Stock">
-              <MappingFragment StoreEntitySet="Stocks">
+          <EntitySetMapping Name="DirectPaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.DirectPaymentDetail">
+              <MappingFragment StoreEntitySet="DirectPaymentDetails">
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseDetails">
+            <EntityTypeMapping TypeName="RMSEntities.ExpenseDetail">
+              <MappingFragment StoreEntitySet="ExpenseDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ExpenseTypeId" ColumnName="ExpenseTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MeasuringUnits">
+            <EntityTypeMapping TypeName="RMSEntities.MeasuringUnit">
+              <MappingFragment StoreEntitySet="MeasuringUnits">
+                <ScalarProperty Name="AllowFractions" ColumnName="AllowFractions" />
+                <ScalarProperty Name="MeasureQty" ColumnName="MeasureQty" />
+                <ScalarProperty Name="unit" ColumnName="unit" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PaymentDetail">
+              <MappingFragment StoreEntitySet="PaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PriceDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PriceDetail">
+              <MappingFragment StoreEntitySet="PriceDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="RMSEntities.Product">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="BarcodeNo" ColumnName="BarcodeNo" />
+                <ScalarProperty Name="SupportsMultiPrice" ColumnName="SupportsMultiPrice" />
+                <ScalarProperty Name="ReorderPoint" ColumnName="ReorderPoint" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="UnitOfMeasure" ColumnName="UnitOfMeasure" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseChequePaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PurchaseChequePaymentDetail">
+              <MappingFragment StoreEntitySet="PurchaseChequePaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="ChequeName" ColumnName="ChequeName" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="IsChequeRealised" ColumnName="IsChequeRealised" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
+                <ScalarProperty Name="PurchaseBillId" ColumnName="PurchaseBillId" />
+                <ScalarProperty Name="PurchasePaymentId" ColumnName="PurchasePaymentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PurchaseDetail">
+              <MappingFragment StoreEntitySet="PurchaseDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="VATAmount" ColumnName="VATAmount" />
+                <ScalarProperty Name="ItemTransportCharges" ColumnName="ItemTransportCharges" />
+                <ScalarProperty Name="ItemCoolieCharges" ColumnName="ItemCoolieCharges" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
+                <ScalarProperty Name="PurchasedQty" ColumnName="PurchasedQty" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2291,6 +2243,38 @@
                 <ScalarProperty Name="FreeAmount" ColumnName="FreeAmount" />
                 <ScalarProperty Name="FreeQty" ColumnName="FreeQty" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchasePaymentDetails">
+            <EntityTypeMapping TypeName="RMSEntities.PurchasePaymentDetail">
+              <MappingFragment StoreEntitySet="PurchasePaymentDetails">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="PurchaseBillId" ColumnName="PurchaseBillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseReturns">
+            <EntityTypeMapping TypeName="RMSEntities.PurchaseReturn">
+              <MappingFragment StoreEntitySet="PurchaseReturn">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="MarkedForReturn" ColumnName="MarkedForReturn" />
+                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
+                <ScalarProperty Name="ReturnPrice" ColumnName="ReturnPrice" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2318,73 +2302,112 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ChequePaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.ChequePaymentDetail">
-              <MappingFragment StoreEntitySet="ChequePaymentDetails">
-                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <EntitySetMapping Name="ReturnDamagedStocks">
+            <EntityTypeMapping TypeName="RMSEntities.ReturnDamagedStock">
+              <MappingFragment StoreEntitySet="ReturnDamagedStocks">
+                <ScalarProperty Name="ReturnReasonCode" ColumnName="ReturnReasonCode" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="IsChequeRealised" ColumnName="IsChequeRealised" />
-                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
-                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
-                <ScalarProperty Name="PaymentId" ColumnName="PaymentId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PaymentDetail">
-              <MappingFragment StoreEntitySet="PaymentDetails">
-                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="isReturn" ColumnName="isReturn" />
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DirectPaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.DirectPaymentDetail">
-              <MappingFragment StoreEntitySet="DirectPaymentDetails">
-                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="RMSEntities.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SystemDatas">
-            <EntityTypeMapping TypeName="RMSEntities.SystemData">
-              <MappingFragment StoreEntitySet="SystemData">
-                <ScalarProperty Name="SysDate" ColumnName="SysDate" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PurchaseDetail">
-              <MappingFragment StoreEntitySet="PurchaseDetails">
-                <ScalarProperty Name="ItemTransportCharges" ColumnName="ItemTransportCharges" />
-                <ScalarProperty Name="ItemCoolieCharges" ColumnName="ItemCoolieCharges" />
-                <ScalarProperty Name="VATAmount" ColumnName="VATAmount" />
+          <EntitySetMapping Name="SaleDetails">
+            <EntityTypeMapping TypeName="RMSEntities.SaleDetail">
+              <MappingFragment StoreEntitySet="SaleDetails">
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
-                <ScalarProperty Name="PurchasedQty" ColumnName="PurchasedQty" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
                 <ScalarProperty Name="PriceId" ColumnName="PriceId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="BillId" ColumnName="BillId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sales">
+            <EntityTypeMapping TypeName="RMSEntities.Sale">
+              <MappingFragment StoreEntitySet="Sales">
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="RunningBillNo" ColumnName="RunningBillNo" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="CustomerOrderNo" ColumnName="CustomerOrderNo" />
+                <ScalarProperty Name="IsCancelled" ColumnName="IsCancelled" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="TransportCharges" ColumnName="TransportCharges" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleTemps">
+            <EntityTypeMapping TypeName="RMSEntities.SaleTemp">
+              <MappingFragment StoreEntitySet="SaleTemp">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+                <ScalarProperty Name="DiscountPercentage" ColumnName="DiscountPercentage" />
+                <ScalarProperty Name="SellingPrice" ColumnName="SellingPrice" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="SaleDate" ColumnName="SaleDate" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockAdjustments">
+            <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
+              <MappingFragment StoreEntitySet="StockAdjustments">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="StockTransId" ColumnName="StockTransId" />
+                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
+                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
+                <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
+                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
+                <ScalarProperty Name="StockId" ColumnName="StockId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stocks">
+            <EntityTypeMapping TypeName="RMSEntities.Stock">
+              <MappingFragment StoreEntitySet="Stocks">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="PriceId" ColumnName="PriceId" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2400,50 +2423,6 @@
                 <ScalarProperty Name="Outward" ColumnName="Outward" />
                 <ScalarProperty Name="Inward" ColumnName="Inward" />
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ExpenseDetails">
-            <EntityTypeMapping TypeName="RMSEntities.ExpenseDetail">
-              <MappingFragment StoreEntitySet="ExpenseDetails">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="ExpenseTypeId" ColumnName="ExpenseTypeId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchaseChequePaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PurchaseChequePaymentDetail">
-              <MappingFragment StoreEntitySet="PurchaseChequePaymentDetails">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ChequeName" ColumnName="ChequeName" />
-                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
-                <ScalarProperty Name="IsChequeRealised" ColumnName="IsChequeRealised" />
-                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
-                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
-                <ScalarProperty Name="PurchaseBillId" ColumnName="PurchaseBillId" />
-                <ScalarProperty Name="PurchasePaymentId" ColumnName="PurchasePaymentId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PurchasePaymentDetails">
-            <EntityTypeMapping TypeName="RMSEntities.PurchasePaymentDetail">
-              <MappingFragment StoreEntitySet="PurchasePaymentDetails">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
-                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
-                <ScalarProperty Name="PurchaseBillId" ColumnName="PurchaseBillId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2474,22 +2453,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StockAdjustments">
-            <EntityTypeMapping TypeName="RMSEntities.StockAdjustment">
-              <MappingFragment StoreEntitySet="StockAdjustments">
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="StockTransId" ColumnName="StockTransId" />
-                <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
-                <ScalarProperty Name="ClosingBalance" ColumnName="ClosingBalance" />
-                <ScalarProperty Name="AdjustedQty" ColumnName="AdjustedQty" />
-                <ScalarProperty Name="OpeningBalance" ColumnName="OpeningBalance" />
-                <ScalarProperty Name="StockId" ColumnName="StockId" />
+          <EntitySetMapping Name="SystemDatas">
+            <EntityTypeMapping TypeName="RMSEntities.SystemData">
+              <MappingFragment StoreEntitySet="SystemData">
+                <ScalarProperty Name="SysDate" ColumnName="SysDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          </EntityContainerMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="RMSEntities.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

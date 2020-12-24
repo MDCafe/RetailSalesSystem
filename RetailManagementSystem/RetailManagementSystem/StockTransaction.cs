@@ -30,8 +30,8 @@ namespace RetailManagementSystem
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     
-        public virtual Stock Stock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StockAdjustment> StockAdjustments { get; set; }
+        public virtual Stock Stock { get; set; }
     }
 }

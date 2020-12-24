@@ -17,14 +17,15 @@ namespace RetailManagementSystem
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Sale()
         {
-            this.SaleDetails = new HashSet<SaleDetail>();
             this.PaymentDetails = new HashSet<PaymentDetail>();
+            this.SaleDetails = new HashSet<SaleDetail>();
         }
     
         public int BillId { get; set; }
         public int CustomerId { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> TransportCharges { get; set; }
+        public Nullable<decimal> AmountPaid { get; set; }
         public Nullable<decimal> TotalAmount { get; set; }
         public Nullable<bool> IsCancelled { get; set; }
         public string CustomerOrderNo { get; set; }
@@ -33,12 +34,11 @@ namespace RetailManagementSystem
         public Nullable<int> UpdatedBy { get; set; }
         public int RunningBillNo { get; set; }
         public string PaymentMode { get; set; }
-        public Nullable<decimal> AmountPaid { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
         public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
     }
 }

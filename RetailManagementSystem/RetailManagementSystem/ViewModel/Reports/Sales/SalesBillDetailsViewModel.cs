@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Windows;
-using System.Windows.Input;
-using Microsoft.Reporting.WinForms;
+﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
+using System.Collections.Generic;
+using System.Data;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Reports.Sales
 {
@@ -15,12 +15,12 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         private readonly bool _showRestrictedCustomers;
 
         public int? RunningBillNo { get; set; }
-        
 
-        public SalesBillDetailsViewModel(bool showRestrictedCustomers,int? runningNo) : 
-            base(false,showRestrictedCustomers,"Sales Bill Report - " + runningNo)
+
+        public SalesBillDetailsViewModel(bool showRestrictedCustomers, int? runningNo) :
+            base(false, showRestrictedCustomers, "Sales Bill Report - " + runningNo)
         {
-            
+
             _showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesBill.rdl";
@@ -49,16 +49,16 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             var salesDetails = new List<SaleDetailExtn>();
             var customer = "";
             billSales.RunningBillNo = RunningBillNo.Value;
-            
+
 
             foreach (var item in dataTable.Rows)
             {
                 var itemArray = item as DataRow;
-                customer =  itemArray.Field<string>("Customer");
+                customer = itemArray.Field<string>("Customer");
                 billSales.CustomerOrderNo = itemArray.Field<string>("CustomerOrderNo");
                 billSales.TransportCharges = itemArray.IsNull("TransportCharges") ? 0.0M : itemArray.Field<decimal>("TransportCharges");
                 billSales.Discount = itemArray.IsNull("Discount") ? 0.0M : itemArray.Field<decimal>("Discount");
-                billSales.TotalAmount   = itemArray.Field<decimal>("TotalAmount");
+                billSales.TotalAmount = itemArray.Field<decimal>("TotalAmount");
                 billSales.PaymentMode = itemArray.Field<string>("PaymentMode");
                 billSales.AddedOn = itemArray.Field<System.DateTime>("AddedOn");
                 salesDetails.Add(
@@ -68,7 +68,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                         SellingPrice = itemArray.Field<decimal>("SellingPrice"),
                         Qty = itemArray.Field<decimal>("Qty"),
                         Discount = itemArray.IsNull("ItemDiscount") ? 0.0M : itemArray.Field<decimal>("ItemDiscount"),
-                        ProductId = itemArray.Field<int>("ProductId"),                        
+                        ProductId = itemArray.Field<int>("ProductId"),
                         CostPrice = itemArray.Field<decimal>("Price")
                     }
                 );
@@ -126,12 +126,13 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     {
                         var r = (DataRow)row;
                         var qty = r.Field<decimal>("Qty");
-                        if(qty.ToString().Split(new char[] { '.'})[1] == "000")
+                        if (qty.ToString().Split(new char[] { '.' })[1] == "000")
                         {
                             //var qtyInt = (int)qty;
                             r.SetField<string>("QtyString", qty.ToString("######"));
-                        }else
-                        r.SetField<string>("QtyString", qty.ToString("0.##0"));
+                        }
+                        else
+                            r.SetField<string>("QtyString", qty.ToString("0.##0"));
                     }
                     return dt;
                 }

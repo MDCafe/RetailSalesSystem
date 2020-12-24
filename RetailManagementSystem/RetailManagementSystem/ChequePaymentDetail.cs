@@ -19,10 +19,10 @@ namespace RetailManagementSystem
         public Nullable<int> ChequeNo { get; set; }
         public Nullable<System.DateTime> ChequeDate { get; set; }
         public Nullable<bool> IsChequeRealised { get; set; }
+        public Nullable<System.DateTime> PaymentDate { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
-        public Nullable<System.DateTime> PaymentDate { get; set; }
     
         public virtual PaymentDetail PaymentDetail { get; set; }
     }

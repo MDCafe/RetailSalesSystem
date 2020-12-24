@@ -6,6 +6,6 @@
         public int? Billno { get; set; }
         public bool CancelBill { get; set; }
         public int CompanyId { get; set; }
-   
+
     }
 }

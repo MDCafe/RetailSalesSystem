@@ -10,7 +10,7 @@ namespace RetailManagementSystem.Model
         public decimal AmountPaid { get; set; }
         public decimal CurrentAmountPaid { get; set; }
         public decimal BalanceAmount { get; set; }
-        public decimal TotalBillAmount { get; set; }                
+        public decimal TotalBillAmount { get; set; }
         public int? ChequeNo { get; set; }
         public DateTime? ChequeDate { get; set; }
         public bool IsSelected { get; set; }

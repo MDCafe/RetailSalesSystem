@@ -13,6 +13,6 @@ namespace RetailManagementSystem.ViewModel.Base
                 _categoryId = Constants.CUSTOMERS_OTHERS;
             else
                 _categoryId = Constants.CUSTOMERS_HOTEL;
-        }       
+        }
     }
 }

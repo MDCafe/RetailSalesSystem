@@ -10,7 +10,7 @@ namespace RetailManagementSystem.Converter
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var val = values[0];
-            int result,productId;
+            int result, productId;
             if (values[0] == null) return null;
             if (int.TryParse(val.ToString(), out result))
             {
@@ -22,7 +22,7 @@ namespace RetailManagementSystem.Converter
                 productId = selectedItem.Id;
                 //if (selectedItem == null) return null;
             }
-            
+
             //var selectedGlobalResourceView = values[2] as ResourceViewOption;
             return RMSEntitiesHelper.Instance.RMSEntities.PriceDetails.Where(pr => pr.ProductId == productId).OrderByDescending(s => s.ModifiedOn).Take(3).ToList();
             //if (personnelType == null)
@@ -46,13 +46,13 @@ namespace RetailManagementSystem.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;            
+            return value;
         }
 
         public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
         {
             var selectedItem = value as Product;
-            if (selectedItem == null) return null;            
+            if (selectedItem == null) return null;
             return selectedItem.Id;
         }
     }
@@ -67,7 +67,7 @@ namespace RetailManagementSystem.Converter
         public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
         {
             var selectedItem = value as PriceDetail;
-            if (selectedItem == null) return null;            
+            if (selectedItem == null) return null;
             return selectedItem.PriceId;
         }
     }

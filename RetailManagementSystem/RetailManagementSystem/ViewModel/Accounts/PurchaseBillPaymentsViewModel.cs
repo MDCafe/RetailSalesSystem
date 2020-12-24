@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
-using System;
-
+﻿using log4net;
 using RetailManagementSystem.Command;
+using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
-using RetailManagementSystem.Model;
-using log4net;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Accounts
 {
@@ -66,7 +65,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
             using (var rmsEntities = new RMSEntities())
             {
                 var cnt = rmsEntities.CodeMasters.Local.Count();
-                PaymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id !=8).ToList();
+                PaymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id != 8).ToList();
             }
             ChequeDate = DateTime.Now;
             PaymentDate = DateTime.Now;
@@ -96,7 +95,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                             //OldPendingAmount = SelectedCompany.OldBalanceDue;
                             //var i = 0;
                             foreach (var item in purchasePayDetails)
-                            {                                
+                            {
                                 PurchasePaymentDetailsList.Add(item);
                                 item.PropertyChanged += (s, e) =>
                                 {
@@ -119,7 +118,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                 return _getBillsCommand;
             }
         }
-        
+
         #endregion
 
         #region SaveCommand
@@ -140,7 +139,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
         protected void OnSave()
         {
             try
-            { 
+            {
                 using (var rmsEntities = new RMSEntities())
                 {
                     foreach (var item in PurchasePaymentDetailsList)
@@ -172,7 +171,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                         {
                             AmountPaid = item.CurrentAmountPaid,
                             PurchaseBillId = item.BillId,
-                            CompanyId = SelectedCompany.Id,                            
+                            CompanyId = SelectedCompany.Id,
                             PaymentDate = PaymentDate,
                             UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
                         };
@@ -262,7 +261,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         private bool CanAllocate(object p)
         {
-            if (!AllocationAmount.HasValue) return false; 
+            if (!AllocationAmount.HasValue) return false;
             var sender = p as System.Windows.DependencyObject;
             return IsValid(sender);
         }
@@ -272,11 +271,11 @@ namespace RetailManagementSystem.ViewModel.Accounts
             try
             {
                 var payMode = PaymentModes.FirstOrDefault(p => p.Description == "Cash");
-                var decreasingAllocationAmount = AllocationAmount.Value; 
+                var decreasingAllocationAmount = AllocationAmount.Value;
                 foreach (var item in PurchasePaymentDetailsList)
                 {
                     if (decreasingAllocationAmount <= 0) return;
-                    if((item.TotalBillAmount - item.AmountPaid) !=0)
+                    if ((item.TotalBillAmount - item.AmountPaid) != 0)
                     {
                         var balanceAmtToBePaid = item.TotalBillAmount - item.AmountPaid;
                         item.PaymentMode = payMode;
@@ -291,7 +290,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                             return;
                         }
                     }
-                }                 
+                }
             }
             catch (Exception ex)
             {
@@ -328,11 +327,11 @@ namespace RetailManagementSystem.ViewModel.Accounts
         {
             try
             {
-                var payMode = PaymentModes.FirstOrDefault(p=>p.Description =="Cheque");
+                var payMode = PaymentModes.FirstOrDefault(p => p.Description == "Cheque");
                 var decreasingAllocationAmount = ChequeAllocationAmount.Value;
                 foreach (var item in PurchasePaymentDetailsList)
                 {
-                    if (!item.IsSelected  || decreasingAllocationAmount <= 0) continue;
+                    if (!item.IsSelected || decreasingAllocationAmount <= 0) continue;
                     if ((item.TotalBillAmount - item.AmountPaid) != 0)
                     {
                         item.ChequeNo = ChequeNo;
@@ -393,10 +392,10 @@ namespace RetailManagementSystem.ViewModel.Accounts
                         (
                             new DirectPaymentDetail()
                             {
-                                 CustomerId = SelectedCompany.Id,
-                                 PaidAmount = AllocationAmount,
-                                 PaymentDate = PaymentDate,
-                                 UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
+                                CustomerId = SelectedCompany.Id,
+                                PaidAmount = AllocationAmount,
+                                PaymentDate = PaymentDate,
+                                UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
                             }
                         );
 

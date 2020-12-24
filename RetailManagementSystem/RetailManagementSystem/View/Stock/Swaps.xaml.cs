@@ -7,11 +7,11 @@ namespace RetailManagementSystem.View.Stock
     public partial class Swaps : UserControl
     {
         SwapsViewModel _swapsViewModel;
-       
+
         public Swaps()
         {
             InitializeComponent();
-            
+
             DataContextChanged += (sender, eventArgs) =>
             {
                 _swapsViewModel = this.DataContext as SwapsViewModel;
@@ -27,7 +27,7 @@ namespace RetailManagementSystem.View.Stock
                 //};
             };
 
-        }        
+        }
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
@@ -41,6 +41,6 @@ namespace RetailManagementSystem.View.Stock
             custComboBoxCol.ClearSelection();
             custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
 
-        }        
+        }
     }
 }

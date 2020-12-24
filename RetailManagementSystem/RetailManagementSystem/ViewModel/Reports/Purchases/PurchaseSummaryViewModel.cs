@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Microsoft.Reporting.WinForms;
+using MySql.Data.MySqlClient;
+using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
-using MySql.Data.MySqlClient;
-using Microsoft.Reporting.WinForms;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.Utilities;
 
 namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 {
     class PurchaseSummaryViewModel : ReportViewModel
     {
         private DateTime _fromPurchaseDate;
-        private DateTime _toPurchaseDate;        
+        private DateTime _toPurchaseDate;
 
         public DateTime FromPurchaseDate
         {
@@ -44,7 +44,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
         public int? RunningBillNo { get; set; }
 
-        public PurchaseSummaryViewModel(bool showRestrictedPeople,int? billNo) : 
+        public PurchaseSummaryViewModel(bool showRestrictedPeople, int? billNo) :
             base(true, showRestrictedPeople, "Purchase Detail Report - " + billNo)
         {
             FromPurchaseDate = DateTime.Now;
@@ -52,7 +52,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
             //_showRestrictedCustomers = showRestrictedPeople;
 
-             ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
+            ReportPath = @"View\Reports\Purchases\PurchaseAllDetails.rdl";
 
             //override base array
             _rptDataSource = new ReportDataSource[4];
@@ -94,11 +94,11 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
             var purchaseDetailsQuery = "GetPurchaseDetails";
 
             var returnQuery = "GetReturnsForBillid";
-            
+
             SetReportDataSource(purchaseQuery, _rptDataSource[0]);
             SetReportDataSource(purchaseDetailsQuery, _rptDataSource[3]);
             SetReportDataSource(returnQuery, _rptDataSource[2]);
-      
+
             Workspace.This.OpenReport(this);
             CloseWindow(window);
         }

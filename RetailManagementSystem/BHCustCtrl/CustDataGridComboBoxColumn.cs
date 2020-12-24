@@ -3,16 +3,16 @@
  * Bahrudin Hrnjica, bhrnjica@hotmail.com
  * First Release Oct, 2009
  */
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Markup;
+using log4net;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Collections.Generic;
-using log4net;
+using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace BHCustCtrl
 {
@@ -52,7 +52,7 @@ namespace BHCustCtrl
     [DefaultProperty("Columns")]
     [ContentProperty("Columns")]
     public class CustDataGridComboBoxColumn : Microsoft.Windows.Controls.DataGridComboBoxColumn
-    {        
+    {
         public static readonly DependencyProperty CustComboBoxSelectedPathProperty = DependencyProperty.Register("CustComboBoxSelectedPathProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
         public static readonly DependencyProperty CustComboBoxSelectedValueProperty = DependencyProperty.Register("CustComboBoxSelectedValueProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
 
@@ -75,7 +75,7 @@ namespace BHCustCtrl
         private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
         public TextBox _cboTextBox;
         //Cust Combobox  cell edit
-        public  CustComboBox comboBox;
+        public CustComboBox comboBox;
 
 
         public event OnComboItemSelected ComboBoxSelectedEvent;
@@ -91,7 +91,7 @@ namespace BHCustCtrl
             };
             //comboBox.PreviewKeyDown += ComboBox_PreviewKeyDown;
             comboBox.PreviewTextInput += ComboBoxPreviewTextInput;
-            comboBox.Loaded += ComboBox_Loaded;            
+            comboBox.Loaded += ComboBox_Loaded;
         }
 
         private void _cboTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -109,7 +109,7 @@ namespace BHCustCtrl
             {
                 _cboTextBox.Focus();
                 _cboTextBox.SelectionStart = _cboTextBox.Text.Length;
-                                
+
             }
             comboBox.IsTextSearchEnabled = false;
             OnComboLoadedEvent?.Invoke(_cboTextBox);
@@ -120,14 +120,14 @@ namespace BHCustCtrl
         {
             //var dropdownOpen = comboBox.IsDropDownOpen;
             comboBox.IsDropDownOpen = true;
-            
+
         }
-      
+
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             if (e.Property == CustDataGridComboBoxColumn.ItemsSourceProperty)
-            {                
-                comboBox.ItemsSource = ItemsSource;                
+            {
+                comboBox.ItemsSource = ItemsSource;
             }
             //else if (e.Property == CustDataGridComboBoxColumn.SelectedValuePathProperty)
             //{                
@@ -141,7 +141,7 @@ namespace BHCustCtrl
             {
                 comboBox.DisplayMemberPath = DisplayMemberPath;
             }
-            
+
             base.OnPropertyChanged(e);
         }
 
@@ -163,8 +163,8 @@ namespace BHCustCtrl
         /// </summary>
         protected override FrameworkElement GenerateEditingElement(Microsoft.Windows.Controls.DataGridCell cell, object dataItem)
         {
-           if(comboBox.Columns.Count==0)
-           {
+            if (comboBox.Columns.Count == 0)
+            {
                 //Add columns to DataGrid columns
                 for (int i = 0; i < columns.Count; i++)
                     comboBox.Columns.Add(columns[i]);
@@ -173,8 +173,8 @@ namespace BHCustCtrl
             //var comboBox = (ComboBox)base.GenerateEditingElement(cell, dataItem);
             //comboBox.SelectionChanged += ComboBox_SelectionChanged;
             comboBox.IsDropDownOpen = true;
-      
-            return comboBox;            
+
+            return comboBox;
         }
 
         protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
@@ -183,10 +183,10 @@ namespace BHCustCtrl
             //Microsoft.Windows.Controls.DataGridCell cell = editingEventArgs.Source as Microsoft.Windows.Controls.DataGridCell;
             //if (cell != null)
             //{
-                // Changed to support EF POCOs
-                PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
-                object obj = info.GetValue(editingElement.DataContext, null);
-                comboBox.SelectedValue = obj;
+            // Changed to support EF POCOs
+            PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
+            object obj = info.GetValue(editingElement.DataContext, null);
+            comboBox.SelectedValue = obj;
             //}
             return comboBox.SelectedItem;
 
@@ -214,7 +214,7 @@ namespace BHCustCtrl
             //var grid =FindMyParentHelper<DataGrid>.FindAncestor(editingElement);
 
 
-            _log.Info("comboBox.SelectedValue:" + comboBox.SelectedValue); 
+            _log.Info("comboBox.SelectedValue:" + comboBox.SelectedValue);
             _log.Info(comboBox.SelectedItem);
 
             //grid.CommitEdit();
@@ -260,13 +260,13 @@ namespace BHCustCtrl
             {
                 comboBox.ItemsSource = ItemsSource;
                 return;
-            }            
+            }
 
             List<object> filteredList = new List<object>();
 
             foreach (var item in ItemsSource)
             {
-                if(item.GetType().GetProperty(searchPropertName).GetValue(item, null).ToString().ToUpper().Contains(searchStr.ToUpper()))
+                if (item.GetType().GetProperty(searchPropertName).GetValue(item, null).ToString().ToUpper().Contains(searchStr.ToUpper()))
                 {
                     filteredList.Add(item);
                 }

@@ -2,7 +2,7 @@
 
 namespace RetailManagementSystem.ViewModel.Base
 {
-    class ReportBaseViewModel :  DocumentViewModel
+    class ReportBaseViewModel : DocumentViewModel
     {
         protected int _categoryId;
         protected bool _showRestrictedPeople;

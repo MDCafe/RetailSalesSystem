@@ -1,7 +1,7 @@
 ﻿using log4net;
 using RetailManagementSystem.View.Entitlements;
 using System.Windows;
- 
+
 namespace RetailManagementSystem
 {
     /// <summary>
@@ -47,7 +47,7 @@ namespace RetailManagementSystem
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            if(e.Exception.GetType() == typeof(MySql.Data.MySqlClient.MySqlException))
+            if (e.Exception.GetType() == typeof(MySql.Data.MySqlClient.MySqlException))
             {
                 //Mysql Exception
                 Utilities.Utility.ShowErrorBox(mainWindow, "Database Exception" + e.Exception.ToString());

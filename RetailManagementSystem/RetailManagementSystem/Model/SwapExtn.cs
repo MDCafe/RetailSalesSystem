@@ -6,7 +6,9 @@
         private decimal sellingPrice;
 
         public int ProductId { get; set; }
-        public decimal SellingPrice { get => sellingPrice;
+        public decimal SellingPrice
+        {
+            get => sellingPrice;
             set
             {
                 if (sellingPrice == value) return;

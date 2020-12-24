@@ -1,12 +1,12 @@
-﻿using System.Windows.Input;
-using System.Linq;
+﻿using RetailManagementSystem.Command;
+using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Collections.ObjectModel;
-using RetailManagementSystem.Command;
-using RetailManagementSystem.ViewModel.Base;
-using RetailManagementSystem.Utilities;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Masters
 {
@@ -45,7 +45,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         {
             get
             {
-                if(_productsList == null)
+                if (_productsList == null)
                     _productsList = _rmsEntities.Products.ToList();
 
                 return _productsList;
@@ -91,7 +91,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
         public Product DblClickSelectedProduct
         {
-            get;set;
+            get; set;
         }
 
         public string SearchText { get; set; }
@@ -113,31 +113,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
         #endregion
-
-        #region CloseWindow Command
-        public RelayCommand<Window> closeCommand { get; private set; }
-
-        public ICommand CloseCommand
-        {
-            get
-            {
-                if (closeCommand == null)
-                {
-                    closeCommand = new RelayCommand<Window>((w) => CloseWindow(w));
-                }
-
-                return closeCommand;
-            }
-        }
-
-        private void CloseWindow(Window window)
-        {
-            if (window != null)
-            {
-                window.Close();
-            }
-        }
-        #endregion
+        
 
         #region Clear Command
         RelayCommand<object> _clearCommand = null;
@@ -169,7 +145,7 @@ namespace RetailManagementSystem.ViewModel.Masters
 
                 return _clearCommand;
             }
-        }        
+        }
         #endregion
 
         #region SaveCommand
@@ -184,16 +160,16 @@ namespace RetailManagementSystem.ViewModel.Masters
                     {
                         return !string.IsNullOrWhiteSpace(SelectedProduct.Name);
                     }
-                    ); 
+                    );
                 }
                 return _saveCommand;
             }
-        }        
+        }
 
         private void OnSave()
         {
             if (!Validate()) return;
-            
+
             if (_isEditMode)
             {
                 var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
@@ -242,7 +218,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                 return false;
             }
 
-            if(!_product.CategoryId.HasValue)
+            if (!_product.CategoryId.HasValue)
             {
                 Utility.ShowErrorBox(" Category can't be empty");
                 return false;
@@ -279,13 +255,13 @@ namespace RetailManagementSystem.ViewModel.Masters
         private void OnDelete()
         {
             var msgResult = Utility.ShowMessageBoxWithOptions("Do you want to delete the Product : " + _product.Name);
-            if(msgResult != MessageBoxResult.Yes)
+            if (msgResult != MessageBoxResult.Yes)
             {
                 return;
             }
 
             var cust = _rmsEntities.Products.FirstOrDefault(c => c.Id == _product.Id);
-            if(cust == null)
+            if (cust == null)
             {
                 Utility.ShowMessageBoxWithOptions("Product : " + _product.Name + " doesn't exist");
                 return;
@@ -297,13 +273,13 @@ namespace RetailManagementSystem.ViewModel.Masters
             {
                 var stkToRemove = _rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == item.ProductId &&
                                                                      s.PriceId == item.PriceId);
-                if(stkToRemove !=null)
+                if (stkToRemove != null)
                     _rmsEntities.Stocks.Remove(stkToRemove);
             }
-            
+
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
-            RaisePropertyChanged(nameof(ProductsList));         
+            RaisePropertyChanged(nameof(ProductsList));
         }
 
         #endregion
@@ -351,7 +327,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                             {
                                 if (string.IsNullOrWhiteSpace(SearchText)) return;
                                 _priceDetailsList.Clear();
-                                ProductsList = ProductsList.Where(c => c.Name.StartsWith(SearchText,StringComparison.InvariantCultureIgnoreCase));
+                                ProductsList = ProductsList.Where(c => c.Name.StartsWith(SearchText, StringComparison.InvariantCultureIgnoreCase));
                             }
                         );
                 }

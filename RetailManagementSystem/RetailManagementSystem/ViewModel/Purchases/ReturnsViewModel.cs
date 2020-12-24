@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using System.Linq;
-using System;
-using System.Globalization;
-using RetailManagementSystem.Command;
+﻿using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
-using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Reports.Purhcases;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Purchases
 {
@@ -16,13 +16,13 @@ namespace RetailManagementSystem.ViewModel.Purchases
     {
         readonly RMSEntities _rmsEntities;
         ObservableCollection<ReturnPurchaseDetailExtn> _returnPurchaseDetailsList;
-        IEnumerable<PriceDetail> _returnPriceList;                
+        IEnumerable<PriceDetail> _returnPriceList;
         decimal? _totalAmount;
         Company _selectedCompany;
         Purchase _selectedPurchaseBillNo;
         IEnumerable<Purchase> _billList;
         readonly int _categoryId;
-        ObservableCollection<ProductPrice> _productsPriceList;        
+        ObservableCollection<ProductPrice> _productsPriceList;
         public event CommonBusinessViewModel.INotifierCollectionChanged NotifierCollectionChangedEvent;
 
         readonly bool _showRestrictedCompanies;
@@ -53,7 +53,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         public IEnumerable<Company> Companies
         {
-            get { return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId).OrderBy(o => o.Name);  }
+            get { return _rmsEntities.Companies.Local.Where(c => c.CategoryTypeId == _categoryId).OrderBy(o => o.Name); }
         }
 
         public IEnumerable<Purchase> BillList
@@ -84,7 +84,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 returnItem.ReturnAmount = returnItem.ReturnQty * productPrice.Price;
                 returnItem.AvailableStock = productPrice.Quantity;
                 returnItem.ReturnPrice = productPrice.Price;
-                returnItem.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate,"dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None);
+                returnItem.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
             }
 
             returnItem.PropertyChanged += (sender, e) =>
@@ -141,7 +141,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         { get { return _rmsEntities.CodeMasters.Local.Where(r => r.Code == "RTN"); } }
 
         public ReturnsViewModel(bool showRestrictedCustomers)
-        {            
+        {
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
             _returnPurchaseDetailsList.CollectionChanged += (s, e) =>
              {
@@ -171,7 +171,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         public ObservableCollection<ReturnPurchaseDetailExtn> ReturnPurchaseDetailList
         {
-            get { return _returnPurchaseDetailsList; }         
+            get { return _returnPurchaseDetailsList; }
             private set
             {
                 _returnPurchaseDetailsList = value;
@@ -196,7 +196,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             get
             {
-                if (SelectedCompany ==null || SelectedCompany.Id == 0)
+                if (SelectedCompany == null || SelectedCompany.Id == 0)
                 {
                     Utility.ShowErrorBox("Select a supplier to select products");
                     return null;
@@ -204,7 +204,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 return _rmsEntities.Products.Local.Where(p => p.CompanyId == SelectedCompany.Id);
             }
         }
-      
+
         //public void SetProductPriceDetails(int productId, int selectedIndex)
         //{
         //    var product = _rmsEntities.Products.Where(p => p.Id == productId).FirstOrDefault();
@@ -256,18 +256,18 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             foreach (var item in _returnPurchaseDetailsList)
             {
-                if(item.SelectedReturnReason == null)
+                if (item.SelectedReturnReason == null)
                 {
                     Utility.ShowErrorBox("Choose a return reason");
                     return;
                 }
 
-                if(item.Qty <=0)
+                if (item.Qty <= 0)
                 {
                     Utility.ShowErrorBox("Quantity can't be 0 or negative number");
                     return;
                 }
-                 
+
                 if (item.ExpiryDate == null)
                 {
                     Utility.ShowErrorBox("Expiry date can't empty");
@@ -275,7 +275,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 }
 
                 var itemSelected = item.Selected;
-                if(!itemSelected && _selectedPurchaseBillNo == null)
+                if (!itemSelected && _selectedPurchaseBillNo == null)
                 {
                     Utility.ShowErrorBox("Item as to be marked for return or Bill No has to be choosen");
                     return;
@@ -289,12 +289,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         PriceId = item.PriceId,
                         ProductId = item.ProductId,
                         Quantity = item.ReturnQty,
-                        BillId = SelectedPurchaseBillNo == null? 0 : SelectedPurchaseBillNo.BillId,
+                        BillId = SelectedPurchaseBillNo == null ? 0 : SelectedPurchaseBillNo.BillId,
                         ReturnReasonCode = item.SelectedReturnReason.Id,
                         MarkedForReturn = item.Selected,
                         comments = item.Comments,
                         ExpiryDate = item.ExpiryDate,
-                        ReturnPrice  = item.ReturnPrice
+                        ReturnPrice = item.ReturnPrice
                     });
 
                     var itemDate = item.ExpiryDate.Value;
@@ -311,15 +311,15 @@ namespace RetailManagementSystem.ViewModel.Purchases
                     stock.Quantity -= item.ReturnQty;
                 }
                 //Item is unselected for returning
-                if(!item.Selected && item.AddedOn !=null)
+                if (!item.Selected && item.AddedOn != null)
                 {
                     if (_selectedPurchaseBillNo == null)
                     {
                         Utility.ShowErrorBox("Choose a bill for which retun needs to be marked");
                         return;
                     }
-                    var purchaseRtn = _rmsEntities.PurchaseReturns.FirstOrDefault(r => r.ProductId == item.ProductId && r.PriceId == item.PriceId 
-                                                                && r.Quantity == item.ReturnQty && r.BillId ==0 && r.ReturnPrice == item.ReturnPrice);
+                    var purchaseRtn = _rmsEntities.PurchaseReturns.FirstOrDefault(r => r.ProductId == item.ProductId && r.PriceId == item.PriceId
+                                                                && r.Quantity == item.ReturnQty && r.BillId == 0 && r.ReturnPrice == item.ReturnPrice);
 
                     if (purchaseRtn == null) continue;
                     purchaseRtn.BillId = _selectedPurchaseBillNo.BillId;
@@ -339,7 +339,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
             _rmsEntities.SaveChanges();
 
-            if(parameter != null && parameter.ToString() =="Print" && SelectedPurchaseBillNo != null)
+            if (parameter != null && parameter.ToString() == "Print" && SelectedPurchaseBillNo != null)
             {
                 PurchaseSummaryViewModel psummVM = new PurchaseSummaryViewModel(_showRestrictedCompanies, SelectedPurchaseBillNo.RunningBillNo)
                 {
@@ -356,7 +356,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         internal override void Clear()
         {
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
-            RaisePropertyChanged("ReturnPurchaseDetailList");            
+            RaisePropertyChanged("ReturnPurchaseDetailList");
             TotalAmount = null;
             SelectedCompany = null;
             BillList = null;
@@ -395,7 +395,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
             _returnPurchaseDetailsList.Clear();
 
-             BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedCompany.Id);
+            BillList = _rmsEntities.Purchases.Local.Where(s => s.CompanyId == SelectedCompany.Id);
 
             var mysqlParam = new MySql.Data.MySqlClient.MySqlParameter("@filterCompanyId", MySql.Data.MySqlClient.MySqlDbType.Int32)
             {
@@ -414,10 +414,10 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
                 if (itemPriceDetails != null)
                 {
-                    itemPrice = itemPriceDetails.Price; 
+                    itemPrice = itemPriceDetails.Price;
                 }
 
-                if(itemProduct !=null)
+                if (itemProduct != null)
                 {
                     itemProductName = itemProduct.Name;
                 }

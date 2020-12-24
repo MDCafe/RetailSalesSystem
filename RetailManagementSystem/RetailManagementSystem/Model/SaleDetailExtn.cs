@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RetailManagementSystem.Model
+﻿namespace RetailManagementSystem.Model
 {
     public class SaleDetailExtn : BaseModel
     {
@@ -9,7 +7,7 @@ namespace RetailManagementSystem.Model
         public decimal? LastSoldPrice { get; set; }
         public int UnitOfMeasure { get; set; }
         public void Clear()
-        {         
+        {
             this.Amount = null;
             this.AvailableStock = 0;
             this.CostPrice = 0;
@@ -19,10 +17,10 @@ namespace RetailManagementSystem.Model
             this.DiscountPercentage = 0;
             this.LastSoldPrice = null;
             this.Qty = null;
-        }        
+        }
     }
 
-    public  class ReturnSaleDetailExtn : SaleDetailExtn
+    public class ReturnSaleDetailExtn : SaleDetailExtn
     {
         public decimal ReturnQty { get; set; }
         public decimal ReturnPrice { get; set; }

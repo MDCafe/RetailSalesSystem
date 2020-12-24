@@ -33,10 +33,10 @@
 
         public bool CanExecute(object parameter)
         {
-            
-                var tParam = (T)parameter;
-                return _canExecute == null ? true : _canExecute(tParam);
-            
+
+            var tParam = (T)parameter;
+            return _canExecute == null ? true : _canExecute(tParam);
+
         }
 
         public event EventHandler CanExecuteChanged

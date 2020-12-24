@@ -11,7 +11,7 @@ namespace RetailManagementSystem.ViewModel.Misc
         readonly CollectionViewSource _cvsProductsPriceList;
         readonly ObservableCollection<ProductPrice> _productsPriceList;
         string _productName;
-       // System.Windows.Data.CollectionView cv;
+        // System.Windows.Data.CollectionView cv;
 
         public string ProductName
         {
@@ -45,7 +45,7 @@ namespace RetailManagementSystem.ViewModel.Misc
                      e.Accepted = productPrice.ProductName.ToUpper().Contains(ProductName.ToUpper());
                  }
              };
-            
+
         }
 
         //private bool FilterCollection(object obj)

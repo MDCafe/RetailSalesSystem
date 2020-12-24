@@ -16,18 +16,23 @@ namespace RetailManagementSystem.ViewModel.Stocks
         public ObservableCollection<StockAdjustmentExtn> StockAdjustmentList { get; private set; }
 
         public StockAdjustmentViewModel()
-        {            
+        {
             StockAdjustmentList = new ObservableCollection<StockAdjustmentExtn>();
             Title = "Stock Adjustment";
 
+            PopulateProductsList();
+        }
+
+        private void PopulateProductsList()
+        {
             var productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
-                                 " st.Quantity as 'Quantity', st.Id as 'StockId',pd.SellingPrice as 'SellingPrice' " +                                                                  
+                                 " st.Quantity as 'Quantity', st.Id as 'StockId',pd.SellingPrice as 'SellingPrice' " +
                                  " from Products p, PriceDetails pd, Stocks st " +
                                  "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                  " and st.Quantity != 0 and p.Isactive = true" +
                                  " union " +
                                    "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
-                                   " st.Quantity as 'Quantity', st.Id as 'StockId',pd.SellingPrice as 'SellingPrice' " +                                   
+                                   " st.Quantity as 'Quantity', st.Id as 'StockId',pd.SellingPrice as 'SellingPrice' " +
                                    " from Products p, PriceDetails pd, Stocks st " +
                                    " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
                                    " and st.Quantity = 0 and p.Isactive = true " +
@@ -44,13 +49,13 @@ namespace RetailManagementSystem.ViewModel.Stocks
         }
 
         public void SetProductDetails(StockAdjustProductPrice productPrice, int selectedIndex)
-        {         
-         
+        {
+
             if (productPrice == null)
             {
                 log.Debug("SetProductDetails(); Product Price is null");
                 return;
-            }            
+            }
             try
             {
                 log.Info("SetProductDetails:SelIndex:" + selectedIndex);
@@ -68,9 +73,9 @@ namespace RetailManagementSystem.ViewModel.Stocks
                 if (stockAdjustDetail != null)
                 {
                     stockAdjustDetail.CostPrice = productPrice.Price;
-                    stockAdjustDetail.OpeningBalance= productPrice.Quantity;
-                    stockAdjustDetail.StockId = productPrice.StockId;                    
-                }                
+                    stockAdjustDetail.OpeningBalance = productPrice.Quantity;
+                    stockAdjustDetail.StockId = productPrice.StockId;
+                }
             }
             catch (Exception ex)
             {
@@ -82,6 +87,8 @@ namespace RetailManagementSystem.ViewModel.Stocks
         internal override void Clear()
         {
             StockAdjustmentList = new ObservableCollection<StockAdjustmentExtn>();
+            //Populate again as the Quantity needs to change after adjustment
+            PopulateProductsList();
         }
 
 
@@ -105,7 +112,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
         private void OnSave()
         {
-            using(var rmsEntities = new RMSEntities())
+            using (var rmsEntities = new RMSEntities())
             {
                 try
                 {
@@ -118,7 +125,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
                             AdjustedQty = item.AdjustedQty,
                             OpeningBalance = item.OpeningBalance,
                             ClosingBalance = item.ClosingBalance,
-                            CostPrice = item.CostPrice,                            
+                            CostPrice = item.CostPrice,
                             AddedOn = combinedDateTime
                         };
                         rmsEntities.StockAdjustments.Add(stockadjustment);
@@ -131,7 +138,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
 
                         var stockTrns = rmsEntities.StockTransactions.Where(st => st.StockId == item.StockId).OrderByDescending(d => d.AddedOn).FirstOrDefault();
                         //while Adjusting always add new row..
-                        
+
                         var newStockTrans = new StockTransaction()
                         {
                             StockId = item.StockId,
@@ -141,15 +148,15 @@ namespace RetailManagementSystem.ViewModel.Stocks
                         };
 
                         stockadjustment.StockTransaction = newStockTrans;
-                        rmsEntities.StockTransactions.Add(newStockTrans);                        
+                        rmsEntities.StockTransactions.Add(newStockTrans);
                         rmsEntities.SaveChanges();
                         Clear();
                     }
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error while saving",ex);
-                    Utilities.Utility.ShowErrorBox(ex.Message);                    
+                    log.Error("Error while saving", ex);
+                    Utilities.Utility.ShowErrorBox(ex.Message);
                 }
             }
         }

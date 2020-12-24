@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 namespace RetailManagementSystem.ViewModel.Base
 {
     class ViewModelBase : INotifyPropertyChanged
-    {       
+    {
         protected virtual void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -24,18 +24,18 @@ namespace RetailManagementSystem.ViewModel.Base
         /// <param name="property"></param>
         public void NotifyPropertyChanged<TProperty>(Expression<Func<TProperty>> property)
         {
-          var lambda = (LambdaExpression)property;
-          MemberExpression memberExpression;
+            var lambda = (LambdaExpression)property;
+            MemberExpression memberExpression;
 
-          if (lambda.Body is UnaryExpression)
-          {
-            var unaryExpression = (UnaryExpression)lambda.Body;
-            memberExpression = (MemberExpression)unaryExpression.Operand;
-          }
-          else
-            memberExpression = (MemberExpression)lambda.Body;
+            if (lambda.Body is UnaryExpression)
+            {
+                var unaryExpression = (UnaryExpression)lambda.Body;
+                memberExpression = (MemberExpression)unaryExpression.Operand;
+            }
+            else
+                memberExpression = (MemberExpression)lambda.Body;
 
-          this.RaisePropertyChanged(memberExpression.Member.Name);
+            this.RaisePropertyChanged(memberExpression.Member.Name);
         }
-      }
+    }
 }

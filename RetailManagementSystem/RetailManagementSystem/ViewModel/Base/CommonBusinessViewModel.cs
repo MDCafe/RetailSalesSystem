@@ -16,7 +16,7 @@ namespace RetailManagementSystem.ViewModel.Base
         protected DateTime _transcationDate;
         protected int _runningBillNo;
         protected PaymentMode _selectedPaymentMode;
-        protected char _selectedPaymentId;                
+        protected char _selectedPaymentId;
         protected decimal? _totalAmount = 0;
         protected decimal? _totalDiscountPercent;
         protected decimal? _totalDiscountAmount;
@@ -31,7 +31,7 @@ namespace RetailManagementSystem.ViewModel.Base
             get { return _productsPriceList; }
             set
             {
-                _productsPriceList = value;                
+                _productsPriceList = value;
                 RaisePropertyChanged(nameof(ProductsPriceList));
             }
         }
@@ -157,8 +157,8 @@ namespace RetailManagementSystem.ViewModel.Base
             SelectedPaymentId = '0';
             RefreshProductList();
         }
-       
-        void INotifier.Notify(int runningNo,int categoryId)
+
+        void INotifier.Notify(int runningNo, int categoryId)
         {
             //RefreshProductList();
             if (categoryId != _categoryId) return;
@@ -167,7 +167,7 @@ namespace RetailManagementSystem.ViewModel.Base
 
         void INotifier.NotifyPurchaseUpdate()
         {
-            RefreshProductList(); 
+            RefreshProductList();
         }
 
         protected decimal? GetDiscountValue()
@@ -181,8 +181,8 @@ namespace RetailManagementSystem.ViewModel.Base
 
 
         public void RefreshProductList()
-        { 
-            _productsPriceList =  RMSEntitiesHelper.GetProductPriceList();
+        {
+            _productsPriceList = RMSEntitiesHelper.GetProductPriceList();
             RaisePropertyChanged(nameof(ProductsPriceList));
             NotifierCollectionChangedEvent?.Invoke();
         }
@@ -198,6 +198,6 @@ namespace RetailManagementSystem.ViewModel.Base
         }
 
         #endregion
-    }   
+    }
 
 }

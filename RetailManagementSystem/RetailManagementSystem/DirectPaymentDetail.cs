@@ -17,9 +17,9 @@ namespace RetailManagementSystem
         public int Id { get; set; }
         public Nullable<int> CustomerId { get; set; }
         public Nullable<decimal> PaidAmount { get; set; }
+        public Nullable<System.DateTime> PaymentDate { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
-        public Nullable<System.DateTime> PaymentDate { get; set; }
     }
 }
