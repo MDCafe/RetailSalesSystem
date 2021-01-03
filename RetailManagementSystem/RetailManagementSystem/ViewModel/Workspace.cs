@@ -640,7 +640,7 @@ namespace RetailManagementSystem.ViewModel
                             var showRestrictedCustomers = false;
                             if (showAll != null)
                                 showRestrictedCustomers = bool.Parse(showAll.ToString());
-                            ShowWindowDialog(new PurchaseSummary(showRestrictedCustomers));
+                            ShowWindowDialog(new PurchaseSummary());
 
                         }
                         catch (Exceptions.RMSException ex)
@@ -707,7 +707,7 @@ namespace RetailManagementSystem.ViewModel
                 {
                     _openStockBalanceReportCommand = new RelayCommand<object>((p) =>
                     {
-                        ShowWindowDialog(new StockBalanceReport(false));
+                        ShowWindowDialog(new StockBalanceReport());
                     });
                 }
                 return _openStockBalanceReportCommand;

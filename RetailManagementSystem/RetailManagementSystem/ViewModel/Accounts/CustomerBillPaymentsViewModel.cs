@@ -236,7 +236,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
                     }
                     if (!item.ChequeDate.HasValue)
                     {
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
                         Utility.ShowErrorBox("Cheque date can't be blank");
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
                         return false;
                     }
                 }

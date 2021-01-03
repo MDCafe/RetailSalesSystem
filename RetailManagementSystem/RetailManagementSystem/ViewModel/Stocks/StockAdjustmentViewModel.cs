@@ -142,7 +142,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
                         var newStockTrans = new StockTransaction()
                         {
                             StockId = item.StockId,
-                            OpeningBalance = stockTrns != null ? stockTrns.OpeningBalance : stock.Quantity, //opening balance of last transaction if trans is not null
+                            OpeningBalance = stockTrns != null ? stockTrns.ClosingBalance : stock.Quantity, //Closing balance of last transaction if trans is not null
                             ClosingBalance = item.ClosingBalance,
                             AddedOn = combinedDateTime
                         };

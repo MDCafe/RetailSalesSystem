@@ -86,7 +86,7 @@ namespace RetailManagementSystem.View.Sales
 
         private void custComboBoxCol_ComboBoxSelectedEvent(object selectedItem)
         {
-            var product = selectedItem as Product;
+            //var product = selectedItem as Product;
             //custComboBoxCol.comboBox.ItemsSource = _returnSalesViewModel.ProductsList;
             //custComboBoxCol.comboBox.SelectedIndex = -1;
             //custComboBoxCol.ClearSelection();

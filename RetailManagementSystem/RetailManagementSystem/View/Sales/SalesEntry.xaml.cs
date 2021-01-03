@@ -198,7 +198,7 @@ namespace RetailManagementSystem.View.Sales
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                if (!(child is T))
+                if (!(child is T t))
                 {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
@@ -212,14 +212,14 @@ namespace RetailManagementSystem.View.Sales
                     if (child is FrameworkElement frameworkElement && frameworkElement.Name == childName)
                     {
                         // if the child's name is of the request name
-                        foundChild = (T)child;
+                        foundChild = t;
                         break;
                     }
                 }
                 else
                 {
                     // child element found.
-                    foundChild = (T)child;
+                    foundChild = t;
                     break;
                 }
             }

@@ -108,34 +108,35 @@ namespace RetailManagementSystem.Utilities
 
         public static bool ShutdownRemoteMachine()
         {
-            var securePwd = new System.Security.SecureString();
-            var pwdString = "woodlands";
-            var pwdArray = pwdString.ToCharArray();
-            foreach (var item in pwdArray)
+            using (var securePwd = new System.Security.SecureString())
             {
-                securePwd.AppendChar(item);
+                var pwdString = "woodlands";
+                var pwdArray = pwdString.ToCharArray();
+                foreach (var item in pwdArray)
+                {
+                    securePwd.AppendChar(item);
+                }
+                var psi1 = new ProcessStartInfo("cmd.exe", @"/C net use \\swadeshi\IPC$ woodlands /USER:woodlandstrader & shutdown /m  \\swadeshi /s /t 0");
+
+                //var psi = new ProcessStartInfo("shutdown", "/m  \\swadeshi /s /t 0")
+                //{
+
+                //    //UseShellExecute = false,
+                //    //UserName = "WoodlandsTrader",
+                //    //Password = securePwd
+                //};
+
+
+
+                //using (Process process = Process.Start(psi1))
+                //{
+                //    process.WaitForExit();
+                //}
+                using (Process process = Process.Start(psi1))
+                {
+                    process.WaitForExit();
+                }
             }
-            var psi1 = new ProcessStartInfo("cmd.exe", @"/C net use \\swadeshi\IPC$ woodlands /USER:woodlandstrader & shutdown /m  \\swadeshi /s /t 0");
-
-            //var psi = new ProcessStartInfo("shutdown", "/m  \\swadeshi /s /t 0")
-            //{
-
-            //    //UseShellExecute = false,
-            //    //UserName = "WoodlandsTrader",
-            //    //Password = securePwd
-            //};
-
-
-
-            //using (Process process = Process.Start(psi1))
-            //{
-            //    process.WaitForExit();
-            //}
-            using (Process process = Process.Start(psi1))
-            {
-                process.WaitForExit();
-            }
-
             return true;
         }
     }

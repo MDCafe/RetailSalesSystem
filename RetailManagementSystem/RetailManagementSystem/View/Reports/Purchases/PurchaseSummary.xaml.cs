@@ -4,13 +4,11 @@ using System.Windows;
 namespace RetailManagementSystem.View.Reports.Purchases
 {
     public partial class PurchaseSummary : Window
-    {
-        PurchaseSummaryViewModel _purchaseSummaryViewModel = new PurchaseSummaryViewModel(false, 0);
-
-        public PurchaseSummary(bool showRestrictedCustomers)
+    {        
+        public PurchaseSummary()
         {
             InitializeComponent();
-            this.DataContext = _purchaseSummaryViewModel;
+            this.DataContext = new PurchaseSummaryViewModel(false, 0);
 
         }
     }
