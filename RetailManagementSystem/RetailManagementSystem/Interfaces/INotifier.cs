@@ -4,5 +4,7 @@
     {
         void Notify(int runningNo, int category);
         void NotifyPurchaseUpdate();
+
+        void NotifyStockUpdate();
     }
 }

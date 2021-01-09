@@ -27,5 +27,22 @@ namespace RetailManagementSystem.Utilities
                 }
             }
         }
+
+
+        public static object GetData(string spName)
+        {
+            using (var conn = GetConnection())
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.CommandText = spName;
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;                    
+                    conn.Open();
+                    return cmd.ExecuteScalar();
+                }
+            }
+        }
     }
+
 }

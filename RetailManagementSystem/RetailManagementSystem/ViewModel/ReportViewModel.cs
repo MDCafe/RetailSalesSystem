@@ -47,9 +47,11 @@ namespace RetailManagementSystem.ViewModel
                 if (PageSettings == null)
                 {
                     //default page settings
-                    PageSettings ps = new PageSettings();
-                    ps.PaperSize = new PaperSize("A4", 827, 1170);
-                    ps.Margins = new Margins(50, 0, 50, 0);
+                    PageSettings ps = new PageSettings
+                    {
+                        PaperSize = new PaperSize("A4", 827, 1170),
+                        Margins = new Margins(50, 0, 50, 0)
+                    };
                     ps.PaperSize.RawKind = (int)PaperKind.A4;
                     pageSettings = ps;
                 }

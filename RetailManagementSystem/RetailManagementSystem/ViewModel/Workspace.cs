@@ -971,10 +971,10 @@ namespace RetailManagementSystem.ViewModel
                     Utility.ShowMessageBox("You are not authorized to perform this operation");
                     return;
                 }
-                var result = Utility.ShowMessageBoxWithOptions("Do you want to change the system date to tommorrow's date?", System.Windows.MessageBoxButton.YesNo);
+                var result = Utility.ShowMessageBoxWithOptions("Make sure all the bills are saved. Do you want to mark end of day?", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.No) return;
 
-                RMSEntitiesHelper.Instance.UpdateSystemDBDate();
+                RMSEntitiesHelper.MarkEndOfDay();
             }
             catch (Exceptions.RMSException ex)
             {

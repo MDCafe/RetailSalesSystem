@@ -66,6 +66,7 @@
         <AssociationConnector Association="RMSEntities.FK_STKADJ_STRANS" />
         <AssociationConnector Association="RMSEntities.fk_stockId" />
         <AssociationConnector Association="RMSEntities.FK_SWAP_MAIN" />
+        <EntityTypeShape EntityType="RMSEntities.DateBillMapping" Width="1.5" PointX="0.75" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -99,6 +99,14 @@
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
+        <EntityType Name="DateBillMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" Nullable="false" />
+          <Property Name="EndOfDate" Type="datetime" Precision="0" />
+          <Property Name="EndBillNo" Type="mediumint" />
+        </EntityType>
         <EntityType Name="DirectPaymentDetails">
           <Key>
             <PropertyRef Name="Id" />
@@ -823,6 +831,7 @@
           <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Companies" EntityType="Self.Companies" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="DateBillMapping" EntityType="Self.DateBillMapping" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="DirectPaymentDetails" EntityType="Self.DirectPaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="ExpenseDetails" EntityType="Self.ExpenseDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="RMS" store:Type="Tables" />
@@ -1131,6 +1140,7 @@
             <End Role="Swap" EntitySet="Swaps" />
             <End Role="SwapDetail" EntitySet="SwapDetails" />
           </AssociationSet>
+          <EntitySet Name="DateBillMappings" EntityType="RMSEntities.DateBillMapping" />
         </EntityContainer>
         <EntityType Name="ApplicationDetail">
           <Key>
@@ -2005,6 +2015,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="DateBillMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="EndOfDate" Type="DateTime" />
+          <Property Name="EndBillNo" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2470,6 +2488,15 @@
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DateBillMappings">
+            <EntityTypeMapping TypeName="RMSEntities.DateBillMapping">
+              <MappingFragment StoreEntitySet="DateBillMapping">
+                <ScalarProperty Name="EndBillNo" ColumnName="EndBillNo" />
+                <ScalarProperty Name="EndOfDate" ColumnName="EndOfDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -150,6 +150,9 @@ namespace RetailManagementSystem.ViewModel.Stocks
                         stockadjustment.StockTransaction = newStockTrans;
                         rmsEntities.StockTransactions.Add(newStockTrans);
                         rmsEntities.SaveChanges();
+                        //Notify all open sales and purchase window that the stock has been updatedc
+                        RMSEntitiesHelper.Instance.NotifyAllPurchaseAndSalesOnStockUpdate();
+
                         Clear();
                     }
                 }

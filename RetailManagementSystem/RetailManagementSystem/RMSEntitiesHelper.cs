@@ -215,7 +215,7 @@ namespace RetailManagementSystem
 
         public static DateTime GetServerDate()
         {
-            var sql = "select RMS.GetSysDate()";
+            var sql = "select GetSysDate()";
             var serverDateTime = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
             return serverDateTime.FirstOrDefault();
         }
@@ -234,10 +234,12 @@ namespace RetailManagementSystem
 
         public DateTime GetSystemDBDate()
         {
-            using (RMSEntities rmsEntities = new RMSEntities())
-            {
-                return rmsEntities.SystemDatas.First().SysDate.Value;
-            }
+            return GetServerDate();
+            //using (RMSEntities rmsEntities = new RMSEntities())
+            //{
+            //    //return rmsEntities.SystemDatas.First().SysDate.Value;
+            //    return rmsEntities.Database.SqlQuery<DateTime>();
+            //}
         }
 
         public void UpdateSystemDBDate()
@@ -252,6 +254,30 @@ namespace RetailManagementSystem
                 rmsEntities.Entry<SystemData>(systemDBDate).State = System.Data.Entity.EntityState.Modified;
                 rmsEntities.SaveChanges();
 
+            }
+        }
+
+        public static void MarkEndOfDay()
+        {
+            using(var rmsEntities = new RMSEntities())
+            {
+                
+                
+                var sql = "MarkEndOfDay()";
+
+                var resultInt = rmsEntities.Database.SqlQuery<int>(sql).FirstOrDefault();
+                rmsEntities.SaveChanges();
+
+                //var result = MySQLDataAccess.GetData(sql);
+                //var resultInt = Convert.ToInt32(result);
+                if (resultInt == 0)
+                {
+                    Utility.ShowMessageBox("Mark End of Day successfully completed");
+                }
+                else
+                {
+                    Utility.ShowErrorBox("Mark End of Day has been completed already");
+                }                
             }
         }
 
@@ -291,13 +317,14 @@ namespace RetailManagementSystem
 
         public static DateTime GetCombinedDateTime()
         {
-            DateTime combinedDateTime;
+            return GetServerDate();
+            //DateTime combinedDateTime;
             //Get the current time since it takes the window open time
-            DateTime date = Instance.GetSystemDBDate();
-            TimeSpan time = GetServerTime();
+            //DateTime date = Instance.GetSystemDBDate();
+            //TimeSpan time = GetServerTime();
             //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-            combinedDateTime = date.Add(time);
-            return combinedDateTime;
+            //combinedDateTime = date.Add(time);
+            //return combinedDateTime;
         }
 
         public static StockTransactionExt CheckStockAdjustment(RMSEntities rmsEntities, int stockId)
@@ -308,6 +335,13 @@ namespace RetailManagementSystem
                                     " order by st.Addedon desc ";
             var stockTransCheck = rmsEntities.Database.SqlQuery<StockTransactionExt>(query).FirstOrDefault();
             return stockTransCheck;
+        }
+
+
+        public void NotifyAllPurchaseAndSalesOnStockUpdate()
+        {
+            _salesNotifierList.ForEach(n => n.NotifyStockUpdate());
+            _purchaseNotifierList.ForEach(n => n.NotifyStockUpdate());
         }
     }
 

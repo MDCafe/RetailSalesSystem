@@ -18,8 +18,7 @@ namespace RetailManagementSystem.View.Purchases
         {
             InitializeComponent();
 
-            RoutedEventHandler handler = null;
-            handler = (object sender, RoutedEventArgs e) =>
+            void handler(object sender, RoutedEventArgs e)
             {
                 if (_purchaseEntryViewModel.IsEditMode)
                 {
@@ -32,8 +31,7 @@ namespace RetailManagementSystem.View.Purchases
                             if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
                             DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
                             FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
-                            var purchaseDetailExtn = focusedElement.DataContext as PurchaseDetailExtn;
-                            if (purchaseDetailExtn == null) return;
+                            if (!(focusedElement.DataContext is PurchaseDetailExtn purchaseDetailExtn)) return;
                             var model = (PurchaseDetailExtn)focusedElement.DataContext;
                             if (model.PropertyReadOnly)
                             {
@@ -43,7 +41,8 @@ namespace RetailManagementSystem.View.Purchases
                     }));
                 }
                 Loaded -= handler;
-            };
+            }
+
             Loaded += handler;
 
             DataContextChanged += (sender, eventArgs) =>

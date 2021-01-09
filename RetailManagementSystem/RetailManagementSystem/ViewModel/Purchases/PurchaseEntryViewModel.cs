@@ -526,7 +526,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                          ProductId = item.ProductId,
                                          FreeQty = item.FreeIssue.Value,
                                          FreeAmount = item.PurchasePrice * item.FreeIssue.Value,
-                                         IsFreeOnly = item.Qty == 0 && item.FreeIssue.HasValue ? true : false,
+                                         IsFreeOnly = item.Qty == 0 && item.FreeIssue.HasValue,
                                          AddedOn = _transcationDate,
                                          ModifiedOn = RMSEntitiesHelper.GetServerDate(),
                                          UpdatedBy = EntitlementInformation.UserInternalId

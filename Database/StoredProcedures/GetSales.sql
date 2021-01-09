@@ -34,7 +34,14 @@ from sales s,Customers c, SaleDetails sd
 where s.CustomerId = c.Id
 and sd.BillId = s.BillId
 and c.CustomerTypeId = categoryId
-and Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate
+and Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate and
+(s.RunningBillNo >= 
+	(select EndBillNo from DateBillMapping 
+	where id = (select id from DateBillMapping where date(EndOfDate) < fromSalesDate and CustomerTypeId = categoryId order by date(EndOfDate) desc
+	))
+and 
+s.RunningBillNo <= (select EndBillNo from DateBillMapping where date(EndOfDate) = toSalesDate and CustomerTypeId = categoryId)
+)
 and (if(isnull(s.IsCancelled),0,s.IsCancelled)) = 0 
 group by s.billId
 order by s.RunningBillNo 

@@ -37,13 +37,13 @@ namespace RetailManagementSystem.ViewModel.Sales
         List<SaleDetailExtn> _deletedItems;
         Customer _selectedCustomer;
         string _selectedCustomerText;
-        IEnumerable<MeasuringUnit> _mesauringUnitList;
+        readonly IEnumerable<MeasuringUnit> _mesauringUnitList;
 
         #endregion
 
         #region Constructor
 
-        public SalesEntryViewModel(SalesParams salesParams) : base(salesParams != null ? salesParams.ShowAllCustomers : false)
+        public SalesEntryViewModel(SalesParams salesParams) : base(salesParams != null && salesParams.ShowAllCustomers)
         {
             _salesParams = salesParams;
             //_rmsEntities = new RMSEntities();// RMSEntitiesHelper.Instance.RMSEntities;
@@ -273,39 +273,39 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void CheckIfWithinCreditLimimt()
-        {
-            if (_selectedCustomer != null && _selectedCustomer.Name != "Cash Customer")
-            {
-                var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
-                var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
-                var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
-                {
-                    Value = _selectedCustomer.Id
-                };
+        //private void CheckIfWithinCreditLimimt()
+        //{
+        //    if (_selectedCustomer != null && _selectedCustomer.Name != "Cash Customer")
+        //    {
+        //        var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
+        //        var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
+        //        var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
+        //        {
+        //            Value = _selectedCustomer.Id
+        //        };
 
-                var paramList = new MySqlParameter[] { fromSqlParam, toSqlParam, categoryIdSqlParam };
-                var acctBalanceAmount = MySQLDataAccess.GetData("GetCustomerBalance", paramList);
-                var acctBalanceAmountValue = acctBalanceAmount != System.DBNull.Value ? Convert.ToDecimal(acctBalanceAmount) : 0m;
-                if (acctBalanceAmountValue > _selectedCustomer.CreditLimit)
-                {
-                    var msgBuilder = new System.Text.StringBuilder();
-                    msgBuilder.Append("Acct balance\t= ").Append(acctBalanceAmountValue.ToString("N2")).AppendLine();
-                    msgBuilder.Append("Credit limit\t= ").Append(_selectedCustomer.CreditLimit.Value.ToString("N2")).AppendLine();
-                    msgBuilder.Append("Balance     \t= ").Append((_selectedCustomer.CreditLimit - acctBalanceAmountValue).Value.ToString("N2")).AppendLine();
-                    msgBuilder.Append("Do you want to override?");
-                    var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(), System.Windows.MessageBoxButton.YesNoCancel);
-                    if (result == System.Windows.MessageBoxResult.Yes)
-                    {
-                        var login = new View.Entitlements.Login();
-                        var loginResult = login.ShowDialog();
-                        if (RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId) && loginResult.Value)
-                            return;
-                    }
-                    CloseCommand.Execute(null);
-                }
-            }
-        }
+        //        var paramList = new MySqlParameter[] { fromSqlParam, toSqlParam, categoryIdSqlParam };
+        //        var acctBalanceAmount = MySQLDataAccess.GetData("GetCustomerBalance", paramList);
+        //        var acctBalanceAmountValue = acctBalanceAmount != System.DBNull.Value ? Convert.ToDecimal(acctBalanceAmount) : 0m;
+        //        if (acctBalanceAmountValue > _selectedCustomer.CreditLimit)
+        //        {
+        //            var msgBuilder = new System.Text.StringBuilder();
+        //            msgBuilder.Append("Acct balance\t= ").Append(acctBalanceAmountValue.ToString("N2")).AppendLine();
+        //            msgBuilder.Append("Credit limit\t= ").Append(_selectedCustomer.CreditLimit.Value.ToString("N2")).AppendLine();
+        //            msgBuilder.Append("Balance     \t= ").Append((_selectedCustomer.CreditLimit - acctBalanceAmountValue).Value.ToString("N2")).AppendLine();
+        //            msgBuilder.Append("Do you want to override?");
+        //            var result = Utility.ShowMessageBoxWithOptions(msgBuilder.ToString(), System.Windows.MessageBoxButton.YesNoCancel);
+        //            if (result == System.Windows.MessageBoxResult.Yes)
+        //            {
+        //                var login = new View.Entitlements.Login();
+        //                var loginResult = login.ShowDialog();
+        //                if (RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId) && loginResult.Value)
+        //                    return;
+        //            }
+        //            CloseCommand.Execute(null);
+        //        }
+        //    }
+        //}
 
         public string SelectedCustomerText
         {
@@ -1111,17 +1111,17 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void RemoveProductWithNullValues()
-        {
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (var item in SaleDetailList.Reverse())
-                {
-                    if (item.ProductId == 0)
-                        SaleDetailList.Remove(item);
-                }
-            });
-        }
+        //private void RemoveProductWithNullValues()
+        //{
+        //    App.Current.Dispatcher.Invoke(() =>
+        //    {
+        //        foreach (var item in SaleDetailList.Reverse())
+        //        {
+        //            if (item.ProductId == 0)
+        //                SaleDetailList.Remove(item);
+        //        }
+        //    });
+        //}
 
         private void OnSalesDetailsListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -1490,82 +1490,82 @@ namespace RetailManagementSystem.ViewModel.Sales
             SaleDetailExtn.Qty = SaleDetailExtn.Qty ?? 1;
         }
 
-        private void SaveDataTemp()
-        {
-            //_guid = Guid.NewGuid().ToString();          
-            //_timer = new System.Timers.Timer();
-            //_timer.Interval = 60000;
-            //_timer.Start();            
-            //_timer.Elapsed += (s, e) =>
-            //{
-            //    Monitor.Enter(rootLock);
-            //    {
-            //        log.DebugFormat("Entering timer loop :{0}", _guid);
-            //        if (_salesDetailsList.Count() < 0 || SelectedCustomer == null)
-            //        {
-            //            Monitor.Exit(rootLock);
-            //            return;
-            //        }
-            //        //Save to temp table  
-            //        //IsDirty = true;
-            //        //var deletedItems =_rmsEntities.SaleTemps.Where(i => _salesDetailsList.Contains(j => j.ProductId != i.ProductId) == true);                    
-            //        var saleTempItems = _rmsEntities.SaleTemps.Where(g => g.Guid == _guid);
+        //private void SaveDataTemp()
+        //{
+        //    //_guid = Guid.NewGuid().ToString();          
+        //    //_timer = new System.Timers.Timer();
+        //    //_timer.Interval = 60000;
+        //    //_timer.Start();            
+        //    //_timer.Elapsed += (s, e) =>
+        //    //{
+        //    //    Monitor.Enter(rootLock);
+        //    //    {
+        //    //        log.DebugFormat("Entering timer loop :{0}", _guid);
+        //    //        if (_salesDetailsList.Count() < 0 || SelectedCustomer == null)
+        //    //        {
+        //    //            Monitor.Exit(rootLock);
+        //    //            return;
+        //    //        }
+        //    //        //Save to temp table  
+        //    //        //IsDirty = true;
+        //    //        //var deletedItems =_rmsEntities.SaleTemps.Where(i => _salesDetailsList.Contains(j => j.ProductId != i.ProductId) == true);                    
+        //    //        var saleTempItems = _rmsEntities.SaleTemps.Where(g => g.Guid == _guid);
 
-            //        foreach (var delItem in saleTempItems.ToList())
-            //        {
-            //            if (!_salesDetailsList.Any(p => p.ProductId == delItem.ProductId && delItem.Guid == _guid))
-            //            {
-            //                _rmsEntities.SaleTemps.Remove(delItem);
-            //            }
-            //        }
+        //    //        foreach (var delItem in saleTempItems.ToList())
+        //    //        {
+        //    //            if (!_salesDetailsList.Any(p => p.ProductId == delItem.ProductId && delItem.Guid == _guid))
+        //    //            {
+        //    //                _rmsEntities.SaleTemps.Remove(delItem);
+        //    //            }
+        //    //        }
 
-            //        foreach (var item in _salesDetailsList.ToList())
-            //        {
-            //            var tempItem = _rmsEntities.SaleTemps.FirstOrDefault(st => st.ProductId == item.ProductId && st.Guid == _guid);
-            //            if (tempItem != null)
-            //            {
-            //                tempItem.SaleDate = _transcationDate;
-            //                tempItem.CustomerId = _selectedCustomer == null ? -1 : _selectedCustomer.Id;
-            //                tempItem.PaymentMode = SelectedPaymentId.ToString();
-            //                tempItem.OrderNo = OrderNo;
-            //                tempItem.ProductId = item.ProductId;
-            //                tempItem.Quantity = item.Qty.HasValue == false? 0 : item.Qty;
-            //                tempItem.SellingPrice = item.SellingPrice;
-            //                tempItem.DiscountPercentage = item.DiscountPercentage;
-            //                tempItem.DiscountAmount = item.DiscountAmount;
-            //                tempItem.Amount = item.Amount;
-            //                tempItem.PriceId = item.PriceId;
-            //                continue;
-            //            }
+        //    //        foreach (var item in _salesDetailsList.ToList())
+        //    //        {
+        //    //            var tempItem = _rmsEntities.SaleTemps.FirstOrDefault(st => st.ProductId == item.ProductId && st.Guid == _guid);
+        //    //            if (tempItem != null)
+        //    //            {
+        //    //                tempItem.SaleDate = _transcationDate;
+        //    //                tempItem.CustomerId = _selectedCustomer == null ? -1 : _selectedCustomer.Id;
+        //    //                tempItem.PaymentMode = SelectedPaymentId.ToString();
+        //    //                tempItem.OrderNo = OrderNo;
+        //    //                tempItem.ProductId = item.ProductId;
+        //    //                tempItem.Quantity = item.Qty.HasValue == false? 0 : item.Qty;
+        //    //                tempItem.SellingPrice = item.SellingPrice;
+        //    //                tempItem.DiscountPercentage = item.DiscountPercentage;
+        //    //                tempItem.DiscountAmount = item.DiscountAmount;
+        //    //                tempItem.Amount = item.Amount;
+        //    //                tempItem.PriceId = item.PriceId;
+        //    //                continue;
+        //    //            }
 
-            //            var newSaletemp =
-            //            new SaleTemp()
-            //            {
-            //                Guid = _guid,
-            //                SaleDate = _transcationDate,
-            //                CustomerId = _selectedCustomer == null ? -1 : _selectedCustomer.Id,
-            //                PaymentMode = SelectedPaymentId.ToString(),
-            //                OrderNo = OrderNo,
-            //                ProductId = item.ProductId,
-            //                Quantity = item.Qty,
-            //                SellingPrice = item.SellingPrice,
-            //                DiscountPercentage = item.DiscountPercentage,
-            //                DiscountAmount = item.DiscountAmount,
-            //                Amount = item.Amount,
-            //                PriceId = item.PriceId
-            //            };
+        //    //            var newSaletemp =
+        //    //            new SaleTemp()
+        //    //            {
+        //    //                Guid = _guid,
+        //    //                SaleDate = _transcationDate,
+        //    //                CustomerId = _selectedCustomer == null ? -1 : _selectedCustomer.Id,
+        //    //                PaymentMode = SelectedPaymentId.ToString(),
+        //    //                OrderNo = OrderNo,
+        //    //                ProductId = item.ProductId,
+        //    //                Quantity = item.Qty,
+        //    //                SellingPrice = item.SellingPrice,
+        //    //                DiscountPercentage = item.DiscountPercentage,
+        //    //                DiscountAmount = item.DiscountAmount,
+        //    //                Amount = item.Amount,
+        //    //                PriceId = item.PriceId
+        //    //            };
 
-            //            //    _rmsEntities.Entry(newSaletemp).State = System.Data.EntityState.Added;
-            //            _rmsEntities.SaleTemps.Add(newSaletemp);
+        //    //            //    _rmsEntities.Entry(newSaletemp).State = System.Data.EntityState.Added;
+        //    //            _rmsEntities.SaleTemps.Add(newSaletemp);
 
-            //        }
+        //    //        }
 
-            //        _rmsEntities.SaveChanges();
-            //    }
-            //    Monitor.Exit(rootLock);
-            //    log.DebugFormat("Exit timer loop :{0}", _guid);
-            //};
-        }
+        //    //        _rmsEntities.SaveChanges();
+        //    //    }
+        //    //    Monitor.Exit(rootLock);
+        //    //    log.DebugFormat("Exit timer loop :{0}", _guid);
+        //    //};
+        //}
 
         //private void RemoveTempSalesItemForGUID(string guid)
         //{
@@ -1624,26 +1624,26 @@ namespace RetailManagementSystem.ViewModel.Sales
         //    RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId);
         //}
 
-        private void AutoSaveData()
-        {
-            //_autoTimer = new System.Timers.Timer();
-            //_autoTimer.Interval = 30000;
-            //_autoTimer.Start();
-            //_autoTimer.Elapsed += (o, s) =>
-            //    {                
-            //        if (_salesDetailsList.Count() >= 3 && _salesDetailsList[2].Amount !=null)
-            //        {
-            //            if (_autoResetEvent == null)
-            //            {
-            //                _autoResetEvent = new AutoResetEvent(false);
-            //            }
-            //            else
-            //                _autoResetEvent.WaitOne();
+        //private void AutoSaveData()
+        //{
+        //    //_autoTimer = new System.Timers.Timer();
+        //    //_autoTimer.Interval = 30000;
+        //    //_autoTimer.Start();
+        //    //_autoTimer.Elapsed += (o, s) =>
+        //    //    {                
+        //    //        if (_salesDetailsList.Count() >= 3 && _salesDetailsList[2].Amount !=null)
+        //    //        {
+        //    //            if (_autoResetEvent == null)
+        //    //            {
+        //    //                _autoResetEvent = new AutoResetEvent(false);
+        //    //            }
+        //    //            else
+        //    //                _autoResetEvent.WaitOne();
 
-            //            SaveInterim();                    
-            //        }
-            //};
-        }
+        //    //            SaveInterim();                    
+        //    //        }
+        //    //};
+        //}
 
         #endregion
     }

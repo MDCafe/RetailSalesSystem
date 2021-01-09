@@ -170,6 +170,12 @@ namespace RetailManagementSystem.ViewModel.Base
             RefreshProductList();
         }
 
+
+        void INotifier.NotifyStockUpdate()
+        {
+            RefreshProductList();
+        }
+
         protected decimal? GetDiscountValue()
         {
             if (_totalDiscountAmount.HasValue && _totalDiscountAmount.Value > 0)

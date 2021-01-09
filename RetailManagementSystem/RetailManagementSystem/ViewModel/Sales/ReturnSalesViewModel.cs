@@ -260,19 +260,19 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_getBillCommand == null)
                 {
-                    _getBillCommand = new RelayCommand<object>((p) => OnGetBill(p), (p) => CanGetBillNo(p));
+                    _getBillCommand = new RelayCommand<object>((p) => OnGetBill(), (p) => CanGetBillNo());
                 }
 
                 return _getBillCommand;
             }
         }
 
-        public bool CanGetBillNo(object parameter)
+        public bool CanGetBillNo()
         {
             return BillNo != null && BillNo.HasValue && BillNo.Value != 0;
         }
 
-        private void OnGetBill(object parameter)
+        private void OnGetBill()
         {
             PanelLoading = true;
             var GetBillTask = System.Threading.Tasks.Task.Run(() =>
