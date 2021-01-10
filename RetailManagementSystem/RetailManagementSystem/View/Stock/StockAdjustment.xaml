@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="RetailManagementSystem.View.Stock.StockAdjustment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:BHCustCtrl="clr-namespace:BHCustCtrl;assembly=BHCustCtrl" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolKit="http://schemas.microsoft.com/wpf/2008/toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="194*"/>
+            <RowDefinition Height="31*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="73*"/>
+            <ColumnDefinition Width="87*"/>
+        </Grid.ColumnDefinitions>
+        <!--DataGrid-->
+        <toolKit:DataGrid Name="StockAdjustDataGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding StockAdjustmentList}"  
+                                      AutoGenerateColumns="False" RowHeight="25"                                       
+                                      SelectionMode="Single" Grid.Row="0" Grid.Column="0"
+                                      RowHeaderWidth="25"
+                                      SelectionUnit="FullRow"
+                                      CanUserSortColumns="False" CanUserReorderColumns="False" VirtualizingPanel.IsVirtualizing="True" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <toolKit:DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="LightYellow"/>
+                </Style>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background" Value="#6F0090FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                    <Style.Setters>
+                        <EventSetter Event="PreviewKeyDown" Handler="Cell_PreviewKeyDown"/>
+                        <EventSetter Event="GotFocus" Handler="Cell_GotFocus"/>
+                    </Style.Setters>
+                </Style>
+
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+
+            </toolKit:DataGrid.Resources>
+            <toolKit:DataGrid.RowHeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Item.SerialNo, 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type toolKit:DataGridRow}}}"/>
+
+                </DataTemplate>
+            </toolKit:DataGrid.RowHeaderTemplate>
+
+            <toolKit:DataGrid.Columns>
+                <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
+                                                                    ItemsSource="{Binding ProductsPriceList}"                                                                  
+                                                                    SelectedValuePath="ProductId"
+                                                                    DisplayMemberPath="ProductName"  
+                                                                    CustComboBoxSelectedPath ="ProductId"
+                                                                    CustComboBoxSelectedValue ="ProductId"
+                                                                    SelectedValueBinding="{Binding ProductId}" 
+                                                                    ComboBoxSelectedEvent="CustComboBoxColComboBoxSelectedEvent"                                                        
+                                  >
+                    <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
+                    <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="StockId" Binding="{Binding StockId}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                </BHCustCtrl:CustDataGridComboBoxColumn>
+                <toolKit:DataGridTextColumn Width="150" Header="Opening Balance" Binding="{Binding OpeningBalance}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150"  Header="Quantity To Adjust" Binding="{Binding AdjustedQty}" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Width="150" Header="Closing Balance" Binding="{Binding ClosingBalance}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+            </toolKit:DataGrid.Columns>
+            <toolKit:DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
+                    <Setter Property="FontWeight"  Value="Bold" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </toolKit:DataGrid.ColumnHeaderStyle>
+        </toolKit:DataGrid>
+        <!--DataGrid-->
+        <StackPanel Orientation="Horizontal" Grid.Row="2"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="2">
+            <Button x:Name="btnSave" Content="Save"  Width="80" Command="{Binding SaveCommand}" Margin="5" />
+            <Button x:Name="btClear" Content="Clear"  Width="80" Command="{Binding ClearCommand}"  Margin="5" />
+            <Button x:Name="btCancel" Content="Cancel"  Width="80" Command="{Binding CloseCommand}"  Margin="5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

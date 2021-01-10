@@ -1,0 +1,43 @@
+﻿<Window x:Class="RetailManagementSystem.View.Reports.Stock.StockAdjustReport"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        mc:Ignorable="d"
+        Name="StockAdjustParamWindow"        
+        Title="Stock Adjustmenet Report" Height="200" Width="360" 
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="85*"/>
+            <ColumnDefinition Width="207*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="From" Grid.Column="0" Margin="5" Grid.Row="1"/>
+        <DatePicker x:Name="FromSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding FromSalesDate}" BorderThickness="0" Margin="5" 
+                    Height="25" Grid.Column="1" Width="100" HorizontalAlignment="Left" Grid.Row="1"/>
+
+        <Label Content="To" Grid.Column="0" Grid.Row="2" Margin="5"/>
+        <DatePicker x:Name="ToSalesDate" ForceCursor="True" FirstDayOfWeek="Monday" 
+            SelectedDateFormat="Short" SelectedDate="{Binding ToSalesDate}" BorderThickness="0" Margin="5" 
+                    Height="25" Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Left"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <Button x:Name="btnPrint" Content="Print"  Width="60" Command="{Binding PrintCommand}" CommandParameter="{Binding  ElementName=StockAdjustParamWindow}"  Margin="5"/>
+            <Button x:Name="btClear" Content="Clear"  Width="60" Command="{Binding ClearCommand}"  Margin="5"/>
+            <Button x:Name="btCancel" Content="Cancel"  Width="60" Command="{Binding CloseWindowCommand, Mode=OneWay}" 
+                CommandParameter="{Binding ElementName=StockAdjustParamWindow}" Margin="5" IsCancel="True"/>
+        </StackPanel>
+        <Label Content="Product" Grid.Row ="0" Grid.Column="0" Margin="5" VerticalAlignment="Center"/>
+        <ComboBox x:Name="CboProduct" Grid.Row ="0"  Grid.Column="1" HorizontalAlignment="Left" Height="23" 
+            SelectedItem="{Binding SelectedProduct}" VerticalAlignment="Center" Width="200"
+            ItemsSource="{Binding ProductList}" SelectedValuePath="Id" DisplayMemberPath="Name" Margin="5" IsEditable="True"/>
+
+    </Grid>
+</Window>
