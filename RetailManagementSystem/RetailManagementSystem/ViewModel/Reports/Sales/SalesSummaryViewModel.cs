@@ -98,7 +98,7 @@ namespace RetailManagementSystem.ViewModel.Reports
                 Value = _categoryId
             };
 
-            var userSqlParam = new MySqlParameter("UserId", MySqlDbType.Int32)
+            var userSqlParam = new MySqlParameter("internalUserId", MySqlDbType.Int32)
             {
                 Value = SelectedUserName
             };

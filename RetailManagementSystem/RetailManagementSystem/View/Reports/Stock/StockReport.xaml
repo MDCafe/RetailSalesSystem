@@ -38,7 +38,7 @@
             ItemsSource="{Binding ProductCategories}" SelectedValuePath="Id" DisplayMemberPath="name" Margin="10,8,0,0"/>
         <Label Content="Product" Grid.Row="2" Grid.Column="0" Margin="5,0,5,10"/>
         <ComboBox x:Name="CboProduct" Grid.Column="1" HorizontalAlignment="Left" Height="23" Grid.Row="2" 
-            SelectedItem="{Binding SelectedProduct}" VerticalAlignment="Top" Width="200"
+            SelectedItem="{Binding SelectedProduct}" VerticalAlignment="Top" Width="200" IsEditable="True"
             ItemsSource="{Binding ProductList}" SelectedValuePath="Id" DisplayMemberPath="Name" Margin="10,8,0,0"/>
         
         <Label Content="From Date" Grid.Column="0" Grid.Row="3" Margin="5"/>

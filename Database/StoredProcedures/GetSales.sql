@@ -3,7 +3,7 @@ DROP procedure IF EXISTS `GetSales`;
 
 DELIMITER $$
 USE `rms`$$
-CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date,IN categoryId int)
+CREATE DEFINER=`RMS`@`%` PROCEDURE `GetSales`(IN fromSalesDate Date, IN toSalesDate date,IN categoryId int,in internalUserId int)
 BEGIN
 select s.BillId,s.AddedOn,C.Name as Customer,CustomerOrderNo,
 CASE
@@ -34,17 +34,19 @@ from sales s,Customers c, SaleDetails sd
 where s.CustomerId = c.Id
 and sd.BillId = s.BillId
 and c.CustomerTypeId = categoryId
-and Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate and
-(s.RunningBillNo >= 
+and -- Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate and
+(s.RunningBillNo > 
 	(select EndBillNo from DateBillMapping 
-	where id = (select id from DateBillMapping where date(EndOfDate) < fromSalesDate and CustomerTypeId = categoryId order by date(EndOfDate) desc
+	where id = (select id from DateBillMapping where date(EndOfDate) < fromSalesDate and CustomerTypeId = categoryId order by date(EndOfDate) desc LIMIT 1 
 	))
 and 
 s.RunningBillNo <= (select EndBillNo from DateBillMapping where date(EndOfDate) = toSalesDate and CustomerTypeId = categoryId)
 )
 and (if(isnull(s.IsCancelled),0,s.IsCancelled)) = 0 
+and s.UpdatedBy = if(internalUserId = 0,s.UpdatedBy,internalUserId)
 group by s.billId
 order by s.RunningBillNo 
+
 
 /*union
 
