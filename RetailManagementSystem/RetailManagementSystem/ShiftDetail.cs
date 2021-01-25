@@ -12,21 +12,14 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class ChequePaymentDetail
+    public partial class ShiftDetail
     {
         public int Id { get; set; }
-        public int PaymentId { get; set; }
-        public Nullable<int> ChequeNo { get; set; }
-        public Nullable<System.DateTime> ChequeDate { get; set; }
-        public Nullable<bool> IsChequeRealised { get; set; }
-        public Nullable<System.DateTime> PaymentDate { get; set; }
+        public int UserId { get; set; }
+        public Nullable<decimal> PettyCash { get; set; }
+        public Nullable<System.DateTime> LoginDate { get; set; }
+        public Nullable<System.DateTime> LogoutDate { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public Nullable<int> UpdatedBy { get; set; }
-        public Nullable<decimal> Amount { get; set; }
-        public Nullable<int> BankId { get; set; }
-        public Nullable<int> BankBranchId { get; set; }
-    
-        public virtual PaymentDetail PaymentDetail { get; set; }
     }
 }

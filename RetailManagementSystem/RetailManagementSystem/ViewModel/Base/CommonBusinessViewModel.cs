@@ -3,6 +3,7 @@ using RetailManagementSystem.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
@@ -25,6 +26,7 @@ namespace RetailManagementSystem.ViewModel.Base
         protected int _categoryId;
 
         System.Windows.Visibility _isVisible = System.Windows.Visibility.Collapsed;
+        private IEnumerable<BankBranchDetail> bankBranchDetailList;
 
         public ObservableCollection<ProductPrice> ProductsPriceList
         {
@@ -42,9 +44,43 @@ namespace RetailManagementSystem.ViewModel.Base
             set
             {
                 _selectedPaymentId = value;
+                if (_selectedPaymentId == '2')
+                {                                        
+                    if (BankDetailList == null)
+                    {
+                        using (var en = new RMSEntities())
+                        {
+                            BankDetailList = en.BankDetails.OrderBy(b => b.Name).ToList();
+                        }
+                    }
+                }                
                 RaisePropertyChanged(nameof(SelectedPaymentId));
             }
         }
+
+        #region ChequeDetails
+        int? _selectedChqBank;
+        public decimal? _chqAmount { get; set; }
+        public decimal? ChqAmount { get { return _chqAmount; } set { _chqAmount = value; } }
+        public int? ChqNo { get; set; }
+        public DateTime? ChqDate { get; set; }
+        public int? SelectedChqBank
+        {
+            get { return _selectedChqBank; }
+            set
+            {
+
+                if (_selectedChqBank == value) return;
+                _selectedChqBank = value;
+                using (var en = new RMSEntities())
+                {
+                    BankBranchDetailList = en.BankBranchDetails.Where(b => b.BankId == value).OrderBy(o => o.Name).ToList();
+                };
+            }
+        }
+        public int? SelectedChqBranch { get; set; }
+
+        #endregion
 
         public DateTime TranscationDate
         {
@@ -148,6 +184,16 @@ namespace RetailManagementSystem.ViewModel.Base
 
         public Customer DefaultCustomer { get; set; }
 
+        public IEnumerable<BankDetail> BankDetailList { get; set; }
+        public IEnumerable<BankBranchDetail> BankBranchDetailList
+        {
+            get => bankBranchDetailList;
+            set 
+            { 
+                bankBranchDetailList = value; 
+            }
+        }
+
         protected CommonBusinessViewModel()
         {
             PaymentMode pm = new PaymentMode();
@@ -156,6 +202,7 @@ namespace RetailManagementSystem.ViewModel.Base
             _transcationDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
             SelectedPaymentId = '0';
             RefreshProductList();
+            ChqDate = RMSEntitiesHelper.GetServerDate();
         }
 
         void INotifier.Notify(int runningNo, int categoryId)

@@ -6,6 +6,11 @@
         public virtual Sale Sale { get; set; }
         public decimal? LastSoldPrice { get; set; }
         public int UnitOfMeasure { get; set; }
+
+        public string BarcodeNo { get; set; }
+
+        public string ProductName { get; set; }
+
         public void Clear()
         {
             this.Amount = null;

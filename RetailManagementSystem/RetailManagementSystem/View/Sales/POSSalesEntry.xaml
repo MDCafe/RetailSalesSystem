@@ -1,0 +1,200 @@
+﻿<Window x:Class="RetailManagementSystem.View.Sales.POSSalesEntry"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        FocusManager.FocusedElement="{Binding ElementName=POSSalesGrid}"
+        Title="POS Sales Entry" Height="750" Width="800" WindowState="Maximized" Name="POSSalesWindow" WindowStyle="None">
+    <Window.Resources>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" x:Key="CalButtonBackground">
+            <GradientStop Color="Black" Offset="0"/>
+            <GradientStop Color="#FF7592F1" Offset="1"/>
+        </LinearGradientBrush>
+        <Style x:Key="RoundedButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="15" Background="{StaticResource CalButtonBackground}" BorderThickness="1" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="Black" Offset="0.923"/>
+                <GradientStop Color="#FF4A55A0" Offset="0.452"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="420"/>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="600"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="350"/>
+            <RowDefinition Height="200*"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid x:Name="POSSalesGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" ItemsSource="{Binding SaleDetailList}" AutoGenerateColumns="False"
+                  SelectedIndex="{Binding SelectedIndex}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding BarcodeNo}"/>
+                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="200" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Qty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+            <Label Content="Customer" Width="120" FontSize="14" FontFamily="Verdana"/>
+            <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  SelectedValuePath="" HorizontalAlignment="Left"
+                      ItemsSource="{Binding CustomersList}"  IsEditable="True" Width="150"  VerticalAlignment="Top"     
+                      Margin="5" Height="25"                        
+                  >
+                <ComboBox.SelectedItem>
+                    <Binding Path="SelectedCustomer" NotifyOnValidationError="True" UpdateSourceTrigger="LostFocus">
+                    </Binding>
+                </ComboBox.SelectedItem>
+                <ComboBox.Text>
+                    <Binding Path="SelectedCustomerText"/>
+                </ComboBox.Text>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+            <Label Content="Payment Mode" Width="120" FontSize="14" FontFamily="Verdana" VerticalAlignment="Center"/>
+            <ComboBox Name="CboPaymentMode" ItemsSource="{Binding PaymentModes}" SelectedValuePath="PaymentId" VerticalAlignment="Center"
+                      DisplayMemberPath="PaymentName" SelectedItem="SelectedPaymentMode" SelectedValue="{Binding SelectedPaymentId}" 
+                      Height="26" Width="149"  Grid.Row="1" Grid.Column="1" Margin="5,12"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" Margin="9,0,0,0">
+
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <TextBlock Text="Total : " FontSize="30" Margin="5" VerticalAlignment="Center"/>
+            <TextBlock x:Name="txtTotalAmount"  Margin="5,5,5,5" Text="{Binding TotalAmount, TargetNullValue={x:Static sys:String.Empty} ,
+                                StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center" FontSize="30"/>
+        </StackPanel>
+        <Grid Grid.Row="3" Grid.Column="1"  Visibility="{Binding IsChequeControlsVisible}" Margin="5,30,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+
+            <Label Content="Cheque Amount" Grid.Row="0" Grid.Column="0" FontSize="15" VerticalAlignment="Center"/>
+            <TextBox  Text="{Binding ChqAmount}" Width="150" Grid.Row="0" Grid.Column="1" Height="25" Margin="5" />
+
+            <Label Content="Cheque No" Grid.Row="1" Grid.Column="0" FontSize="15" VerticalAlignment="Center"/>
+            <TextBox  Text="{Binding ChqNo}" Width="150" Grid.Row="1" Grid.Column="1" Height="25" Margin="5" />
+
+            <Label Content="Date" Grid.Row="2" Grid.Column="0" FontSize="15" VerticalAlignment="Center"/>
+            <DatePicker SelectedDate="{Binding ChqDate}" Width="150" Height="25" Grid.Row="2" Grid.Column="1"  Margin="5" />
+
+            <Label Content="Bank" Grid.Row="3" Grid.Column="0" FontSize="15" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding BankDetailList}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding SelectedChqBank}" Width="150"  Grid.Row="3" Grid.Column="1" Height="25" Margin="5" />
+
+            <Label Content="Branch" Grid.Row="4" Grid.Column="0" FontSize="15" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding BankBranchDetailList}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding SelectedChqBranch}" Width="150"  
+                      Grid.Row="4" Grid.Column="1" Height="25" Margin="5" />
+
+        </Grid>
+        <Grid Grid.Row="3" Grid.Column="1" Visibility="{Binding NegateIsChequeControlsVisible}">
+            <Button Content="1" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="1" HorizontalAlignment="Left" Height="66"  Margin="12,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66"  RenderTransformOrigin="9,5.35" >
+               
+            </Button>
+            <Button Content="2" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="2" HorizontalAlignment="Left" Height="66" Margin="86,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66" />
+            <Button Content="3" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="3" HorizontalAlignment="Left" Height="66" Margin="160,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66" RenderTransformOrigin="2.3,0.55"/>
+            <Button Content="4" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="4" HorizontalAlignment="Left" Height="66" Margin="12,81,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
+            <Button Content="5" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="5" HorizontalAlignment="Left" Height="66" Margin="86,81,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
+            <Button Content="6" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="6" HorizontalAlignment="Left" Height="66" Margin="160,81,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
+            <Button Content="7" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="7" HorizontalAlignment="Left" Height="66" Margin="12,155,0,0" FontSize="20" VerticalAlignment="Top" Width="66"  RenderTransformOrigin="7.15,2.8"/>
+            <Button Content="8" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="8" HorizontalAlignment="Left" Height="66" Margin="86,155,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
+            <Button Content="9" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="9" HorizontalAlignment="Left" Height="66" Margin="160,155,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
+            <Button Content="0" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="0" HorizontalAlignment="Left" Height="66" Margin="12,226,0,0" FontSize="20" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.05,2.35"/>
+        </Grid>
+
+
+
+        <StackPanel Orientation="Vertical" Grid.Row="4" HorizontalAlignment="Left"  Grid.Column="1" Grid.RowSpan="2" >
+            <!--<Button x:Name="btnTest" Content="Test"  FontSize="20" Height="58" Width="200" Command="{Binding TestCommand}" Margin="5" />-->
+            <Button x:Name="btnSavePrint" Foreground="AliceBlue" Content="Save &amp; Print" FontSize="20" Height="58" Width="200" Command="{Binding SaveCommand}" CommandParameter="0" Margin="5">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#FF5D5DDA" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btnSave" Content="Save"  Foreground="AliceBlue"  FontSize="20" Height="58" Width="200" Command="{Binding SaveCommand}" Margin="5" CommandParameter="1">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#FF5D5DDA" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btClear" Content="Clear" Foreground="AliceBlue" FontSize="20" Height="58" Width="200" Command="{Binding ClearCommand}"  Margin="5" >
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#FF3ED825" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </StackPanel>
+        <ListView ItemsSource="{Binding ProductsWithoutBarCode}" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  SelectionMode="Single" Margin="0,0,20,0" Grid.Row="2">
+            <ListView.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0.923"/>
+                    <GradientStop Color="#FF4A55A0" Offset="0.452"/>
+                </LinearGradientBrush>
+            </ListView.Background>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <!--<Border BorderThickness="0,0,0,2" BorderBrush="Crimson">
+                        
+                    </Border>-->
+                    <Button Content="{Binding Name}" 
+                             Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                             Path=DataContext.AddItemCommand}" CommandParameter="{Binding Id}" Height="30" Width="100">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <!--FocusManager.FocusedElement="{Binding ElementName=a_Copy}"-->
+        <StackPanel Grid.Row="5" VerticalAlignment="Bottom">
+            <Button Content="Log Off" Command="{Binding LogOffCommand}" CommandParameter="{Binding ElementName=POSSalesWindow}" 
+                    Width="200" HorizontalAlignment="Left" Margin="5" Background="LightGreen" Height="50"/>
+        </StackPanel>
+    </Grid>
+</Window>

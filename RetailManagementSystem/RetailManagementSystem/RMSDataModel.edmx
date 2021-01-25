@@ -24,6 +24,26 @@
           <Property Name="WhatsAppNo" Type="varchar" MaxLength="15" />
           <Property Name="LogoUrl" Type="varchar" MaxLength="45" />
         </EntityType>
+        <EntityType Name="BankBranchDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BankId" Type="mediumint" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="BankDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="10" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Address" Type="varchar" MaxLength="400" />
+          <Property Name="City" Type="varchar" MaxLength="45" />
+          <Property Name="ContactNo" Type="mediumint" />
+          <Property Name="ContactPerson" Type="varchar" MaxLength="45" />
+        </EntityType>
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="Id" />
@@ -40,8 +60,11 @@
           </Key>
           <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PaymentId" Type="mediumint" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ChequeNo" Type="int" />
           <Property Name="ChequeDate" Type="date" />
+          <Property Name="BankId" Type="mediumint" />
+          <Property Name="BankBranchId" Type="mediumint" />
           <Property Name="IsChequeRealised" Type="bit" />
           <Property Name="PaymentDate" Type="datetime" Precision="0" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
@@ -103,7 +126,8 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="mediumint" Nullable="false" />
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerTypeId" Type="mediumint" />
           <Property Name="EndOfDate" Type="datetime" Precision="0" />
           <Property Name="EndBillNo" Type="mediumint" />
         </EntityType>
@@ -332,6 +356,7 @@
             <PropertyRef Name="BillId" />
           </Key>
           <Property Name="BillId" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RunningBillNo" Type="mediumint" Nullable="false" />
           <Property Name="CustomerId" Type="mediumint" Nullable="false" />
           <Property Name="Discount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="TransportCharges" Type="decimal" Precision="10" Scale="2" />
@@ -342,7 +367,6 @@
           <Property Name="AddedOn" Type="datetime" Precision="0" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" />
           <Property Name="UpdatedBy" Type="mediumint" />
-          <Property Name="RunningBillNo" Type="mediumint" Nullable="false" />
           <Property Name="PaymentMode" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
         <EntityType Name="SaleTemp">
@@ -364,6 +388,19 @@
           <Property Name="Amount" Type="decimal" Precision="10" Scale="2" />
           <Property Name="PriceId" Type="int" />
           <Property Name="CreatedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="ShiftDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="mediumint" Nullable="false" />
+          <Property Name="PettyCash" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="LoginDate" Type="datetime" Precision="0" />
+          <Property Name="LogoutDate" Type="datetime" Precision="0" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="StockAdjustments">
@@ -459,6 +496,18 @@
             </Principal>
             <Dependent Role="ExpenseDetails">
               <PropertyRef Name="ExpenseTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bank_BR">
+          <End Role="BankDetails" Type="Self.BankDetails" Multiplicity="0..1" />
+          <End Role="BankBranchDetails" Type="Self.BankBranchDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BankBranchDetails">
+              <PropertyRef Name="BankId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -826,6 +875,8 @@
         </Association>
         <EntityContainer Name="RMSEntitiesStoreContainer">
           <EntitySet Name="ApplicationDetails" EntityType="Self.ApplicationDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="BankBranchDetails" EntityType="Self.BankBranchDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="BankDetails" EntityType="Self.BankDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="ChequePaymentDetails" EntityType="Self.ChequePaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="CodeMaster" EntityType="Self.CodeMaster" Schema="RMS" store:Type="Tables" />
@@ -849,6 +900,7 @@
           <EntitySet Name="SaleDetails" EntityType="Self.SaleDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Sales" EntityType="Self.Sales" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="SaleTemp" EntityType="Self.SaleTemp" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ShiftDetails" EntityType="Self.ShiftDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="StockAdjustments" EntityType="Self.StockAdjustments" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Stocks" EntityType="Self.Stocks" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="StockTransaction" EntityType="Self.StockTransaction" Schema="RMS" store:Type="Tables" />
@@ -859,6 +911,10 @@
           <AssociationSet Name="ExpCodeMaster" Association="Self.ExpCodeMaster">
             <End Role="CodeMaster" EntitySet="CodeMaster" />
             <End Role="ExpenseDetails" EntitySet="ExpenseDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bank_BR" Association="Self.FK_Bank_BR">
+            <End Role="BankDetails" EntitySet="BankDetails" />
+            <End Role="BankBranchDetails" EntitySet="BankBranchDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_Category" Association="Self.FK_Category">
             <End Role="Category" EntitySet="Category" />
@@ -1141,6 +1197,13 @@
             <End Role="SwapDetail" EntitySet="SwapDetails" />
           </AssociationSet>
           <EntitySet Name="DateBillMappings" EntityType="RMSEntities.DateBillMapping" />
+          <EntitySet Name="ShiftDetails" EntityType="RMSEntities.ShiftDetail" />
+          <EntitySet Name="BankBranchDetails" EntityType="RMSEntities.BankBranchDetail" />
+          <EntitySet Name="BankDetails" EntityType="RMSEntities.BankDetail" />
+          <AssociationSet Name="FK_Bank_BR" Association="RMSEntities.FK_Bank_BR">
+            <End Role="BankDetail" EntitySet="BankDetails" />
+            <End Role="BankBranchDetail" EntitySet="BankBranchDetails" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ApplicationDetail">
           <Key>
@@ -1186,6 +1249,9 @@
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />
           <NavigationProperty Name="PaymentDetail" Relationship="RMSEntities.FK_CHQ_paymentDetails" FromRole="ChequePaymentDetail" ToRole="PaymentDetail" />
+          <Property Name="Amount" Type="Decimal" />
+          <Property Name="BankId" Type="Int32" />
+          <Property Name="BankBranchId" Type="Int32" />
         </EntityType>
         <EntityType Name="CodeMaster">
           <Key>
@@ -2022,7 +2088,55 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="EndOfDate" Type="DateTime" />
           <Property Name="EndBillNo" Type="Int32" />
+          <Property Name="CustomerTypeId" Type="Int32" />
         </EntityType>
+        <EntityType Name="ShiftDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PettyCash" Type="Decimal" />
+          <Property Name="LoginDate" Type="DateTime" />
+          <Property Name="LogoutDate" Type="DateTime" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="BankBranchDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BankId" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BankDetail" Relationship="RMSEntities.FK_Bank_BR" FromRole="BankBranchDetail" ToRole="BankDetail" />
+        </EntityType>
+        <EntityType Name="BankDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ContactNo" Type="Int32" />
+          <Property Name="ContactPerson" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BankBranchDetails" Relationship="RMSEntities.FK_Bank_BR" FromRole="BankDetail" ToRole="BankBranchDetail" />
+        </EntityType>
+        <Association Name="FK_Bank_BR">
+          <End Type="RMSEntities.BankDetail" Role="BankDetail" Multiplicity="0..1" />
+          <End Type="RMSEntities.BankBranchDetail" Role="BankBranchDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BankBranchDetail">
+              <PropertyRef Name="BankId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2062,6 +2176,9 @@
           <EntitySetMapping Name="ChequePaymentDetails">
             <EntityTypeMapping TypeName="RMSEntities.ChequePaymentDetail">
               <MappingFragment StoreEntitySet="ChequePaymentDetails">
+                <ScalarProperty Name="BankBranchId" ColumnName="BankBranchId" />
+                <ScalarProperty Name="BankId" ColumnName="BankId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
@@ -2495,8 +2612,44 @@
           <EntitySetMapping Name="DateBillMappings">
             <EntityTypeMapping TypeName="RMSEntities.DateBillMapping">
               <MappingFragment StoreEntitySet="DateBillMapping">
+                <ScalarProperty Name="CustomerTypeId" ColumnName="CustomerTypeId" />
                 <ScalarProperty Name="EndBillNo" ColumnName="EndBillNo" />
                 <ScalarProperty Name="EndOfDate" ColumnName="EndOfDate" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShiftDetails">
+            <EntityTypeMapping TypeName="RMSEntities.ShiftDetail">
+              <MappingFragment StoreEntitySet="ShiftDetails">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="LogoutDate" ColumnName="LogoutDate" />
+                <ScalarProperty Name="LoginDate" ColumnName="LoginDate" />
+                <ScalarProperty Name="PettyCash" ColumnName="PettyCash" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BankBranchDetails">
+            <EntityTypeMapping TypeName="RMSEntities.BankBranchDetail">
+              <MappingFragment StoreEntitySet="BankBranchDetails">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="BankId" ColumnName="BankId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BankDetails">
+            <EntityTypeMapping TypeName="RMSEntities.BankDetail">
+              <MappingFragment StoreEntitySet="BankDetails">
+                <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

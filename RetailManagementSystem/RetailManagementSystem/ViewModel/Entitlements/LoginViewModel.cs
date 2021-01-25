@@ -11,7 +11,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
 {
     internal class LoginViewModel : ViewModelBase
     {
-        static readonly ILog _log = LogManager.GetLogger(typeof(LoginViewModel));
+        protected static readonly ILog _log = LogManager.GetLogger(typeof(LoginViewModel));
 
         public string UserId { get; set; }
         public int UserInternalId { get; set; }
@@ -37,7 +37,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
             }
         }
 
-        void Login(PasswordBox passwordBox)
+        protected virtual void Login(PasswordBox passwordBox)
         {
             try
             {
@@ -87,12 +87,12 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         //    return true;
         //}
 
-        bool ValidateUser(RMSEntities rmsEntities, string password)
+        protected bool ValidateUser(RMSEntities rmsEntities, string password)
         {
             var user = rmsEntities.Users.FirstOrDefault(u => u.username == UserId && u.password == password);
             if (user == null) return false;
-
-            UserInternalId = user.Id;
+            
+            EntitlementInformation.UserInternalId = UserInternalId = user.Id;
             EntitlementInformation.UserName = user.username;
             return true;
         }

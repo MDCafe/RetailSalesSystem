@@ -79,6 +79,16 @@
   <PropertyGroup>
     <ApplicationIcon>WTWindowsICO.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugPOS|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\DebugPOS\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DebugPOS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -228,6 +238,12 @@
     <Compile Include="ApplicationDetail.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BankBranchDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BankDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Category.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
@@ -341,6 +357,9 @@
     <Compile Include="SaleTemp.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ShiftDetail.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Stock.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
@@ -395,6 +414,7 @@
     <Compile Include="ViewModel\Base\SalesViewModelbase.cs" />
     <Compile Include="ViewModel\Entitlements\EntitlementInformation.cs" />
     <Compile Include="ViewModel\Entitlements\LoginViewModel.cs" />
+    <Compile Include="ViewModel\Entitlements\POSLoginViewModel.cs" />
     <Compile Include="ViewModel\Expenses\ExpenseEntryViewModel.cs" />
     <Compile Include="ViewModel\Extensions\IExtensions.cs" />
     <Compile Include="ViewModel\Graphs\GraphsViewModel.cs" />
@@ -422,6 +442,7 @@
     <Compile Include="ViewModel\Reports\Stock\StockReportViewModel.cs" />
     <Compile Include="ViewModel\ReportViewModel.cs" />
     <Compile Include="ViewModel\Sales\AmendSalesViewModel.cs" />
+    <Compile Include="ViewModel\Sales\POSSalesEntryViewModel.cs" />
     <Compile Include="ViewModel\Sales\ReturnSalesViewModel.cs" />
     <Compile Include="ViewModel\Sales\SalesEntryViewModel.cs" />
     <Compile Include="ViewModel\PaneViewModel.cs" />
@@ -439,6 +460,9 @@
     <Compile Include="View\Behaviours\ClearOnFocusedBehaviour.cs" />
     <Compile Include="View\Entitlements\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Entitlements\POSLogin.xaml.cs">
+      <DependentUpon>POSLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Expenses\ExpenseEntry.xaml.cs">
       <DependentUpon>ExpenseEntry.xaml</DependentUpon>
@@ -490,6 +514,9 @@
     </Compile>
     <Compile Include="View\Reports\Stock\StockBalanceReport.xaml.cs">
       <DependentUpon>StockBalanceReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Sales\POSSalesEntry.xaml.cs">
+      <DependentUpon>POSSalesEntry.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Stock\Returns.xaml.cs">
       <DependentUpon>Returns.xaml</DependentUpon>
@@ -561,6 +588,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Entitlements\POSLogin.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Expenses\ExpenseEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -622,6 +653,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Reports\Stock\StockBalanceReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Sales\POSSalesEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -708,6 +743,10 @@
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>
     </None>
+    <Resource Include="Images\Password.png" />
+    <Resource Include="Images\UserIcon.png" />
+    <Resource Include="Images\UserLogo.png" />
+    <Resource Include="Images\money.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

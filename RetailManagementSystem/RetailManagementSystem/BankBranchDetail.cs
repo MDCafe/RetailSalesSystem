@@ -12,11 +12,12 @@ namespace RetailManagementSystem
     using System;
     using System.Collections.Generic;
     
-    public partial class DateBillMapping
+    public partial class BankBranchDetail
     {
         public int Id { get; set; }
-        public Nullable<System.DateTime> EndOfDate { get; set; }
-        public Nullable<int> EndBillNo { get; set; }
-        public Nullable<int> CustomerTypeId { get; set; }
+        public Nullable<int> BankId { get; set; }
+        public string Name { get; set; }
+    
+        public virtual BankDetail BankDetail { get; set; }
     }
 }

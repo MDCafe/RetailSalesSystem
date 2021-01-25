@@ -23,7 +23,7 @@ namespace RetailManagementSystem.ViewModel.Sales
     class SalesEntryViewModel : SalesViewModelbase
     {
         #region Private Variables
-        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));
+        protected static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntryViewModel));
         Sale _billSales;
 
         IExtensions _extensions;
@@ -581,11 +581,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                                      lclBillSales.TotalAmount = _totalAmount;
                                      lclBillSales.Discount = GetDiscountValue();
-                                     lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
 
-                                     //rmsEntities.Entry(_billSales).State = EntityState.Added;
+                                     if(_extensions!=null)
+                                        lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
 
-                                     //rmsEntitiesSaveCtx.Sales.Add(_billSales);
+                                     if (_selectedPaymentId == '2')// Cheque Payment
+                                     {
+                                         SaveChequeDetailsAndPayments(rmsEntitiesSaveCtx, lclBillSales);
+                                     }
+
 
                                      //RemoveTempSalesItemForGUID(_guid);
                                      //this is done to get the latest bill no
@@ -674,6 +678,51 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
+        private void SaveChequeDetailsAndPayments(RMSEntities rmsEntities, Sale saleBill)
+        {
+            var chqPayment = new PaymentDetail
+            {
+                AmountPaid = ChqAmount,
+                CustomerId = SelectedCustomer.Id,
+                PaymentDate = ChqDate,
+                PaymentMode = 2,
+                Sale = saleBill
+            };
+
+            rmsEntities.ChequePaymentDetails.Add(
+                new ChequePaymentDetail()
+                {
+                    ChequeNo = ChqNo,
+                    ChequeDate = ChqDate,
+                    BankId = SelectedChqBank.Value,
+                    BankBranchId = SelectedChqBranch.Value,
+                    IsChequeRealised = false,
+                    Amount = ChqAmount,
+                    PaymentDetail = chqPayment
+                });
+
+
+            if (AmountPaid > 0)
+            {
+                saleBill.AmountPaid = AmountPaid;
+                rmsEntities.PaymentDetails.Add
+                (
+                    new PaymentDetail
+                    {
+                        AmountPaid = AmountPaid,
+                        CustomerId = SelectedCustomer.Id,
+                        PaymentDate = _transcationDate,
+                        PaymentMode = 0,
+                        Sale = saleBill
+                    }
+                );
+            }
+
+            var outstandingBalance = saleBill.TotalAmount - ChqAmount.Value - AmountPaid;
+            var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
+            customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
+        }
+
         private DateTime GetCombinedDateTime()
         {
             DateTime combinedDateTime;
@@ -743,19 +792,19 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool Validate()
         {
-            var duplicateResult = SaleDetailList.GroupBy(x => x.ProductId)
-              .Where(g => g.Count() > 1)
-              .ToList();
+            //var duplicateResult = SaleDetailList.GroupBy(x => x.ProductId)
+            //  .Where(g => g.Count() > 1)
+            //  .ToList();
 
-            if (duplicateResult != null && duplicateResult.Any())
-            {
-                var duplicateSaleItem = duplicateResult.First().First();
-                var duplicateItemIndex = SaleDetailList.IndexOf(duplicateSaleItem);
-                var duplicateProduct = ProductsPriceList.FirstOrDefault(p => p.ProductId == duplicateSaleItem.ProductId);
+            //if (duplicateResult != null && duplicateResult.Any())
+            //{
+            //    var duplicateSaleItem = duplicateResult.First().First();
+            //    var duplicateItemIndex = SaleDetailList.IndexOf(duplicateSaleItem);
+            //    var duplicateProduct = ProductsPriceList.FirstOrDefault(p => p.ProductId == duplicateSaleItem.ProductId);
 
-                Utility.ShowErrorBox("'" + duplicateProduct.ProductName + "' Product appears more than Once at location " + duplicateItemIndex + 1 + ".Please check");
-                return false;
-            }
+            //    Utility.ShowErrorBox("'" + duplicateProduct.ProductName + "' Product appears more than Once at location " + duplicateItemIndex + 1 + ".Please check");
+            //    return false;
+            //}dm
 
             foreach (var saleDetailItem in SaleDetailList)
             {
@@ -1244,7 +1293,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             _totalAmount = 0;
             TotalAmount = null;
             AmountPaid = 0.0M;
-            _extensions.Clear();
+            if(_extensions !=null)
+                _extensions.Clear();
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, false);
             _isEditMode = false;
             TotalDiscountAmount = null;

@@ -1,5 +1,6 @@
 ﻿using log4net;
 using RetailManagementSystem.View.Entitlements;
+using RetailManagementSystem.View.Sales;
 using System.Windows;
 
 namespace RetailManagementSystem
@@ -20,12 +21,25 @@ namespace RetailManagementSystem
         private void ApplicationStart(object sender, StartupEventArgs e)
         {
             //Utilities.Utility.ShutdownRemoteMachine();
-
-            //using (MySql.Data.MySqlClient.MySqlConnection con = new MySql.Data.MySqlClient.MySqlConnection("server=woodlandsmain;user id=RMS;password=RMS!@#$;persistsecurityinfo=True;database=rms"))
-            //{
-            //    con.Open();
-            //}
+            
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+#if DebugPOS
+                var poslogin = new POSLogin();
+                var posResult = poslogin.ShowDialog();
+                if (!posResult.Value)
+                {
+                    Shutdown();
+                    return;
+                }
+
+            var posSalesEntry = new POSSalesEntry();
+            posSalesEntry.ShowDialog();
+            this.Shutdown();
+            return;
+#endif
+
+
             var login = new Login();
             var result = login.ShowDialog();
             if (!result.Value)

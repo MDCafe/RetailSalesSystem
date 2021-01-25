@@ -56,5 +56,8 @@ namespace RetailManagementSystem
         public virtual DbSet<SystemData> SystemDatas { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<DateBillMapping> DateBillMappings { get; set; }
+        public virtual DbSet<ShiftDetail> ShiftDetails { get; set; }
+        public virtual DbSet<BankBranchDetail> BankBranchDetails { get; set; }
+        public virtual DbSet<BankDetail> BankDetails { get; set; }
     }
 }
