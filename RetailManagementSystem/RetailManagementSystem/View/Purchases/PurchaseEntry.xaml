@@ -153,6 +153,7 @@
 
                     </BHCustCtrl:CustDataGridComboBoxColumn>
 
+                    <toolKit:DataGridTextColumn Header="Case" Binding="{Binding CaseQuantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Width="70"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Qty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Purchase Price" Binding="{Binding PurchasePrice, StringFormat=N2}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Free Issue" Binding="{Binding FreeIssue}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>

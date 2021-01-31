@@ -12,6 +12,7 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		DebugPOS|Any CPU = DebugPOS|Any CPU
 		Release|Any CPU = Release|Any CPU
+		ReleasePOS|Any CPU = ReleasePOS|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -20,12 +21,16 @@ Global
 		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.DebugPOS|Any CPU.Build.0 = DebugPOS|Any CPU
 		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.ReleasePOS|Any CPU.ActiveCfg = ReleasePOS|Any CPU
+		{F1A58222-2E9D-42CC-8B98-5CF80E6BE50A}.ReleasePOS|Any CPU.Build.0 = ReleasePOS|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.DebugPOS|Any CPU.ActiveCfg = DebugPOS|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.DebugPOS|Any CPU.Build.0 = DebugPOS|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.ReleasePOS|Any CPU.ActiveCfg = ReleasePOS|Any CPU
+		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.ReleasePOS|Any CPU.Build.0 = ReleasePOS|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

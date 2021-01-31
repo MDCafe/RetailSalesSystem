@@ -8,7 +8,7 @@
         Title="Login" Height="398" Width="499" Name="LoginWindow" 
         ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None">
     <Window.Resources>
-        <Style x:Key="SomeButtonStyle" TargetType="Button">
+        <Style x:Key="LoginButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -68,16 +68,26 @@
             </TextBox>
         </StackPanel>
 
-        <Button x:Name="btnOk" Content="Sign In"  Height="40" IsDefault="True"  Grid.Row="4" VerticalAlignment="Center"
-                Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=txtPassword}" Width="400"
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="btnOk" Content="Sign In"  Height="40" IsDefault="True"  VerticalAlignment="Center"
+                    Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=txtPassword}" Width="200"
+                    Margin="15,9,10,16" Background="#FF3A303A" Foreground="WhiteSmoke" Grid.Column="0" Grid.ColumnSpan="2" 
+                    Style="{StaticResource LoginButtonStyle}">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Content="Cancel"  Height="40" IsDefault="True"  VerticalAlignment="Center" Width="200"
                 Margin="15,9,10,16" Background="#FF3A303A" Foreground="WhiteSmoke" Grid.Column="0" Grid.ColumnSpan="2" 
-                Style="{StaticResource SomeButtonStyle}">
-            <Button.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="5"/>
-                </Style>
-            </Button.Resources>
-        </Button>
-
+                Style="{StaticResource LoginButtonStyle}" IsCancel="True">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

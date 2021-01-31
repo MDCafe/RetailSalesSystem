@@ -71,6 +71,8 @@
         <EntityTypeShape EntityType="RMSEntities.BankBranchDetail" Width="1.5" PointX="12.625" PointY="1.375" />
         <EntityTypeShape EntityType="RMSEntities.BankDetail" Width="1.5" PointX="10.375" PointY="1" />
         <AssociationConnector Association="RMSEntities.FK_Bank_BR" />
+        <EntityTypeShape EntityType="RMSEntities.ProductCaseMapping" Width="1.5" PointX="5.25" PointY="9" />
+        <AssociationConnector Association="RMSEntities.FK_prd_cs" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -360,6 +360,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.SerialNo = ++selectedIndex;
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
+                purchaseDetailExtn.UnitPerCase = productPrice.UnitPerCase.HasValue ? productPrice.UnitPerCase.Value : 0;
 
                 purchaseDetailExtn.SubscribeToAmountChange(() =>
                 {
@@ -494,7 +495,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                          var combinedDateTime = RMSEntitiesHelper.GetCombinedDateTime();
 
                          foreach (var item in _purchaseDetailsList)
-                         {
+                         {                             
                              var purchaseDetail = new PurchaseDetail
                              {
                                  ProductId = item.ProductId,
@@ -511,12 +512,12 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
 
                                  ItemCoolieCharges = item.ItemCoolieCharges,
-                                 ItemTransportCharges = item.ItemTransportCharges
+                                 ItemTransportCharges = item.ItemTransportCharges,                                 
                              };
 
                              SetPriceDetails(rmsEntities, item, purchaseDetail, out int priceId, out PriceDetail priceDetailItem, item.SupportsMultiplePrice);
 
-                             var qty = item.Qty;
+                             var qty = item.GetQty();
                              if (item.FreeIssue.HasValue)
                              {
                                  qty = item.FreeIssue.Value + item.Qty.Value;
@@ -605,8 +606,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             foreach (var item in _purchaseDetailsList)
             {
+                var qty = item.GetQty();
 
-                if ((item.Qty == null || item.Qty <= 0) && (!item.FreeIssue.HasValue))
+                if ((qty == null || qty <= 0) && (!item.FreeIssue.HasValue))
                 {
                     Utility.ShowErrorBox("Purchase quantity can't be empty or zero");
                     return false;
@@ -1109,13 +1111,19 @@ namespace RetailManagementSystem.ViewModel.Purchases
                                                                          && p.ProductId == item.ProductId).FirstOrDefault();
                     var freeIssueQty = freeIssue != null ? freeIssue.FreeQty : 0;
 
+                    var productUnitPercase = _rmsEntities.ProductCaseMappings.FirstOrDefault(u => u.ProductId == item.ProductId);
+                    int unitPerCase = productUnitPercase != null ? (int)productUnitPercase.ItemPerCase.Value : 0;
+                    productPrice.UnitPerCase = unitPerCase;
+
                     var purchaseDetailExtn = new PurchaseDetailExtn()
                     {
+                        UnitPerCase = unitPerCase,
                         PurchasePrice = item.ActualPrice,
                         Discount = item.Discount ?? 0,
                         PriceId = item.PriceId.Value,
                         ProductId = item.ProductId.Value,
-                        Qty = item.PurchasedQty - freeIssueQty,
+                        Qty = (item.PurchasedQty  % 1 == 0 ? Math.Truncate(item.PurchasedQty.Value) : item.PurchasedQty) - freeIssueQty,
+                         //item.PurchasedQty - freeIssueQty,
                         OriginalQty = item.PurchasedQty - freeIssueQty,
                         SellingPrice = productPrice.SellingPrice,
                         BillId = item.BillId,

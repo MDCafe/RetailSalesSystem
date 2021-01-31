@@ -32,7 +32,7 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="420"/>
+            <ColumnDefinition Width="500"/>
             <ColumnDefinition Width="320"/>
             <ColumnDefinition Width="600"/>
         </Grid.ColumnDefinitions>
@@ -47,7 +47,7 @@
         <DataGrid x:Name="POSSalesGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" ItemsSource="{Binding SaleDetailList}" AutoGenerateColumns="False"
                   SelectedIndex="{Binding SelectedIndex}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Barcode" Binding="{Binding BarcodeNo}"/>
+                <DataGridTextColumn Header="Barcode" Binding="{Binding BarcodeNo}" Width="100"/>
                 <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="200" />
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Qty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
@@ -196,5 +196,6 @@
             <Button Content="Log Off" Command="{Binding LogOffCommand}" CommandParameter="{Binding ElementName=POSSalesWindow}" 
                     Width="200" HorizontalAlignment="Left" Margin="5" Background="LightGreen" Height="50"/>
         </StackPanel>
+        
     </Grid>
 </Window>

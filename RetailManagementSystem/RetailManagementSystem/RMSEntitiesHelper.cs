@@ -25,18 +25,22 @@ namespace RetailManagementSystem
             productsPriceSQL = "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price', " +
                                  " pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                  " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
-                                 " from Products p, PriceDetails pd, Stocks st " +
-                                 "where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                 " and st.Quantity != 0 and p.Isactive = true" +
+                                 " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure,pcm.ItemPerCase as 'UnitPerCase'" +
+                                 "  from  Products p " +
+                                 " join stocks st on(st.ProductId = p.Id) " +
+                                    " join PriceDetails pd on(p.Id = pd.ProductId and pd.PriceId = st.PriceId) " +
+                                    " left Join ProductCaseMapping pcm on(pcm.ProductId = p.id) " +
+                                 "where st.Quantity != 0 and p.Isactive = true" +
                                  " union " +
                                    "select p.Id as 'ProductId',p.Name as 'ProductName',pd.Price as 'Price'," +
                                    "pd.SellingPrice as 'SellingPrice',st.Quantity as 'Quantity', pd.PriceId as 'PriceId', " +
                                    " DATE_FORMAT(st.ExpiryDate,'%d/%m/%Y') as 'ExpiryDate'," +
-                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure" +
-                                   " from Products p, PriceDetails pd, Stocks st " +
-                                   " where p.Id = pd.ProductId and pd.PriceId = st.PriceId " +
-                                   " and st.Quantity = 0 and p.Isactive = true " +
+                                   " p.SupportsMultiPrice AS 'SupportsMultiplePrice',p.barcodeno,p.UnitOfMeasure,pcm.ItemPerCase as 'UnitPerCase'" +
+                                   "  from  Products p " +
+                                    " join stocks st on(st.ProductId = p.Id) " +
+                                    " join PriceDetails pd on(p.Id = pd.ProductId and pd.PriceId = st.PriceId) " +
+                                    " left Join ProductCaseMapping pcm on(pcm.ProductId = p.id) " +
+                                   " where st.Quantity = 0 and p.Isactive = true " +
                                    " and St.ModifiedOn = " +
                                    " (select max(ModifiedOn) from Stocks s " +
                                     "   where s.ProductId = st.ProductId) " +

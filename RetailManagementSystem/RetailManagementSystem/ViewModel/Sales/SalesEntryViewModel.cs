@@ -542,13 +542,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                                      foreach (var saleDetailItem in SaleDetailList)
                                      {
+                                         var calculatedQty = saleDetailItem.GetQty();
+
                                          if (saleDetailItem.ProductId == 0) continue;
                                          var saleDetail = new SaleDetail
                                          {
                                              Discount = saleDetailItem.Discount,
                                              PriceId = saleDetailItem.PriceId,
                                              ProductId = saleDetailItem.ProductId,
-                                             Qty = saleDetailItem.Qty,
+                                             Qty = calculatedQty,
                                              SellingPrice = saleDetailItem.SellingPrice,
                                              CostPrice = saleDetailItem.CostPrice,
                                              BillId = lclBillSales.BillId,
@@ -569,7 +571,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          if (stock != null)
                                          {
                                              var actualStockEntity = rmsEntitiesSaveCtx.Stocks.First(s => s.Id == stock.Id);
-                                             actualStockEntity.Quantity -= saleDetailItem.Qty.Value;
+                                             actualStockEntity.Quantity -= calculatedQty.Value;
                                              actualStockEntity.UpdatedBy = EntitlementInformation.UserInternalId;
                                              SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity, combinedDateTime);
                                          }
@@ -1223,14 +1225,16 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //_extensions.SetValues
 
                 var saleDetailsForBill = rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
+                
 
                 var tempTotalAmount = 0.0M;
                 //var priceIdParam = new MySql.Data.MySqlClient.MySqlParameter("priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
                 foreach (var saleDetailItem in saleDetailsForBill.ToList())
                 {
-                    //  priceIdParam.Value = saleDetailItem.PriceId;
+                    var productUnitPercase = rmsEntities.ProductCaseMappings.FirstOrDefault(u => u.ProductId == saleDetailItem.ProductId);
+                    var unitPerCase = productUnitPercase != null ? productUnitPercase.ItemPerCase.Value : 0;
 
-                    var mySQLparam = new MySqlParameter("@priceId", MySql.Data.MySqlClient.MySqlDbType.Int32)
+                    var mySQLparam = new MySqlParameter("@priceId", MySqlDbType.Int32)
                     {
                         Value = saleDetailItem.PriceId
                     };
@@ -1243,6 +1247,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                     var saleDetailExtn = new SaleDetailExtn()
                     {
+                        UnitPerCase = (int)unitPerCase,
                         DiscountAmount = discount,
                         PriceId = saleDetailItem.PriceId,
                         ProductId = saleDetailItem.ProductId,
@@ -1400,6 +1405,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _log.Error("Error on SetProductDetails", ex);
                 _log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}", selectedIndex, productPrice.ProductId, productPrice.PriceId);
+                Utilities.Utility.ShowErrorBox(ex.Message);
             }
         }
 
@@ -1481,6 +1487,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.ProductId = productPrice.ProductId;
                 //SaleDetailExtn.PriceToCalculate = SaleDetailExtn.SellingPrice;   
                 SaleDetailExtn.UnitOfMeasure = productPrice.UnitOfMeasure;
+                SaleDetailExtn.UnitPerCase = productPrice.UnitPerCase.HasValue? productPrice.UnitPerCase.Value : 0;
             }
             //SaleDetailExtn.ProductName = productPrice.ProductName;
 

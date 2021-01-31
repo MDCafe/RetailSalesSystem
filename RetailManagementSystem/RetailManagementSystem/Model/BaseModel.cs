@@ -24,7 +24,21 @@ namespace RetailManagementSystem.Model
         private decimal? _amount;
         private bool _propertyReadOnly;
         private int _serialNo;
-        private decimal? _originalQty;
+        private decimal? _originalQty;  
+
+        private int _caseQuantity;
+
+        public int UnitPerCase { get; set; }
+
+        public int CaseQuantity
+        {
+            get { return _caseQuantity; }
+            set
+            {
+                _caseQuantity = value;
+                CalculateAmount();
+            }
+        }
 
 
         public bool SupportsMultiplePrice
@@ -76,13 +90,13 @@ namespace RetailManagementSystem.Model
 
             set
             {
-                if (Nullable.Equals<decimal>(_qty, value))
-                {
-                    return;
-                }
+                if (Nullable.Equals<decimal>(_qty, value)) return;
+
                 _qty = value;
                 CalculateAmount();
-                OnPropertyChanged(nameof(Qty));
+                CalculateCaseForUnits();
+
+                OnPropertyChanged("Qty");
             }
         }
 
@@ -307,13 +321,36 @@ namespace RetailManagementSystem.Model
             }
         }
 
+        //public virtual void CalculateAmount()
+        //{
+        //    if (!SellingPrice.HasValue || !Qty.HasValue) return;
+        //    var amount = SellingPrice.Value * Qty.Value;
+        //    decimal discountAmount = GetDiscountAmount(amount);
+        //    Amount = amount - discountAmount;
+        //    Discount = discountAmount;
+        //}
+
         public virtual void CalculateAmount()
         {
-            if (!SellingPrice.HasValue || !Qty.HasValue) return;
-            var amount = SellingPrice.Value * Qty.Value;
-            decimal discountAmount = GetDiscountAmount(amount);
-            Amount = amount - discountAmount;
-            Discount = discountAmount;
+            var amount = SellingPrice * GetQty();
+            var discountAmount = DiscountPercentage != 0 ?
+                                 amount - (amount * (DiscountPercentage / 100)) :
+                                 DiscountAmount != 0 ?
+                                 amount - DiscountAmount :
+                                 0;
+
+            if (discountAmount != 0)
+            {
+                Amount = discountAmount;
+                Discount = amount - discountAmount;
+                return;
+            }
+            else
+            {
+                Discount = 0;
+            }
+
+            Amount = amount;
         }
 
         protected virtual void CalculateCost() { }
@@ -329,6 +366,23 @@ namespace RetailManagementSystem.Model
         {
             if (OnAmountChanged == null)
                 OnAmountChanged += amountChangedDelegate;
+        }
+
+
+        private void CalculateCaseForUnits()
+        {
+            if (_qty.Value == 0 || UnitPerCase == 0) return;
+            var caseAmount = Math.Truncate(_qty.Value / UnitPerCase);
+            var remainingAmt = _qty.Value % UnitPerCase;
+            _qty = remainingAmt;
+            if (caseAmount != 0)
+                CaseQuantity += Convert.ToInt32(caseAmount);
+        }
+
+        public decimal? GetQty()
+        {
+            var qtyValue = Qty.HasValue ? Qty : 0;
+            return CaseQuantity > 0 ? (UnitPerCase * CaseQuantity) + qtyValue : qtyValue;
         }
     }
 }

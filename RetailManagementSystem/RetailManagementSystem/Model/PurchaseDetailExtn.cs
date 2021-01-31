@@ -91,8 +91,9 @@ namespace RetailManagementSystem.Model
 
         private decimal GetCoolieChargesPerItem()
         {
-            if (!Qty.HasValue) return 0;
-            return GetCoolieCharges() / Qty.Value;
+            var qty = GetQty();
+            if (!qty.HasValue || qty == 0) return 0;
+            return GetCoolieCharges() / qty.Value;
         }
 
         private decimal GetVATChargesPerItem()
@@ -103,30 +104,35 @@ namespace RetailManagementSystem.Model
 
         private decimal GetCoolieCharges()
         {
-            if (!Qty.HasValue) return 0;
-            return _itemCoolieCharges.HasValue ? _itemCoolieCharges.Value : 0;
+            var qty = GetQty();
+            if (!qty.HasValue || qty == 0) return 0;
+            return _itemCoolieCharges ?? 0;
         }
 
         private decimal GetTransportCharges()
         {
-            if (!Qty.HasValue) return 0;
-            var transportCharges = _itemTransportCharges.HasValue ? _itemTransportCharges.Value : 0;
-            return transportCharges / Qty.Value;
+            var qty = GetQty();
+
+            if (!qty.HasValue || qty == 0) return 0;
+            var transportCharges = _itemTransportCharges ?? 0;
+            return transportCharges / qty.Value;
         }
 
         protected override void CalculateCost()
         {
-            if (Qty == null) return;
+            var qty = GetQty();
+
+            if (qty == null || qty == 0) return;
             var totalQtyWithFreeIssue = 0.0M;
             if (_freeIssue.HasValue)
-                totalQtyWithFreeIssue = Qty.HasValue ? Qty.Value + _freeIssue.Value : 0;
+                totalQtyWithFreeIssue = qty.HasValue ? qty.Value + _freeIssue.Value : 0;
             else
-                totalQtyWithFreeIssue = Qty.HasValue ? Qty.Value : 0;
+                totalQtyWithFreeIssue = qty ?? 0;
 
-            var amount = (PurchasePrice.Value * Qty.Value) + (GetVATChargesPerItem() * Qty.Value);
+            var amount = (PurchasePrice.Value * qty.Value) + (GetVATChargesPerItem() * qty.Value);
 
             decimal calcDiscountAmount = GetDiscountAmount(amount);
-            decimal discountPerItem = calcDiscountAmount / Qty.Value;
+            decimal discountPerItem = calcDiscountAmount / qty.Value;
 
             CostPrice = (amount / totalQtyWithFreeIssue) - (discountPerItem != 0 ? discountPerItem : 0m) +
                         GetTransportCharges() +
@@ -142,9 +148,10 @@ namespace RetailManagementSystem.Model
 
         public override void CalculateAmount()
         {
-            if (!PurchasePrice.HasValue || !Qty.HasValue) return;
+            if (!PurchasePrice.HasValue || (!Qty.HasValue && CaseQuantity == 0)) return;
 
-            var amount = PurchasePrice.Value * Qty.Value;
+            var qty = GetQty();
+            var amount = PurchasePrice.Value * qty.Value;
             decimal discountAmount = GetDiscountAmount(amount);
 
             if (discountAmount != 0)
@@ -159,7 +166,9 @@ namespace RetailManagementSystem.Model
 
         private decimal GetVatAmount()
         {
-            if (!Qty.HasValue) return 0m;
+            var qty = GetQty();
+            if (qty == null || qty == 0) return 0m; 
+            
             return VATAmount.HasValue && VATAmount.Value != 0 ?
                    VATAmount.Value :
                    VATPercentage.HasValue && VATPercentage.Value != 0 ? ((_purchasePrice * (_vatPercentage / 100)) * Qty).Value : 0m;
@@ -167,7 +176,8 @@ namespace RetailManagementSystem.Model
 
         private decimal GetVatAmountPerItem()
         {
-            if (!Qty.HasValue) return 0m;
+            var qty = GetQty();
+            if (qty == null || qty == 0) return 0m;
             return VATAmount.HasValue && VATAmount.Value != 0 ?
                     VATAmount.Value / Qty.Value :
                     VATPercentage.HasValue && VATPercentage.Value != 0 ? ((_purchasePrice * (_vatPercentage / 100))).Value : 0m;

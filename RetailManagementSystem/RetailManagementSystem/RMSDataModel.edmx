@@ -191,6 +191,17 @@
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
         </EntityType>
+        <EntityType Name="ProductCaseMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="mediumint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="mediumint" />
+          <Property Name="ItemPerCase" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
         <EntityType Name="Products">
           <Key>
             <PropertyRef Name="Id" />
@@ -595,6 +606,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_prd_cs">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1" />
+          <End Role="ProductCaseMapping" Type="Self.ProductCaseMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductCaseMapping">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PrdId">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="Stocks" Type="Self.Stocks" Multiplicity="*" />
@@ -888,6 +911,7 @@
           <EntitySet Name="MeasuringUnits" EntityType="Self.MeasuringUnits" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ProductCaseMapping" EntityType="Self.ProductCaseMapping" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PurchaseChequePaymentDetails" EntityType="Self.PurchaseChequePaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="RMS" store:Type="Tables" />
@@ -943,6 +967,10 @@
           <AssociationSet Name="FK_pdt_bill" Association="Self.FK_pdt_bill">
             <End Role="Purchases" EntitySet="Purchases" />
             <End Role="PurchaseFreeDetails" EntitySet="PurchaseFreeDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_prd_cs" Association="Self.FK_prd_cs">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductCaseMapping" EntitySet="ProductCaseMapping" />
           </AssociationSet>
           <AssociationSet Name="FK_PrdId" Association="Self.FK_PrdId">
             <End Role="Products" EntitySet="Products" />
@@ -1204,6 +1232,11 @@
             <End Role="BankDetail" EntitySet="BankDetails" />
             <End Role="BankBranchDetail" EntitySet="BankBranchDetails" />
           </AssociationSet>
+          <EntitySet Name="ProductCaseMappings" EntityType="RMSEntities.ProductCaseMapping" />
+          <AssociationSet Name="FK_prd_cs" Association="RMSEntities.FK_prd_cs">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductCaseMapping" EntitySet="ProductCaseMappings" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ApplicationDetail">
           <Key>
@@ -1407,6 +1440,7 @@
           <NavigationProperty Name="PurchaseDetails" Relationship="RMSEntities.FK_ProductId" FromRole="Product" ToRole="PurchaseDetail" />
           <NavigationProperty Name="PurchaseReturns" Relationship="RMSEntities.FK_ProductId_PR" FromRole="Product" ToRole="PurchaseReturn" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSEntities.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
+          <NavigationProperty Name="ProductCaseMappings" Relationship="RMSEntities.FK_prd_cs" FromRole="Product" ToRole="ProductCaseMapping" />
         </EntityType>
         <EntityType Name="PurchaseChequePaymentDetail">
           <Key>
@@ -2137,6 +2171,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ProductCaseMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" />
+          <Property Name="ItemPerCase" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_prd_cs" FromRole="ProductCaseMapping" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_prd_cs">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="0..1" />
+          <End Type="RMSEntities.ProductCaseMapping" Role="ProductCaseMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductCaseMapping">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2650,6 +2708,18 @@
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductCaseMappings">
+            <EntityTypeMapping TypeName="RMSEntities.ProductCaseMapping">
+              <MappingFragment StoreEntitySet="ProductCaseMapping">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="ItemPerCase" ColumnName="ItemPerCase" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

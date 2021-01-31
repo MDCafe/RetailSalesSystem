@@ -59,5 +59,6 @@ namespace RetailManagementSystem
         public virtual DbSet<ShiftDetail> ShiftDetails { get; set; }
         public virtual DbSet<BankBranchDetail> BankBranchDetails { get; set; }
         public virtual DbSet<BankDetail> BankDetails { get; set; }
+        public virtual DbSet<ProductCaseMapping> ProductCaseMappings { get; set; }
     }
 }

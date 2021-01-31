@@ -6,7 +6,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
 {
     class POSLoginViewModel : LoginViewModel
     {
-        public decimal PettyCash { get; set; }
+        public decimal? PettyCash { get; set; }
 
         protected override void Login(PasswordBox passwordBox)
         {

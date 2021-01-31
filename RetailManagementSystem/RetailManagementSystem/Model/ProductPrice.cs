@@ -12,5 +12,7 @@
         public bool SupportsMultiplePrice { get; set; }
         public string BarCodeNo { get; set; }
         public int UnitOfMeasure { get; set; }
+
+        public int? UnitPerCase { get; set; }
     }
 }
