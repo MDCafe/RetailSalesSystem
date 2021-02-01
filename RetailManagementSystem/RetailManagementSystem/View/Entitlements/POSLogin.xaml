@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         FocusManager.FocusedElement="{Binding ElementName=txtUserId}"
-        Title="Login" Height="398" Width="499" Name="LoginWindow" 
-        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None">
+        Title="Login" Height="450" Width="499" Name="LoginWindow" 
+        ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="ToolWindow">
     <Window.Resources>
         <Style x:Key="LoginButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />

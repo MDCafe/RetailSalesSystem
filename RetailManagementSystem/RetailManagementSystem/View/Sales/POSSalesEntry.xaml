@@ -32,7 +32,7 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="550"/>
             <ColumnDefinition Width="320"/>
             <ColumnDefinition Width="600"/>
         </Grid.ColumnDefinitions>
@@ -50,6 +50,7 @@
                 <DataGridTextColumn Header="Barcode" Binding="{Binding BarcodeNo}" Width="100"/>
                 <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="200" />
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Qty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                <DataGridTextColumn Header="Empty Qty" Binding="{Binding EmptyBottleQty}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                 <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
             </DataGrid.Columns>
@@ -57,17 +58,16 @@
 
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
             <Label Content="Customer" Width="120" FontSize="14" FontFamily="Verdana"/>
-            <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  SelectedValuePath="" HorizontalAlignment="Left"
+            <ComboBox x:Name="CboCustomers" DisplayMemberPath="Name"  SelectedValuePath="Id" HorizontalAlignment="Left"
                       ItemsSource="{Binding CustomersList}"  IsEditable="True" Width="150"  VerticalAlignment="Top"     
-                      Margin="5" Height="25"                        
-                  >
+                      Margin="5" Height="25" SelectedValue="{Binding SelectedCustomerId}">
                 <ComboBox.SelectedItem>
                     <Binding Path="SelectedCustomer" NotifyOnValidationError="True" UpdateSourceTrigger="LostFocus">
                     </Binding>
                 </ComboBox.SelectedItem>
-                <ComboBox.Text>
+                <!--<ComboBox.Text>
                     <Binding Path="SelectedCustomerText"/>
-                </ComboBox.Text>
+                </ComboBox.Text>-->
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >

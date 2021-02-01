@@ -25,6 +25,7 @@ namespace RetailManagementSystem
             this.PurchaseReturns = new HashSet<PurchaseReturn>();
             this.ReturnDamagedStocks = new HashSet<ReturnDamagedStock>();
             this.ProductCaseMappings = new HashSet<ProductCaseMapping>();
+            this.ProductEmptyMappings = new HashSet<ProductEmptyMapping>();
         }
     
         public int Id { get; set; }
@@ -61,5 +62,7 @@ namespace RetailManagementSystem
         public virtual ICollection<ReturnDamagedStock> ReturnDamagedStocks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductCaseMapping> ProductCaseMappings { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductEmptyMapping> ProductEmptyMappings { get; set; }
     }
 }

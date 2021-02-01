@@ -296,6 +296,7 @@
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\BaseModelNotifier.cs" />
+    <Compile Include="Model\POSSalesDetailExtn.cs" />
     <Compile Include="Model\ProductExtn.cs" />
     <Compile Include="Model\PurchasePaymentDetails.cs" />
     <Compile Include="Model\CustomerPaymentDetails.cs" />
@@ -319,6 +320,9 @@
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductCaseMapping.cs">
+      <DependentUpon>RMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductEmptyMapping.cs">
       <DependentUpon>RMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Purchase.cs">

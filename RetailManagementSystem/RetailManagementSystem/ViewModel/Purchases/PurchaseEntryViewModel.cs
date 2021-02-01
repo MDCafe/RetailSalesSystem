@@ -34,7 +34,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
         static readonly ILog _log = LogManager.GetLogger(typeof(PurchaseEntryViewModel));
 
-        public PurchaseEntryViewModel(PurchaseParams purchaseParams) : base(purchaseParams != null ? purchaseParams.ShowAllCompanies : false)
+        public PurchaseEntryViewModel(PurchaseParams purchaseParams) : base(purchaseParams != null && purchaseParams.ShowAllCompanies)
         {
             if (purchaseParams != null && purchaseParams.ShowAllCompanies)
                 Title = "Purchase Entry*";
@@ -360,7 +360,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.OldSellingPrice = productPrice.SellingPrice;
                 purchaseDetailExtn.SerialNo = ++selectedIndex;
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
-                purchaseDetailExtn.UnitPerCase = productPrice.UnitPerCase.HasValue ? productPrice.UnitPerCase.Value : 0;
+                purchaseDetailExtn.UnitPerCase = productPrice.UnitPerCase ?? 0;
 
                 purchaseDetailExtn.SubscribeToAmountChange(() =>
                 {

@@ -31,11 +31,9 @@ namespace RetailManagementSystem.ViewModel.Sales
         //System.Timers.Timer _timer,_autoTimer;
         //static object rootLock = new object();
         //string _guid;
-        readonly SalesParams _salesParams;
-        List<Customer> _customerList;
+        readonly SalesParams _salesParams;        
         readonly AutoResetEvent _autoResetEvent;
-        List<SaleDetailExtn> _deletedItems;
-        Customer _selectedCustomer;
+        List<SaleDetailExtn> _deletedItems;        
         string _selectedCustomerText;
         readonly IEnumerable<MeasuringUnit> _mesauringUnitList;
 
@@ -109,61 +107,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region Getters and Setters
 
-        public IEnumerable<Customer> CustomersList
-        {
-            get
-            {
-                using (var rmsEntities = new RMSEntities())
-                {
-                    var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
-                    //_customerList = new List<Customer>();
-                    var cnt = rmsEntities.Customers.ToList().Count;
-                    _customerList = new List<Customer>(cnt);
-
-                    if (_salesParams.GetTemproaryData)
-                    {
-                        foreach (var item in rmsEntities.Customers)
-                        {
-                            if (item.CustomerTypeId == _categoryId)
-                            {
-                                _customerList.Add(item);
-                            }
-
-                        }
-                        //_rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == _categoryId);
-                    }
-                    if (_salesParams.ShowAllCustomers)
-                    {
-                        foreach (var item in rmsEntities.Customers)
-                        {
-                            if (item.CustomerTypeId == Constants.CUSTOMERS_OTHERS)
-                            {
-                                _customerList.Add(item);
-                            }
-                        }
-                    }
-                    //customerList =  _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS);
-                    else
-                    {
-                        foreach (var item in rmsEntities.Customers)
-                        {
-                            if (item.CustomerTypeId == Constants.CUSTOMERS_HOTEL)
-                            {
-                                _customerList.Add(item);
-                            }
-                        }
-                    }
-                    //customerList  = _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS);
-
-                    var defaultCustomerByConfig = _customerList.FirstOrDefault(c => c.Name.ToUpper() == defaultCustomerConfigName.ToUpper());
-                    if (defaultCustomerByConfig != null)
-                    {
-                        DefaultCustomer = defaultCustomerByConfig;
-                    }
-                    return _customerList.OrderBy(a => a.Name);
-                }
-            }
-        }
+        
 
         public ObservableCollection<SaleDetailExtn> SaleDetailList { get; private set; }
 
@@ -250,28 +194,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             get { return _extensions; }
         }
-
-        public Customer SelectedCustomer
-        {
-            get
-            {
-                //if(_selectedCustomer == null)
-                //{
-                //    _selectedCustomer = _rmsEntities.Customers.FirstOrDefault();
-                //    RaisePropertyChanged("SelectedCustomer");
-                //   return _selectedCustomer;
-                //}
-                return _selectedCustomer;
-            }
-            set
-            {
-                if (_selectedCustomer == value) return;
-
-                _selectedCustomer = value;
-                //CheckIfWithinCreditLimimt();
-                RaisePropertyChanged(nameof(SelectedCustomer));
-            }
-        }
+     
 
         //private void CheckIfWithinCreditLimimt()
         //{
@@ -468,26 +391,14 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region SaveCommand
-        RelayCommand<object> _saveCommand = null;
-        public ICommand SaveCommand
+     
+        protected override bool CanExecuteSaveCommand(object parameter)
         {
-            get
-            {
-                if (_saveCommand == null)
-                {
-                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p).ConfigureAwait(false), (p) =>
-                    {
-                        return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
-                          SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
-                    });
-                }
-
-                return _saveCommand;
-            }
+            return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
+                    SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
         }
 
-
-        private async Task OnSave(object parameter)
+        protected override async Task OnSave(object parameter)
         {
             short paramValue = Convert.ToInt16(parameter);
 
@@ -734,15 +645,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             //TimeSpan time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             combinedDateTime = date.Add(time);
             return combinedDateTime;
-        }
-
-        private static Stock GetStockDetails(RMSEntities rmsEntities, int productId, int priceId, DateTime dateToCompare)
-        {
-            var query = "select * from stocks where ProductId = " + productId +
-                        " and PriceId =" + priceId +
-                        " and date(ExpiryDate) = '" + dateToCompare.ToString("yyyy-MM-dd") + "'";
-
-            return rmsEntities.Database.SqlQuery<Stock>(query).FirstOrDefault();
         }
 
         private void GetProductsToOrder()
@@ -1285,7 +1187,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             //RefreshProductList();
             var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
-            SelectedCustomer = _customerList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
+            SelectedCustomer = CustomersList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
             SelectedCustomerText = SelectedCustomer.Name;
             SelectedPaymentId = '0';
             OrderNo = "";
@@ -1430,49 +1332,6 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Private Methods
-
-        private static void SetStockTransaction(RMSEntities rmsEntities, SaleDetail saleDetail, Stock stockNewItem, DateTime combinedDateTime)
-        {
-            var stockTrans = rmsEntities.StockTransactions.Where(s => s.StockId == stockNewItem.Id).OrderByDescending(s => s.Id).FirstOrDefault();
-            var stockAdjustCheck = RMSEntitiesHelper.CheckStockAdjustment(rmsEntities, stockNewItem.Id);
-
-            //stock transaction not available for this product. Add them 
-            if (stockTrans == null)
-            {
-                var firstStockTrans = new StockTransaction()
-                {
-                    OpeningBalance = stockNewItem.Quantity - saleDetail.Qty, //Opening balance will be the one from stock table 
-                    Outward = saleDetail.Qty,
-                    ClosingBalance = stockNewItem.Quantity,
-                    StockId = stockNewItem.Id,
-                    AddedOn = combinedDateTime
-                };
-                stockNewItem.StockTransactions.Add(firstStockTrans);
-            }
-            //stock transaction available. Check if it is for the current date else get the latest date and mark the opening balance
-            else
-            {
-                var systemDBDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
-                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate);
-                if (dateDiff == 0 && stockAdjustCheck != null && !stockAdjustCheck.StockTransId.HasValue)
-                {
-                    stockTrans.Outward = saleDetail.Qty.Value + (stockTrans.Outward ?? 0);
-                    stockTrans.ClosingBalance -= saleDetail.Qty;
-                }
-                else
-                {
-                    var newStockTrans = new StockTransaction()
-                    {
-                        OpeningBalance = stockTrans.ClosingBalance,
-                        Outward = saleDetail.Qty,
-                        ClosingBalance = stockTrans.ClosingBalance - saleDetail.Qty,
-                        StockId = stockNewItem.Id,
-                        AddedOn = combinedDateTime
-                    };
-                    rmsEntities.StockTransactions.Add(newStockTrans);
-                }
-            }
-        }
 
         private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn, int selectedIndex)
         {

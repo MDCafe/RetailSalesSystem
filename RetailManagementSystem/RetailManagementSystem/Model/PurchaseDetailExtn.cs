@@ -123,7 +123,7 @@ namespace RetailManagementSystem.Model
             var qty = GetQty();
 
             if (qty == null || qty == 0) return;
-            var totalQtyWithFreeIssue = 0.0M;
+            decimal totalQtyWithFreeIssue;
             if (_freeIssue.HasValue)
                 totalQtyWithFreeIssue = qty.HasValue ? qty.Value + _freeIssue.Value : 0;
             else

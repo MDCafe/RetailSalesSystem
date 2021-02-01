@@ -202,6 +202,18 @@
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="ProductEmptyMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="mediumint" Nullable="false" />
+          <Property Name="EmptyProductId" Type="mediumint" />
+          <Property Name="EmptyProductValue" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+        </EntityType>
         <EntityType Name="Products">
           <Key>
             <PropertyRef Name="Id" />
@@ -666,6 +678,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Prod_Empty">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="ProductEmptyMapping" Type="Self.ProductEmptyMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductEmptyMapping">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ProdId">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="SaleDetails" Type="Self.SaleDetails" Multiplicity="*" />
@@ -912,6 +936,7 @@
           <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PriceDetails" EntityType="Self.PriceDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="ProductCaseMapping" EntityType="Self.ProductCaseMapping" Schema="RMS" store:Type="Tables" />
+          <EntitySet Name="ProductEmptyMapping" EntityType="Self.ProductEmptyMapping" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PurchaseChequePaymentDetails" EntityType="Self.PurchaseChequePaymentDetails" Schema="RMS" store:Type="Tables" />
           <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="RMS" store:Type="Tables" />
@@ -987,6 +1012,10 @@
           <AssociationSet Name="FK_priceId" Association="Self.FK_priceId">
             <End Role="PriceDetails" EntitySet="PriceDetails" />
             <End Role="Stocks" EntitySet="Stocks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Prod_Empty" Association="Self.FK_Prod_Empty">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductEmptyMapping" EntitySet="ProductEmptyMapping" />
           </AssociationSet>
           <AssociationSet Name="FK_ProdId" Association="Self.FK_ProdId">
             <End Role="Products" EntitySet="Products" />
@@ -1237,6 +1266,11 @@
             <End Role="Product" EntitySet="Products" />
             <End Role="ProductCaseMapping" EntitySet="ProductCaseMappings" />
           </AssociationSet>
+          <EntitySet Name="ProductEmptyMappings" EntityType="RMSEntities.ProductEmptyMapping" />
+          <AssociationSet Name="FK_Prod_Empty" Association="RMSEntities.FK_Prod_Empty">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductEmptyMapping" EntitySet="ProductEmptyMappings" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ApplicationDetail">
           <Key>
@@ -1441,6 +1475,7 @@
           <NavigationProperty Name="PurchaseReturns" Relationship="RMSEntities.FK_ProductId_PR" FromRole="Product" ToRole="PurchaseReturn" />
           <NavigationProperty Name="ReturnDamagedStocks" Relationship="RMSEntities.FK_ProductId_RD" FromRole="Product" ToRole="ReturnDamagedStock" />
           <NavigationProperty Name="ProductCaseMappings" Relationship="RMSEntities.FK_prd_cs" FromRole="Product" ToRole="ProductCaseMapping" />
+          <NavigationProperty Name="ProductEmptyMappings" Relationship="RMSEntities.FK_Prod_Empty" FromRole="Product" ToRole="ProductEmptyMapping" />
         </EntityType>
         <EntityType Name="PurchaseChequePaymentDetail">
           <Key>
@@ -2195,6 +2230,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ProductEmptyMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="EmptyProductId" Type="Int32" />
+          <Property Name="EmptyProductValue" Type="Decimal" />
+          <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Product" Relationship="RMSEntities.FK_Prod_Empty" FromRole="ProductEmptyMapping" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_Prod_Empty">
+          <End Type="RMSEntities.Product" Role="Product" Multiplicity="1" />
+          <End Type="RMSEntities.ProductEmptyMapping" Role="ProductEmptyMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductEmptyMapping">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2719,6 +2779,18 @@
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="ItemPerCase" ColumnName="ItemPerCase" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductEmptyMappings">
+            <EntityTypeMapping TypeName="RMSEntities.ProductEmptyMapping">
+              <MappingFragment StoreEntitySet="ProductEmptyMapping">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="EmptyProductValue" ColumnName="EmptyProductValue" />
+                <ScalarProperty Name="EmptyProductId" ColumnName="EmptyProductId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

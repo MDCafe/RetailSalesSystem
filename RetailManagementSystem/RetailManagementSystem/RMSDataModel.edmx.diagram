@@ -73,6 +73,8 @@
         <AssociationConnector Association="RMSEntities.FK_Bank_BR" />
         <EntityTypeShape EntityType="RMSEntities.ProductCaseMapping" Width="1.5" PointX="5.25" PointY="9" />
         <AssociationConnector Association="RMSEntities.FK_prd_cs" />
+        <EntityTypeShape EntityType="RMSEntities.ProductEmptyMapping" Width="1.5" PointX="5.25" PointY="34.125" />
+        <AssociationConnector Association="RMSEntities.FK_Prod_Empty" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
