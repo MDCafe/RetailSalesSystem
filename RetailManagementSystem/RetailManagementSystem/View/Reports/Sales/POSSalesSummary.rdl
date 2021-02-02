@@ -5,7 +5,7 @@
     <DataSource Name="DataSource1">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=RMS</ConnectString>
+        <ConnectString>Dsn=RMS-LOCAL</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>
@@ -16,28 +16,7 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>DataSource1</DataSourceName>
-        <CommandText>select BillId,s.AddedOn,C.Name as Customer,CustomerOrderNo,
-CASE
-        WHEN s.TransportCharges= 0.00 THEN null
-        ELSE s.TransportCharges
-    END AS 'TransportCharges',
-	CASE
-        WHEN s.isCancelled =1 THEN 'Cancelled'
-        ELSE NULL
-    END AS 'Cancelled',
-RunningBillNo,s.addedOn,
-s.Discount,
-(select sum(sd.sellingprice *qty) from saleDetails sd
-where sd.billId = s.BillId) TotalAmount,
-CASE
-        WHEN s.PaymentMode = '0' THEN TotalAmount ELSE NULL
-    END AS 'Cash Sales',
-    CASE
-        WHEN PaymentMode = '1'  THEN TotalAmount ELSE NULL
-    END AS 'Credit Sales'
-from sales s,Customers c
-
-where s.CustomerId = c.Id</CommandText>
+        <CommandText>call GetPOSSales("2021-01-30","2021-01-30",2)</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -57,21 +36,9 @@ where s.CustomerId = c.Id</CommandText>
           <DataField>Credit Sales</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
-        <Field Name="CustomerOrderNo">
-          <DataField>CustomerOrderNo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="addedOn">
           <DataField>AddedOn</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="TransportCharges">
-          <DataField>TransportCharges</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="Cancelled">
-          <DataField>Cancelled</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="RunningBillNo">
           <DataField>RunningBillNo</DataField>
@@ -83,10 +50,6 @@ where s.CustomerId = c.Id</CommandText>
         </Field>
         <Field Name="TotalAmount">
           <DataField>TotalAmount</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="Discount">
-          <DataField>Discount</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
