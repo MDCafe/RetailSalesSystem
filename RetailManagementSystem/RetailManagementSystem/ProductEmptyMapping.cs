@@ -17,7 +17,7 @@ namespace RetailManagementSystem
         public int Id { get; set; }
         public int ProductId { get; set; }
         public Nullable<int> EmptyProductId { get; set; }
-        public Nullable<decimal> EmptyProductValue { get; set; }
+        public Nullable<int> EmptyProductValue { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
     

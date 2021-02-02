@@ -12,7 +12,7 @@ namespace RetailManagementSystem.Model
         private int _productId;
         private int _priceId;
         private decimal? _sellingPrice;
-        private decimal? _qty;
+        protected decimal? _qty;
         private decimal? _discount;
         private DateTime? _addedOn;
         private DateTime? _modifiedOn;
@@ -369,7 +369,7 @@ namespace RetailManagementSystem.Model
         }
 
 
-        private void CalculateCaseForUnits()
+        protected void CalculateCaseForUnits()
         {
             if (_qty.Value == 0 || UnitPerCase == 0) return;
             var caseAmount = Math.Truncate(_qty.Value / UnitPerCase);

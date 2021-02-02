@@ -13,6 +13,7 @@
             <GradientStop Color="#FF7592F1" Offset="1"/>
         </LinearGradientBrush>
         <Style x:Key="RoundedButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="AntiqueWhite"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -32,9 +33,9 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="550"/>
-            <ColumnDefinition Width="320"/>
-            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="500*"/>
+            <ColumnDefinition Width="320*"/>
+            <ColumnDefinition Width="500*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -45,7 +46,7 @@
         </Grid.RowDefinitions>
 
         <DataGrid x:Name="POSSalesGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" ItemsSource="{Binding SaleDetailList}" AutoGenerateColumns="False"
-                  SelectedIndex="{Binding SelectedIndex}">
+                  SelectedIndex="{Binding SelectedIndex}" CanUserReorderColumns="False" CanUserSortColumns="False" CurrentCell="{Binding CellInfo, Mode=OneWayToSource}" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding BarcodeNo}" Width="100"/>
                 <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="200" />
@@ -83,9 +84,9 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <TextBlock Text="Total : " FontSize="30" Margin="5" VerticalAlignment="Center"/>
+            <TextBlock Text="Total : " FontSize="30" Margin="5" VerticalAlignment="Center" Foreground="AntiqueWhite"/>
             <TextBlock x:Name="txtTotalAmount"  Margin="5,5,5,5" Text="{Binding TotalAmount, TargetNullValue={x:Static sys:String.Empty} ,
-                                StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center" FontSize="30"/>
+                                StringFormat=N2}" FontWeight="ExtraBold" VerticalAlignment="Center" FontSize="30" Foreground="AntiqueWhite"/>
         </StackPanel>
         <Grid Grid.Row="3" Grid.Column="1"  Visibility="{Binding IsChequeControlsVisible}" Margin="5,30,0,0">
             <Grid.ColumnDefinitions>
@@ -118,9 +119,7 @@
 
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1" Visibility="{Binding NegateIsChequeControlsVisible}">
-            <Button Content="1" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="1" HorizontalAlignment="Left" Height="66"  Margin="12,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66"  RenderTransformOrigin="9,5.35" >
-               
-            </Button>
+            <Button Content="1" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="1" HorizontalAlignment="Left" Height="66"  Margin="12,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66"  RenderTransformOrigin="9,5.35" />
             <Button Content="2" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="2" HorizontalAlignment="Left" Height="66" Margin="86,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66" />
             <Button Content="3" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="3" HorizontalAlignment="Left" Height="66" Margin="160,7,0,0" FontSize="20" VerticalAlignment="Top" Width="66" RenderTransformOrigin="2.3,0.55"/>
             <Button Content="4" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="4" HorizontalAlignment="Left" Height="66" Margin="12,81,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
@@ -130,6 +129,7 @@
             <Button Content="8" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="8" HorizontalAlignment="Left" Height="66" Margin="86,155,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
             <Button Content="9" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="9" HorizontalAlignment="Left" Height="66" Margin="160,155,0,0" FontSize="20" VerticalAlignment="Top" Width="66"/>
             <Button Content="0" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="0" HorizontalAlignment="Left" Height="66" Margin="12,226,0,0" FontSize="20" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.05,2.35"/>
+            <!--<Button Content="C" Style="{StaticResource RoundedButtonStyle}" Command="{Binding CalButtonClickCommand}" CommandParameter="C" HorizontalAlignment="Left" Height="66" Margin="86,226,0,0" FontSize="20" VerticalAlignment="Top" Width="66" />-->
         </Grid>
 
 
@@ -181,7 +181,7 @@
                     </Border>-->
                     <Button Content="{Binding Name}" 
                              Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
-                             Path=DataContext.AddItemCommand}" CommandParameter="{Binding Id}" Height="30" Width="100">
+                             Path=DataContext.AddItemCommand}" CommandParameter="{Binding Id}" Height="30" Width="200">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
@@ -193,6 +193,8 @@
         </ListView>
         <!--FocusManager.FocusedElement="{Binding ElementName=a_Copy}"-->
         <StackPanel Grid.Row="5" VerticalAlignment="Bottom">
+            <Button Content="Sales Summary Report" Command="{Binding ShowSummaryReportCommand}" CommandParameter="{Binding ElementName=POSSalesWindow}" 
+                    Width="200" HorizontalAlignment="Left" Margin="5" Background="LightGreen" Height="50"/>
             <Button Content="Log Off" Command="{Binding LogOffCommand}" CommandParameter="{Binding ElementName=POSSalesWindow}" 
                     Width="200" HorizontalAlignment="Left" Margin="5" Background="LightGreen" Height="50"/>
         </StackPanel>

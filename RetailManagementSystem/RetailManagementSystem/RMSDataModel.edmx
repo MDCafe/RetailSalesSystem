@@ -210,7 +210,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductId" Type="mediumint" Nullable="false" />
           <Property Name="EmptyProductId" Type="mediumint" />
-          <Property Name="EmptyProductValue" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="EmptyProductValue" Type="mediumint" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
@@ -2238,7 +2238,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="EmptyProductId" Type="Int32" />
-          <Property Name="EmptyProductValue" Type="Decimal" />
+          <Property Name="EmptyProductValue" Type="Int32" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Product" Relationship="RMSEntities.FK_Prod_Empty" FromRole="ProductEmptyMapping" ToRole="Product" />

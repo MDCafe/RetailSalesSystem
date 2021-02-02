@@ -452,6 +452,7 @@
     <Compile Include="ViewModel\Reports\Sales\ProductWiseBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\CustomerWiseSalesViewModel.cs" />
+    <Compile Include="ViewModel\Reports\Sales\POSSalesSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Stock\ProductsOrderReportViewModel.cs" />
     <Compile Include="ViewModel\Reports\Stock\StockAdjustReportViewModel.cs" />
@@ -510,6 +511,9 @@
     </Compile>
     <Compile Include="View\Purchases\PurchaseEntry.xaml.cs">
       <DependentUpon>PurchaseEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ReportsWindow.xaml.cs">
+      <DependentUpon>ReportsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports\Accounts\CustomerPaymentDetails.xaml.cs">
       <DependentUpon>CustomerPaymentDetails.xaml</DependentUpon>
@@ -645,6 +649,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\ReportsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Reports\Accounts\CustomerPaymentDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -732,6 +740,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="View\Reports\Sales\POSSalesSummary.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="WTWindowsICO.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -753,9 +764,6 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>RMSDataModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="RetailManagementSystem_1_TemporaryKey.pfx" />
-    <None Include="RetailManagementSystem_2_TemporaryKey.pfx" />
-    <None Include="RetailManagementSystem_3_TemporaryKey.pfx" />
     <None Include="RetailManagementSystem_TemporaryKey.pfx" />
     <None Include="RMSDataModel.edmx.diagram">
       <DependentUpon>RMSDataModel.edmx</DependentUpon>

@@ -2,17 +2,18 @@
 using RetailManagementSystem.Command;
 using RetailManagementSystem.Model;
 using RetailManagementSystem.Utilities;
+using RetailManagementSystem.View.Reports.Sales;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Entitlements;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
@@ -59,7 +60,23 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         public int SelectedIndex { get; set; }
-        
+
+        private DataGridCellInfo _cellInfo;
+        private string SelectedColumnHeader;
+        public DataGridCellInfo CellInfo
+        {
+            get { return _cellInfo; }
+            set
+            {
+                _cellInfo = value;
+                if (!_cellInfo.IsValid) return;
+                SelectedColumnHeader = _cellInfo.Column !=null ?  _cellInfo.Column.Header.ToString() : "";
+                //OnPropertyChanged("CellInfo");
+                //MessageBox.Show(string.Format("Column: {0}",
+                //                _cellInfo.Column.DisplayIndex != null ? _cellInfo.Column.DisplayIndex.ToString() : "Index out of range!"));
+            }
+        }
+
         public Visibility IsChequeControlsVisible { get => isChequeControlsVisible;
             
             set 
@@ -100,7 +117,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                var saleDetailExtn = e.NewItems[0] as SaleDetailExtn;
+                var saleDetailExtn = e.NewItems[0] as POSSalesDetailExtn;
 
                 saleDetailExtn.SubscribeToAmountChange(() =>
                 {
@@ -122,8 +139,14 @@ namespace RetailManagementSystem.ViewModel.Sales
                         case "EmptyBottleQty":
                             var emptyProduct = ProductEmptyMappingValues.FirstOrDefault(p => p.ProductId == saleDetailExtn.ProductId);
                             if (emptyProduct == null) return;
-                            saleDetailExtn.Amount = saleDetailExtn.Amount.HasValue
-                                                ? saleDetailExtn.Amount.Value - emptyProduct.EmptyProductValue : saleDetailExtn.Amount.Value;
+                            saleDetailExtn.CalculateAmount();
+
+                            //saleDetailExtn.Amount = saleDetailExtn.Amount.HasValue
+                            //                    ?  
+                            //                    ((saleDetailExtn.SellingPrice * saleDetailExtn.Qty) +  emptyProduct.EmptyProductValue)
+                            //                    - 
+                            //                    (saleDetailExtn.EmptyBottleQty * emptyProduct.EmptyProductValue)
+                            //                    : saleDetailExtn.Amount.Value;                            
                             break;
                         default:
                             break;
@@ -132,7 +155,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private static void SetProductDetailsOnBarcode(SaleDetailExtn saleDetailExtn,ProductPrice productInfo)
+        private void SetProductDetailsOnBarcode(POSSalesDetailExtn saleDetailExtn,ProductPrice productInfo)
         {                       
             saleDetailExtn.ProductId = productInfo.ProductId;
             saleDetailExtn.ProductName = productInfo.ProductName;
@@ -143,6 +166,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             saleDetailExtn.ExpiryDate = DateTime.ParseExact(productInfo.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
             saleDetailExtn.Qty = 1;
 
+            var emptyProduct = ProductEmptyMappingValues.FirstOrDefault(p => p.ProductId == saleDetailExtn.ProductId);
+            if (emptyProduct == null) return;
+            saleDetailExtn.Amount = saleDetailExtn.Amount.HasValue
+                                ? saleDetailExtn.Amount.Value + emptyProduct.EmptyProductValue : saleDetailExtn.Amount.Value;
+
+            saleDetailExtn.EmptyProductValue = emptyProduct.EmptyProductValue.Value;
+
         }
 
         override internal void Clear()
@@ -150,9 +180,10 @@ namespace RetailManagementSystem.ViewModel.Sales
             base.Clear();
             IsChequeControlsVisible = Visibility.Hidden;
 
-            var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
-            SelectedCustomer = CustomersList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
-            SelectedCustomerId = SelectedCustomer.Id;
+            //var defaultCustomerConfigName = ConfigurationManager.AppSettings["DefaultCustomer"];
+            //SelectedCustomer = CustomersList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
+            //HardCode the values to improve performance
+            SelectedCustomerId = 1; //Cash Customer
             SelectedPaymentId = '0';            
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -169,7 +200,33 @@ namespace RetailManagementSystem.ViewModel.Sales
 
 
         #region Commands
-        
+
+
+        RelayCommand<object> _showSummaryReportCommand = null;
+
+        public ICommand ShowSummaryReportCommand
+        {
+            get
+            {
+                if (_showSummaryReportCommand == null)
+                {
+                    _showSummaryReportCommand = new RelayCommand<object>((prodId) =>
+                    {
+                        try
+                        {
+                            SalesSummary salesSummary = new SalesSummary();
+                            salesSummary.ShowDialog();
+                        }
+                        catch (Exception ex)
+                        {
+                            Utility.ShowErrorBox(ex.Message);
+                        }
+                    });
+                }
+                return _showSummaryReportCommand;
+            }
+        }
+
 
         RelayCommand<object> _addItemCommand = null;
 
@@ -228,8 +285,21 @@ namespace RetailManagementSystem.ViewModel.Sales
                             if (SelectedIndex == -1) return;
                             if (SaleDetailList[SelectedIndex] == null) return;
                             if (SaleDetailList[SelectedIndex].Qty == null) return;
+                            if (string.IsNullOrEmpty(SelectedColumnHeader)) return;
+                            
+                            if (SelectedColumnHeader == "Quantity")
+                            {
+                                var stringNumber = SaleDetailList[SelectedIndex].Qty.ToString();
+                                //var result = stringNumber + calValue;
+                                SaleDetailList[SelectedIndex].Qty = Convert.ToDecimal(calValue);
+                            }
 
-                            SaleDetailList[SelectedIndex].Qty += Convert.ToInt32(calValue);
+                            if (SelectedColumnHeader == "Empty Qty")
+                            {
+                                var stringNumber = SaleDetailList[SelectedIndex].EmptyBottleQty.ToString();
+                                //var result = stringNumber + calValue;
+                                SaleDetailList[SelectedIndex].EmptyBottleQty = Convert.ToInt32(calValue);
+                            }
                         }
                         catch (Exception ex)
                         {

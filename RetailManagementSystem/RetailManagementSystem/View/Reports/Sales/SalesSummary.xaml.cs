@@ -10,5 +10,11 @@ namespace RetailManagementSystem.View.Reports.Sales
             InitializeComponent();
             DataContext = new SalesSummaryViewModel(showRestrictedCustomers);
         }
+
+        public SalesSummary()
+        {
+            InitializeComponent();
+            DataContext = new POSSalesSummaryViewModel();
+        }
     }
 }

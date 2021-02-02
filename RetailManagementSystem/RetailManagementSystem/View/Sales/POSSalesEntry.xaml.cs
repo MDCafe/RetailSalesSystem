@@ -11,7 +11,7 @@ namespace RetailManagementSystem.View.Sales
         public POSSalesEntry()
         {
             InitializeComponent();
-            var posSalesEntryViewModel = new POSSalesEntryViewModel(true);
+            var posSalesEntryViewModel = new POSSalesEntryViewModel(false);
 
             Loaded += handler;
 
