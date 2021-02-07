@@ -1,7 +1,9 @@
 ﻿using log4net;
 using RetailManagementSystem.View.Entitlements;
 using RetailManagementSystem.View.Sales;
+using System;
 using System.Windows;
+using System.Linq;
 
 namespace RetailManagementSystem
 {
@@ -19,13 +21,20 @@ namespace RetailManagementSystem
         }
 
         private void ApplicationStart(object sender, StartupEventArgs e)
-        {
-            //Utilities.Utility.ShutdownRemoteMachine();
-            
+        {                        
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
+            Start(() =>
+            {
+                using (RMSEntities context = new RMSEntities())
+                {
+                    context.Users.FirstOrDefault();
+                }
+            });
+
+
 #if DebugPOS
-                var poslogin = new POSLogin();
+            var poslogin = new POSLogin();
                 var posResult = poslogin.ShowDialog();
                 if (!posResult.Value)
                 {
@@ -59,6 +68,10 @@ namespace RetailManagementSystem
             this.Shutdown();
         }
 
+        private void Start(Action a)
+        {
+            a.BeginInvoke(null, null);
+        }
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             if (e.Exception.GetType() == typeof(MySql.Data.MySqlClient.MySqlException))

@@ -12,22 +12,28 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Sales
 {
-    class POSSalesEntryViewModel : SalesViewModelbase
+    public delegate void SetFocusOnClear();
+    class POSSalesEntryViewModel : SalesViewModelbase, IDisposable
     {
         protected static readonly ILog _log = LogManager.GetLogger(typeof(POSSalesEntryViewModel));
 
         private readonly List<ProductEmptyMapping> ProductEmptyMappingValues;
-
+        private readonly Queue<decimal> messageQueue;
+        readonly Timer qtyTimer;
+        readonly Timer emptyTimer;
+        private int selectedIndex;
+        public event SetFocusOnClear SetFocusOnClearEvent;
 
         #region Getters and Setters
 
-        public string PaymentMethod { get; set; }        
+        public string PaymentMethod { get; set; }
 
         public IEnumerable<Product> ProductsWithoutBarCode { get; set; }
 
@@ -35,7 +41,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             get { return _selectedPaymentId; }
             set
-            {                
+            {
                 _selectedPaymentId = value;
                 RaisePropertyChanged(nameof(SelectedPaymentId));
                 PaymentMethod = SelectedPaymentId.ToString();
@@ -59,10 +65,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         }
 
-        public int SelectedIndex { get; set; }
+        public int SelectedIndex { get => selectedIndex; set { selectedIndex = value; RaisePropertyChanged(nameof(selectedIndex)); } }
 
         private DataGridCellInfo _cellInfo;
         private string SelectedColumnHeader;
+
+        //public DataGrid salesDataGrid;
+
+       // public POSSalesDetailExtn SalesDetailSelectedItem { get => salesDetailSelectedItem; set { salesDetailSelectedItem = value; RaisePropertyChanged(nameof(SalesDetailSelectedItem)); } }
+
         public DataGridCellInfo CellInfo
         {
             get { return _cellInfo; }
@@ -70,17 +81,22 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 _cellInfo = value;
                 if (!_cellInfo.IsValid) return;
-                SelectedColumnHeader = _cellInfo.Column !=null ?  _cellInfo.Column.Header.ToString() : "";
+                RaisePropertyChanged(nameof(CellInfo));
+
+                SelectedColumnHeader = _cellInfo.Column != null ? _cellInfo.Column.Header.ToString() : "";
+                //dataGridColumn = _cellInfo.Column != null ? _cellInfo.Column : null;
                 //OnPropertyChanged("CellInfo");
                 //MessageBox.Show(string.Format("Column: {0}",
                 //                _cellInfo.Column.DisplayIndex != null ? _cellInfo.Column.DisplayIndex.ToString() : "Index out of range!"));
             }
         }
 
-        public Visibility IsChequeControlsVisible { get => isChequeControlsVisible;
-            
-            set 
-            { 
+        public Visibility IsChequeControlsVisible
+        {
+            get => isChequeControlsVisible;
+
+            set
+            {
                 isChequeControlsVisible = value;
                 if (value == Visibility.Visible)
                 {
@@ -89,13 +105,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                 }
                 else
                     NegateIsChequeControlsVisible = Visibility.Visible;
-            } 
+            }
         }
         public Visibility NegateIsChequeControlsVisible { get; set; }
         private Visibility isChequeControlsVisible;
 
         public ObservableCollection<POSSalesDetailExtn> SaleDetailList { get; private set; }
-        
+
         public decimal? TotalAmount { get; private set; }
 
         #endregion
@@ -106,11 +122,46 @@ namespace RetailManagementSystem.ViewModel.Sales
             this.SaleDetailList.CollectionChanged += SaleDetailList_CollectionChanged;
             IsChequeControlsVisible = Visibility.Hidden;
             using (var rmsEntities = new RMSEntities())
-            {                
-                ProductsWithoutBarCode = rmsEntities.Products.Where(p => p.BarcodeNo == "0" && p.IsActive == true).OrderBy(o => o.Name).ToList();
+            {
+                ProductsWithoutBarCode = rmsEntities.Products.Where(p => p.BarcodeNo == "0" && p.IsActive == true)
+                                        .OrderBy(oo => oo.CategoryId).ToList();
                 RaisePropertyChanged(nameof(ProductsWithoutBarCode));
                 ProductEmptyMappingValues = rmsEntities.ProductEmptyMappings.ToList();
             }
+
+            messageQueue = new Queue<decimal>();
+            qtyTimer = new Timer(300);            
+            qtyTimer.AutoReset = false;
+            emptyTimer = new Timer(300);
+            emptyTimer.AutoReset = false;
+
+            qtyTimer.Elapsed += (sender, evntArgs) =>
+            {
+                string numbers = "";
+                var enumureator = messageQueue.GetEnumerator();
+                while (enumureator.MoveNext())
+                {
+                    numbers += enumureator.Current;
+                }
+                messageQueue.Clear();
+                if (string.IsNullOrEmpty(numbers)) return;
+                SaleDetailList[SelectedIndex].Qty = Convert.ToDecimal(numbers);
+                qtyTimer.Stop();
+            };
+
+            emptyTimer.Elapsed += (sender, evntArgs) =>
+            {
+                string numbers = "";
+                var enumureator = messageQueue.GetEnumerator();
+                while (enumureator.MoveNext())
+                {
+                    numbers += enumureator.Current;
+                }
+                messageQueue.Clear();
+                if (string.IsNullOrEmpty(numbers)) return;
+                SaleDetailList[SelectedIndex].EmptyBottleQty = Convert.ToInt32(numbers);
+                emptyTimer.Stop();
+            };
         }
 
         private void SaleDetailList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -150,13 +201,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                             break;
                         default:
                             break;
-                    }                    
+                    }
                 };
             }
         }
 
-        private void SetProductDetailsOnBarcode(POSSalesDetailExtn saleDetailExtn,ProductPrice productInfo)
-        {                       
+        private void SetProductDetailsOnBarcode(POSSalesDetailExtn saleDetailExtn, ProductPrice productInfo)
+        {
             saleDetailExtn.ProductId = productInfo.ProductId;
             saleDetailExtn.ProductName = productInfo.ProductName;
             saleDetailExtn.SellingPrice = productInfo.SellingPrice;
@@ -184,18 +235,32 @@ namespace RetailManagementSystem.ViewModel.Sales
             //SelectedCustomer = CustomersList.Where(c => c.Name == defaultCustomerConfigName).FirstOrDefault();
             //HardCode the values to improve performance
             SelectedCustomerId = 1; //Cash Customer
-            SelectedPaymentId = '0';            
+            SelectedPaymentId = '0';
             App.Current.Dispatcher.Invoke(() =>
             {
-                SaleDetailList.Clear();
+                SaleDetailList = new ObservableCollection<POSSalesDetailExtn>
+                {
+                    new POSSalesDetailExtn()    
+                };
+
+                if (SetFocusOnClearEvent != null)
+                    SetFocusOnClearEvent();
+                //SelectedIndex = 0;
+                //SalesDetailSelectedItem = SaleDetailList[SelectedIndex];
+                //_cellInfo = new DataGridCellInfo(salesDataGrid.Items[0], salesDataGrid.Columns[0]);
+
+                ////salesDataGrid.CurrentCell = new DataGridCellInfo(salesDataGrid.Items[0], salesDataGrid.Columns[0]);
+                //salesDataGrid.CurrentCell = _cellInfo;
+
+                //salesDataGrid.ScrollIntoView(salesDataGrid.Items[SelectedIndex], salesDataGrid.Columns[0]);
             });
-            
+
             TotalAmount = null;
             SelectedChqBank = null;
             SelectedChqBranch = null;
             ChqNo = null;
             ChqDate = null;
-            ChqAmount = null;            
+            ChqAmount = null;
         }
 
 
@@ -254,14 +319,14 @@ namespace RetailManagementSystem.ViewModel.Sales
                             });
 
                             SetProductDetailsOnBarcode(saleDetailExtn, productInfo);
-                            
+
                             SaleDetailList.Add(saleDetailExtn);
                             //Added as it's not firing for the first time
                             TotalAmount = SaleDetailList.Sum(a => a.Amount);
                         }
                         catch (Exception ex)
                         {
-                            Utilities.Utility.ShowErrorBox(ex.Message);
+                            Utility.ShowErrorBox(ex.Message);
                         }
                     });
                 }
@@ -286,19 +351,28 @@ namespace RetailManagementSystem.ViewModel.Sales
                             if (SaleDetailList[SelectedIndex] == null) return;
                             if (SaleDetailList[SelectedIndex].Qty == null) return;
                             if (string.IsNullOrEmpty(SelectedColumnHeader)) return;
-                            
+
+
                             if (SelectedColumnHeader == "Quantity")
                             {
-                                var stringNumber = SaleDetailList[SelectedIndex].Qty.ToString();
+                                messageQueue.Enqueue(Convert.ToDecimal(calValue));
+
+                                //var stringNumber = SaleDetailList[SelectedIndex].Qty.ToString();
                                 //var result = stringNumber + calValue;
-                                SaleDetailList[SelectedIndex].Qty = Convert.ToDecimal(calValue);
+                                //SaleDetailList[SelectedIndex].Qty = Convert.ToDecimal(calValue);
+                                if (messageQueue.Count > 1) return;                                
+                                qtyTimer.Start();                                
                             }
 
-                            if (SelectedColumnHeader == "Empty Qty")
+                            if (SelectedColumnHeader == "Empty")
                             {
-                                var stringNumber = SaleDetailList[SelectedIndex].EmptyBottleQty.ToString();
-                                //var result = stringNumber + calValue;
-                                SaleDetailList[SelectedIndex].EmptyBottleQty = Convert.ToInt32(calValue);
+                                //var stringNumber = SaleDetailList[SelectedIndex].EmptyBottleQty.ToString();
+                                ////var result = stringNumber + calValue;
+                                //SaleDetailList[SelectedIndex].EmptyBottleQty = Convert.ToInt32(calValue);
+                                messageQueue.Enqueue(Convert.ToDecimal(calValue));
+                                if (messageQueue.Count > 1) return;
+                                
+                                emptyTimer.Start();                                                                
                             }
                         }
                         catch (Exception ex)
@@ -312,7 +386,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         RelayCommand<Window> _logOffCommand = null;
-        
+      
 
         public ICommand LogOffCommand
         {
@@ -320,7 +394,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_logOffCommand == null)
                 {
-                    _logOffCommand = new RelayCommand<Window>((w) => 
+                    _logOffCommand = new RelayCommand<Window>((w) =>
                     {
                         try
                         {
@@ -387,7 +461,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                 //_billSales.RunningBillNo = nextRunningNo;
 
                                 var _category = rmsEntitiesSaveCtx.Categories.FirstOrDefault(c => c.Id == _categoryId);
-                                _category.RollingNo = nextRunningNo;                                
+                                _category.RollingNo = nextRunningNo;
 
                                 _log.DebugFormat("Enter save :{0}", _runningBillNo);
                                 var serverDateTime = RMSEntitiesHelper.GetServerDate();
@@ -395,13 +469,13 @@ namespace RetailManagementSystem.ViewModel.Sales
                                 //Create new sales to avoid DB context Error
                                 var lclBillSales = new Sale
                                 {
-                                    CustomerId = _selectedCustomer.Id,                                    
+                                    CustomerId = _selectedCustomer.Id,
                                     PaymentMode = SelectedPaymentId.ToString(),
                                     AddedOn = serverDateTime,
                                     ModifiedOn = serverDateTime,
                                     RunningBillNo = _runningBillNo,
                                     UpdatedBy = EntitlementInformation.UserInternalId
-                                };                                
+                                };
 
                                 foreach (var saleDetailItem in SaleDetailList)
                                 {
@@ -424,7 +498,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                     lclBillSales.SaleDetails.Add(saleDetail);
 
                                     var expiryDate = saleDetailItem.ExpiryDate;
-                                    
+
                                     var stock = GetStockDetails(rmsEntitiesSaveCtx, saleDetailItem.ProductId, saleDetailItem.PriceId, expiryDate.Value);
                                     if (stock != null)
                                     {
@@ -434,12 +508,12 @@ namespace RetailManagementSystem.ViewModel.Sales
                                         SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity, serverDateTime);
                                     }
                                     //Check for Empty Bottles and save them
-                                    if (saleDetailItem.EmptyBottleQty.HasValue)                                    
+                                    if (saleDetailItem.EmptyBottleQty.HasValue)
                                         SaveEmptyBottles(rmsEntitiesSaveCtx, saleDetailItem);
                                 }
 
-                                lclBillSales.TotalAmount = _totalAmount;                                
-                               
+                                lclBillSales.TotalAmount = _totalAmount;
+
                                 if (_selectedPaymentId == '2')// Cheque Payment
                                 {
                                     SaveChequeDetailsAndPayments(rmsEntitiesSaveCtx, lclBillSales);
@@ -473,7 +547,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                     }
                                 }
 
-                                
+
                                 rmsEntitiesSaveCtx.Sales.Add(lclBillSales);
                                 rmsEntitiesSaveCtx.SaveChanges();
 
@@ -518,16 +592,16 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             finally
             {
-                PanelLoading = false;                
+                PanelLoading = false;
             }
         }
 
-        private void SaveEmptyBottles(RMSEntities rmsEntitiesSaveCtx,POSSalesDetailExtn pOSSalesDetailExtn)
+        private void SaveEmptyBottles(RMSEntities rmsEntitiesSaveCtx, POSSalesDetailExtn pOSSalesDetailExtn)
         {
             var emtpyProductMapping = rmsEntitiesSaveCtx.ProductEmptyMappings.FirstOrDefault(e => e.ProductId == pOSSalesDetailExtn.ProductId);
             if (emtpyProductMapping == null) return;
             var stock = rmsEntitiesSaveCtx.Stocks.FirstOrDefault(s => s.ProductId == emtpyProductMapping.EmptyProductId);
-            if(stock !=null)
+            if (stock != null)
             {
                 stock.Quantity += pOSSalesDetailExtn.EmptyBottleQty.Value;
             }
@@ -535,14 +609,14 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private bool Validate()
         {
-            if(SelectedPaymentId == 2)
+            if (SelectedPaymentId == 2)
             {
-                if(!ChqAmount.HasValue || ChqAmount == 0)
+                if (!ChqAmount.HasValue || ChqAmount == 0)
                 {
                     Utility.ShowErrorBox("Cheque Amount is required");
                     return false;
                 }
-                
+
                 if (!ChqNo.HasValue || ChqAmount == 0)
                 {
                     Utility.ShowErrorBox("Cheque No is required");
@@ -551,6 +625,12 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             }
             return true;
+        }
+
+        public void Dispose()
+        {
+            qtyTimer.Dispose();
+            emptyTimer.Dispose();
         }
 
         #endregion
