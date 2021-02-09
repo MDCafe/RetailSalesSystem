@@ -14,12 +14,12 @@ namespace RetailManagementSystem.View.Entitlements
             DataContext = LoginVM;
         }
 
-        private void Initalize(bool validateAsAdmin, bool InitialLogin)
-        {
+        //private void Initalize(bool validateAsAdmin, bool InitialLogin)
+        //{
 
-            //loginViewModel = new LoginViewModel(validateAsAdmin, InitialLogin);
+        //    //loginViewModel = new LoginViewModel(validateAsAdmin, InitialLogin);
 
-        }
+        //}
 
         //public Login(bool validateAsAdmin,bool InitialLogin)
         //{

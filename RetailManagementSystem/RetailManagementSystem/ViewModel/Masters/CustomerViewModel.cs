@@ -144,19 +144,15 @@ namespace RetailManagementSystem.ViewModel.Masters
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(), (p) => { return !string.IsNullOrWhiteSpace(SelectedCustomer.Name); });
                 }
 
                 return _saveCommand;
             }
         }
 
-        public bool CanSave(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(SelectedCustomer.Name);
-        }
-
-        private void OnSave(object parameter)
+        
+        private void OnSave()
         {
             if (!string.IsNullOrWhiteSpace(SelectedCustomer.Name))
             {

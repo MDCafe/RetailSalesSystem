@@ -96,7 +96,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_printCommand == null)
                 {
-                    _printCommand = new RelayCommand<Window>((p) => OnPrint(p), (p) => CanExecuteMethod(p));
+                    _printCommand = new RelayCommand<Window>((p) => OnPrint(p), (p) => { return BillNo != null; });
                 }
 
                 return _printCommand;
@@ -127,7 +127,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_amendCommand == null)
                 {
-                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => CanExecuteMethod(p));
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => {return BillNo != null; });
                 }
 
                 return _amendCommand;
@@ -163,11 +163,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             //window.DialogResult = true;
         }
-
-        private bool CanExecuteMethod(object parameter)
-        {
-            return BillNo != null;
-        }
+        
         #endregion
 
         #region CloseWindow Command

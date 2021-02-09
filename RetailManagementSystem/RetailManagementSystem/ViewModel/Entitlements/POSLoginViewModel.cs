@@ -1,12 +1,29 @@
 ﻿using RetailManagementSystem.Utilities;
 using System.Windows;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace RetailManagementSystem.ViewModel.Entitlements
 {
     class POSLoginViewModel : LoginViewModel
     {
+        public POSLoginViewModel()
+        {
+            try
+            {
+                using (var en = new RMSEntities())
+                {
+                    ApplicationName = en.ApplicationDetails.FirstOrDefault().Name;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Utility.ShowErrorBox(ex.Message);
+            }
+        }
+
         public decimal? PettyCash { get; set; }
+        public string ApplicationName { get; private set; }
 
         protected override void Login(PasswordBox passwordBox)
         {

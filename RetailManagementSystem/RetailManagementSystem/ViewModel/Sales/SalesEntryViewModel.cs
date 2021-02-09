@@ -1346,7 +1346,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 SaleDetailExtn.ProductId = productPrice.ProductId;
                 //SaleDetailExtn.PriceToCalculate = SaleDetailExtn.SellingPrice;   
                 SaleDetailExtn.UnitOfMeasure = productPrice.UnitOfMeasure;
-                SaleDetailExtn.UnitPerCase = productPrice.UnitPerCase.HasValue? productPrice.UnitPerCase.Value : 0;
+                SaleDetailExtn.UnitPerCase = productPrice.UnitPerCase ?? 0;
             }
             //SaleDetailExtn.ProductName = productPrice.ProductName;
 

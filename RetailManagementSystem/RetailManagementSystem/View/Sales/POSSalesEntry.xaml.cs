@@ -10,7 +10,7 @@ namespace RetailManagementSystem.View.Sales
     /// </summary>
     public partial class POSSalesEntry : Window
     {
-        POSSalesEntryViewModel posSalesEntryViewModel = new POSSalesEntryViewModel(false);
+        readonly POSSalesEntryViewModel posSalesEntryViewModel = new POSSalesEntryViewModel(false);
 
         public POSSalesEntry()
         {
@@ -28,9 +28,8 @@ namespace RetailManagementSystem.View.Sales
                 posSalesEntryViewModel.SelectedCustomer = posSalesEntryViewModel.DefaultCustomer;
                 //posSalesEntryViewModel.salesDataGrid = this.POSSalesGrid;
                 POSSalesGrid.CurrentCell = new DataGridCellInfo(POSSalesGrid.Items[0], POSSalesGrid.Columns[0]);
-                POSSalesGrid.BeginEdit();
+                //POSSalesGrid.BeginEdit();
             }
-
 
             posSalesEntryViewModel.SetFocusOnClearEvent += () =>
               {
@@ -39,11 +38,6 @@ namespace RetailManagementSystem.View.Sales
                   DataGridRow dgrow = (DataGridRow)POSSalesGrid.ItemContainerGenerator.ContainerFromItem(POSSalesGrid.Items[0]);
                   dgrow.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
               };
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }

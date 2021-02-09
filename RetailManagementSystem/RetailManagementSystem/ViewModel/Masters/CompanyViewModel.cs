@@ -15,7 +15,7 @@ namespace RetailManagementSystem.ViewModel.Masters
         bool _isEditMode;
         IEnumerable<Company> _companyList;
         IEnumerable<Category> _companyCategory;
-        RMSEntities _rmsEntities;
+        readonly RMSEntities _rmsEntities;
 
         public CompanyViewModel()
         {

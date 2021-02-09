@@ -15,11 +15,23 @@ namespace RetailManagementSystem
     
     public partial class RMSEntities : DbContext
     {
-        public RMSEntities()
-            : base("name=RMSEntities")
+        //public RMSEntities()
+        //    : base("name=RMSEntities")
+        //{
+        //}
+
+        public RMSEntities(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
+
         }
-    
+
+        public RMSEntities() : base("RMSEntities")
+        {
+            Database.SetInitializer<RMSEntities>(new CreateDatabaseIfNotExists<RMSEntities>());
+        }
+
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

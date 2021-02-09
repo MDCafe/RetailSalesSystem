@@ -36,15 +36,17 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="70"/>
             <RowDefinition Height="72"/>
             <RowDefinition Height="80"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Image Source="/Images/login-icon-3039-Windows.ico"  Grid.Row="0" />
+        <Label Content="{Binding ApplicationName}" Grid.Row="1" Foreground="AntiqueWhite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="30"/>
 
-        <StackPanel  Grid.Row="1" Orientation="Horizontal">
+        <StackPanel  Grid.Row="2" Orientation="Horizontal">
             <Image Source="/Images/Login.png" HorizontalAlignment="Left" Margin="5,17,0,0" Width="48"/>
             <TextBox x:Name="txtUserId" BorderThickness="0,0,0,1" BorderBrush="AntiqueWhite" Foreground="AntiqueWhite" FontWeight="Bold" 
                  HorizontalAlignment="Left" Height="30" Width="359"   TextWrapping="Wrap" VerticalAlignment="Center"  SelectionBrush="AntiqueWhite" 
@@ -52,7 +54,7 @@
             </TextBox>
         </StackPanel>
 
-        <StackPanel  Grid.Row="2" Orientation="Horizontal">
+        <StackPanel  Grid.Row="3" Orientation="Horizontal">
             <Image Source="/Images/access.png" HorizontalAlignment="Left" Width="40" Margin="5,0,0,0"/>
             <PasswordBox x:Name="txtPassword"  Grid.Row="2" PasswordChar="*" FontSize="16"
                     BorderThickness="0,0,0,1" BorderBrush="AntiqueWhite" Foreground="AntiqueWhite" FontWeight="Bold"
@@ -60,7 +62,7 @@
                  VerticalAlignment="Center"  SelectionBrush="Black"  Margin="20,22,0,20" Background="{DynamicResource {x:Static SystemColors.WindowBrush}}" CaretBrush="White"/>
         </StackPanel>
 
-        <StackPanel  Grid.Row="3" Orientation="Horizontal">
+        <StackPanel  Grid.Row="4" Orientation="Horizontal">
             <Image Source="/Images/cash-payment.png" HorizontalAlignment="Left" Width="40" Margin="5,0,0,0"/>
             <TextBox BorderThickness="0,0,0,1" BorderBrush="AntiqueWhite" Foreground="AntiqueWhite" FontWeight="Bold" 
                  HorizontalAlignment="Left" Height="30" Width="359"   TextWrapping="Wrap" VerticalAlignment="Center"  SelectionBrush="AntiqueWhite" 
@@ -68,7 +70,7 @@
             </TextBox>
         </StackPanel>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button x:Name="btnOk" Content="Sign In"  Height="62" IsDefault="True"  VerticalAlignment="Center"
                     Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=txtPassword}" Width="200"
                     Margin="15,24,10,10" Background="#FF3A303A" Foreground="WhiteSmoke" Grid.Column="0" Grid.ColumnSpan="2" 
