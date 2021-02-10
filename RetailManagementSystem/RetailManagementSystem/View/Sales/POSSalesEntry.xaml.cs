@@ -29,6 +29,7 @@ namespace RetailManagementSystem.View.Sales
                 //posSalesEntryViewModel.salesDataGrid = this.POSSalesGrid;
                 POSSalesGrid.CurrentCell = new DataGridCellInfo(POSSalesGrid.Items[0], POSSalesGrid.Columns[0]);
                 //POSSalesGrid.BeginEdit();
+                posSalesEntryViewModel.ViewWindow = this;
             }
 
             posSalesEntryViewModel.SetFocusOnClearEvent += () =>

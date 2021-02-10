@@ -41,6 +41,8 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #region Getters and Setters
 
+        public Window ViewWindow { get; set; }
+
         public string PaymentMethod { get; set; }
 
         public IEnumerable<Product> ProductsWithoutBarCode { get; set; }
@@ -352,7 +354,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         }
                         catch (Exception ex)
                         {
-                            Utility.ShowErrorBox(ex.Message);
+                            Utility.ShowErrorBox(ViewWindow, ex.Message);
                         }
                     });
                 }
@@ -454,7 +456,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         {
                             var msg = "Error logging off..!!";
                             _log.Error(msg, ex);
-                            Utilities.Utility.ShowErrorBox(msg + ex.Message);
+                            Utilities.Utility.ShowErrorBox(ViewWindow, msg + ex.Message);
                         }
                     });
                 }
@@ -468,15 +470,18 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         protected override bool CanExecuteSaveCommand(object parameter)
         {
-            return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
-                    SelectedCustomerId != 0;
+            return true;// _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
+                    //SelectedCustomerId != 0;
         }
 
         protected override async Task OnSave(object parameter)
-        {   
+        {
             //short paramValue = Convert.ToInt16(parameter);
+            _log.DebugFormat("Saving method called");
 
             if (!Validate()) return;
+
+            _log.DebugFormat("validation passed");
 
             try
             {
@@ -490,7 +495,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                             try
                             {
                                 using (var rmsEntitiesSaveCtx = new RMSEntities(con,false))
-                                {                                    
+                                {
+                                    _log.DebugFormat("Connection opened");
 
                                     //Get the latest runningBill number with exclusive lock                       
                                     string sqlRunningNo = "select max(rollingno) + 1 from category cat where  cat.id = @p0  for Update";
@@ -591,7 +597,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         {
                             dbTransaction.Rollback();
                             _log.Error("Error while saving..!!", ex);
-                            Utility.ShowErrorBox(ex.Message + " Stack Trace : " + ex.StackTrace);
+                            Utility.ShowErrorBox(ViewWindow, ex.Message + " Stack Trace : " + ex.StackTrace);
                         }
                         }
                     }
@@ -606,8 +612,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             catch (Exception ex)
             {
+                _log.Error("Error while saving..!!", ex);
                 //if (paramValue == SaveOperations.SaveOnWindowClosing) return;
-                Utility.ShowErrorBox("Error while saving..!!" + ex.Message);
+                Utility.ShowErrorBox(ViewWindow, "Error while saving..!!" + ex.Message);
             }            
         }
 
@@ -643,7 +650,7 @@ namespace RetailManagementSystem.ViewModel.Sales
            
             // Specify the provider name, server and database.
             string providerName = "MySql.Data.MySqlClient";
-            string serverName = "WoodlandsTechnologies";
+            string serverName = "NES-Main";
             string databaseName = "RMS";
 
             // Initialize the connection string builder for the
@@ -702,16 +709,31 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (!ChqAmount.HasValue || ChqAmount == 0)
                 {
-                    Utility.ShowErrorBox("Cheque Amount is required");
+                    Utility.ShowErrorBox(ViewWindow, "Cheque Amount is required");
                     return false;
                 }
 
                 if (!ChqNo.HasValue || ChqAmount == 0)
                 {
-                    Utility.ShowErrorBox("Cheque No is required");
+                    Utility.ShowErrorBox(ViewWindow, "Cheque No is required");
                     return false;
                 }
 
+            }
+
+            if(SaleDetailList.Count == 0)
+            {
+                Utility.ShowErrorBox(ViewWindow, "Nothing to save");
+                return false;
+            }
+
+            foreach (var item in SaleDetailList)
+            {
+                if(item.ProductId == 0)
+                {
+                    Utility.ShowErrorBox(ViewWindow, "No Product exists for the Barcode :" + item.BarcodeNo);
+                    return false;
+                }
             }
             return true;
         }
