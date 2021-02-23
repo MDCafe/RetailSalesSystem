@@ -15,7 +15,7 @@ using System.Windows.Markup;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-#if DEBUG
+#if DEBUGPOS
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]
 #endif
 

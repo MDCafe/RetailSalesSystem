@@ -41,7 +41,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p), (p) =>
+                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(), (p) =>
                     {
                         return ExpenseDetailList.Count != 0 && ExpenseDetailList[0].ExpenseTypeId != 0;
                     });
@@ -52,7 +52,7 @@ namespace RetailManagementSystem.ViewModel.Expenses
         }
 
 
-        private async Task OnSave(object parameter)
+        private async Task OnSave()
         {
             //short paramValue = Convert.ToInt16(parameter);
 

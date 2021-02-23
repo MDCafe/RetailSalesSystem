@@ -1,6 +1,6 @@
 ﻿namespace RetailManagementSystem.Model
 {
-    class StockAdjustProductPrice
+    internal class StockAdjustProductPrice
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }

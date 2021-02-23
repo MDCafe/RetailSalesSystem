@@ -19,6 +19,12 @@ namespace RetailManagementSystem.ViewModel.Masters
         readonly RMSEntities _rmsEntities;
         ObservableCollection<PriceDetail> _priceDetailsList;
 
+        public IEnumerable<Product> EmptyBottleList { get; set; }
+        public int SelectedEmptyProductId { get; set; }
+        public int? EmptyBottleValue { get; set; }
+
+        public int PacketsPerCase { get; set; }
+
         public ProductsViewModel()
         {
             _product = new Product
@@ -31,12 +37,19 @@ namespace RetailManagementSystem.ViewModel.Masters
             ProductCategories = _rmsEntities.Categories.Where(c => c.parentId == 3).ToList().OrderBy(p => p.name);
             UnitOfMeasures = _rmsEntities.MeasuringUnits.ToList().OrderBy(p => p.unit);
             _companiesList = _rmsEntities.Companies.ToList().OrderBy(c => c.Name);
+            LoadEmptyBottlesList();
+
             _priceDetailsList = new ObservableCollection<PriceDetail>
             {
                 new PriceDetail()
             };
 
             ProductActiveValues = new BooleanValue().BooleanValues;
+        }
+
+        private void LoadEmptyBottlesList()
+        {
+            EmptyBottleList = _rmsEntities.Products.Where(p => p.CategoryId == 23).ToList();//Empty Bottles
         }
 
         #region Public Variables
@@ -139,6 +152,10 @@ namespace RetailManagementSystem.ViewModel.Masters
                             DblClickSelectedProduct = null;
                             ProductsList = _rmsEntities.Products.ToList();
                             SearchText = "";
+                            LoadEmptyBottlesList();
+                            SelectedEmptyProductId = -1;
+                            EmptyBottleValue = 0;
+                            PacketsPerCase = 0;
                         }
                         );
                 }
@@ -183,6 +200,29 @@ namespace RetailManagementSystem.ViewModel.Masters
                     itemToUpdate.SellingPrice = item.SellingPrice;
                     itemToUpdate.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
                 }
+
+                var productCaseMapping = _rmsEntities.ProductCaseMappings.Where(p => p.ProductId == _product.Id).FirstOrDefault();                
+                if (productCaseMapping != null)
+                {
+                    productCaseMapping.ItemPerCase = PacketsPerCase;
+                }
+                else if(PacketsPerCase !=0)
+                {
+                    CreateProductCaseMapping();
+                }
+
+#if DebugPOS || ReleasePOS
+                //check if emtpy already exists
+                var emtpyBottle = _rmsEntities.ProductEmptyMappings.FirstOrDefault(e => e.ProductId == SelectedProduct.Id);
+                if (emtpyBottle != null)
+                {
+                    emtpyBottle.EmptyProductId = SelectedEmptyProductId;
+                    emtpyBottle.EmptyProductValue = EmptyBottleValue;
+                }
+                else
+                    //New empty bottle assigned
+                    CreateEmptyBottles();
+#endif
             }
             else
             {
@@ -202,13 +242,50 @@ namespace RetailManagementSystem.ViewModel.Masters
                 });
                 _rmsEntities.Products.Add(_product);
                 _rmsEntities.PriceDetails.Add(priceDetailNew);
+
+                CreateProductCaseMapping();
+
+#if DebugPOS || ReleasePOS
+                    CreateEmptyBottles();
+#endif
             }
 
             _product.Name = _product.Name.Trim();
             _rmsEntities.SaveChanges();
             ClearCommand.Execute(null);
             RaisePropertyChanged(nameof(ProductsList));
+
+            void CreateProductCaseMapping()
+            {
+                _rmsEntities.ProductCaseMappings.Add(new ProductCaseMapping()
+                {
+                    ItemPerCase = PacketsPerCase,
+                    Product = _product
+                });
+            }
         }
+
+
+
+        private void CreateEmptyBottles()
+        {
+            //Empty bottles mapping available
+            if (SelectedEmptyProductId != 0)
+            {
+                if (!EmptyBottleValue.HasValue)
+                {
+                    Utility.ShowErrorBox("Empty Bottle Value can't be empty");
+                    return;
+                }
+                _rmsEntities.ProductEmptyMappings.Add(new ProductEmptyMapping()
+                {
+                    EmptyProductId = SelectedEmptyProductId,
+                    Product = _product,
+                    EmptyProductValue = EmptyBottleValue
+                });
+            }
+        }
+
 
         private bool Validate()
         {
@@ -230,9 +307,9 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
             return true;
         }
-        #endregion
+#endregion
 
-        #region DeleteCommand
+#region DeleteCommand
         RelayCommand<object> _deleteCommand = null;
         public ICommand DeleteCommand
         {
@@ -282,9 +359,9 @@ namespace RetailManagementSystem.ViewModel.Masters
             RaisePropertyChanged(nameof(ProductsList));
         }
 
-        #endregion
+#endregion
 
-        #region DoubleClickCommand
+#region DoubleClickCommand
         RelayCommand<object> _doubleClickCommand = null;
         public ICommand DoubleClickCommand
         {
@@ -301,7 +378,18 @@ namespace RetailManagementSystem.ViewModel.Masters
                                 _priceDetailsList.Clear();
                                 var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
                                 priceDetails.ForEach((prd) => _priceDetailsList.Add(prd));
-                                //RaisePropertyChanged("PriceDetailList");
+                                var pcase = SelectedProduct.ProductCaseMappings.FirstOrDefault();
+                                if(pcase !=null)
+                                    PacketsPerCase = Convert.ToInt32(pcase.ItemPerCase.Value);
+
+#if DebugPOS || ReleasePOS
+                                var emtpyBottle = _rmsEntities.ProductEmptyMappings.FirstOrDefault(e => e.ProductId == SelectedProduct.Id);
+                                if(emtpyBottle !=null)
+                                {
+                                    SelectedEmptyProductId = emtpyBottle.EmptyProductId.Value;
+                                    EmptyBottleValue = emtpyBottle.EmptyProductValue;
+                                }
+#endif
                             }
                         );
                 }
@@ -311,9 +399,9 @@ namespace RetailManagementSystem.ViewModel.Masters
         }
 
 
-        #endregion
+#endregion
 
-        #region SearchCommand
+#region SearchCommand
         RelayCommand<object> _searchCommand = null;
         public ICommand SearchCommand
         {
@@ -336,6 +424,6 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-        #endregion
+#endregion
     }
 }
