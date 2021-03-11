@@ -8,8 +8,8 @@ BEGIN
 select s.*,c.Name from sales s,customers c
 where s.customerId = c.id
 and c.id = customerId
-and s.paymentMode= 1 
-and s.IsCancelled = 0
+-- and s.paymentMode= 1 
+and ifnull(s.IsCancelled,1) = 0
 and Date(s.addedOn) >= fromDate and Date(s.addedOn) <= toDate;
 END$$
 

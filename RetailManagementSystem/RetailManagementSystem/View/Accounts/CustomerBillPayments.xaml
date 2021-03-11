@@ -72,19 +72,24 @@
         <Button x:Name="btnPayAmount" Content="Pay Old Balance Amount" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Left" Margin="5,5,0,2" Width="145"
                 Command="{Binding DirectPaymentCommand}" CommandParameter="{Binding ElementName=txtAllocationAmount}"/>
         <Label Content="Allocation Amount" HorizontalAlignment="Left" Margin="5,5,0,2" Grid.Row="1" Grid.Column="0" Width="109" />
-        <Label Content="Cheque Allocation &#xD;&#xA;Amount" HorizontalAlignment="Left" Margin="5,4,0,10" Grid.Row="2" Grid.Column="0" Width="109" />
-        <TextBox x:Name="txtChequeAllocation" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" 
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7">
+            <Label Content="Cheque Allocation &#xD;&#xA;Amount" HorizontalAlignment="Left" Margin="5"  Width="109" />
+            <TextBox x:Name="txtChequeAllocation" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                  TextWrapping="Wrap" Text="{Binding ChequeAllocationAmount}" Width="190" Height="25" Margin="5" />
-        <Label Content="Cheque No" HorizontalAlignment="Left"  Grid.Row="2" Grid.Column="2" Width="80" VerticalAlignment="Center" />
-        <TextBox x:Name="txtChequeNo" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" 
+            <Label Content="Cheque No" HorizontalAlignment="Left"  Width="80" VerticalAlignment="Center" />
+            <TextBox x:Name="txtChequeNo" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center"
                  TextWrapping="Wrap" Text="{Binding ChequeNo}" Width="153" Height="25" Margin="5" />
-        <Label Content="Cheque Date" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="4" Width="80" />
-        <DatePicker x:Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday"  Width="132"
-            SelectedDateFormat="Short" SelectedDate="{Binding ChequeDate}" HorizontalAlignment="Left"  BorderThickness="0" Grid.Row="2" Grid.Column="5" 
+            <Label Content="Cheque Date" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" />
+            <DatePicker x:Name="SalesDate" ForceCursor="True" FirstDayOfWeek="Monday"  Width="110"
+            SelectedDateFormat="Short" SelectedDate="{Binding ChequeDate}" HorizontalAlignment="Left"  BorderThickness="0" 
                     VerticalAlignment="Center" Margin="5" Height="25" />
-        <Button x:Name="btnChequeAllocate" Content="Allocate" Grid.Column="6" Grid.Row="2" HorizontalAlignment="Left" Height="30" Width="80"
+            <Button x:Name="btnChequeAllocate" Content="Allocate" HorizontalAlignment="Left" Height="30" Width="80"
                 Command="{Binding AllocateChequeCommand}" CommandParameter="{Binding ElementName=txtAllocationAmount}"/>
-
+            <Label Content="Bank" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+            <ComboBox ItemsSource="{Binding BankList}" SelectedValue="{Binding SelectedBankId}" DisplayMemberPath="Name" SelectedValuePath="Id" Height="25" Margin="5" Width="130"/>
+            <Label Content="Branch" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+            <ComboBox ItemsSource="{Binding BankBranchList}" SelectedValue="{Binding SelectedBankBranchId}" DisplayMemberPath="Name" SelectedValuePath="Id" Height="25" Margin="5" Width="130"/>
+        </StackPanel>
 
         <!--DataGrid-->
         <toolKit:DataGrid Name="CustomerBillsDataGrid" IsSynchronizedWithCurrentItem="True" 

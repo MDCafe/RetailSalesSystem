@@ -175,7 +175,7 @@
                         <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     </BHCustCtrl:CustDataGridComboBoxColumn>
 
-                    <toolKit:DataGridTextColumn Header="Case" Binding="{Binding CaseQuantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+
                     <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
                         <toolKit:DataGridTextColumn.Binding>
                             <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
@@ -186,6 +186,7 @@
                         </toolKit:DataGridTextColumn.Binding>
                     </toolKit:DataGridTextColumn>
                     <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <toolKit:DataGridTextColumn Header="Case" Binding="{Binding CaseQuantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
                     <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>

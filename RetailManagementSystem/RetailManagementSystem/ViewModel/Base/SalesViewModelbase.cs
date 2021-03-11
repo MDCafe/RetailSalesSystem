@@ -129,9 +129,9 @@ namespace RetailManagementSystem.ViewModel.Base
             {
                 var firstStockTrans = new StockTransaction()
                 {
-                    OpeningBalance = stockNewItem.Quantity - saleDetail.Qty, //Opening balance will be the one from stock table 
+                    OpeningBalance = stockNewItem.Quantity, //Opening balance will be the one from stock table 
                     Outward = saleDetail.Qty,
-                    ClosingBalance = stockNewItem.Quantity,
+                    ClosingBalance = stockNewItem.Quantity - saleDetail.Qty,
                     StockId = stockNewItem.Id,
                     AddedOn = combinedDateTime
                 };
@@ -141,7 +141,7 @@ namespace RetailManagementSystem.ViewModel.Base
             else
             {
                 var systemDBDate = RMSEntitiesHelper.Instance.GetSystemDBDate();
-                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate);
+                var dateDiff = DateTime.Compare(stockTrans.AddedOn.Value.Date, systemDBDate.Date);
                 if (dateDiff == 0 && stockAdjustCheck != null && !stockAdjustCheck.StockTransId.HasValue)
                 {
                     stockTrans.Outward = saleDetail.Qty.Value + (stockTrans.Outward ?? 0);

@@ -24,7 +24,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>\\NES-MAIN\POSPublisher\</PublishUrl>
+    <PublishUrl>\\DESKTOP-FGU4A9E\Deployment\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,11 +34,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\NES-MAIN\POSPublisher\</InstallUrl>
+    <InstallUrl>\\DESKTOP-FGU4A9E\Deployment\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>29</ApplicationRevision>
+    <ApplicationRevision>32</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugPOS|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>\\DESKTOP-AQT200F\DebugPOS\</OutputPath>
+    <OutputPath>bin\DebugPOS1\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DebugPOS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>

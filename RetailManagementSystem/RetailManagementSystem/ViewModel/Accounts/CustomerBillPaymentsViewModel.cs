@@ -19,6 +19,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         public ObservableCollection<CustomerPaymentDetails> CustomerPaymentDetailsList { get; set; }
 
+        private IEnumerable<BankDetail> bankList;
+        private int? selectedBankId;
+
         public Customer SelectedCustomer { get; set; }
         public decimal? AllocationAmount { get; set; }
         //public decimal? TotalPendingAmount { get; set; }
@@ -45,6 +48,31 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         public IEnumerable<CodeMaster> PaymentModes { get; set; }
 
+        public IEnumerable<BankDetail> BankList
+        {
+            get => bankList;
+            set
+            {
+                bankList = value;
+
+
+            }
+        }
+        public IEnumerable<BankBranchDetail> BankBranchList { get; private set; }
+
+        IEnumerable<BankBranchDetail> BankBranchListInternal { get; set; }
+
+        public int? SelectedBankId
+        {
+            get => selectedBankId;
+            set 
+            { 
+                selectedBankId = value;
+                BankBranchList = BankBranchListInternal.Where(b => b.BankId == selectedBankId);
+            }
+        }
+        public int? SelectedBankBranchId { get; set; }
+
         public CodeMaster SelectedPaymentMode { get; set; }
         public decimal TotalBillSumBalanceAmount { get; set; }
 
@@ -63,13 +91,9 @@ namespace RetailManagementSystem.ViewModel.Accounts
             using (var rmsEntities = new RMSEntities())
             {
                 var cnt = rmsEntities.CodeMasters.Local.Count;
-
-
-                //foreach (var item in rmsEntities.CodeMasters)
-                //{
-
-                //}
                 PaymentModes = rmsEntities.CodeMasters.Where(c => c.Code == "PMODE" && c.Id != 8).ToList();
+                BankList = rmsEntities.BankDetails.ToList();
+                BankBranchListInternal = rmsEntities.BankBranchDetails.ToList();
             }
             ChequeDate = DateTime.Now;
             PaymentDate = DateTime.Now;
@@ -96,7 +120,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
                                                                                 ("CALL GetCustomerPaymentDetails(@customerId)", mySQLparam);
 
                             //TotalPendingAmount = SelectedCustomer.BalanceDue;
-                            
+
                             var i = 0;
                             TotalBillSumBalanceAmount = 0;
                             foreach (var item in custPayDetails)
@@ -253,7 +277,10 @@ namespace RetailManagementSystem.ViewModel.Accounts
                                         ChequeNo = item.ChequeNo,
                                         IsChequeRealised = false,
                                         PaymentDate = PaymentDate,
-                                        UpdatedBy = Entitlements.EntitlementInformation.UserInternalId
+                                        Amount = item.CurrentAmountPaid,
+                                        UpdatedBy = Entitlements.EntitlementInformation.UserInternalId,
+                                        BankId = selectedBankId,
+                                        BankBranchId = SelectedBankBranchId
                                     };
             paymentDetails.ChequePaymentDetails.Add(chqPaymentDetails);
         }
@@ -377,6 +404,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         #region DirectPaymentCommand
         RelayCommand<object> _directPaymentCommand = null;
+        
         public ICommand DirectPaymentCommand
         {
             get

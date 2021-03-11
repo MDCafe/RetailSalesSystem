@@ -21,6 +21,7 @@
                     Join Stocks s on s.ProductId = p.Id
 			join pricedetails pr on pr.PriceId = s.PriceId
                     Join Companies cp on cp.id = p.CompanyId
+       where p.IsActive = true
 	group by p.id</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>

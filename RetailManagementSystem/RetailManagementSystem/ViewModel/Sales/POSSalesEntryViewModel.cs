@@ -553,9 +553,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                                         if (stock != null)
                                         {
                                             var actualStockEntity = rmsEntitiesSaveCtx.Stocks.First(s => s.Id == stock.Id);
+                                            SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity, serverDateTime);
                                             actualStockEntity.Quantity -= calculatedQty.Value;
                                             actualStockEntity.UpdatedBy = EntitlementInformation.UserInternalId;
-                                            SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity, serverDateTime);
                                         }
                                         //Check for Empty Bottles and save them
                                         if (saleDetailItem.EmptyBottleQty.HasValue)
@@ -650,7 +650,12 @@ namespace RetailManagementSystem.ViewModel.Sales
            
             // Specify the provider name, server and database.
             string providerName = "MySql.Data.MySqlClient";
+
+#if DebugPOS
+            string serverName = "localhost";
+#else
             string serverName = "NES-Main";
+#endif
             string databaseName = "RMS";
 
             // Initialize the connection string builder for the
@@ -746,9 +751,9 @@ namespace RetailManagementSystem.ViewModel.Sales
             emptyTimer.Dispose();            
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
     }
 }
 

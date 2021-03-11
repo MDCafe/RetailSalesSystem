@@ -7,16 +7,16 @@ CREATE DEFINER=`RMS`@`%` PROCEDURE `GetPOSSales`(IN fromSalesDate Date, IN toSal
 BEGIN
 select s.BillId,s.AddedOn,C.Name as Customer,	
 RunningBillNo,s.addedOn,
-sum(sd.sellingprice *sd.qty)  TotalAmount,
+sum(s.TotalAmount)  TotalAmount,
 CASE
         WHEN s.PaymentMode = '0' AND (isnull(s.AmountPaid) = 1 OR s.AmountPaid = 0) THEN 
-					sum(sd.sellingprice *sd.qty)
+					sum(s.TotalAmount)
         ELSE 
 			s.AmountPaid
     END AS 'Cash Sales',
     CASE
         WHEN PaymentMode = '1'  THEN 
-				sum(sd.sellingprice *sd.qty) 
+				sum(s.TotalAmount)
         ELSE NULL
     END AS 'Credit Sales'
 from sales s,Customers c, SaleDetails sd
