@@ -9,7 +9,7 @@ BEGIN
 if(categoryId = 0 and productId = 0 and companyId = 0)
 then
     select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	sum(s.quantity) Quantity,pr.Price CostPrice, sum(s.quantity) * pr.Price Value
 	from products p Join category c on c.Id = p.CategoryId
                     Join Stocks s on s.ProductId = p.Id
                     join pricedetails pr on pr.PriceId = s.PriceId
@@ -20,7 +20,7 @@ then
 elseif (categoryId !=0 and productId = 0 and companyId = 0)
 then
  select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	sum(s.quantity) Quantity,pr.Price CostPrice, sum(s.quantity) * pr.Price Value
 	from products p Join category c on c.Id = p.CategoryId and c.Id = categoryId
                     Join Stocks s on s.ProductId = p.Id
                     join pricedetails pr on pr.PriceId = s.PriceId
@@ -31,7 +31,7 @@ then
 elseif (categoryId =0 and productId != 0 and companyId = 0)
 then
 	select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	sum(s.quantity) Quantity,pr.Price CostPrice, sum(s.quantity) * pr.Price Value
 	from products p Join category c on c.Id = p.CategoryId 
                     Join Stocks s on s.ProductId = p.Id
                     join pricedetails pr on pr.PriceId = s.PriceId
@@ -41,7 +41,7 @@ then
 elseif (categoryId =0 and productId = 0 and companyId != 0)
 then
 	select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	sum(s.quantity) Quantity,pr.Price CostPrice, sum(s.quantity) * pr.Price Value
 	from products p Join category c on c.Id = p.CategoryId 
                     Join Stocks s on s.ProductId = p.Id
                     join pricedetails pr on pr.PriceId = s.PriceId

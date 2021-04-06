@@ -12,7 +12,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 {
     class ProductWiseBillDetailsViewModel : ReportViewModel
     {
-        private bool _showRestrictedCustomers;
+        //private bool _showRestrictedCustomers;
         public Product SelectedProduct { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
@@ -22,7 +22,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
         public ProductWiseBillDetailsViewModel(bool showRestrictedCustomers) :
             base(false, showRestrictedCustomers, "Product Wise Sales Report")
         {
-            _showRestrictedCustomers = showRestrictedCustomers;
+            //_showRestrictedCustomers = showRestrictedCustomers;
             ReportPath = @"View\Reports\Sales\ProductWiseBillDetails.rdl";
 
             using (var rmsEntities = new RMSEntities())

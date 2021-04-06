@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `RMS` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `RMS`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: RMS
@@ -92,7 +90,7 @@ CREATE TABLE `Category` (
   `name` varchar(255) NOT NULL,
   `RollingNo` mediumint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=213 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -118,7 +116,7 @@ CREATE TABLE `ChequePaymentDetails` (
   PRIMARY KEY (`Id`,`PaymentId`),
   KEY `FK_CHQ_paymentDetails_idx` (`PaymentId`),
   CONSTRAINT `FK_CHQ_paymentDetails` FOREIGN KEY (`PaymentId`) REFERENCES `PaymentDetails` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +157,7 @@ CREATE TABLE `Companies` (
   `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `UpdatedBy` mediumint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=260 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=290 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +188,7 @@ CREATE TABLE `Customers` (
   `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `UpdatedBy` mediumint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=403 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +204,7 @@ CREATE TABLE `DateBillMapping` (
   `EndOfDate` datetime DEFAULT NULL,
   `EndBillNo` mediumint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +223,7 @@ CREATE TABLE `DirectPaymentDetails` (
   `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `UpdatedBy` mediumint DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +244,7 @@ CREATE TABLE `ExpenseDetails` (
   PRIMARY KEY (`Id`),
   KEY `ExpCodeMaster_idx` (`ExpenseTypeId`),
   CONSTRAINT `ExpCodeMaster` FOREIGN KEY (`ExpenseTypeId`) REFERENCES `CodeMaster` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=574 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -262,7 +260,7 @@ CREATE TABLE `MeasuringUnits` (
   `MeasureQty` decimal(10,2) NOT NULL,
   `AllowFractions` bit(1) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,7 +283,7 @@ CREATE TABLE `PaymentDetails` (
   PRIMARY KEY (`Id`),
   KEY `Fk_sale_pay_idx` (`BillId`),
   CONSTRAINT `Fk_sale_pay` FOREIGN KEY (`BillId`) REFERENCES `Sales` (`BillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=69380 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=69386 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,7 +305,47 @@ CREATE TABLE `PriceDetails` (
   PRIMARY KEY (`PriceId`),
   KEY `FK_Product_idx` (`ProductId`),
   CONSTRAINT `FK_Product` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5956 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6534 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ProductCaseMapping`
+--
+
+DROP TABLE IF EXISTS `ProductCaseMapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ProductCaseMapping` (
+  `Id` mediumint NOT NULL AUTO_INCREMENT,
+  `ProductId` mediumint DEFAULT NULL,
+  `ItemPerCase` decimal(10,2) DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `IsActive` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_prd_cs_idx` (`ProductId`),
+  CONSTRAINT `FK_prd_cs` FOREIGN KEY (`ProductId`) REFERENCES `products` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ProductEmptyMapping`
+--
+
+DROP TABLE IF EXISTS `ProductEmptyMapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ProductEmptyMapping` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `ProductId` mediumint NOT NULL,
+  `EmptyProductId` mediumint DEFAULT NULL,
+  `EmptyProductValue` mediumint DEFAULT NULL,
+  `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`,`ProductId`),
+  KEY `FK_Produc_emptyt_idx` (`ProductId`,`EmptyProductId`),
+  CONSTRAINT `FK_Prod_Empty` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +377,7 @@ CREATE TABLE `Products` (
   CONSTRAINT `FK_Category` FOREIGN KEY (`CategoryId`) REFERENCES `Category` (`Id`),
   CONSTRAINT `FK_Company` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`),
   CONSTRAINT `FK_MOU` FOREIGN KEY (`UnitOfMeasure`) REFERENCES `MeasuringUnits` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2724 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=579 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -366,7 +404,7 @@ CREATE TABLE `PurchaseChequePaymentDetails` (
   KEY `purchase_Payments_idx` (`PurchasePaymentId`),
   CONSTRAINT `pur_pay_det` FOREIGN KEY (`PurchasePaymentId`) REFERENCES `PurchasePaymentDetails` (`Id`),
   CONSTRAINT `Purchase_Bill` FOREIGN KEY (`PurchaseBillId`) REFERENCES `Purchases` (`BillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +436,7 @@ CREATE TABLE `PurchaseDetails` (
   CONSTRAINT `FK_price_purchase` FOREIGN KEY (`PriceId`) REFERENCES `PriceDetails` (`PriceId`),
   CONSTRAINT `FK_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`),
   CONSTRAINT `FK_PurchaseBillId` FOREIGN KEY (`BillId`) REFERENCES `Purchases` (`BillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=30372 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +462,7 @@ CREATE TABLE `PurchaseFreeDetails` (
   KEY `FK_pdt_bill_idx` (`BillId`),
   CONSTRAINT `FK_pdt_bill` FOREIGN KEY (`BillId`) REFERENCES `Purchases` (`BillId`),
   CONSTRAINT `FK_ProductFree` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2070 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,7 +488,7 @@ CREATE TABLE `PurchasePaymentDetails` (
   KEY `FK_purchaseIdDetail1s_idx` (`PurchaseBillId`),
   CONSTRAINT `FK_compId` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`),
   CONSTRAINT `FK_purchaseId` FOREIGN KEY (`PurchaseBillId`) REFERENCES `Purchases` (`BillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7967 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -478,7 +516,7 @@ CREATE TABLE `PurchaseReturn` (
   KEY `FK_returnCodePR_idx` (`ReturnReasonCode`),
   CONSTRAINT `FK_ProductId_PR` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`),
   CONSTRAINT `FK_returnCode_PR` FOREIGN KEY (`ReturnReasonCode`) REFERENCES `CodeMaster` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=879 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -509,7 +547,7 @@ CREATE TABLE `Purchases` (
   PRIMARY KEY (`BillId`),
   KEY `FK_CompanyId_idx` (`CompanyId`),
   CONSTRAINT `FK_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `Companies` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7931 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -536,7 +574,7 @@ CREATE TABLE `ReturnDamagedStocks` (
   KEY `FK_returnCode_idx` (`ReturnReasonCode`),
   CONSTRAINT `FK_ProductId_RD` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`),
   CONSTRAINT `FK_returnCode` FOREIGN KEY (`ReturnReasonCode`) REFERENCES `CodeMaster` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -579,7 +617,7 @@ CREATE TABLE `SaleDetails` (
   CONSTRAINT `FK_price_id` FOREIGN KEY (`PriceId`) REFERENCES `PriceDetails` (`PriceId`),
   CONSTRAINT `FK_ProdId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`),
   CONSTRAINT `Fk_sale_bill` FOREIGN KEY (`BillId`) REFERENCES `Sales` (`BillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=394044 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=398102 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -607,7 +645,7 @@ CREATE TABLE `Sales` (
   KEY `FK_Sales_Cust_idx` (`CustomerId`),
   KEY `INDX_RunningBillNo` (`RunningBillNo`,`AddedOn`),
   CONSTRAINT `FK_Sales_Cust` FOREIGN KEY (`CustomerId`) REFERENCES `Customers` (`Id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=70339 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71836 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -653,7 +691,7 @@ CREATE TABLE `ShiftDetails` (
   `AddedOn` datetime DEFAULT CURRENT_TIMESTAMP,
   `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`UserId`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -676,7 +714,7 @@ CREATE TABLE `StockAdjustments` (
   PRIMARY KEY (`Id`),
   KEY `FK_STKADJ_STRANS_idx` (`StockTransId`),
   CONSTRAINT `FK_STKADJ_STRANS` FOREIGN KEY (`StockTransId`) REFERENCES `StockTransaction` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1943 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -700,7 +738,7 @@ CREATE TABLE `Stocks` (
   KEY `FK_priceId_idx` (`PriceId`),
   CONSTRAINT `FK_PrdId` FOREIGN KEY (`ProductId`) REFERENCES `Products` (`Id`),
   CONSTRAINT `FK_priceId` FOREIGN KEY (`PriceId`) REFERENCES `PriceDetails` (`PriceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4187 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4764 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -723,7 +761,7 @@ CREATE TABLE `StockTransaction` (
   PRIMARY KEY (`Id`),
   KEY `fk_stockId_idx` (`StockId`),
   CONSTRAINT `fk_stockId` FOREIGN KEY (`StockId`) REFERENCES `Stocks` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109551 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -745,7 +783,7 @@ CREATE TABLE `SwapDetails` (
   PRIMARY KEY (`Id`),
   KEY `FK_SWAP_MAIN_idx` (`SwapId`),
   CONSTRAINT `FK_SWAP_MAIN` FOREIGN KEY (`SwapId`) REFERENCES `Swaps` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -763,7 +801,7 @@ CREATE TABLE `Swaps` (
   `AddedOn` datetime DEFAULT NULL,
   `ModifiedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -798,7 +836,7 @@ CREATE TABLE `Users` (
   PRIMARY KEY (`Id`),
   KEY `fk_role_idx` (`RoleId`),
   CONSTRAINT `fk_role` FOREIGN KEY (`RoleId`) REFERENCES `Roles` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1085,21 +1123,60 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetCustomerWiseSales`(in fromDate DateTime, in toDate Datetime,in customerId int)
-    DETERMINISTIC
 BEGIN
-select s.*,c.Name from Sales s,Customers c
+select s.*,c.Name from sales s,customers c
 where s.customerId = c.id
 and c.id = customerId
-and s.paymentMode= 1 
-and ifnull(s.IsCancelled,0) = 0 
+-- and s.paymentMode= 1 
+and s.IsCancelled = 0
 and Date(s.addedOn) >= fromDate and Date(s.addedOn) <= toDate;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetPOSSales` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`RMS`@`%` PROCEDURE `GetPOSSales`(IN fromSalesDate Date, IN toSalesDate date,in internalUserId int)
+BEGIN
+select s.BillId,s.AddedOn,C.Name as Customer,	
+RunningBillNo,s.addedOn,
+sum(s.TotalAmount)  TotalAmount,
+CASE
+        WHEN s.PaymentMode = '0' AND (isnull(s.AmountPaid) = 1 OR s.AmountPaid = 0) THEN 
+					sum(s.TotalAmount)
+        ELSE 
+			s.AmountPaid
+    END AS 'Cash Sales',
+    CASE
+        WHEN PaymentMode = '1'  THEN 
+				sum(s.TotalAmount)
+        ELSE NULL
+    END AS 'Credit Sales'
+from sales s,Customers c, SaleDetails sd
+where s.CustomerId = c.Id
+and sd.BillId = s.BillId and
+Date(s.addedOn) >= fromSalesDate and Date(s.addedOn) <= toSalesDate
+and (if(isnull(s.IsCancelled),0,s.IsCancelled)) = 0 
+and s.UpdatedBy = if(internalUserId = 0,s.UpdatedBy,internalUserId)
+group by s.billId
+order by s.RunningBillNo;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1558,50 +1635,56 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`RMS`@`%` PROCEDURE `GetStockBalances`(in categoryId int,in productId int, in companyId int)
-    DETERMINISTIC
 BEGIN 
 
-if(categoryId = 0 && productId = 0 && companyId = 0)
+if(categoryId = 0 and productId = 0 and companyId = 0)
 then
     select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity
-	from Products p Join Category c on c.Id = p.CategoryId
+	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	from products p Join category c on c.Id = p.CategoryId
                     Join Stocks s on s.ProductId = p.Id
+                    join pricedetails pr on pr.PriceId = s.PriceId
                     Join Companies cp on cp.id = p.CompanyId
+	where p.IsActive = true
 	group by p.id;
 					
-elseif (categoryId !=0 && productId = 0 && companyId = 0)
+elseif (categoryId !=0 and productId = 0 and companyId = 0)
 then
  select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity
-	from Products p Join Category c on c.Id = p.CategoryId and c.Id = categoryId
+	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	from products p Join category c on c.Id = p.CategoryId and c.Id = categoryId
                     Join Stocks s on s.ProductId = p.Id
+                    join pricedetails pr on pr.PriceId = s.PriceId
                     Join Companies cp on cp.id = p.CompanyId
-	group by p.id;		
+	where p.IsActive = true
+    group by p.id;		
     
-elseif (categoryId =0 && productId != 0 && companyId = 0)
+elseif (categoryId =0 and productId != 0 and companyId = 0)
 then
 	select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity
-	from Products p Join Category c on c.Id = p.CategoryId 
+	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	from products p Join category c on c.Id = p.CategoryId 
                     Join Stocks s on s.ProductId = p.Id
+                    join pricedetails pr on pr.PriceId = s.PriceId
                     Join Companies cp on cp.id = p.CompanyId
-    where p.Id = productId                
+    where p.Id = productId and p.IsActive = true               
 	group by p.id;	
-elseif (categoryId =0 && productId = 0 && companyId != 0)
+elseif (categoryId =0 and productId = 0 and companyId != 0)
 then
 	select p.Id as productId,p.Name,ReorderPoint,c.name CategoryName,cp.Name CompanyName,
-	sum(s.quantity) Quantity
-	from Products p Join Category c on c.Id = p.CategoryId 
+	sum(s.quantity) Quantity,pr.Price CostPrice, Quantity * pr.Price Value
+	from products p Join category c on c.Id = p.CategoryId 
                     Join Stocks s on s.ProductId = p.Id
+                    join pricedetails pr on pr.PriceId = s.PriceId
                     Join Companies cp on cp.id = p.CompanyId and cp.Id = companyId            
+    where p.IsActive = true
 	group by p.id;	
 end if;    
 
@@ -1756,4 +1839,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-25 11:14:27
+-- Dump completed on 2021-04-06 16:16:56

@@ -17,6 +17,7 @@ namespace RetailManagementSystem
         readonly List<INotifier> _salesNotifierList = new List<INotifier>();
         readonly List<INotifier> _purchaseNotifierList = new List<INotifier>();
         static string productsPriceSQL;
+        static DateTime ServerDateTime;
 
         private RMSEntitiesHelper()
         {
@@ -219,9 +220,13 @@ namespace RetailManagementSystem
 
         public static DateTime GetServerDate()
         {
-            var sql = "select GetSysDate()";
-            var serverDateTime = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
-            return serverDateTime.FirstOrDefault();
+            if (ServerDateTime == DateTime.MinValue)
+            {
+                var sql = "select GetSysDate()";
+                var serverDT = Instance.RMSEntities.Database.SqlQuery<DateTime>(sql);
+                return ServerDateTime = serverDT.FirstOrDefault();
+            }
+            return ServerDateTime;
         }
 
         public static TimeSpan GetServerTime()

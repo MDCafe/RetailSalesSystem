@@ -651,11 +651,11 @@ namespace RetailManagementSystem.ViewModel.Sales
             // Specify the provider name, server and database.
             string providerName = "MySql.Data.MySqlClient";
 
-#if DebugPOS
-            string serverName = "localhost";
-#else
+//#if DebugPOS
+//            string serverName = "localhost";
+//#else
             string serverName = "NES-Main";
-#endif
+//#endif
             string databaseName = "RMS";
 
             // Initialize the connection string builder for the

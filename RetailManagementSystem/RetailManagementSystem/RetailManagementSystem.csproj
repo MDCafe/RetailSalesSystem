@@ -24,7 +24,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>\\DESKTOP-FGU4A9E\Deployment\</PublishUrl>
+    <PublishUrl>E:\RetailManagementSystem\RetailManagementSystem\RetailManagementSystem\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,11 +34,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\DESKTOP-FGU4A9E\Deployment\</InstallUrl>
+    <InstallUrl>\\NES-MAIN\POSPublisher\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
-    <ApplicationRevision>32</ApplicationRevision>
+    <ApplicationRevision>36</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -455,6 +455,8 @@
     <Compile Include="ViewModel\Reports\Accounts\CustomerPaymentDetailsRptViewModel.cs" />
     <Compile Include="ViewModel\Reports\Accounts\DayStatementReportViewModel.cs" />
     <Compile Include="ViewModel\Reports\Purchases\PurchaseSummaryViewModel.cs" />
+    <Compile Include="ViewModel\Reports\ReportBusinessBaseVM.cs" />
+    <Compile Include="ViewModel\Reports\Sales\ProductSalesSummaryViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\ProductWiseSalesPercentViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\ProductWiseBillDetailsViewModel.cs" />
     <Compile Include="ViewModel\Reports\Sales\SalesBillDetailsViewModel.cs" />
@@ -536,6 +538,9 @@
     </Compile>
     <Compile Include="View\Reports\Sales\ProductWiseBillDetails.xaml.cs">
       <DependentUpon>ProductWiseBillDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Reports\Sales\ProductSalesSummary.xaml.cs">
+      <DependentUpon>ProductSalesSummary.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Reports\Stock\StockAdjustReport.xaml.cs">
       <DependentUpon>StockAdjustReport.xaml</DependentUpon>
@@ -680,6 +685,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Reports\Sales\ProductSalesSummary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Reports\Stock\StockAdjustReport.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -747,6 +756,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="View\Reports\Sales\ProductSalesSummary.rdl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\login.png" />
     <Resource Include="Images\access.png" />
     <Resource Include="Images\cash-payment.png" />

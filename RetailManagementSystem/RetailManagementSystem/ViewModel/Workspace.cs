@@ -588,6 +588,25 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
+        #region OpenProductSalesSummaryReportCommand
+        RelayCommand<object> _openProductSalesSummaryReportCommand = null;
+        public ICommand OpenProductSalesSummaryReportCommand
+        {
+            get
+            {
+                if (_openProductSalesSummaryReportCommand == null)
+                {
+                    _openProductSalesSummaryReportCommand = new RelayCommand<object>((p) =>
+                    {                                                  
+                        ShowWindowDialog(new ProductSalesSummary());                        
+                    });
+                }
+                return _openProductSalesSummaryReportCommand;
+            }
+        }
+        #endregion
+        
+
         #region OpenCustomerWiseSalesReportCommand
         RelayCommand<object> _openCustomerWiseSalesReportCommand = null;
         public ICommand OpenCustomerWiseSalesReportCommand
