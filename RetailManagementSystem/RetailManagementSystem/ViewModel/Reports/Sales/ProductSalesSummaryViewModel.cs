@@ -61,7 +61,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     Value = SelectedProduct.Id
                 };
 
-                query += " and p.Id = @ProductId group by P.id  order by c.Name ";
+                query += " and p.Id = @ProductId group by P.id  order by c.Name,p.Name  ";
 
                 _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[3]
                                                 {
@@ -76,7 +76,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                     Value = SelectedCategory.Id
                 };
 
-                query += " and c.Id = @CategoryId group by P.id  order by c.Name ";
+                query += " and c.Id = @CategoryId group by P.id  order by c.Name,p.Name ";
 
                 _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[3]
                                             {
@@ -101,7 +101,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             //}
             else
             {
-                query += " group by P.id  order by c.Name ";
+                query += " group by P.id  order by c.Name,p.Name ";
 
                 _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[2]
                                             {
