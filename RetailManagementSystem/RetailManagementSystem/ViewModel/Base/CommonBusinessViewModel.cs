@@ -45,7 +45,7 @@ namespace RetailManagementSystem.ViewModel.Base
             {
                 _selectedPaymentId = value;
                 if (_selectedPaymentId == '2')
-                {                                        
+                {
                     if (BankDetailList == null)
                     {
                         using (var en = new RMSEntities())
@@ -53,7 +53,7 @@ namespace RetailManagementSystem.ViewModel.Base
                             BankDetailList = en.BankDetails.OrderBy(b => b.Name).ToList();
                         }
                     }
-                }                
+                }
                 RaisePropertyChanged(nameof(SelectedPaymentId));
             }
         }
@@ -188,9 +188,9 @@ namespace RetailManagementSystem.ViewModel.Base
         public IEnumerable<BankBranchDetail> BankBranchDetailList
         {
             get => bankBranchDetailList;
-            set 
-            { 
-                bankBranchDetailList = value; 
+            set
+            {
+                bankBranchDetailList = value;
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using RetailManagementSystem.Utilities;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Linq;
 
 namespace RetailManagementSystem.ViewModel.Entitlements
 {
@@ -35,7 +35,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
                     var pwdstackPanel = passwordBox.Parent as StackPanel;
                     var gridLogin = pwdstackPanel.Parent as Grid;
                     var window = gridLogin.Parent as Window;
-                   
+
 
                     if (ValidateUser(rmsEntities, password))
                     {

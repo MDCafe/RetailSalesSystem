@@ -155,22 +155,21 @@ namespace RetailManagementSystem.View.Sales
             var barcodeNo = custComboBoxCol._cboTextBox.Text;
             var productPrice = selectedItem as ProductPrice;
 
-            long barcodeLong;
             long? barcodeNullable = null;
 
             if (!string.IsNullOrEmpty(barcodeNo))
             {
-                if (!long.TryParse(barcodeNo, out barcodeLong))
+                if (!long.TryParse(barcodeNo, out long barcodeLong))
                 {
                     //Utilities.Utility.ShowErrorBox("Invalid Barcode");
                     //return;
                 }
-                else 
+                else
                 {
                     barcodeNullable = barcodeLong;
                 }
             }
-            
+
             _log.Debug("Before SetProductDetails:" + productPrice);
             _salesViewModel.SetProductDetails(barcodeNullable, productPrice, SalesDataGrid.SelectedIndex);
             //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
@@ -244,7 +243,7 @@ namespace RetailManagementSystem.View.Sales
             return foundChild;
         }
 
-        private void txtBarcodeNO_KeyUp(object sender, KeyEventArgs e)
+        private void TxtBarcodeNOKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {

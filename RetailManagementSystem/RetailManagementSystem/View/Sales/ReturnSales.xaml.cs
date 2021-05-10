@@ -42,8 +42,8 @@ namespace RetailManagementSystem.View.Sales
                        }
                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Select").Visibility = visibility;
                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Quantity").Visibility = visibility;
-                        //ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
-                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Cost Price").Visibility = visibility;
+                       //ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Purchased Price").Visibility = visibility;
+                       ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Cost Price").Visibility = visibility;
                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Selling Price").Visibility = visibility;
                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount (%)").Visibility = visibility;
                        ReturnSalesDataGrid.Columns.FirstOrDefault(c => c.Header.ToString() == "Discount Amount").Visibility = visibility;

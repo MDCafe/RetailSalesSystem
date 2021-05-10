@@ -5,7 +5,7 @@ using System.IO;
 namespace RetailManagementNotifier
 {
     class RetailManagementEmailer
-    {      
+    {
         static readonly ILog log = LogManager.GetLogger(typeof(RetailManagementEmailer));
         public void SendDailySalesReport(string[] args)
         {
@@ -56,8 +56,8 @@ namespace RetailManagementNotifier
 
                     var reportParams = productSalesSummary.GenerateReportForEmail();
 
-                     WTechCommonProject.Utilities.Utility.SaveReportAsPDF(productSalesSummary.GetReportDataSources(), "ProductSalesSummary",
-                                            executingAssemblyPath + "\\" + productSalesSummary.ReportPath, reportParams);
+                    WTechCommonProject.Utilities.Utility.SaveReportAsPDF(productSalesSummary.GetReportDataSources(), "ProductSalesSummary",
+                                           executingAssemblyPath + "\\" + productSalesSummary.ReportPath, reportParams);
 
                     fileAttachmentPaths[0] = "ProductSalesSummary.pdf";
 
@@ -72,6 +72,6 @@ namespace RetailManagementNotifier
             {
                 log.Error("Sales Summary not generated and sent", ex);
             }
-        }     
+        }
     }
 }

@@ -77,7 +77,7 @@
                     <RibbonGroup x:Name="Expense" Header="Expenses" KeyTip="E">
                         <RibbonButton Label="Entry" LargeImageSource="Images\PurchaseOrder32.png" ToolTipTitle="Expense Entry" 
                                       ToolTipDescription="Entry for Expenses" KeyTip="E" Command="{Binding OpenExpenseEntryCommand}"/>
-                        <RibbonButton Label="Report" LargeImageSource="Images\Report.png" KeyTip="ER" Command="{Binding OpenExpenseReportCommand}"/>
+                        <!--<RibbonButton Label="Report" LargeImageSource="Images\Report.png" KeyTip="ER" Command="{Binding OpenExpenseReportCommand}"/>-->
                     </RibbonGroup>
 
                     <!-- Stock Group-->

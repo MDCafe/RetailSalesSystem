@@ -126,7 +126,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
         #endregion
-        
+
 
         #region Clear Command
         RelayCommand<object> _clearCommand = null;
@@ -201,12 +201,12 @@ namespace RetailManagementSystem.ViewModel.Masters
                     itemToUpdate.UpdatedBy = Entitlements.EntitlementInformation.UserInternalId;
                 }
 
-                var productCaseMapping = _rmsEntities.ProductCaseMappings.Where(p => p.ProductId == _product.Id).FirstOrDefault();                
+                var productCaseMapping = _rmsEntities.ProductCaseMappings.Where(p => p.ProductId == _product.Id).FirstOrDefault();
                 if (productCaseMapping != null)
                 {
                     productCaseMapping.ItemPerCase = PacketsPerCase;
                 }
-                else if(PacketsPerCase !=0)
+                else if (PacketsPerCase != 0)
                 {
                     CreateProductCaseMapping();
                 }
@@ -267,24 +267,24 @@ namespace RetailManagementSystem.ViewModel.Masters
 
 
 
-        private void CreateEmptyBottles()
-        {
-            //Empty bottles mapping available
-            if (SelectedEmptyProductId != 0)
-            {
-                if (!EmptyBottleValue.HasValue)
-                {
-                    Utility.ShowErrorBox("Empty Bottle Value can't be empty");
-                    return;
-                }
-                _rmsEntities.ProductEmptyMappings.Add(new ProductEmptyMapping()
-                {
-                    EmptyProductId = SelectedEmptyProductId,
-                    Product = _product,
-                    EmptyProductValue = EmptyBottleValue
-                });
-            }
-        }
+        //private void CreateEmptyBottles()
+        //{
+        //    //Empty bottles mapping available
+        //    if (SelectedEmptyProductId != 0)
+        //    {
+        //        if (!EmptyBottleValue.HasValue)
+        //        {
+        //            Utility.ShowErrorBox("Empty Bottle Value can't be empty");
+        //            return;
+        //        }
+        //        _rmsEntities.ProductEmptyMappings.Add(new ProductEmptyMapping()
+        //        {
+        //            EmptyProductId = SelectedEmptyProductId,
+        //            Product = _product,
+        //            EmptyProductValue = EmptyBottleValue
+        //        });
+        //    }
+        //}
 
 
         private bool Validate()
@@ -307,9 +307,9 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
             return true;
         }
-#endregion
+        #endregion
 
-#region DeleteCommand
+        #region DeleteCommand
         RelayCommand<object> _deleteCommand = null;
         public ICommand DeleteCommand
         {
@@ -359,9 +359,9 @@ namespace RetailManagementSystem.ViewModel.Masters
             RaisePropertyChanged(nameof(ProductsList));
         }
 
-#endregion
+        #endregion
 
-#region DoubleClickCommand
+        #region DoubleClickCommand
         RelayCommand<object> _doubleClickCommand = null;
         public ICommand DoubleClickCommand
         {
@@ -379,7 +379,7 @@ namespace RetailManagementSystem.ViewModel.Masters
                                 var priceDetails = _rmsEntities.PriceDetails.Where(pr => pr.ProductId == SelectedProduct.Id).ToList();
                                 priceDetails.ForEach((prd) => _priceDetailsList.Add(prd));
                                 var pcase = SelectedProduct.ProductCaseMappings.FirstOrDefault();
-                                if(pcase !=null)
+                                if (pcase != null)
                                     PacketsPerCase = Convert.ToInt32(pcase.ItemPerCase.Value);
 
 #if DebugPOS || ReleasePOS
@@ -399,9 +399,9 @@ namespace RetailManagementSystem.ViewModel.Masters
         }
 
 
-#endregion
+        #endregion
 
-#region SearchCommand
+        #region SearchCommand
         RelayCommand<object> _searchCommand = null;
         public ICommand SearchCommand
         {
@@ -424,6 +424,6 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-#endregion
+        #endregion
     }
 }

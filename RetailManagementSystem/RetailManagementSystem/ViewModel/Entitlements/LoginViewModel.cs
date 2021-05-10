@@ -91,7 +91,7 @@ namespace RetailManagementSystem.ViewModel.Entitlements
         {
             var user = rmsEntities.Users.FirstOrDefault(u => u.username == UserId && u.password == password);
             if (user == null) return false;
-            
+
             EntitlementInformation.UserInternalId = UserInternalId = user.Id;
             EntitlementInformation.UserName = user.username;
             return true;

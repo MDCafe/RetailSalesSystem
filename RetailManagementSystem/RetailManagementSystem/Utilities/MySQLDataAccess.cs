@@ -54,10 +54,10 @@ namespace RetailManagementSystem.Utilities
             new EntityConnection(entityBuilder.ToString()))
             {
                 conn.Open();
-               // Console.WriteLine("Just testing the connection.");
+                // Console.WriteLine("Just testing the connection.");
                 conn.Close();
             }
-            return new EntityConnection(entityBuilder.ToString());            
+            return new EntityConnection(entityBuilder.ToString());
         }
 
         public static object GetData(string spName, MySqlParameter[] paramColln)
@@ -85,7 +85,7 @@ namespace RetailManagementSystem.Utilities
                 {
                     cmd.CommandText = spName;
                     cmd.Connection = conn;
-                    cmd.CommandType = CommandType.StoredProcedure;                    
+                    cmd.CommandType = CommandType.StoredProcedure;
                     conn.Open();
                     return cmd.ExecuteScalar();
                 }

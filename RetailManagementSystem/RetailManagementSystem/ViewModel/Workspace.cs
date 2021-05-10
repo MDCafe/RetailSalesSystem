@@ -597,15 +597,15 @@ namespace RetailManagementSystem.ViewModel
                 if (_openProductSalesSummaryReportCommand == null)
                 {
                     _openProductSalesSummaryReportCommand = new RelayCommand<object>((p) =>
-                    {                                                  
-                        ShowWindowDialog(new ProductSalesSummary());                        
+                    {
+                        ShowWindowDialog(new ProductSalesSummary());
                     });
                 }
                 return _openProductSalesSummaryReportCommand;
             }
         }
         #endregion
-        
+
 
         #region OpenCustomerWiseSalesReportCommand
         RelayCommand<object> _openCustomerWiseSalesReportCommand = null;

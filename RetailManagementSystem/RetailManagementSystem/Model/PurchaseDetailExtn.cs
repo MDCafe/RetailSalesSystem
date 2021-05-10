@@ -167,8 +167,8 @@ namespace RetailManagementSystem.Model
         private decimal GetVatAmount()
         {
             var qty = GetQty();
-            if (qty == null || qty == 0) return 0m; 
-            
+            if (qty == null || qty == 0) return 0m;
+
             return VATAmount.HasValue && VATAmount.Value != 0 ?
                    VATAmount.Value :
                    VATPercentage.HasValue && VATPercentage.Value != 0 ? ((_purchasePrice * (_vatPercentage / 100)) * Qty).Value : 0m;

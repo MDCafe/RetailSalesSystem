@@ -16,8 +16,8 @@ namespace RetailManagementSystem.View
             this.DataContextChanged += (s, e) =>
             {
                 _rptVM = this.DataContext as ReportViewModel;
-                _rptVM.RptViewer = this.ReportViewer;                
+                _rptVM.RptViewer = this.ReportViewer;
             };
-        }        
+        }
     }
 }

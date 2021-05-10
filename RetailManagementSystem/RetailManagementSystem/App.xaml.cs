@@ -1,9 +1,8 @@
 ﻿using log4net;
 using RetailManagementSystem.View.Entitlements;
-using RetailManagementSystem.View.Sales;
 using System;
-using System.Windows;
 using System.Linq;
+using System.Windows;
 
 namespace RetailManagementSystem
 {
@@ -21,7 +20,7 @@ namespace RetailManagementSystem
         }
 
         private void ApplicationStart(object sender, StartupEventArgs e)
-        {                        
+        {
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             Start(() =>

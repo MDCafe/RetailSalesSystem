@@ -31,11 +31,11 @@ namespace RetailManagementSystem.ViewModel.Sales
         //System.Timers.Timer _timer,_autoTimer;
         //static object rootLock = new object();
         //string _guid;
-        readonly SalesParams _salesParams;        
+        readonly SalesParams _salesParams;
         readonly AutoResetEvent _autoResetEvent;
-        List<SaleDetailExtn> _deletedItems;        
+        List<SaleDetailExtn> _deletedItems;
         string _selectedCustomerText;
-        readonly IEnumerable<MeasuringUnit> _mesauringUnitList;
+        readonly IList<MeasuringUnit> _mesauringUnitList;
         long? _barcode;
 
         #endregion
@@ -97,8 +97,8 @@ namespace RetailManagementSystem.ViewModel.Sales
             RMSEntitiesHelper.Instance.AddNotifier(this);
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, true);
             //SaveDataTemp();           
-            
-            using(var rmsEntities = new RMSEntities())
+
+            using (var rmsEntities = new RMSEntities())
             {
                 _mesauringUnitList = rmsEntities.MeasuringUnits.ToList();
             }
@@ -120,7 +120,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             set
             {
-                _barcode = value;                                
+                _barcode = value;
                 SetProductDetailsForBarcode();
                 RaisePropertyChanged(nameof(ProductBarcode));
             }
@@ -207,7 +207,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
             get { return _extensions; }
         }
-     
+
 
         //private void CheckIfWithinCreditLimimt()
         //{
@@ -307,6 +307,11 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _autoResetEvent.Dispose();
             }
 
+            foreach (var item in SaleDetailList)
+            {
+                item.UnSubscribeToAmountChange();
+            }
+            SaleDetailList.CollectionChanged -= OnSalesDetailsListCollectionChanged;
             return true;
             //}
         }
@@ -404,7 +409,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region SaveCommand
-     
+
         protected override bool CanExecuteSaveCommand(object parameter)
         {
             return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
@@ -466,9 +471,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                                      //check if there are any duplicates item with same price
 
                                      var listOfDuplicates = SaleDetailList.GroupBy(x => new { x.ProductId, x.SellingPrice })
-                                                              .Where(g => g.Count() > 1)                                                  
+                                                              .Where(g => g.Count() > 1)
                                                               .Select(y => new SaleDetailExtn
-                                                              {                                                                                                                                    
+                                                              {
                                                                   Discount = y.First().Discount,
                                                                   PriceId = y.First().PriceId,
                                                                   ProductId = y.First().ProductId,
@@ -497,7 +502,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                                                       //AddedOn = combinedDateTime,
                                                                       //ModifiedOn = combinedDateTime,
                                                                       //UpdatedBy = EntitlementInformation.UserInternalId,
-                                                                      ExpiryDate = y.First().ExpiryDate                                                                      
+                                                                      ExpiryDate = y.First().ExpiryDate
                                                                   })
                                                                   .ToList();
 
@@ -549,8 +554,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                                      lclBillSales.TotalAmount = _totalAmount;
                                      lclBillSales.Discount = GetDiscountValue();
 
-                                     if(_extensions!=null)
-                                        lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
+                                     if (_extensions != null)
+                                         lclBillSales.TransportCharges = _extensions.GetPropertyValue("TransportCharges", out decimal? oldValue);
 
                                      if (_selectedPaymentId == '2')// Cheque Payment
                                      {
@@ -716,7 +721,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     string str = string.Join(",", SaleDetailList.Select(s => s.ProductId.ToString()));
-                    var companySqlParam = new MySqlParameter("productsIn", MySql.Data.MySqlClient.MySqlDbType.VarString)
+                    var companySqlParam = new MySqlParameter("productsIn", MySqlDbType.VarString)
                     {
                         Value = str
                     };
@@ -1114,7 +1119,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     stockTrans.ClosingBalance += qty;
 
                     stockNewItem.Quantity += qty;
-                }
+                }                
                 rmsEntities.SaleDetails.Remove(saleDetail);
             }
         }
@@ -1182,7 +1187,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //_extensions.SetValues
 
                 var saleDetailsForBill = rmsEntities.SaleDetails.Where(b => b.BillId == _billSales.BillId);
-                
+
 
                 var tempTotalAmount = 0.0M;
                 //var priceIdParam = new MySql.Data.MySqlClient.MySqlParameter("priceId", MySql.Data.MySqlClient.MySqlDbType.Int32);
@@ -1248,6 +1253,10 @@ namespace RetailManagementSystem.ViewModel.Sales
             OrderNo = "";
             App.Current.Dispatcher.Invoke(() =>
             {
+                foreach(var item in SaleDetailList)
+                {
+                    item.UnSubscribeToAmountChange();
+                }
                 SaleDetailList.Clear();
             });
 
@@ -1255,7 +1264,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             _totalAmount = 0;
             TotalAmount = null;
             AmountPaid = 0.0M;
-            if(_extensions !=null)
+            if (_extensions != null)
                 _extensions.Clear();
             RMSEntitiesHelper.Instance.SelectRunningBillNo(_categoryId, false);
             _isEditMode = false;
@@ -1328,7 +1337,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         //}
 
 
-        
+
 
         #region Public Methods
 
@@ -1341,7 +1350,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 if (productPriceForBarCode != null)
                 {
                     productPrice = productPriceForBarCode;
-                }                
+                }
             }
             if (productPrice == null)
             {
@@ -1357,10 +1366,10 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _log.Info("Inside Return : selectedIndex" + selectedIndex);
                     _log.Info("Inside Return : SaleDetailList.Count" + SaleDetailList.Count);
                     SaleDetailList.Add(new SaleDetailExtn());
-                    selectedIndex -= 1;                    
+                    selectedIndex -= 1;
                 }
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
-                selRowSaleDetailExtn.Clear();           
+                selRowSaleDetailExtn.Clear();
                 SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
             }
             catch (Exception ex)
@@ -1397,30 +1406,30 @@ namespace RetailManagementSystem.ViewModel.Sales
         {
             var productPriceForBarCode = _productsPriceList.FirstOrDefault(p => p.BarCodeNo == _barcode);
             if (productPriceForBarCode == null)
-            {             
+            {
                 return;
             }
 
             var barCodeSaleDetailExtn = new SaleDetailExtn();
-            SaleDetailList.Add(barCodeSaleDetailExtn);            
-            SetSaleDetailExtn(productPriceForBarCode, barCodeSaleDetailExtn, SaleDetailList.Count -1);
+            SaleDetailList.Add(barCodeSaleDetailExtn);
+            SetSaleDetailExtn(productPriceForBarCode, barCodeSaleDetailExtn, SaleDetailList.Count - 1);
             _barcode = null;
         }
 
-        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn, int selectedIndex)
+        private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn saleDetailExtn, int selectedIndex)
         {
-            if (SaleDetailExtn != null)
+            if (saleDetailExtn != null)
             {
-                SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
-                SaleDetailExtn.CostPrice = productPrice.Price;
-                SaleDetailExtn.PriceId = productPrice.PriceId;
-                SaleDetailExtn.AvailableStock = productPrice.Quantity;
-                SaleDetailExtn.SerialNo = ++selectedIndex;
-                SaleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                SaleDetailExtn.ProductId = productPrice.ProductId;
+                saleDetailExtn.SellingPrice = productPrice.SellingPrice;
+                saleDetailExtn.CostPrice = productPrice.Price;
+                saleDetailExtn.PriceId = productPrice.PriceId;
+                saleDetailExtn.AvailableStock = productPrice.Quantity;
+                saleDetailExtn.SerialNo = ++selectedIndex;
+                saleDetailExtn.ExpiryDate = DateTime.ParseExact(productPrice.ExpiryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                saleDetailExtn.ProductId = productPrice.ProductId;
                 //SaleDetailExtn.PriceToCalculate = SaleDetailExtn.SellingPrice;   
-                SaleDetailExtn.UnitOfMeasure = productPrice.UnitOfMeasure;
-                SaleDetailExtn.UnitPerCase = productPrice.UnitPerCase ?? 0;
+                saleDetailExtn.UnitOfMeasure = productPrice.UnitOfMeasure;
+                saleDetailExtn.UnitPerCase = productPrice.UnitPerCase ?? 0;
             }
             //SaleDetailExtn.ProductName = productPrice.ProductName;
 
@@ -1432,10 +1441,10 @@ namespace RetailManagementSystem.ViewModel.Sales
                 //var lastSaleDetail1 = customerSales.SaleDetails.Where(p => p.ProductId == productPrice.ProductId);
                 ////var lastSoldPrice = lastSaleDetail != null ? lastSaleDetail.SellingPrice : 0;
 
-                SaleDetailExtn.LastSoldPrice = lastSoldPrice;
+                saleDetailExtn.LastSoldPrice = lastSoldPrice;
             }
 
-            SaleDetailExtn.SubscribeToAmountChange(() =>
+            saleDetailExtn.SubscribeToAmountChange(() =>
             {
                 TotalAmount = SaleDetailList.Sum(a => a.Amount);
                 //purchaseDetailExtn.CalculateCost(purchaseDetailExtn.FreeIssue);
@@ -1477,7 +1486,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             //};
             //&& SaleDetailExtn.AvailableStock >
             //SaleDetailExtn.Qty.Value
-            SaleDetailExtn.Qty = SaleDetailExtn.Qty ?? 1;
+            saleDetailExtn.Qty = saleDetailExtn.Qty ?? 1;
         }
 
         //private void SaveDataTemp()

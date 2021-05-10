@@ -15,7 +15,7 @@ namespace RetailManagementSystem.View.Sales
         public POSSalesEntry()
         {
             InitializeComponent();
-            
+
 
             Loaded += handler;
 

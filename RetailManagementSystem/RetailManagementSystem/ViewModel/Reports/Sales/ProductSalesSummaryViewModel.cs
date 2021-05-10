@@ -19,13 +19,13 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             {
                 ProductList = rmsEntities.Products.OrderBy(p => p.Name).ToList();
                 //Companies = rmsEntities.Companies.OrderBy(c => c.Name).ToList();
-                ProductCategories = rmsEntities.Categories.OrderBy(ct => ct.name).ToList();                
+                ProductCategories = rmsEntities.Categories.OrderBy(ct => ct.name).ToList();
             }
 
-            
+
         }
 
-        
+
         public override void OnPrint(Window window)
         {
             if (FromDate.CompareTo(ToDate) > 0)
@@ -46,8 +46,8 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                         " join companies cp on (cp.Id = p.companyId) " +
                         " Join PriceDetails pd on(pd.PriceId = sd.PriceId and pd.ProductId = P.id) " +
                         " where date(sd.AddedOn) >= @FromDate and date(sd.addedon) <= @ToDate ";
-                      
-                        //"    where sd.ProductId = @ProductId and date(sd.AddedOn) >= @FromDate and date(sd.addedon) <= @ToDate";
+
+            //"    where sd.ProductId = @ProductId and date(sd.AddedOn) >= @FromDate and date(sd.addedon) <= @ToDate";
 
             var fromSqlParam = new MySqlParameter("FromDate", MySqlDbType.Date)
             {
@@ -74,7 +74,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                                                 },
                                                 CommandType.Text);
             }
-            else if(SelectedCategory !=null && SelectedCategory.Id !=0)
+            else if (SelectedCategory != null && SelectedCategory.Id != 0)
             {
                 var categoryIdSqlParam = new MySqlParameter("CategoryId", MySqlDbType.Int32)
                 {
@@ -117,7 +117,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 
             ReportParameters = new List<ReportParameter>(1)
             {
-                new ReportParameter("DateRange", fromSqlParam.Value + " to " + toSqlParam.Value)                
+                new ReportParameter("DateRange", fromSqlParam.Value + " to " + toSqlParam.Value)
             };
 
             Workspace.This.OpenReport(this);
@@ -155,7 +155,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             {
                 Value = ToDate.ToString("yyyy-MM-dd")
             };
-                                     
+
             _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[2]
                                         {
                                             fromSqlParam,toSqlParam
@@ -167,7 +167,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
             {
                 Name = "DataSet2",
                 Value = GetApplicationDetails()
-            };            
+            };
 
             ReportParameters = new List<ReportParameter>(1)
             {

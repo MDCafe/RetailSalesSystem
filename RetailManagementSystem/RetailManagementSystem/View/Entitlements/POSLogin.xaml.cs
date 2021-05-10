@@ -9,8 +9,8 @@ namespace RetailManagementSystem.View.Entitlements
 
         public POSLogin()
         {
-            InitializeComponent();            
+            InitializeComponent();
             DataContext = new POSLoginViewModel();
-        }        
+        }
     }
 }

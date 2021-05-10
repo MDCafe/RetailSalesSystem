@@ -41,7 +41,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
             ReportPath = @"View\Reports\Stock\StockAdjustment.rdl";
 
             using (RMSEntities rmsEntities = new RMSEntities())
-            {               
+            {
                 ProductList = rmsEntities.Products.ToList().OrderBy(p => p.Name);
             }
         }
@@ -78,7 +78,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
                 Value = ToSalesDate.ToString("yyyy-MM-dd")
             };
 
-            
+
 
             string query = "";
 
@@ -111,7 +111,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Stock
                                                 },
                                                 CommandType.Text);
             }
-            
+
             ReportParameterValue = new ReportParameter("AdjustmentPeriod", fromSqlParam.Value + " to " + toSqlParam.Value);
 
             Workspace.This.OpenReport(this);

@@ -15,7 +15,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         public delegate void MakeReadOnly(bool isReadOnly);
         public event MakeReadOnly MakeReadonlyEvent;
 
-        RMSEntities _rmsEntities;
+        readonly RMSEntities _rmsEntities;
         ObservableCollection<ReturnSaleDetailExtn> _returnSalesDetailsList;
         IEnumerable<PriceDetail> _returnPriceList;
         Sale _billSales;

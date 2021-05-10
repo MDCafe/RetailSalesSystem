@@ -65,8 +65,8 @@ namespace RetailManagementSystem.ViewModel.Accounts
         public int? SelectedBankId
         {
             get => selectedBankId;
-            set 
-            { 
+            set
+            {
                 selectedBankId = value;
                 BankBranchList = BankBranchListInternal.Where(b => b.BankId == selectedBankId);
             }
@@ -404,7 +404,7 @@ namespace RetailManagementSystem.ViewModel.Accounts
 
         #region DirectPaymentCommand
         RelayCommand<object> _directPaymentCommand = null;
-        
+
         public ICommand DirectPaymentCommand
         {
             get

@@ -24,9 +24,10 @@ namespace RetailManagementSystem.Model
         private decimal? _amount;
         private bool _propertyReadOnly;
         private int _serialNo;
-        private decimal? _originalQty;  
+        private decimal? _originalQty;
 
         private int _caseQuantity;
+        private AmountChanged _amountChangedDelegate;
 
         public int UnitPerCase { get; set; }
 
@@ -365,7 +366,16 @@ namespace RetailManagementSystem.Model
         public void SubscribeToAmountChange(AmountChanged amountChangedDelegate)
         {
             if (OnAmountChanged == null)
+            {
                 OnAmountChanged += amountChangedDelegate;
+                _amountChangedDelegate = amountChangedDelegate;
+            }
+        }
+
+        public void UnSubscribeToAmountChange()
+        {
+            if (OnAmountChanged == null)
+                OnAmountChanged -= _amountChangedDelegate;
         }
 
 

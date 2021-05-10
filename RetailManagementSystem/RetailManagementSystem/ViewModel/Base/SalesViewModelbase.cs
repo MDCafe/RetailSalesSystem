@@ -58,7 +58,7 @@ namespace RetailManagementSystem.ViewModel.Base
                     //_customerList = new List<Customer>();
                     var cnt = rmsEntities.Customers.ToList().Count;
                     _customerList = new List<Customer>(cnt);
-                    
+
                     if (_showRestrictedCustomer)
                     {
                         foreach (var item in rmsEntities.Customers)
@@ -101,7 +101,7 @@ namespace RetailManagementSystem.ViewModel.Base
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p).ConfigureAwait(false),CanExecuteSaveCommand);
+                    _saveCommand = new RelayCommand<object>(async (p) => await OnSave(p).ConfigureAwait(false), CanExecuteSaveCommand);
                 }
 
                 return _saveCommand;
@@ -115,7 +115,7 @@ namespace RetailManagementSystem.ViewModel.Base
 
         protected virtual async Task OnSave(object parameter)
         {
-            
+
         }
         #endregion
 
@@ -214,6 +214,6 @@ namespace RetailManagementSystem.ViewModel.Base
             var outstandingBalance = saleBill.TotalAmount - ChqAmount.Value - AmountPaid;
             var customer = rmsEntities.Customers.FirstOrDefault(c => c.Id == _selectedCustomer.Id);
             customer.BalanceDue = customer.BalanceDue.HasValue ? customer.BalanceDue.Value + outstandingBalance : outstandingBalance;
-        }   
+        }
     }
 }

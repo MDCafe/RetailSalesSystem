@@ -12,7 +12,7 @@ namespace RetailManagementSystem.ViewModel.Reports
     class POSSalesSummaryViewModel : ReportViewModel
     {
         private DateTime _fromSalesDate;
-        private DateTime _toSalesDate;        
+        private DateTime _toSalesDate;
 
         public DateTime FromSalesDate
         {
@@ -39,12 +39,12 @@ namespace RetailManagementSystem.ViewModel.Reports
                 _toSalesDate = value;
                 RaisePropertyChanged(nameof(ToSalesDate));
             }
-        }               
+        }
 
         public POSSalesSummaryViewModel() : base(false, false, "Sales Summary Report")
         {
             FromSalesDate = DateTime.Now;
-            ToSalesDate = DateTime.Now;            
+            ToSalesDate = DateTime.Now;
             ReportPath = @"View\Reports\Sales\POSSalesSummary.rdl";
         }
 
@@ -79,7 +79,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             var toSqlParam = new MySqlParameter("ToSalesDate", MySqlDbType.Date)
             {
                 Value = ToSalesDate.ToString("yyyy-MM-dd")
-            };           
+            };
 
             var userSqlParam = new MySqlParameter("internalUserId", MySqlDbType.Int32)
             {
@@ -99,7 +99,7 @@ namespace RetailManagementSystem.ViewModel.Reports
                 DataContext = this
             };
             reportsViewerWindow.ShowDialog();
-            
+
         }
         #endregion
 

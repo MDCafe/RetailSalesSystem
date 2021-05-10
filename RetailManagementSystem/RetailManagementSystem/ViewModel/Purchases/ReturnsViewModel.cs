@@ -240,17 +240,17 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) =>
+                    {
+                        return _returnPurchaseDetailsList.Count != 0 && _returnPurchaseDetailsList[0].ProductId != 0;
+                    }
+                    
+                    );
                 }
 
                 return _saveCommand;
             }
-        }
-
-        public bool CanSave(object parameter)
-        {
-            return _returnPurchaseDetailsList.Count != 0 && _returnPurchaseDetailsList[0].ProductId != 0;
-        }
+        }        
 
         private void OnSave(object parameter)
         {

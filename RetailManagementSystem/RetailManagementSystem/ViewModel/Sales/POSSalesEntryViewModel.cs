@@ -82,7 +82,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         //public DataGrid salesDataGrid;
 
-       // public POSSalesDetailExtn SalesDetailSelectedItem { get => salesDetailSelectedItem; set { salesDetailSelectedItem = value; RaisePropertyChanged(nameof(SalesDetailSelectedItem)); } }
+        // public POSSalesDetailExtn SalesDetailSelectedItem { get => salesDetailSelectedItem; set { salesDetailSelectedItem = value; RaisePropertyChanged(nameof(SalesDetailSelectedItem)); } }
 
         public DataGridCellInfo CellInfo
         {
@@ -137,13 +137,13 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 //Category Id 23 = Empty Bottles. Don't pick them up
                 ProductsWithoutBarCode = rmsEntities.Products
-                                        .Where(p => (p.BarcodeNo == 0 || p.BarcodeNo == null) && p.IsActive == true && p.CategoryId !=23)
+                                        .Where(p => (p.BarcodeNo == 0 || p.BarcodeNo == null) && p.IsActive == true && p.CategoryId != 23)
                                         .OrderBy(oo => oo.CategoryId).ToList();
                 RaisePropertyChanged(nameof(ProductsWithoutBarCode));
                 ProductEmptyMappingValues = rmsEntities.ProductEmptyMappings.ToList();
             }
 
-            LoggedInUserName = "Logged in User: "  + EntitlementInformation.UserName;
+            LoggedInUserName = "Logged in User: " + EntitlementInformation.UserName;
 
             messageQueue = new Queue<decimal>();
             qtyTimer = new Timer(300)
@@ -232,7 +232,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         break;
                     }
             }
-            }
+        }
 
         private void SetProductDetailsOnBarcode(POSSalesDetailExtn saleDetailExtn, ProductPrice productInfo)
         {
@@ -265,7 +265,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             SelectedCustomerId = 1; //Cash Customer
             SelectedPaymentId = '0';
             App.Current.Dispatcher.Invoke(() =>
-            {                
+            {
                 SaleDetailList = new ObservableCollection<POSSalesDetailExtn>();
                 this.SaleDetailList.CollectionChanged += SaleDetailListCollectionChanged;
                 var posDetailExtn = new POSSalesDetailExtn();
@@ -376,9 +376,9 @@ namespace RetailManagementSystem.ViewModel.Sales
                         try
                         {
                             if (SelectedIndex == -1) return;
-                            if (SaleDetailList[SelectedIndex] == null) return;                            
+                            if (SaleDetailList[SelectedIndex] == null) return;
 
-                            if(DELETE_ROW == calValue.ToString())
+                            if (DELETE_ROW == calValue.ToString())
                             {
                                 var saleItem = SaleDetailList[selectedIndex];
                                 if (saleItem == null) return;
@@ -411,7 +411,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                         emptyTimer.Start();
                                     }
                                     break;
-                            }                        
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -424,7 +424,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         RelayCommand<Window> _logOffCommand = null;
-      
+
 
         public ICommand LogOffCommand
         {
@@ -471,7 +471,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         protected override bool CanExecuteSaveCommand(object parameter)
         {
             return true;// _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
-                    //SelectedCustomerId != 0;
+                        //SelectedCustomerId != 0;
         }
 
         protected override async Task OnSave(object parameter)
@@ -486,7 +486,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             try
             {
                 using (var salesSaveTask = Task.Factory.StartNew(() =>
-                {                                 
+                {
                     using (var con = new EntityConnection(GetEntityConnectionString().ToString()))
                     {
                         con.Open();
@@ -494,7 +494,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                         {
                             try
                             {
-                                using (var rmsEntitiesSaveCtx = new RMSEntities(con,false))
+                                using (var rmsEntitiesSaveCtx = new RMSEntities(con, false))
                                 {
                                     _log.DebugFormat("Connection opened");
 
@@ -531,7 +531,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                             Utility.ShowErrorBox("Quantity can't be null or zero");
                                             return;
                                         }
-                                        
+
                                         var saleDetail = new SaleDetail
                                         {
                                             //Discount = saleDetailItem.Discount,
@@ -593,18 +593,18 @@ namespace RetailManagementSystem.ViewModel.Sales
                                     Clear();
                                 }
                             }
-                        catch (Exception ex)
-                        {
-                            dbTransaction.Rollback();
-                            _log.Error("Error while saving..!!", ex);
-                            Utility.ShowErrorBox(ViewWindow, ex.Message + " Stack Trace : " + ex.StackTrace);
-                        }
+                            catch (Exception ex)
+                            {
+                                dbTransaction.Rollback();
+                                _log.Error("Error while saving..!!", ex);
+                                Utility.ShowErrorBox(ViewWindow, ex.Message + " Stack Trace : " + ex.StackTrace);
+                            }
                         }
                     }
-                    
+
                 }).ContinueWith(
                     (t) =>
-                    {                        
+                    {
                     }))
                 {
                     await salesSaveTask.ConfigureAwait(false);
@@ -615,7 +615,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                 _log.Error("Error while saving..!!", ex);
                 //if (paramValue == SaveOperations.SaveOnWindowClosing) return;
                 Utility.ShowErrorBox(ViewWindow, "Error while saving..!!" + ex.Message);
-            }            
+            }
         }
 
         private void SaveOutstanding(RMSEntities rmsEntitiesSaveCtx, DateTime serverDateTime, Sale lclBillSales)
@@ -647,15 +647,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private EntityConnectionStringBuilder GetEntityConnectionString()
         {
-           
+
             // Specify the provider name, server and database.
             string providerName = "MySql.Data.MySqlClient";
 
-//#if DebugPOS
-//            string serverName = "localhost";
-//#else
+            //#if DebugPOS
+            //            string serverName = "localhost";
+            //#else
             string serverName = "NES-Main";
-//#endif
+            //#endif
             string databaseName = "RMS";
 
             // Initialize the connection string builder for the
@@ -689,24 +689,24 @@ namespace RetailManagementSystem.ViewModel.Sales
                 Metadata = @"res://*/RMSDataModel.csdl|
                         res://*/RMSDataModel.ssdl|
                         res://*/RMSDataModel.msl"
-            };           
+            };
 
-            return entityBuilder;            
+            return entityBuilder;
         }
 
         private void SaveEmptyBottles(DbConnection connection, POSSalesDetailExtn pOSSalesDetailExtn)
         {
-            using (var rmsEntities = new RMSEntities(connection,false))
-            {                
+            using (var rmsEntities = new RMSEntities(connection, false))
+            {
                 var emtpyProductMapping = rmsEntities.ProductEmptyMappings.FirstOrDefault(e => e.ProductId == pOSSalesDetailExtn.ProductId);
-                if (emtpyProductMapping == null) return;             
+                if (emtpyProductMapping == null) return;
                 var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == emtpyProductMapping.EmptyProductId);
                 if (stock != null && pOSSalesDetailExtn.EmptyBottleQty.HasValue && pOSSalesDetailExtn.EmptyBottleQty != 0)
                 {
                     stock.Quantity += pOSSalesDetailExtn.EmptyBottleQty.Value;
                 }
             }
-            
+
         }
         private bool Validate()
         {
@@ -726,7 +726,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             }
 
-            if(SaleDetailList.Count == 0)
+            if (SaleDetailList.Count == 0)
             {
                 Utility.ShowErrorBox(ViewWindow, "Nothing to save");
                 return false;
@@ -734,7 +734,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             foreach (var item in SaleDetailList)
             {
-                if(item.ProductId == 0)
+                if (item.ProductId == 0)
                 {
                     Utility.ShowErrorBox(ViewWindow, "No Product exists for the Barcode :" + item.BarcodeNo);
                     return false;
@@ -748,17 +748,17 @@ namespace RetailManagementSystem.ViewModel.Sales
             qtyTimer.Close();
             emptyTimer.Close();
             qtyTimer.Dispose();
-            emptyTimer.Dispose();            
+            emptyTimer.Dispose();
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
     }
 }
 
-            
-            
+
+
 
 
 

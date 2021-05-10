@@ -26,7 +26,7 @@ namespace RetailManagementSystem.Model
         }
 
         public override void CalculateAmount()
-        {            
+        {
             if (EmptyProductValue.HasValue)
             {
                 var emptyValue = EmptyProductValue.HasValue ? EmptyProductValue : 0;
@@ -34,10 +34,10 @@ namespace RetailManagementSystem.Model
 
                 Amount = ((SellingPrice * Qty) + (Qty * emptyValue)
                          -
-                         (emptyQtyValue  * emptyValue));
+                         (emptyQtyValue * emptyValue));
             }
             else
-                Amount = SellingPrice * GetQty();            
+                Amount = SellingPrice * GetQty();
         }
     }
 }

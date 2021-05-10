@@ -4,7 +4,7 @@ using System.Windows;
 namespace RetailManagementSystem.View.Reports.Purchases
 {
     public partial class PurchaseSummary : Window
-    {        
+    {
         public PurchaseSummary()
         {
             InitializeComponent();

@@ -151,7 +151,7 @@ namespace RetailManagementSystem.ViewModel.Masters
             }
         }
 
-        
+
         private void OnSave()
         {
             if (!string.IsNullOrWhiteSpace(SelectedCustomer.Name))

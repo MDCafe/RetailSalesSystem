@@ -127,7 +127,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_amendCommand == null)
                 {
-                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => {return BillNo != null; });
+                    _amendCommand = new RelayCommand<Window>((w) => OnAmend(w), (p) => { return BillNo != null; });
                 }
 
                 return _amendCommand;
@@ -163,7 +163,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             //window.DialogResult = true;
         }
-        
+
         #endregion
 
         #region CloseWindow Command

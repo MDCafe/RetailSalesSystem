@@ -268,10 +268,10 @@ namespace RetailManagementSystem
 
         public static void MarkEndOfDay()
         {
-            using(var rmsEntities = new RMSEntities())
+            using (var rmsEntities = new RMSEntities())
             {
-                
-                
+
+
                 var sql = "MarkEndOfDay()";
 
                 var resultInt = rmsEntities.Database.SqlQuery<int>(sql).FirstOrDefault();
@@ -286,7 +286,7 @@ namespace RetailManagementSystem
                 else
                 {
                     Utility.ShowErrorBox("Mark End of Day has been completed already");
-                }                
+                }
             }
         }
 

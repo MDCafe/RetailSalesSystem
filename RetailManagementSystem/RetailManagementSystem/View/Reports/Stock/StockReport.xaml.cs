@@ -4,7 +4,7 @@ using System.Windows;
 namespace RetailManagementSystem.View.Reports.Stock
 {
     public partial class StockReport : Window
-    {        
+    {
         public StockReport()
         {
             InitializeComponent();

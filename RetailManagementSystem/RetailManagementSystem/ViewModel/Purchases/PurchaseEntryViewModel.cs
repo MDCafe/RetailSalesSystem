@@ -496,7 +496,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                          var combinedDateTime = RMSEntitiesHelper.GetCombinedDateTime();
 
                          foreach (var item in _purchaseDetailsList)
-                         {                             
+                         {
                              var purchaseDetail = new PurchaseDetail
                              {
                                  ProductId = item.ProductId,
@@ -513,7 +513,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
 
 
                                  ItemCoolieCharges = item.ItemCoolieCharges,
-                                 ItemTransportCharges = item.ItemTransportCharges,                                 
+                                 ItemTransportCharges = item.ItemTransportCharges,
                              };
 
                              SetPriceDetails(rmsEntities, item, purchaseDetail, out int priceId, out PriceDetail priceDetailItem, item.SupportsMultiplePrice);
@@ -1123,8 +1123,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
                         Discount = item.Discount ?? 0,
                         PriceId = item.PriceId.Value,
                         ProductId = item.ProductId.Value,
-                        Qty = (item.PurchasedQty  % 1 == 0 ? Math.Truncate(item.PurchasedQty.Value) : item.PurchasedQty) - freeIssueQty,
-                         //item.PurchasedQty - freeIssueQty,
+                        Qty = (item.PurchasedQty % 1 == 0 ? Math.Truncate(item.PurchasedQty.Value) : item.PurchasedQty) - freeIssueQty,
+                        //item.PurchasedQty - freeIssueQty,
                         OriginalQty = item.PurchasedQty - freeIssueQty,
                         SellingPrice = productPrice.SellingPrice,
                         BillId = item.BillId,

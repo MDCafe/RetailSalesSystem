@@ -169,6 +169,6 @@ namespace RetailManagementSystem.ViewModel
         {
             throw new NotImplementedException();
         }
-        
+
     }
 }
