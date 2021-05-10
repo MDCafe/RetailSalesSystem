@@ -37,7 +37,7 @@ namespace RetailManagementSystem
         public int CompanyId { get; set; }
         public decimal ReorderPoint { get; set; }
         public Nullable<bool> SupportsMultiPrice { get; set; }
-        public string BarcodeNo { get; set; }
+        public long? BarcodeNo { get; set; }
         public Nullable<System.DateTime> AddedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<int> UpdatedBy { get; set; }
