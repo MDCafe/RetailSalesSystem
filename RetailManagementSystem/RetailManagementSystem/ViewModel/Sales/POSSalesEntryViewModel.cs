@@ -137,7 +137,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 //Category Id 23 = Empty Bottles. Don't pick them up
                 ProductsWithoutBarCode = rmsEntities.Products
-                                        .Where(p => (p.BarcodeNo == "0" || p.BarcodeNo == null) && p.IsActive == true && p.CategoryId !=23)
+                                        .Where(p => (p.BarcodeNo == 0 || p.BarcodeNo == null) && p.IsActive == true && p.CategoryId !=23)
                                         .OrderBy(oo => oo.CategoryId).ToList();
                 RaisePropertyChanged(nameof(ProductsWithoutBarCode));
                 ProductEmptyMappingValues = rmsEntities.ProductEmptyMappings.ToList();
@@ -202,7 +202,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                             switch (evnt.PropertyName)
                             {
                                 case BARCODE:
-                                    var productInfo = this.ProductsPriceList.Where(p => p.BarCodeNo == saleDetailExtn.BarcodeNo.ToString()).FirstOrDefault();
+                                    var productInfo = this.ProductsPriceList.Where(p => p.BarCodeNo == saleDetailExtn.BarcodeNo).FirstOrDefault();
                                     if (productInfo == null) return;
 
                                     SetProductDetailsOnBarcode(saleDetailExtn, productInfo);

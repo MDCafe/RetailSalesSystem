@@ -84,16 +84,16 @@ order by c.Name</CommandText>
                   <Width>1in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.87037in</Width>
+                  <Width>2.62037in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.29745in</Width>
+                  <Width>0.82666in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>0.92708in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1in</Width>
+                  <Width>1.36458in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -177,7 +177,7 @@ order by c.Name</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Sold Quantity</Value>
+                                  <Value>Quantity</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -784,7 +784,7 @@ order by c.Name</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1in</Size>
+                    <Size>0.73699in</Size>
                     <CellContents>
                       <Textbox Name="Textbox18">
                         <CanGrow>true</CanGrow>
@@ -835,7 +835,7 @@ order by c.Name</CommandText>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>1in</Size>
+                    <Size>0.73699in</Size>
                     <CellContents>
                       <Textbox Name="CategoryName11">
                         <CanGrow>true</CanGrow>
@@ -876,7 +876,7 @@ order by c.Name</CommandText>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1in</Size>
+                    <Size>0.73699in</Size>
                     <CellContents>
                       <Textbox Name="Textbox37">
                         <CanGrow>true</CanGrow>
@@ -914,9 +914,8 @@ order by c.Name</CommandText>
             </TablixRowHierarchy>
             <DataSetName>DataSet1</DataSetName>
             <Top>0.05556in</Top>
-            <Left>0.27661in</Left>
             <Height>1.05208in</Height>
-            <Width>8.16782in</Width>
+            <Width>7.47568in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -931,7 +930,7 @@ order by c.Name</CommandText>
           </Border>
         </Style>
       </Body>
-      <Width>8.44443in</Width>
+      <Width>7.58189in</Width>
       <Page>
         <PageHeader>
           <Height>0.80278in</Height>
@@ -1067,10 +1066,10 @@ order by c.Name</CommandText>
             </Border>
           </Style>
         </PageFooter>
-        <LeftMargin>1in</LeftMargin>
-        <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
+        <LeftMargin>0.2in</LeftMargin>
+        <RightMargin>0.2in</RightMargin>
+        <TopMargin>0.2in</TopMargin>
+        <BottomMargin>0.2in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>

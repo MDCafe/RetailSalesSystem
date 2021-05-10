@@ -5,6 +5,7 @@ using RetailManagementSystem.ViewModel.Sales;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -154,8 +155,24 @@ namespace RetailManagementSystem.View.Sales
             var barcodeNo = custComboBoxCol._cboTextBox.Text;
             var productPrice = selectedItem as ProductPrice;
 
+            long barcodeLong;
+            long? barcodeNullable = null;
+
+            if (!string.IsNullOrEmpty(barcodeNo))
+            {
+                if (!long.TryParse(barcodeNo, out barcodeLong))
+                {
+                    //Utilities.Utility.ShowErrorBox("Invalid Barcode");
+                    //return;
+                }
+                else 
+                {
+                    barcodeNullable = barcodeLong;
+                }
+            }
+            
             _log.Debug("Before SetProductDetails:" + productPrice);
-            _salesViewModel.SetProductDetails(barcodeNo, productPrice, SalesDataGrid.SelectedIndex);
+            _salesViewModel.SetProductDetails(barcodeNullable, productPrice, SalesDataGrid.SelectedIndex);
             //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
             _log.Debug("After SetProductDetails:" + SalesDataGrid.SelectedIndex);
 
@@ -225,6 +242,18 @@ namespace RetailManagementSystem.View.Sales
             }
 
             return foundChild;
+        }
+
+        private void txtBarcodeNO_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox tBox = (TextBox)sender;
+                DependencyProperty prop = TextBox.TextProperty;
+
+                BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+                if (binding != null) { binding.UpdateSource(); }
+            }
         }
     }
 }

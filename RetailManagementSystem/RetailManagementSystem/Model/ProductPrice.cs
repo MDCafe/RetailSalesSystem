@@ -10,7 +10,7 @@
         public int PriceId { get; set; }
         public string ExpiryDate { get; set; }
         public bool SupportsMultiplePrice { get; set; }
-        public string BarCodeNo { get; set; }
+        public long? BarCodeNo { get; set; }
         public int UnitOfMeasure { get; set; }
 
         public int? UnitPerCase { get; set; }

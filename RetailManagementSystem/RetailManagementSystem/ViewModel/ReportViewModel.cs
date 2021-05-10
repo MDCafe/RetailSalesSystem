@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel
 {
-    internal class ReportViewModel : ReportBaseViewModel
+    public class ReportViewModel : ReportBaseViewModel
     {
         private ReportViewer _rptViewer;
         protected ReportDataSource[] _rptDataSource;
@@ -169,5 +169,6 @@ namespace RetailManagementSystem.ViewModel
         {
             throw new NotImplementedException();
         }
+        
     }
 }

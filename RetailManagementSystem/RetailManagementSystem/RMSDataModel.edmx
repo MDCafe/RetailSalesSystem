@@ -227,7 +227,7 @@
           <Property Name="CompanyId" Type="mediumint" Nullable="false" />
           <Property Name="ReorderPoint" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="SupportsMultiPrice" Type="bit" />
-          <Property Name="BarcodeNo" Type="char" MaxLength="13" />
+          <Property Name="BarcodeNo" Type="bigint" />
           <Property Name="AddedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="mediumint" />
@@ -1459,7 +1459,7 @@
           <Property Name="CompanyId" Type="Int32" Nullable="false" />
           <Property Name="ReorderPoint" Type="Decimal" Nullable="false" />
           <Property Name="SupportsMultiPrice" Type="Boolean" />
-          <Property Name="BarcodeNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="BarcodeNo" Type="Int64" />
           <Property Name="AddedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedOn" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UpdatedBy" Type="Int32" />

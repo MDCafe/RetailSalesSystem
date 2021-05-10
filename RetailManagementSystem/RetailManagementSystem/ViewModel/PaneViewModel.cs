@@ -3,7 +3,7 @@ using System;
 
 namespace RetailManagementSystem.ViewModel
 {
-    internal class PaneViewModel : ViewModelBase
+    public class PaneViewModel : ViewModelBase
     {
         public PaneViewModel()
         { }

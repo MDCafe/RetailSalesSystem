@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace RetailManagementSystem.ViewModel.Base
 {
-    class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged
     {
         protected virtual void RaisePropertyChanged(string propertyName)
         {

@@ -7,7 +7,7 @@
         public decimal? LastSoldPrice { get; set; }
         public int UnitOfMeasure { get; set; }
 
-        public string BarcodeNo { get; set; }
+        public long? BarcodeNo { get; set; }
 
         public string ProductName { get; set; }
 

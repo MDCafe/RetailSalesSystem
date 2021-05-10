@@ -9,7 +9,7 @@ namespace RetailManagementSystem.ViewModel.Base
     /// among viewmodels that represent documents in Edi
     /// (text file edits, Start Page, Prgram Settings).
     /// </summary>
-    internal abstract class DocumentViewModel : PaneViewModel
+    public abstract class DocumentViewModel : PaneViewModel
     {
 
         #region Fields

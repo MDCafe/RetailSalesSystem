@@ -36,6 +36,7 @@ namespace RetailManagementSystem.ViewModel.Sales
         List<SaleDetailExtn> _deletedItems;        
         string _selectedCustomerText;
         readonly IEnumerable<MeasuringUnit> _mesauringUnitList;
+        long? _barcode;
 
         #endregion
 
@@ -105,13 +106,25 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         #endregion
 
-        #region Getters and Setters
-
-        
+        #region Getters and Setters        
 
         public ObservableCollection<SaleDetailExtn> SaleDetailList { get; private set; }
 
         public string OrderNo { get; set; }
+
+        public long? ProductBarcode
+        {
+            get
+            {
+                return _barcode;
+            }
+            set
+            {
+                _barcode = value;                                
+                SetProductDetailsForBarcode();
+                RaisePropertyChanged(nameof(ProductBarcode));
+            }
+        }
 
         public decimal? TotalAmount
         {
@@ -414,6 +427,7 @@ namespace RetailManagementSystem.ViewModel.Sales
 
             try
             {
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
                 using (var salesSaveTask = Task.Factory.StartNew(() =>
                      {
                          using (var rmsEntitiesSaveCtx = new RMSEntities())
@@ -449,9 +463,49 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          UpdatedBy = EntitlementInformation.UserInternalId
                                      };
 
-                                     //_billSales.UpdatedBy = LoginViewModel.UserId;                                                
+                                     //check if there are any duplicates item with same price
 
-                                     foreach (var saleDetailItem in SaleDetailList)
+                                     var listOfDuplicates = SaleDetailList.GroupBy(x => new { x.ProductId, x.SellingPrice })
+                                                              .Where(g => g.Count() > 1)                                                  
+                                                              .Select(y => new SaleDetailExtn
+                                                              {                                                                                                                                    
+                                                                  Discount = y.First().Discount,
+                                                                  PriceId = y.First().PriceId,
+                                                                  ProductId = y.First().ProductId,
+                                                                  Qty = y.Sum(q => q.Qty),
+                                                                  SellingPrice = y.First().SellingPrice,
+                                                                  CostPrice = y.First().CostPrice,
+                                                                  //BillId = lclBillSales.BillId,
+                                                                  //AddedOn = combinedDateTime,
+                                                                  //ModifiedOn = combinedDateTime,
+                                                                  //UpdatedBy = EntitlementInformation.UserInternalId,
+                                                                  ExpiryDate = y.First().ExpiryDate
+                                                              })
+                                                              .ToList();
+
+                                     var listOfNonDuplicates = SaleDetailList.GroupBy(x => new { x.ProductId, x.SellingPrice })
+                                                                  .Where(g => g.Count() == 1)
+                                                                  .Select(y => new SaleDetailExtn
+                                                                  {
+                                                                      Discount = y.First().Discount,
+                                                                      PriceId = y.First().PriceId,
+                                                                      ProductId = y.First().ProductId,
+                                                                      Qty = y.Sum(q => q.Qty),
+                                                                      SellingPrice = y.First().SellingPrice,
+                                                                      CostPrice = y.First().CostPrice,
+                                                                      //BillId = lclBillSales.BillId,
+                                                                      //AddedOn = combinedDateTime,
+                                                                      //ModifiedOn = combinedDateTime,
+                                                                      //UpdatedBy = EntitlementInformation.UserInternalId,
+                                                                      ExpiryDate = y.First().ExpiryDate                                                                      
+                                                                  })
+                                                                  .ToList();
+
+                                     var finalList = new List<SaleDetailExtn>(listOfDuplicates.Count + listOfNonDuplicates.Count);
+                                     finalList.AddRange(listOfDuplicates);
+                                     finalList.AddRange(listOfNonDuplicates);
+
+                                     foreach (var saleDetailItem in finalList)
                                      {
                                          var calculatedQty = saleDetailItem.GetQty();
 
@@ -544,7 +598,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                      if (paramValue == SaveOperations.SavePrint)
                                      {
                                          var salesBillPrint = new SalesBillPrint(rmsEntitiesSaveCtx);
-                                         salesBillPrint.Print(SelectedCustomer.Name, SaleDetailList.ToList(), lclBillSales, TotalAmount.Value,
+                                         salesBillPrint.Print(SelectedCustomer.Name, finalList, lclBillSales, TotalAmount.Value,
                                                               AmountPaid, BalanceAmount, _showRestrictedCustomer);
                                      }
                                      //if (_salesParams.GetTemproaryData)
@@ -564,6 +618,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                              }
                          }
                      }).ContinueWith(
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
                     (t) =>
                     {
                         PanelLoading = false;
@@ -1207,7 +1262,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             TotalDiscountAmount = null;
             TotalDiscountPercent = null;
             IsVisible = System.Windows.Visibility.Collapsed;
-            RefreshProductList();
+            //RefreshProductList();
         }
 
         #endregion
@@ -1257,21 +1312,36 @@ namespace RetailManagementSystem.ViewModel.Sales
             RaisePropertyChanged(nameof(CustomersList));
         }
 
+        //RelayCommand<object> _enterKeyCommand = null;
 
+        //public ICommand EnterKeyCommand
+        //{
+        //    get
+        //    {
+        //        if (_enterKeyCommand == null)
+        //        {
+        //            _enterKeyCommand = new RelayCommand<object>((p) => { RaisePropertyChanged(nameof });
+        //        }
+
+        //        return _enterKeyCommand;
+        //    }
+        //}
+
+
+        
 
         #region Public Methods
 
-        public void SetProductDetails(string barCodeNo, ProductPrice productPrice, int selectedIndex)
+        public void SetProductDetails(long? barCodeNo, ProductPrice productPrice, int selectedIndex)
         {
-            if (!string.IsNullOrEmpty(barCodeNo))
+            if (barCodeNo.HasValue)
             {
                 var productPriceForBarCode = _productsPriceList.FirstOrDefault(p => p.BarCodeNo == barCodeNo);
 
                 if (productPriceForBarCode != null)
                 {
                     productPrice = productPriceForBarCode;
-
-                }
+                }                
             }
             if (productPrice == null)
             {
@@ -1287,27 +1357,17 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _log.Info("Inside Return : selectedIndex" + selectedIndex);
                     _log.Info("Inside Return : SaleDetailList.Count" + SaleDetailList.Count);
                     SaleDetailList.Add(new SaleDetailExtn());
-                    selectedIndex -= 1;
-                    //SaleDetailList[selectedIndex] = ;
-                    //return;
+                    selectedIndex -= 1;                    
                 }
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
-                selRowSaleDetailExtn.Clear();
-                //selRowSaleDetailExtn
-
-                //if (saleItem !=null)
-                //{
-                //    Utility.ShowWarningBox("Item is already added");
-                //    selRowSaleDetailExtn.ProductId = 0;
-                //    return;
-                //}            
+                selRowSaleDetailExtn.Clear();           
                 SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
             }
             catch (Exception ex)
             {
                 _log.Error("Error on SetProductDetails", ex);
                 _log.ErrorFormat("SelectedIndex: {0}. ProductId Id:{1} Price Id:{2}", selectedIndex, productPrice.ProductId, productPrice.PriceId);
-                Utilities.Utility.ShowErrorBox(ex.Message);
+                Utility.ShowErrorBox(ex.Message);
             }
         }
 
@@ -1332,6 +1392,20 @@ namespace RetailManagementSystem.ViewModel.Sales
         #endregion
 
         #region Private Methods
+
+        private void SetProductDetailsForBarcode()
+        {
+            var productPriceForBarCode = _productsPriceList.FirstOrDefault(p => p.BarCodeNo == _barcode);
+            if (productPriceForBarCode == null)
+            {             
+                return;
+            }
+
+            var barCodeSaleDetailExtn = new SaleDetailExtn();
+            SaleDetailList.Add(barCodeSaleDetailExtn);            
+            SetSaleDetailExtn(productPriceForBarCode, barCodeSaleDetailExtn, SaleDetailList.Count -1);
+            _barcode = null;
+        }
 
         private void SetSaleDetailExtn(ProductPrice productPrice, SaleDetailExtn SaleDetailExtn, int selectedIndex)
         {

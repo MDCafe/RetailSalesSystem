@@ -1,13 +1,12 @@
 ﻿using RetailManagementSystem.Command;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Reports
 {
-    class ReportBusinessBaseVM : ReportViewModel
+    public class ReportBusinessBaseVM : ReportViewModel
     {                
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }        
@@ -22,9 +21,7 @@ namespace RetailManagementSystem.ViewModel.Reports
         public IEnumerable<Product> ProductList { get; set; }
 
         public ReportBusinessBaseVM(string reportTitle) : base(false, false, reportTitle)
-        {
-            
-
+        {            
             var sysDate = RMSEntitiesHelper.GetServerDate();
             FromDate = sysDate;
             ToDate = sysDate;

@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Input;
 
-    internal class RelayCommand<T> : ICommand
+    public class RelayCommand<T> : ICommand
     {
         #region Fields
 

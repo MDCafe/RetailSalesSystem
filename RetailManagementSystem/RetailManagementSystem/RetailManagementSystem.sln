@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BHCustCtrl", "..\BHCustCtrl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailManagementSystem", "RetailManagementSystem.csproj", "{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailManagementNotifier", "..\RetailManagementNotifier\RetailManagementNotifier.csproj", "{D906B217-1A21-44A5-909C-3EF6DCB671C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.ReleasePOS|Any CPU.ActiveCfg = ReleasePOS|Any CPU
 		{DE846E07-ED5C-4C9F-9251-CC937E1D3DAE}.ReleasePOS|Any CPU.Build.0 = ReleasePOS|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.DebugPOS|Any CPU.ActiveCfg = Debug|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.DebugPOS|Any CPU.Build.0 = Debug|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.ReleasePOS|Any CPU.ActiveCfg = Release|Any CPU
+		{D906B217-1A21-44A5-909C-3EF6DCB671C2}.ReleasePOS|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

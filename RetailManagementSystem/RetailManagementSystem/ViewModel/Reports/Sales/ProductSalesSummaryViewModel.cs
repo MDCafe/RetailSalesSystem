@@ -1,5 +1,6 @@
 ﻿using Microsoft.Reporting.WinForms;
 using MySql.Data.MySqlClient;
+using RetailManagementSystem.Utilities;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,11 +8,12 @@ using System.Windows;
 
 namespace RetailManagementSystem.ViewModel.Reports.Sales
 {
-    internal class ProductSalesSummaryViewModel : ReportBusinessBaseVM
+    public class ProductSalesSummaryViewModel : ReportBusinessBaseVM
     {
-        public ProductSalesSummaryViewModel() : base("Product Sales Summary")
+        public ProductSalesSummaryViewModel(bool forEmail) : base("Product Sales Summary")
         {
             ReportPath = @"View\Reports\Sales\ProductSalesSummary.rdl";
+            if (forEmail) return;
 
             using (var rmsEntities = new RMSEntities())
             {
@@ -19,8 +21,11 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
                 //Companies = rmsEntities.Companies.OrderBy(c => c.Name).ToList();
                 ProductCategories = rmsEntities.Categories.OrderBy(ct => ct.name).ToList();                
             }
+
+            
         }
 
+        
         public override void OnPrint(Window window)
         {
             if (FromDate.CompareTo(ToDate) > 0)
@@ -117,6 +122,83 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 
             Workspace.This.OpenReport(this);
             CloseWindow(window);
+        }
+
+        public ReportDataSource[] GetReportDataSources()
+        {
+            return _rptDataSource;
+        }
+
+        public List<ReportParameter> GenerateReportForEmail()
+        {
+            _rptDataSource[0] = new ReportDataSource
+            {
+                Name = "DataSet1"
+            };
+
+            var query = " Select p.Id,P.Name,sum(sd.qty) SoldQuantity,c.name CategoryName, sum(sd.qty) *pd.SellingPrice SalesAmount,pd.SellingPrice, cp.Name CompanyName " +
+                        " from saleDetails sd " +
+                        " join products p on(sd.ProductId = p.id) " +
+                        " join Category c on(p.CategoryId = c.Id) " +
+                        " join companies cp on (cp.Id = p.companyId) " +
+                        " Join PriceDetails pd on(pd.PriceId = sd.PriceId and pd.ProductId = P.id) " +
+                        " where date(sd.AddedOn) >= @FromDate and date(sd.addedon) <= @ToDate group by P.id  order by c.Name,p.Name";
+
+            //"    where sd.ProductId = @ProductId and date(sd.AddedOn) >= @FromDate and date(sd.addedon) <= @ToDate";
+
+            var fromSqlParam = new MySqlParameter("FromDate", MySqlDbType.Date)
+            {
+                Value = FromDate.ToString("yyyy-MM-dd")
+            };
+
+            var toSqlParam = new MySqlParameter("ToDate", MySqlDbType.Date)
+            {
+                Value = ToDate.ToString("yyyy-MM-dd")
+            };
+                                     
+            _rptDataSource[0].Value = GetDataTable(query, new MySqlParameter[2]
+                                        {
+                                            fromSqlParam,toSqlParam
+                                        },
+                                        CommandType.Text);
+
+
+            _rptDataSource[1] = new ReportDataSource
+            {
+                Name = "DataSet2",
+                Value = GetApplicationDetails()
+            };            
+
+            ReportParameters = new List<ReportParameter>(1)
+            {
+                new ReportParameter("DateRange", fromSqlParam.Value + " to " + toSqlParam.Value)
+            };
+            return ReportParameters;
+        }
+
+        public static DataTable GetApplicationDetails()
+        {
+            using (var conn = MySQLDataAccess.GetConnection())
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    using (var appDt = new DataTable())
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandText = "select * from applicationDetails";
+                        cmd.CommandType = CommandType.Text;
+                        conn.Open();
+                        using (var dt = new DataTable())
+                        {
+                            using (var rdr = cmd.ExecuteReader())
+                            {
+                                dt.Load(rdr);
+                            }
+                            return dt;
+                        }
+                    }
+                }
+            }
         }
     }
 }

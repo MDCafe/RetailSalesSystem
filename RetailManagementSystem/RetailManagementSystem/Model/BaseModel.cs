@@ -96,7 +96,7 @@ namespace RetailManagementSystem.Model
                 CalculateAmount();
                 CalculateCaseForUnits();
 
-                OnPropertyChanged("Qty");
+                OnPropertyChanged(nameof(Qty));
             }
         }
 
@@ -371,7 +371,7 @@ namespace RetailManagementSystem.Model
 
         protected void CalculateCaseForUnits()
         {
-            if (_qty.Value == 0 || UnitPerCase == 0) return;
+            if (!_qty.HasValue || _qty.Value == 0 || UnitPerCase == 0) return;
             var caseAmount = Math.Truncate(_qty.Value / UnitPerCase);
             var remainingAmt = _qty.Value % UnitPerCase;
             _qty = remainingAmt;

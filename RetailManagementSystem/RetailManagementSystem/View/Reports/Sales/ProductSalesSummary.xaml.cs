@@ -8,7 +8,7 @@ namespace RetailManagementSystem.View.Reports.Sales
         public ProductSalesSummary()
         {
             InitializeComponent();
-            DataContext = new ProductSalesSummaryViewModel();
+            DataContext = new ProductSalesSummaryViewModel(false);
         }
     }
 }
