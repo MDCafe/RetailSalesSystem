@@ -51,7 +51,7 @@ namespace BHCustCtrl
     /// </summary>
     [DefaultProperty("Columns")]
     [ContentProperty("Columns")]
-    public class CustDataGridComboBoxColumn : Microsoft.Windows.Controls.DataGridComboBoxColumn
+    public class CustDataGridComboBoxColumn : DataGridComboBoxColumn
     {
         public static readonly DependencyProperty CustComboBoxSelectedPathProperty = DependencyProperty.Register("CustComboBoxSelectedPathProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
         public static readonly DependencyProperty CustComboBoxSelectedValueProperty = DependencyProperty.Register("CustComboBoxSelectedValueProperty", typeof(string), typeof(CustDataGridComboBoxColumn));
@@ -72,7 +72,7 @@ namespace BHCustCtrl
 
 
         //Columns of DataGrid
-        private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
+        private ObservableCollection<DataGridTextColumn> columns;
         public TextBox _cboTextBox;
         //Cust Combobox  cell edit
         public CustComboBox comboBox;
@@ -147,13 +147,13 @@ namespace BHCustCtrl
 
         //The property is default and Content property for CustComboBox
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> Columns
+        public ObservableCollection<DataGridTextColumn> Columns
         {
             get
             {
                 if (this.columns == null)
                 {
-                    this.columns = new ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn>();
+                    this.columns = new ObservableCollection<DataGridTextColumn>();
                 }
                 return this.columns;
             }
@@ -161,7 +161,7 @@ namespace BHCustCtrl
         /// <summary>
         ///     Creates the visual tree for text based cells.
         /// </summary>
-        protected override FrameworkElement GenerateEditingElement(Microsoft.Windows.Controls.DataGridCell cell, object dataItem)
+        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
         {
             if (comboBox.Columns.Count == 0)
             {
@@ -185,6 +185,7 @@ namespace BHCustCtrl
             //{
             // Changed to support EF POCOs
             PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
+            if (info == null) return null;
             object obj = info.GetValue(editingElement.DataContext, null);
             comboBox.SelectedValue = obj;
             //}
@@ -209,8 +210,8 @@ namespace BHCustCtrl
 
             // Dynamically set the item on our POCO (the DataContext).
             //_log.Info("CustComboBoxSelectedValue:" + CustComboBoxSelectedValue);
-            PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
-            info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
+            //PropertyInfo info = editingElement.DataContext.GetType().GetProperty(CustComboBoxSelectedValue, BindingFlags.Public | BindingFlags.Instance);
+            //info.SetValue(editingElement.DataContext, comboBox.SelectedValue, null);
             //var grid =FindMyParentHelper<DataGrid>.FindAncestor(editingElement);
 
 

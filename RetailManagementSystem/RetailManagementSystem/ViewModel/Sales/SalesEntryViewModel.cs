@@ -412,8 +412,9 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         protected override bool CanExecuteSaveCommand(object parameter)
         {
-            return _selectedCustomer != null && _selectedCustomer.Id != 0 && SaleDetailList.Count != 0 &&
-                    SaleDetailList[0].ProductId != 0 && _selectedCustomerText == _selectedCustomer.Name;
+            return _selectedCustomer != null && _selectedCustomer.Id != 0 && 
+                     _selectedCustomerText == _selectedCustomer.Name;
+            //SaleDetailList[0].ProductId != 0 && SaleDetailList.Count != 0
         }
 
         protected override async Task OnSave(object parameter)
@@ -472,8 +473,10 @@ namespace RetailManagementSystem.ViewModel.Sales
 
                                      var listOfDuplicates = SaleDetailList.GroupBy(x => new { x.ProductId, x.SellingPrice })
                                                               .Where(g => g.Count() > 1)
-                                                              .Select(y => new SaleDetailExtn
+                                                              .Select(y => new SaleDetail
                                                               {
+                                                                  //DiscountPercentage = y.First().DiscountPercentage,
+                                                                  //DiscountAmount = y.First().DiscountAmount,
                                                                   Discount = y.First().Discount,
                                                                   PriceId = y.First().PriceId,
                                                                   ProductId = y.First().ProductId,
@@ -484,53 +487,57 @@ namespace RetailManagementSystem.ViewModel.Sales
                                                                   //AddedOn = combinedDateTime,
                                                                   //ModifiedOn = combinedDateTime,
                                                                   //UpdatedBy = EntitlementInformation.UserInternalId,
-                                                                  ExpiryDate = y.First().ExpiryDate
+                                                                  //ExpiryDate = y.First().ExpiryDate
                                                               })
                                                               .ToList();
 
                                      var listOfNonDuplicates = SaleDetailList.GroupBy(x => new { x.ProductId, x.SellingPrice })
                                                                   .Where(g => g.Count() == 1)
-                                                                  .Select(y => new SaleDetailExtn
+                                                                  .Select(y => new SaleDetail
                                                                   {
+                                                                      Qty = y.First().GetQty(),
+                                                                      //DiscountPercentage = y.First().DiscountPercentage,
+                                                                      //DiscountAmount = y.First().DiscountAmount,
                                                                       Discount = y.First().Discount,
                                                                       PriceId = y.First().PriceId,
-                                                                      ProductId = y.First().ProductId,
-                                                                      Qty = y.Sum(q => q.Qty),
+                                                                      ProductId = y.First().ProductId,                                                                      
                                                                       SellingPrice = y.First().SellingPrice,
                                                                       CostPrice = y.First().CostPrice,
                                                                       //BillId = lclBillSales.BillId,
                                                                       //AddedOn = combinedDateTime,
                                                                       //ModifiedOn = combinedDateTime,
                                                                       //UpdatedBy = EntitlementInformation.UserInternalId,
-                                                                      ExpiryDate = y.First().ExpiryDate
+                                                                      //ExpiryDate = y.First().ExpiryDate
                                                                   })
                                                                   .ToList();
 
-                                     var finalList = new List<SaleDetailExtn>(listOfDuplicates.Count + listOfNonDuplicates.Count);
+                                     var finalList = new List<SaleDetail>(listOfDuplicates.Count + listOfNonDuplicates.Count);
                                      finalList.AddRange(listOfDuplicates);
                                      finalList.AddRange(listOfNonDuplicates);
 
                                      foreach (var saleDetailItem in finalList)
                                      {
-                                         var calculatedQty = saleDetailItem.GetQty();
+                                         //var calculatedQty = saleDetailItem.GetQty();                                         
 
-                                         if (saleDetailItem.ProductId == 0) continue;
+                                         if (saleDetailItem.ProductId == 0) continue;                                         
+
                                          var saleDetail = new SaleDetail
                                          {
                                              Discount = saleDetailItem.Discount,
                                              PriceId = saleDetailItem.PriceId,
                                              ProductId = saleDetailItem.ProductId,
-                                             Qty = calculatedQty,
+                                             Qty = saleDetailItem.Qty,
                                              SellingPrice = saleDetailItem.SellingPrice,
                                              CostPrice = saleDetailItem.CostPrice,
                                              BillId = lclBillSales.BillId,
                                              AddedOn = combinedDateTime,
                                              ModifiedOn = combinedDateTime,
-                                             UpdatedBy = EntitlementInformation.UserInternalId
+                                             UpdatedBy = EntitlementInformation.UserInternalId                                             
                                          };
                                          lclBillSales.SaleDetails.Add(saleDetail);
 
-                                         var expiryDate = saleDetailItem.ExpiryDate;
+
+                                         var expiryDate = SaleDetailList.First(s => s.ProductId == saleDetail.ProductId).ExpiryDate;
                                          //var stock = rmsEntities.Stocks.FirstOrDefault(s => s.ProductId == saleDetailItem.ProductId && s.PriceId == saleDetailItem.PriceId
                                          //                                               && s.ExpiryDate.Year == expiryDate.Value.Year
                                          //                                               && s.ExpiryDate.Month == expiryDate.Value.Month
@@ -541,7 +548,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                                          if (stock != null)
                                          {
                                              var actualStockEntity = rmsEntitiesSaveCtx.Stocks.First(s => s.Id == stock.Id);
-                                             actualStockEntity.Quantity -= calculatedQty.Value;
+                                             actualStockEntity.Quantity -= saleDetailItem.Qty.Value;
                                              actualStockEntity.UpdatedBy = EntitlementInformation.UserInternalId;
                                              SetStockTransaction(rmsEntitiesSaveCtx, saleDetail, actualStockEntity, combinedDateTime);
                                          }
@@ -1081,8 +1088,8 @@ namespace RetailManagementSystem.ViewModel.Sales
                         if (parameter == SaveOperations.SavePrint)
                         {
                             var salesBillPrint = new SalesBillPrint(rmsEntities);
-                            salesBillPrint.Print(_billSales.Customer.Name, SaleDetailList.ToList(), _billSales,
-                                                 TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
+                            //salesBillPrint.Print(_billSales.Customer.Name, SaleDetailList.ToList(), _billSales,
+                              //                   TotalAmount.Value, AmountPaid, BalanceAmount, _showRestrictedCustomer);
                         }
                         Clear();
                     }
@@ -1366,7 +1373,7 @@ namespace RetailManagementSystem.ViewModel.Sales
                     _log.Info("Inside Return : selectedIndex" + selectedIndex);
                     _log.Info("Inside Return : SaleDetailList.Count" + SaleDetailList.Count);
                     SaleDetailList.Add(new SaleDetailExtn());
-                    selectedIndex -= 1;
+                    //selectedIndex -= 1;
                 }
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
                 selRowSaleDetailExtn.Clear();

@@ -52,12 +52,13 @@ namespace RetailManagementSystem.View.Stock
 
             //custComboBoxCol.comboBox.ItemsSource = stockAdjViewModel.ProductsPriceList;
             ////custComboBoxCol.comboBox.SelectedIndex = -1;
-            ////custComboBoxCol.ClearSelection();
+
             ////custComboBoxCol.ComboBoxSelectedEvent += custComboBoxCol_ComboBoxSelectedEvent;
             ////var rowHeader = SalesDataGrid.sele [SalesDataGrid.SelectedIndex]
             ////SalesDataGrid.SelectedIndex
 
-            //custComboBoxCol._cboTextBox.Text = "";
+            custComboBoxCol._cboTextBox.Text = "";
+            custComboBoxCol.ClearSelection();
         }
 
         public static T FindChild<T>(DependencyObject parent, string childName)

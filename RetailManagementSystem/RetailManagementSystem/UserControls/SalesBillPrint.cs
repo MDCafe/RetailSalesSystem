@@ -15,7 +15,7 @@ namespace RetailManagementSystem.UserControls
         readonly PrintDocument _pdoc;
         readonly ApplicationDetail _appDetail;
         string _customerName;
-        IEnumerable<SaleDetailExtn> _saleDetails;
+        IEnumerable<SaleDetail> _saleDetails;
         Sale _billSales;
         decimal? _amountPaid, _balanceAmt;
         decimal _totalAmount;
@@ -63,7 +63,7 @@ namespace RetailManagementSystem.UserControls
             _appDetail = _rmsEntities.ApplicationDetails.FirstOrDefault();
         }
 
-        public void Print(string customerName, IEnumerable<SaleDetailExtn> saleDetails, Sale billSales, decimal totalAmount, decimal? amountPaid, decimal? balanceAmt,
+        public void Print(string customerName, IEnumerable<SaleDetail> saleDetails, Sale billSales, decimal totalAmount, decimal? amountPaid, decimal? balanceAmt,
                           bool showRestrictedCustomers)
         {
             try

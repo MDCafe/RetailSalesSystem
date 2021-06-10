@@ -14,6 +14,7 @@
              d:DesignHeight="300" d:DesignWidth="800"
              FocusManager.FocusedElement="{Binding ElementName=CboCustomers}"
              xmlns:UC="clr-namespace:RetailManagementSystem.UserControls"
+             x:Name="UCSales"
              >
     <UserControl.Resources>
         
@@ -111,11 +112,10 @@
                     --><!--<KeyBinding Key="Tab" Command="{Binding EnterKeyCommand}"/>--><!--
                 </TextBox.InputBindings>-->
             </TextBox>
-            <Button Content="Add" Margin="10,5,0,0" Grid.Row="2" Grid.Column="3" Height="25" Width="50" HorizontalAlignment="Left"/>
-            
+                        
             <!--DataGrid-->
-            <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
-                                      ItemsSource="{Binding SaleDetailList}"  
+            <DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
+                                      ItemsSource="{Binding Path=SaleDetailList}"
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="3"
                                       SelectionMode="Single" Grid.ColumnSpan="5"
@@ -123,7 +123,7 @@
                                       SelectionUnit="FullRow"
                                       CanUserSortColumns="False" CanUserReorderColumns="False" VirtualizingPanel.IsVirtualizing="True">
                
-                <toolKit:DataGrid.Resources>
+                <DataGrid.Resources>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="LightYellow"/>
                     </Style>
@@ -137,9 +137,9 @@
                             </Trigger>
                         </Style.Triggers>
                         <Style.Setters>
-                            <EventSetter Event="PreviewKeyDown" Handler="Cell_PreviewKeyDown"/>
-                            <EventSetter Event="GotFocus" Handler="Cell_GotFocus"/>
-                            <Setter Property="IsEnabled" Value="{Binding PropertyReadOnly}" />
+                            <!--<EventSetter Event="PreviewKeyDown" Handler="Cell_PreviewKeyDown"/>-->
+                            <!--<EventSetter Event="GotFocus" Handler="Cell_GotFocus"/>-->
+                            <!--<Setter Property="IsEnabled" Value="{Binding PropertyReadOnly}" />-->
                         </Style.Setters>
                    
                     </Style>
@@ -158,16 +158,16 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
                     
-                </toolKit:DataGrid.Resources>
-                <toolKit:DataGrid.RowHeaderTemplate>
+                </DataGrid.Resources>
+                <DataGrid.RowHeaderTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Item.SerialNo, 
-                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type toolKit:DataGridRow}}}"/>
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}}"/>
                         
                     </DataTemplate>
-                </toolKit:DataGrid.RowHeaderTemplate>
+                </DataGrid.RowHeaderTemplate>
 
-                <toolKit:DataGrid.Columns>
+                <DataGrid.Columns>
                     <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding ProductsPriceList}"                                                                  
                                                                     SelectedValuePath="ProductId"
@@ -177,39 +177,39 @@
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="CustComboBoxColComboBoxSelectedEvent"                                                        
                                   >
-                        <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
-                        <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Unit Per Case" Binding="{Binding UnitPerCase}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" />
+                        <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Unit Per Case" Binding="{Binding UnitPerCase}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     </BHCustCtrl:CustDataGridComboBoxColumn>
 
 
-                    <toolKit:DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
-                        <toolKit:DataGridTextColumn.Binding>
+                    <DataGridTextColumn Width="150"  Header="Quantity" EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}">
+                        <DataGridTextColumn.Binding>
                             <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
                                 <!--<Binding.ValidationRules>
                                     <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
                                 </Binding.ValidationRules>-->
                             </Binding>
-                        </toolKit:DataGridTextColumn.Binding>
-                    </toolKit:DataGridTextColumn>
-                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Case" Binding="{Binding CaseQuantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
-                    <toolKit:DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Last Sold Price" Binding="{Binding LastSoldPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                </toolKit:DataGrid.Columns>
-                <toolKit:DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Header="Case" Binding="{Binding CaseQuantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Header="Discount (%)" Binding="{Binding DiscountPercentage}" ElementStyle="{StaticResource DataGridCellRightAlign}" />
+                    <DataGridTextColumn Header="Discount Amount" Binding="{Binding DiscountAmount}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Header="Last Sold Price" Binding="{Binding LastSoldPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                </DataGrid.Columns>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="FontWeight"  Value="Bold" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
-                </toolKit:DataGrid.ColumnHeaderStyle>
+                </DataGrid.ColumnHeaderStyle>
 
                 <!--<toolKit:DataGrid.RowValidationRules>
                 <Validator:QuantityValidationRule ValidationStep="UpdatedValue"/>
@@ -224,7 +224,7 @@
                     </Grid>
                 </ControlTemplate>
             </toolKit:DataGrid.RowValidationErrorTemplate>-->
-            </toolKit:DataGrid>
+            </DataGrid>
             <!--DataGrid-->
             <StackPanel Orientation="Horizontal" Grid.Row="4"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
                 <Label Content="Discount Amt"  Margin="5,5,5,5"/>

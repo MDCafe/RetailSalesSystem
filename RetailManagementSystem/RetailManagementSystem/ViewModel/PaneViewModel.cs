@@ -1,5 +1,4 @@
 ﻿using RetailManagementSystem.ViewModel.Base;
-using System;
 
 namespace RetailManagementSystem.ViewModel
 {
@@ -27,12 +26,12 @@ namespace RetailManagementSystem.ViewModel
 
         #endregion
 
-        public virtual Uri IconSource
-        {
-            get;
+        //public virtual Uri IconSource
+        //{
+        //    get;
 
-            protected set;
-        }
+        //    protected set;
+        //}
 
         #region ContentId
 

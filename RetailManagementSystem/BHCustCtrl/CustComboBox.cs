@@ -5,12 +5,13 @@
  */
 
 using log4net;
-using Microsoft.Windows.Controls.Primitives;
+//using Microsoft.Windows.Controls.Primitives;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -36,9 +37,9 @@ namespace BHCustCtrl
     {
         const string partPopupDataGrid = "PART_PopupDataGrid";
         //Columns of DataGrid
-        private ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> columns;
+        private ObservableCollection<DataGridTextColumn> columns;
         //Attached DataGrid control
-        private Microsoft.Windows.Controls.DataGrid popupDataGrid;
+        private DataGrid popupDataGrid;
 
         static readonly ILog _log = LogManager.GetLogger(typeof(CustComboBox));
 
@@ -49,13 +50,13 @@ namespace BHCustCtrl
 
         //The property is default and Content property for CustComboBox
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn> Columns
+        public ObservableCollection<DataGridTextColumn> Columns
         {
             get
             {
                 if (this.columns == null)
                 {
-                    this.columns = new ObservableCollection<Microsoft.Windows.Controls.DataGridTextColumn>();
+                    this.columns = new ObservableCollection<DataGridTextColumn>();
                 }
                 return this.columns;
             }
@@ -67,7 +68,7 @@ namespace BHCustCtrl
             if (popupDataGrid == null)
             {
 
-                popupDataGrid = this.Template.FindName(partPopupDataGrid, this) as Microsoft.Windows.Controls.DataGrid;
+                popupDataGrid = this.Template.FindName(partPopupDataGrid, this) as DataGrid;
                 if (popupDataGrid != null && columns != null)
                 {
                     //Add columns to DataGrid columns
@@ -89,7 +90,7 @@ namespace BHCustCtrl
             //When open in Blend prevent raising exception 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
+                DataGrid dg = sender as DataGrid;
                 if (dg != null)
                 {
                     //_log.Debug("dg.SelectedIndex :" + dg.SelectedIndex);
@@ -104,14 +105,14 @@ namespace BHCustCtrl
         //Event for Microsoft.Windows.Controls.DataGrid popup MouseDown
         void popupDataGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Microsoft.Windows.Controls.DataGrid dg = sender as Microsoft.Windows.Controls.DataGrid;
+            DataGrid dg = sender as DataGrid;
             if (dg != null)
             {
                 DependencyObject dep = (DependencyObject)e.OriginalSource;
 
                 // iteratively traverse the visual tree and stop when dep is one of ..
                 while ((dep != null) &&
-                        !(dep is Microsoft.Windows.Controls.DataGridCell) &&
+                        !(dep is DataGridCell) &&
                         !(dep is DataGridColumnHeader))
                 {
                     dep = VisualTreeHelper.GetParent(dep);
@@ -125,7 +126,7 @@ namespace BHCustCtrl
                     // do something
                 }
                 //When user clicks to Microsoft.Windows.Controls.DataGrid cell, popup have to be closed
-                if (dep is Microsoft.Windows.Controls.DataGridCell)
+                if (dep is DataGridCell)
                 {
                     this.IsDropDownOpen = false;
                 }

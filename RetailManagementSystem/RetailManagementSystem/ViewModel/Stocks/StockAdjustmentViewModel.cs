@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace RetailManagementSystem.ViewModel.Stocks
 {
-    class StockAdjustmentViewModel : DocumentViewModel
+    internal class StockAdjustmentViewModel : DocumentViewModel
     {
         static readonly ILog log = LogManager.GetLogger(typeof(StockAdjustmentViewModel));
         public ObservableCollection<StockAdjustProductPrice> ProductsPriceList { get; private set; }
@@ -75,6 +75,7 @@ namespace RetailManagementSystem.ViewModel.Stocks
                     stockAdjustDetail.CostPrice = productPrice.Price;
                     stockAdjustDetail.OpeningBalance = productPrice.Quantity;
                     stockAdjustDetail.StockId = productPrice.StockId;
+                    stockAdjustDetail.ProductId = productPrice.ProductId;
                 }
             }
             catch (Exception ex)

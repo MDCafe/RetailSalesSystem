@@ -343,8 +343,9 @@ namespace RetailManagementSystem.ViewModel.Purchases
         {
             if (productPrice == null) return;
             //var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
-            var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
-            SetPurchaseDetailExtn(productPrice, saleItem, selectedIndex);
+            //var saleItem = _purchaseDetailsList.FirstOrDefault(s => s.ProductId == productPrice.ProductId);
+            var purchaseDetailExtn = PurchaseDetailList[selectedIndex];
+            SetPurchaseDetailExtn(productPrice, purchaseDetailExtn, selectedIndex);
         }
 
         private void SetPurchaseDetailExtn(ProductPrice productPrice, PurchaseDetailExtn purchaseDetailExtn, int selectedIndex)
@@ -362,6 +363,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
                 purchaseDetailExtn.SupportsMultiplePrice = productPrice.SupportsMultiplePrice;
                 purchaseDetailExtn.UnitPerCase = productPrice.UnitPerCase ?? 0;
                 purchaseDetailExtn.ExpiryDate = DateTime.Now.AddYears(1);
+                purchaseDetailExtn.ProductId = productPrice.ProductId;
 
                 purchaseDetailExtn.SubscribeToAmountChange(() =>
                 {

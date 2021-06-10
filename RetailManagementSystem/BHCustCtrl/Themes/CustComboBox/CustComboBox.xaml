@@ -98,7 +98,7 @@
             <Popup x:Name="PART_Popup" AllowsTransparency="true" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Grid.ColumnSpan="2">
                 <Microsoft_Windows_Themes:SystemDropShadowChrome x:Name="Shdw" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=Placement}" Color="Transparent">
                     <Border x:Name="DropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
-                         <toolKit:DataGrid x:Name="PART_PopupDataGrid" 
+                         <DataGrid x:Name="PART_PopupDataGrid" 
                                            ItemsSource="{TemplateBinding ItemsSource}" 
                                            AutoGenerateColumns="False" 
                                            IsReadOnly="True" 
@@ -117,7 +117,7 @@
                                            
                                            >
 													 
-													  </toolKit:DataGrid>
+                        </DataGrid>
                                 
                     </Border>
                 </Microsoft_Windows_Themes:SystemDropShadowChrome>
@@ -172,7 +172,7 @@
                                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Grid.ColumnSpan="2">
                             <Microsoft_Windows_Themes:SystemDropShadowChrome x:Name="Shdw" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=MainGrid}" Color="Transparent">
                                 <Border x:Name="DropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
-                                    <toolKit:DataGrid x:Name="PART_PopupDataGrid" 
+                                    <DataGrid x:Name="PART_PopupDataGrid" 
                                                       ItemsSource="{TemplateBinding ItemsSource}" 
                                                       AutoGenerateColumns="False" 
                                                       IsReadOnly="True" 

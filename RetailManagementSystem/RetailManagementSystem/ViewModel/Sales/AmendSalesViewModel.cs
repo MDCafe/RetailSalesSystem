@@ -2,6 +2,7 @@
 using RetailManagementSystem.Utilities;
 using RetailManagementSystem.ViewModel.Base;
 using RetailManagementSystem.ViewModel.Reports.Sales;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,21 +15,24 @@ namespace RetailManagementSystem.ViewModel.Sales
         bool _showRestrictedCustomers;
         Customer _selectedCustomer;
         string _selectedCustomerText;
-        IEnumerable<Sale> _billList;
-        RMSEntities _rmsEntities;
+        IEnumerable<Sale> _billList;        
         int _categoryId;
 
         public int? BillNo { get; set; }
         public string BillNoText { get; set; }
-
-        public IEnumerable<Customer> CustomersList
+        public DateTime FromSalesDate { get; set; }
+        public DateTime ToSalesDate { get; set; }
+        public IList<Customer> CustomersList
         {
             get
             {
-                if (_showRestrictedCustomers)
-                    return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name);
+                using (var rmsEntities = new RMSEntities())
+                {
+                    if (_showRestrictedCustomers)
+                        return rmsEntities.Customers.Where(c => c.CustomerTypeId == Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name).ToList();
 
-                return _rmsEntities.Customers.Local.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name);
+                    return rmsEntities.Customers.Where(c => c.CustomerTypeId != Constants.CUSTOMERS_OTHERS).OrderBy(o => o.Name).ToList();
+                }
             }
         }
 
@@ -65,26 +69,44 @@ namespace RetailManagementSystem.ViewModel.Sales
         }
 
         public AmendSalesViewModel(bool showRestrictedCustomers)
+        {            
+            _showRestrictedCustomers = showRestrictedCustomers;         
+
+            _categoryId = _showRestrictedCustomers ? Constants.CUSTOMERS_OTHERS : Constants.CUSTOMERS_HOTEL;
+
+            SetServerDate();
+        }
+
+
+        private void SetServerDate()
         {
-            _rmsEntities = new RMSEntities();
-            _showRestrictedCustomers = showRestrictedCustomers;
-            _rmsEntities.Customers.ToList();
-
-            if (_showRestrictedCustomers)
-                _categoryId = Constants.CUSTOMERS_OTHERS;
-            else
-                _categoryId = Constants.CUSTOMERS_HOTEL;
-
+            var serverDate = RMSEntitiesHelper.GetServerDate();
+            FromSalesDate = serverDate;
+            ToSalesDate = serverDate;
         }
 
         #region Clear Command
+        RelayCommand<object> _clearCommand = null;
+
+        public ICommand ClearCommand
+        {
+            get
+            {
+                if (_clearCommand == null)
+                {
+                    _clearCommand = new RelayCommand<object>((p) => Clear());
+                }
+
+                return _clearCommand;
+            }
+        }
 
         internal void Clear()
         {
             BillNo = null;
             SelectedCustomer = null;
             BillList = null;
-            //_rmsEntities = new RMSEntities();
+            SetServerDate();
         }
         #endregion
 
@@ -140,28 +162,29 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (customerBill == null)
                 return;
 
-            var cancelBill = _rmsEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
-
-            if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
+            using (var rmsEntities = new RMSEntities())
             {
-                Utility.ShowWarningBox(window, "Bill has been cancelled already");
-                return;
+                var cancelBill = rmsEntities.Sales.FirstOrDefault(s => s.RunningBillNo == BillNo && customerBill.CustomerId == s.CustomerId);
+
+                if (cancelBill.IsCancelled.HasValue && cancelBill.IsCancelled.Value)
+                {
+                    Utility.ShowWarningBox(window, "Bill has been cancelled already");
+                    return;
+                }
+
+                View.Entitlements.Login login = new View.Entitlements.Login();
+                var result = login.ShowDialog();
+                //var t = ;
+                if (!result.Value || !RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId))
+                {
+                    return;
+                }
+
+                var saleParams = new SalesParams() { Billno = BillNo, CustomerId = customerBill.CustomerId, ShowAllCustomers = _showRestrictedCustomers };
+
+                Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
+                _closeWindowCommand.Execute(window);
             }
-
-            View.Entitlements.Login login = new View.Entitlements.Login();
-            var result = login.ShowDialog();
-            //var t = ;
-            if (!result.Value || !RMSEntitiesHelper.Instance.IsAdmin(login.LoginVM.UserId))
-            {
-                return;
-            }
-
-            var saleParams = new SalesParams() { Billno = BillNo, CustomerId = customerBill.CustomerId, ShowAllCustomers = _showRestrictedCustomers };
-
-            Workspace.This.OpenSalesEntryCommand.Execute(saleParams);
-            _closeWindowCommand.Execute(window);
-
-            //window.DialogResult = true;
         }
 
         #endregion
@@ -187,7 +210,6 @@ namespace RetailManagementSystem.ViewModel.Sales
             if (window != null)
             {
                 window.Close();
-                _rmsEntities.Dispose();
             }
         }
         #endregion
@@ -215,10 +237,16 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void GetCustomerBills()
         {
-            if (BillList == null)
-                _rmsEntities.Sales.ToList();
+            using (var rmsEntities = new RMSEntities())
+            {
+                if (BillList == null)
+                    rmsEntities.Sales.ToList();
 
-            BillList = _rmsEntities.Sales.Local.Where(s => s.CustomerId == SelectedCustomer.Id).OrderBy(o => o.ModifiedOn);
+                var sql = "Select * from Sales s where s.CustomerId ={0}  and date(s.addedOn) >= {1} and date(s.addedOn) <= {2} order by s.ModifiedOn";
+                var billList = rmsEntities.Database.SqlQuery<Sale>(sql, SelectedCustomer.Id, FromSalesDate.ToString("yyyy-MM-dd"), ToSalesDate.ToString("yyyy-MM-dd"));
+
+                BillList = billList.ToList();
+            }
         }
 
 

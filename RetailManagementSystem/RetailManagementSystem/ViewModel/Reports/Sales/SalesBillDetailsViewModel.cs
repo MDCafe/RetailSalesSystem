@@ -44,39 +44,40 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 
         public override void PrintReceipt(object p)
         {
-            var dataTable = GetDataTable();
-            var billSales = new Sale();
-            var salesDetails = new List<SaleDetailExtn>();
-            var customer = "";
-            billSales.RunningBillNo = RunningBillNo.Value;
-
-
-            foreach (var item in dataTable.Rows)
+            using (var dataTable = GetDataTable())
             {
-                var itemArray = item as DataRow;
-                customer = itemArray.Field<string>("Customer");
-                billSales.CustomerOrderNo = itemArray.Field<string>("CustomerOrderNo");
-                billSales.TransportCharges = itemArray.IsNull("TransportCharges") ? 0.0M : itemArray.Field<decimal>("TransportCharges");
-                billSales.Discount = itemArray.IsNull("Discount") ? 0.0M : itemArray.Field<decimal>("Discount");
-                billSales.TotalAmount = itemArray.Field<decimal>("TotalAmount");
-                billSales.PaymentMode = itemArray.Field<string>("PaymentMode");
-                billSales.AddedOn = itemArray.Field<System.DateTime>("AddedOn");
-                salesDetails.Add(
-                    new SaleDetailExtn()
-                    {
-                        AddedOn = itemArray.Field<System.DateTime>("AddedOn"),
-                        SellingPrice = itemArray.Field<decimal>("SellingPrice"),
-                        Qty = itemArray.Field<decimal>("Qty"),
-                        Discount = itemArray.IsNull("ItemDiscount") ? 0.0M : itemArray.Field<decimal>("ItemDiscount"),
-                        ProductId = itemArray.Field<int>("ProductId"),
-                        CostPrice = itemArray.Field<decimal>("Price")
-                    }
-                );
-            }
-            using (RMSEntities rmsEntities = new RMSEntities())
-            {
-                UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint(rmsEntities);
-                sp.Print(customer, salesDetails, billSales, billSales.TotalAmount.Value, null, null, _showRestrictedCustomers);
+                var billSales = new Sale();
+                var salesDetails = new List<SaleDetail>();
+                var customer = "";
+                billSales.RunningBillNo = RunningBillNo.Value;
+
+                foreach (var item in dataTable.Rows)
+                {
+                    var itemArray = item as DataRow;
+                    customer = itemArray.Field<string>("Customer");
+                    billSales.CustomerOrderNo = itemArray.Field<string>("CustomerOrderNo");
+                    billSales.TransportCharges = itemArray.IsNull("TransportCharges") ? 0.0M : itemArray.Field<decimal>("TransportCharges");
+                    billSales.Discount = itemArray.IsNull("Discount") ? 0.0M : itemArray.Field<decimal>("Discount");
+                    billSales.TotalAmount = itemArray.Field<decimal>("TotalAmount");
+                    billSales.PaymentMode = itemArray.Field<string>("PaymentMode");
+                    billSales.AddedOn = itemArray.Field<System.DateTime>("AddedOn");
+                    salesDetails.Add(
+                        new SaleDetail()
+                        {
+                            AddedOn = itemArray.Field<System.DateTime>("AddedOn"),
+                            SellingPrice = itemArray.Field<decimal>("SellingPrice"),
+                            Qty = itemArray.Field<decimal>("Qty"),
+                            Discount = itemArray.IsNull("ItemDiscount") ? 0.0M : itemArray.Field<decimal>("ItemDiscount"),
+                            ProductId = itemArray.Field<int>("ProductId"),
+                            CostPrice = itemArray.Field<decimal>("Price")
+                        }
+                    );
+                }
+                using (RMSEntities rmsEntities = new RMSEntities())
+                {
+                    UserControls.SalesBillPrint sp = new UserControls.SalesBillPrint(rmsEntities);
+                    sp.Print(customer, salesDetails, billSales, billSales.TotalAmount.Value, null, null, _showRestrictedCustomers);
+                }
             }
         }
 

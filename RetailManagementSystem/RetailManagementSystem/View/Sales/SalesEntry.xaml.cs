@@ -1,5 +1,4 @@
-﻿using log4net;
-using RetailManagementSystem.Model;
+﻿using RetailManagementSystem.Model;
 using RetailManagementSystem.ViewModel.Extensions;
 using RetailManagementSystem.ViewModel.Sales;
 using System;
@@ -14,11 +13,12 @@ namespace RetailManagementSystem.View.Sales
     public partial class SalesEntry : UserControl
     {
         SalesEntryViewModel _salesViewModel;
-        static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntry));
+        //static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntry));s
 
         public SalesEntry()
         {
-            InitializeComponent();
+            InitializeComponent();            
+
             void handler(object sender, RoutedEventArgs e)
             {
                 if (_salesViewModel.IsEditMode == false)
@@ -33,9 +33,9 @@ namespace RetailManagementSystem.View.Sales
                     SalesDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
                     (ExecutedRoutedEventHandler)((cmdSender, args) =>
                     {
-                        if (args.Command == Microsoft.Windows.Controls.DataGrid.BeginEditCommand)
+                        if (args.Command == DataGrid.BeginEditCommand)
                         {
-                            var dataGrid = (Microsoft.Windows.Controls.DataGrid)cmdSender;
+                            var dataGrid = (DataGrid)cmdSender;
                             if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
                             DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
                             FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
@@ -53,9 +53,15 @@ namespace RetailManagementSystem.View.Sales
 
             Loaded += handler;
 
+            //SalesDataGrid.DataContextChanged += (ss, ee) =>
+            // {
+            //     var i = 0;
+            // };
+
             DataContextChanged += (sender, eventArgs) =>
             {
-                _salesViewModel = this.DataContext as SalesEntryViewModel;
+                _salesViewModel = this.DataContext as SalesEntryViewModel;                
+                //SalesDataGrid.ItemsSource = _salesViewModel.SaleDetailList;
                 custComboBoxCol.ItemsSource = _salesViewModel.ProductsPriceList;
                 custComboBoxCol.FilterPropertyName = "ProductName";
                 _salesViewModel.Extensions = SalesExtn.DataContext as IExtensions;
@@ -87,7 +93,7 @@ namespace RetailManagementSystem.View.Sales
 
                 if ((e.Key == Key.Enter) || (e.Key == Key.Return))
                 {
-                    var grid = s as Microsoft.Windows.Controls.DataGrid;
+                    var grid = s as DataGrid;
 
                     //if (grid.CurrentColumn.Header.ToString().Equals("Barcode", StringComparison.OrdinalIgnoreCase))
                     //{
@@ -108,7 +114,7 @@ namespace RetailManagementSystem.View.Sales
                     if (grid.SelectedCells.Count != 0)
                     {
                         // get the cell info
-                        Microsoft.Windows.Controls.DataGridCellInfo currentCell = grid.SelectedCells[0];
+                        DataGridCellInfo currentCell = grid.SelectedCells[0];
 
                         // get the display index of the cell's column + 1 (for next column)
                         int columnDisplayIndex = currentCell.Column.DisplayIndex;
@@ -117,13 +123,13 @@ namespace RetailManagementSystem.View.Sales
                         if (columnDisplayIndex < grid.Columns.Count)
                         {
                             // get the DataGridColumn instance from the display index
-                            Microsoft.Windows.Controls.DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
+                            DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
 
                             // now telling the grid, that we handled the key down event
                             e.Handled = true;
 
                             // setting the current cell (selected, focused)
-                            grid.CurrentCell = new Microsoft.Windows.Controls.DataGridCellInfo(grid.SelectedItem, nextColumn);
+                            grid.CurrentCell = new DataGridCellInfo(grid.SelectedItem, nextColumn);
 
                             // tell the grid to initialize edit mode for the current cell
                             //grid.BeginEdit();
@@ -170,10 +176,10 @@ namespace RetailManagementSystem.View.Sales
                 }
             }
 
-            _log.Debug("Before SetProductDetails:" + productPrice);
+            //_log.Debug("Before SetProductDetails:" + productPrice);
             _salesViewModel.SetProductDetails(barcodeNullable, productPrice, SalesDataGrid.SelectedIndex);
             //custComboBoxCol.ComboBoxSelectedEvent -= custComboBoxCol_ComboBoxSelectedEvent;
-            _log.Debug("After SetProductDetails:" + SalesDataGrid.SelectedIndex);
+            //_log.Debug("After SetProductDetails:" + SalesDataGrid.SelectedIndex);
 
             custComboBoxCol.comboBox.ItemsSource = _salesViewModel.ProductsPriceList;
             //custComboBoxCol.comboBox.SelectedIndex = -1;

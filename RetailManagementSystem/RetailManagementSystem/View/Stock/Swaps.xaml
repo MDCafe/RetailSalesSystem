@@ -57,7 +57,7 @@
             <TextBox Name="txtOrderNo" Text="{Binding OrderNo}" Margin="0,5,0,0" Grid.Row="1" Grid.Column="3" Height="20" />-->
 
             <!--DataGrid-->
-            <toolKit:DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
+            <DataGrid Name="SalesDataGrid" IsSynchronizedWithCurrentItem="True" 
                                       ItemsSource="{Binding SwapsDetailList}"  
                                       AutoGenerateColumns="False" RowHeight="25" 
                                       Grid.Row="2"
@@ -65,7 +65,7 @@
                                       RowHeaderWidth="25"
                                       SelectionUnit="FullRow"
                                        >
-                <toolKit:DataGrid.Resources>
+                <DataGrid.Resources>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="Yellow"/>
                     </Style>
@@ -91,8 +91,8 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-                </toolKit:DataGrid.Resources>
-                <toolKit:DataGrid.Columns>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
                     <BHCustCtrl:CustDataGridComboBoxColumn  x:Name="custComboBoxCol" Width="250" Header="Products"
                                                                     ItemsSource="{Binding ProductsPriceList}"                                                                  
                                                                     SelectedValuePath="ProductId"
@@ -102,28 +102,28 @@
                                                                     SelectedValueBinding="{Binding ProductId}" 
                                                                     ComboBoxSelectedEvent="custComboBoxCol_ComboBoxSelectedEvent"                                                        
                                 >
-                        <toolKit:DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" >
-                        </toolKit:DataGridTextColumn>
-                        <toolKit:DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                        <toolKit:DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" >
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Price" Binding="{Binding Price}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                        <DataGridTextColumn Header="Expiry Date" Binding="{Binding ExpiryDate}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
                     </BHCustCtrl:CustDataGridComboBoxColumn>
 
-                    <toolKit:DataGridTextColumn Width="150"  Header="Quantity"  Binding="{Binding Quantity}" 
+                    <DataGridTextColumn Width="150"  Header="Quantity"  Binding="{Binding Quantity}" 
                                                 EditingElementStyle="{StaticResource errorStyle}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                    <toolKit:DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
-                </toolKit:DataGrid.Columns>
-                <toolKit:DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="{x:Type toolKit:DataGridColumnHeader}">
+                    <DataGridTextColumn Header="Selling Price" Binding="{Binding SellingPrice}" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Width="150" Header="Amount" Binding="{Binding Amount, StringFormat=N2}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Width="150" Header="Stock Available" Binding="{Binding AvailableStock}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding CostPrice}" IsReadOnly="True" ElementStyle="{StaticResource DataGridCellRightAlign}"/>
+                </DataGrid.Columns>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="FontWeight"  Value="Bold" />
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
-                </toolKit:DataGrid.ColumnHeaderStyle>
-            </toolKit:DataGrid>
+                </DataGrid.ColumnHeaderStyle>
+            </DataGrid>
             <!--DataGrid-->
             <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Right" Height="40" Grid.ColumnSpan="5" >
                 <Label Content="Total" Margin="2" FontWeight="ExtraBold" VerticalAlignment="Center"/>

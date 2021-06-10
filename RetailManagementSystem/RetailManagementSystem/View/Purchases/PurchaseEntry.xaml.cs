@@ -25,9 +25,9 @@ namespace RetailManagementSystem.View.Purchases
                     PurchaseDataGrid.AddHandler(CommandManager.PreviewExecutedEvent,
                     (ExecutedRoutedEventHandler)((cmdSender, args) =>
                     {
-                        if (args.Command == Microsoft.Windows.Controls.DataGrid.BeginEditCommand)
+                        if (args.Command == DataGrid.BeginEditCommand)
                         {
-                            var dataGrid = (Microsoft.Windows.Controls.DataGrid)cmdSender;
+                            var dataGrid = (DataGrid)cmdSender;
                             if (dataGrid.CurrentCell.Column.GetType() != typeof(BHCustCtrl.CustDataGridComboBoxColumn)) return;
                             DependencyObject focusScope = FocusManager.GetFocusScope(dataGrid);
                             FrameworkElement focusedElement = (FrameworkElement)FocusManager.GetFocusedElement(focusScope);
@@ -71,7 +71,7 @@ namespace RetailManagementSystem.View.Purchases
 
                 if ((e.Key == Key.Enter) || (e.Key == Key.Return))
                 {
-                    var grid = s as Microsoft.Windows.Controls.DataGrid;
+                    var grid = s as DataGrid;
 
                     //if (grid.CurrentColumn.Header.ToString().Equals("Barcode", StringComparison.OrdinalIgnoreCase))
                     //{
@@ -92,7 +92,7 @@ namespace RetailManagementSystem.View.Purchases
                     if (grid.SelectedCells.Count != 0)
                     {
                         // get the cell info
-                        Microsoft.Windows.Controls.DataGridCellInfo currentCell = grid.SelectedCells[0];
+                        DataGridCellInfo currentCell = grid.SelectedCells[0];
 
                         // get the display index of the cell's column + 1 (for next column)
                         int columnDisplayIndex = currentCell.Column.DisplayIndex;
@@ -101,13 +101,13 @@ namespace RetailManagementSystem.View.Purchases
                         if (columnDisplayIndex < grid.Columns.Count)
                         {
                             // get the DataGridColumn instance from the display index
-                            Microsoft.Windows.Controls.DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
+                            DataGridColumn nextColumn = grid.ColumnFromDisplayIndex(0);
 
                             // now telling the grid, that we handled the key down event
                             e.Handled = true;
 
                             // setting the current cell (selected, focused)
-                            grid.CurrentCell = new Microsoft.Windows.Controls.DataGridCellInfo(grid.SelectedItem, nextColumn);
+                            grid.CurrentCell = new DataGridCellInfo(grid.SelectedItem, nextColumn);
 
                             // tell the grid to initialize edit mode for the current cell
                             //grid.BeginEdit();
@@ -121,7 +121,7 @@ namespace RetailManagementSystem.View.Purchases
                 {
                     if (!custComboBoxCol.comboBox.IsDropDownOpen && e.Key != Key.Tab)
                     {
-                        var grid = s as Microsoft.Windows.Controls.DataGrid;
+                        var grid = s as DataGrid;
                         grid.BeginEdit();
                         custComboBoxCol.comboBox.IsDropDownOpen = true;
                         //custComboBoxCol.comboBox.Text = e.Key.ToString();
@@ -139,11 +139,13 @@ namespace RetailManagementSystem.View.Purchases
             _purchaseEntryViewModel.SetProductDetails(productPrice, PurchaseDataGrid.SelectedIndex);
 
             custComboBoxCol.comboBox.ItemsSource = _purchaseEntryViewModel.ProductsPriceList;
-            custComboBoxCol.comboBox.SelectedIndex = -1;
+            //custComboBoxCol.comboBox.SelectedIndex = -1;
+            //custComboBoxCol.ClearSelection();
+            custComboBoxCol._cboTextBox.Text = "";
             custComboBoxCol.ClearSelection();
         }
-
-        private void DataGrid_LoadingRow(object sender, Microsoft.Windows.Controls.DataGridRowEventArgs e)
+       
+        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }

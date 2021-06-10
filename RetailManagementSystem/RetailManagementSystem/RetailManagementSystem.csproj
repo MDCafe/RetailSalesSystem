@@ -34,12 +34,12 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\NES-MAIN\POSPublisher\</InstallUrl>
+    <InstallUrl>\\woodlandsmain\SharedFolder\RMS\</InstallUrl>
     <ProductName>Retail Management System</ProductName>
     <PublisherName>Gokumarasu Moorthy</PublisherName>
     <SuiteName>Retail Management System</SuiteName>
     <ApplicationRevision>37</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.0.0.37</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
