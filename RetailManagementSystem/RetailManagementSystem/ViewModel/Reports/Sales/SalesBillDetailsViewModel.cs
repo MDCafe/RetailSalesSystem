@@ -111,7 +111,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Sales
 
                     var categorySqlParam = new MySqlParameter("category", MySqlDbType.Int32)
                     {
-                        Value = _categoryId
+                        Value = CategoryId
                     };
                     cmd.Parameters.Add(categorySqlParam);
 

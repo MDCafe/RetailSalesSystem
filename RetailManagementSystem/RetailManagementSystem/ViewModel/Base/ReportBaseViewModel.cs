@@ -4,8 +4,11 @@ namespace RetailManagementSystem.ViewModel.Base
 {
     public class ReportBaseViewModel : DocumentViewModel
     {
-        protected int _categoryId;
-        protected bool _showRestrictedPeople;
+        private int _categoryId;
+        private bool _showRestrictedPeople;
+
+        public int CategoryId { get { return _categoryId; } set { _categoryId = value; } }
+        public bool ShowRestrictedPeople { get { return _showRestrictedPeople; } set { _showRestrictedPeople = value; } }
 
         public ReportBaseViewModel(bool isSupplier, bool showRestrictedPeople)
         {

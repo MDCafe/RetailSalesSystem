@@ -658,7 +658,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             }
         }
 
-        private void SaveChequeDetailsAndPayments(RMSEntities rmsEntities, Sale saleBill)
+        private new void SaveChequeDetailsAndPayments(RMSEntities rmsEntities, Sale saleBill)
         {
             var chqPayment = new PaymentDetail
             {
@@ -1177,11 +1177,15 @@ namespace RetailManagementSystem.ViewModel.Sales
 
         private void OnEditBill(int? billNo)
         {
-            if (billNo == null) throw new ArgumentNullException("Please enter a bill no");
-            var runningBillNo = billNo.Value;
+            if (billNo == null)
+            {
+                throw new ArgumentNullException("Please enter a bill no");
+            }
+
+            int runningBillNo = billNo.Value;
 
             _isEditMode = true;
-            using (var rmsEntities = new RMSEntities())
+            using (RMSEntities rmsEntities = new RMSEntities())
             {
                 _billSales = rmsEntities.Sales.Where(b => b.RunningBillNo == runningBillNo && b.CustomerId == _salesParams.CustomerId).FirstOrDefault();
                 SelectedCustomer = _billSales.Customer;
@@ -1367,16 +1371,20 @@ namespace RetailManagementSystem.ViewModel.Sales
             //var saleItem = SaleDetailList.FirstOrDefault(s => s.ProductId == productPrice.ProductId && s.PriceId == productPrice.PriceId);
             try
             {
-                _log.Info("SetProductDetails:SelIndex:" + selectedIndex);
-                if (selectedIndex == -1 || selectedIndex > SaleDetailList.Count - 1)
+                //_log.Info("SetProductDetails:SelIndex:" + selectedIndex);
+                if (selectedIndex == -1) // selectedIndex > SaleDetailList.Count - 1
                 {
                     _log.Info("Inside Return : selectedIndex" + selectedIndex);
                     _log.Info("Inside Return : SaleDetailList.Count" + SaleDetailList.Count);
                     SaleDetailList.Add(new SaleDetailExtn());
-                    //selectedIndex -= 1;
+                    selectedIndex = 0;
+                }
+                else if(selectedIndex > SaleDetailList.Count - 1)
+                {
+                    SaleDetailList.Add(new SaleDetailExtn());
                 }
                 var selRowSaleDetailExtn = SaleDetailList[selectedIndex];
-                selRowSaleDetailExtn.Clear();
+                //selRowSaleDetailExtn.Clear();
                 SetSaleDetailExtn(productPrice, selRowSaleDetailExtn, selectedIndex);
             }
             catch (Exception ex)

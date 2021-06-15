@@ -14,5 +14,10 @@
         public int UnitOfMeasure { get; set; }
 
         public int? UnitPerCase { get; set; }
+
+        //This is to satisfy the XML binding Error
+        //public bool PropertyReadOnly { get {return true; } set {; } }
+
+        
     }
 }

@@ -12,12 +12,13 @@ namespace RetailManagementSystem.View.Sales
 {
     public partial class SalesEntry : UserControl
     {
+        private const string PRODUCTS = "Products";
         SalesEntryViewModel _salesViewModel;
         //static readonly ILog _log = LogManager.GetLogger(typeof(SalesEntry));s
 
         public SalesEntry()
         {
-            InitializeComponent();            
+            InitializeComponent();
 
             void handler(object sender, RoutedEventArgs e)
             {
@@ -103,7 +104,7 @@ namespace RetailManagementSystem.View.Sales
                     //focusedElement.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
                     //grid.SelectedIndex = grid.SelectedIndex + 1;
                     //grid.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
-                    //}
+                    //} 
 
                     // get the selected row
                     //var selectedRow = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
@@ -197,14 +198,22 @@ namespace RetailManagementSystem.View.Sales
             {
                 DataGridCell cell = (sender as DataGridCell);
                 Control elem = FindChild<Control>(cell, null);
+                if (elem == null) return;
                 elem.Focus();
             }
         }
 
         void Cell_GotFocus(object sender, RoutedEventArgs e)
         {
-            DataGridCell cell = (sender as DataGridCell);
-            cell.IsEditing = true;
+            DataGridCell cell = sender as DataGridCell;
+            if (cell != null && cell.Column.Header.ToString() == PRODUCTS && SalesDataGrid.SelectedCells.Count != 0)
+            {
+                var cellInfo = SalesDataGrid.SelectedCells[0];
+                var content = cellInfo.Column.GetCellContent(cellInfo.Item);
+                var saleDetailExtn = content.DataContext as SaleDetailExtn;
+                if (saleDetailExtn != null && saleDetailExtn.ProductId == 0)
+                    cell.IsEditing = true;
+            }
         }
 
         public static T FindChild<T>(DependencyObject parent, string childName)

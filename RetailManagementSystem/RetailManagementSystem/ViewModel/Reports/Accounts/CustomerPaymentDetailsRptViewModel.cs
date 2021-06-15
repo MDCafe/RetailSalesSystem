@@ -16,7 +16,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
         private DateTime _fromSalesDate;
         private DateTime _toSalesDate;
         private int _customerId;
-        private bool _showRestrictedCustomers;
+        //private bool _showRestrictedCustomers;
 
         public DateTime FromSalesDate
         {
@@ -68,7 +68,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
             {
                 using (RMSEntities rmsEntities = new RMSEntities())
                 {
-                    return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == _categoryId).OrderBy(a => a.Name);
+                    return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == CategoryId).OrderBy(a => a.Name);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
-            _showRestrictedCustomers = showRestrictedCustomers;
+            //_showRestrictedCustomers = showRestrictedCustomers;
             _rptDataSource = new ReportDataSource[4];
 
             ReportPath = @"View\Reports\Accounts\CustomerPaymentDetails.rdl";
@@ -115,10 +115,14 @@ namespace RetailManagementSystem.ViewModel.Reports.Accounts
 
             var query = "GetCustomerPaymentDetailsReport";
 
-            var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
-            fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
-            var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
-            toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
+            var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date)
+            {
+                Value = FromSalesDate.ToString("yyyy-MM-dd")
+            };
+            var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date)
+            {
+                Value = ToSalesDate.ToString("yyyy-MM-dd")
+            };
             var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
             {
                 Value = _customerId

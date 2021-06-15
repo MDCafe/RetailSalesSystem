@@ -33,7 +33,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             set
             {
                 _productsPriceList = value;
-                RaisePropertyChanged("ProductsPriceList");
+                RaisePropertyChanged(nameof(ProductsPriceList));
             }
         }
 
@@ -47,7 +47,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             private set
             {
                 _totalAmount = value;
-                RaisePropertyChanged("TotalAmount");
+                RaisePropertyChanged(nameof(TotalAmount));
             }
         }
 
@@ -63,8 +63,8 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 _billList = value;
                 //NotifyPropertyChanged(() => this._selectedCustomer);
-                RaisePropertyChanged("BillList");
-                if (_billList != null && _billList.Count() != 0)
+                RaisePropertyChanged(nameof(BillList));
+                if (_billList != null && _billList.Any())
                     ReadOnly = true;
                 else
                     ReadOnly = false;
@@ -119,7 +119,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             {
                 _selectedCompany = value;
 
-                RaisePropertyChanged("SelectedCompany");
+                RaisePropertyChanged(nameof(SelectedCompany));
             }
         }
 
@@ -188,7 +188,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
             private set
             {
                 _returnPriceList = value;
-                RaisePropertyChanged("ReturnPriceList");
+                RaisePropertyChanged(nameof(ReturnPriceList));
             }
         }
 
@@ -356,7 +356,7 @@ namespace RetailManagementSystem.ViewModel.Purchases
         internal override void Clear()
         {
             _returnPurchaseDetailsList = new ObservableCollection<ReturnPurchaseDetailExtn>();
-            RaisePropertyChanged("ReturnPurchaseDetailList");
+            RaisePropertyChanged(nameof(ReturnPurchaseDetailList));
             TotalAmount = null;
             SelectedCompany = null;
             BillList = null;

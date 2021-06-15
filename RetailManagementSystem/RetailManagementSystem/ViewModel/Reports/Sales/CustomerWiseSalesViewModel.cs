@@ -16,7 +16,7 @@ namespace RetailManagementSystem.ViewModel.Reports
         private DateTime _fromSalesDate;
         private DateTime _toSalesDate;
         private int _customerId;
-        private bool _showRestrictedCustomers;
+        //private bool _showRestrictedCustomers;
 
         public DateTime FromSalesDate
         {
@@ -68,7 +68,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             {
                 using (RMSEntities rmsEntities = new RMSEntities())
                 {
-                    return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == _categoryId).OrderBy(a => a.Name);
+                    return rmsEntities.Customers.ToList().Where(c => c.CustomerTypeId == CategoryId).OrderBy(a => a.Name);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace RetailManagementSystem.ViewModel.Reports
         {
             FromSalesDate = DateTime.Now;
             ToSalesDate = DateTime.Now;
-            _showRestrictedCustomers = showRestrictedCustomers;
+            //_showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\Customers\CustomerWiseSales.rdl";
         }
@@ -113,16 +113,22 @@ namespace RetailManagementSystem.ViewModel.Reports
                     cmd.CommandText = query;
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date);
-                    fromSqlParam.Value = FromSalesDate.ToString("yyyy-MM-dd");
+                    var fromSqlParam = new MySqlParameter("fromDate", MySqlDbType.Date)
+                    {
+                        Value = FromSalesDate.ToString("yyyy-MM-dd")
+                    };
                     cmd.Parameters.Add(fromSqlParam);
 
-                    var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date);
-                    toSqlParam.Value = ToSalesDate.ToString("yyyy-MM-dd");
+                    var toSqlParam = new MySqlParameter("toDate", MySqlDbType.Date)
+                    {
+                        Value = ToSalesDate.ToString("yyyy-MM-dd")
+                    };
                     cmd.Parameters.Add(toSqlParam);
 
-                    var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32);
-                    categoryIdSqlParam.Value = _customerId;
+                    var categoryIdSqlParam = new MySqlParameter("customerId", MySqlDbType.Int32)
+                    {
+                        Value = _customerId
+                    };
                     cmd.Parameters.Add(categoryIdSqlParam);
 
                     DataTable dt = new DataTable();

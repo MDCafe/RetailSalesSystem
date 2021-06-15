@@ -139,7 +139,7 @@ namespace RetailManagementSystem.ViewModel
             }
         }
 
-        protected void CloseWindow(Window window)
+        protected static void CloseWindow(Window window)
         {
             if (window != null)
             {

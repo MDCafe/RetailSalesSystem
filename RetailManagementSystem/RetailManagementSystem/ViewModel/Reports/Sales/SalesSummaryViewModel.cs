@@ -13,7 +13,7 @@ namespace RetailManagementSystem.ViewModel.Reports
     {
         private DateTime _fromSalesDate;
         private DateTime _toSalesDate;
-        private readonly bool _showRestrictedCustomers;
+        //private readonly bool _showRestrictedCustomers;
 
         public DateTime FromSalesDate
         {
@@ -53,7 +53,7 @@ namespace RetailManagementSystem.ViewModel.Reports
             ToSalesDate = DateTime.Now;
             UsersList = RMSEntitiesHelper.Instance.GetUsers();
 
-            _showRestrictedCustomers = showRestrictedCustomers;
+            //_showRestrictedCustomers = showRestrictedCustomers;
 
             ReportPath = @"View\Reports\Sales\SalesSummary.rdl";
 
@@ -95,7 +95,7 @@ namespace RetailManagementSystem.ViewModel.Reports
 
             var categoryIdSqlParam = new MySqlParameter("categoryId", MySqlDbType.Int32)
             {
-                Value = _categoryId
+                Value = CategoryId
             };
 
             var userSqlParam = new MySqlParameter("internalUserId", MySqlDbType.Int32)

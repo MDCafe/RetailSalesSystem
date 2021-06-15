@@ -120,7 +120,7 @@ namespace RetailManagementSystem.ViewModel.Reports.Purhcases
 
                     var categorySqlParam = new MySqlParameter("category", MySqlDbType.Int32)
                     {
-                        Value = _categoryId
+                        Value = CategoryId
                     };
                     cmd.Parameters.Add(categorySqlParam);
 

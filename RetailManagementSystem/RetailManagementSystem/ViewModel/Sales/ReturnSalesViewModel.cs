@@ -33,7 +33,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             private set
             {
                 _totalAmount = value;
-                RaisePropertyChanged("TotalAmount");
+                RaisePropertyChanged(nameof(TotalAmount));
             }
         }
         public string CustomerName
@@ -42,7 +42,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             set
             {
                 _customerName = value;
-                RaisePropertyChanged("CustomerName");
+                RaisePropertyChanged(nameof(CustomerName));
             }
         }
         public string ModeOfPayment
@@ -145,43 +145,43 @@ namespace RetailManagementSystem.ViewModel.Sales
             };
         }
 
-        private void SetReturnSalePrice(Product productPrice)
-        {
-            //if (SaleDetailExtn != null)
-            //{            
-            //    SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
-            //    SaleDetailExtn.CostPrice = productPrice.Price;
-            //    SaleDetailExtn.PriceId = productPrice.PriceId;
-            //    SaleDetailExtn.AvailableStock = productPrice.Quantity;
-            //    SaleDetailExtn.SerialNo = selectedIndex;
+        //private void SetReturnSalePrice(Product productPrice)
+        //{
+        //    //if (SaleDetailExtn != null)
+        //    //{            
+        //    //    SaleDetailExtn.SellingPrice = productPrice.SellingPrice;
+        //    //    SaleDetailExtn.CostPrice = productPrice.Price;
+        //    //    SaleDetailExtn.PriceId = productPrice.PriceId;
+        //    //    SaleDetailExtn.AvailableStock = productPrice.Quantity;
+        //    //    SaleDetailExtn.SerialNo = selectedIndex;
 
-            //    SaleDetailExtn.PropertyChanged += (sender, e) =>
-            //    {
-            //        var prop = e.PropertyName;
-            //        if (prop == Constants.AMOUNT)
-            //        {
-            //            TotalAmount = SaleDetailList.Sum(a => a.Amount);
-            //            return;
-            //        }
-            //        var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
-            //        var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
-            //                             amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
-            //                             SaleDetailExtn.DiscountAmount != 0 ?
-            //                             amount - SaleDetailExtn.DiscountAmount :
-            //                             0;
+        //    //    SaleDetailExtn.PropertyChanged += (sender, e) =>
+        //    //    {
+        //    //        var prop = e.PropertyName;
+        //    //        if (prop == Constants.AMOUNT)
+        //    //        {
+        //    //            TotalAmount = SaleDetailList.Sum(a => a.Amount);
+        //    //            return;
+        //    //        }
+        //    //        var amount = SaleDetailExtn.SellingPrice * SaleDetailExtn.Qty;
+        //    //        var discountAmount = SaleDetailExtn.DiscountPercentage != 0 ?
+        //    //                             amount - (amount * (SaleDetailExtn.DiscountPercentage / 100)) :
+        //    //                             SaleDetailExtn.DiscountAmount != 0 ?
+        //    //                             amount - SaleDetailExtn.DiscountAmount :
+        //    //                             0;
 
-            //        if (discountAmount != 0)
-            //        {
-            //            SaleDetailExtn.Amount = discountAmount;
-            //            SaleDetailExtn.Discount = discountAmount;
-            //            return;
-            //        }
+        //    //        if (discountAmount != 0)
+        //    //        {
+        //    //            SaleDetailExtn.Amount = discountAmount;
+        //    //            SaleDetailExtn.Discount = discountAmount;
+        //    //            return;
+        //    //        }
 
-            //        SaleDetailExtn.Amount = amount;
-            //        SaleDetailExtn.Discount = 0;
-            //    };
-            //}
-        }
+        //    //        SaleDetailExtn.Amount = amount;
+        //    //        SaleDetailExtn.Discount = 0;
+        //    //    };
+        //    //}
+        //}
 
 
         #region SaveCommand
@@ -192,7 +192,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new RelayCommand<object>((p) => OnSave(p), (p) => CanSave(p));
+                    _saveCommand = new RelayCommand<object>((p) => OnSave(), (p) => CanSave(p));
                 }
 
                 return _saveCommand;
@@ -204,7 +204,7 @@ namespace RetailManagementSystem.ViewModel.Sales
             return _returnSalesDetailsList.Count != 0 && _returnSalesDetailsList[0].ProductId != 0;
         }
 
-        private void OnSave(object parameter)
+        private void OnSave()
         {
             decimal amount = 0.0M;
             if (IsBillBasedReturn)
